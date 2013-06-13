@@ -1,0 +1,15 @@
+<script type="text/javascript" src="/static/vendor/sea.js"></script>
+<script type="text/javascript" src="/static/vendor/jquery.js"></script>
+<script type="text/javascript" src="/static/vendor/jquery.form.js"></script>
+<script type="text/javascript" src="/static//vendor/underscore.js"></script>
+<script type="text/javascript" src="/static/vendor/bootstrap.js"></script>
+<script type="text/javascript" src="/static/vendor/bootstrap-fileupload.js"></script>
+<script type="text/javascript" src="/static/vendor/backbone.js"></script>
+<script type="text/javascript" src="/static//vendor/less.js"></script>
+<script type="text/javascript" src="/static/vendor/handlebars.js"></script>
+<script type="text/javascript">
+    seajs.config({
+        base: '/static/'
+    });
+    seajs.use(['main']);
+</script>
