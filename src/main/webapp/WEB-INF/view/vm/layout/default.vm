@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         #parse("layout/component/style.vm")
-        <title>清华大学-Andoid应用安全检测</title>
+        <title>CloudMenu电子菜单</title>
     </head>
     <body>
         $screen_content

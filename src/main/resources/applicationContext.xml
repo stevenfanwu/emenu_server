@@ -41,4 +41,14 @@
         <property name="maxUploadSize" value="100000000" />
     </bean>
 
+    <bean id="authFilter" class="com.cloudstone.emenu.web.filter.AuthFilter">
+        <property name="loginUrl" value="login" />
+        <property name="escapePatterns">
+            <list>
+                <value>/login</value>
+                <value>/static/.*</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>
