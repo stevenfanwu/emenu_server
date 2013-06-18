@@ -1,4 +1,6 @@
-/.settings/
+.settings/
 /target/
-apk-host.log*
+emenu.log*
 /test-output/
+*.swp
+*.swo

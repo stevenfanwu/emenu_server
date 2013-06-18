@@ -8,18 +8,58 @@ define(function (require, exports, module) {
     var BaseView = require('../BaseView');
 
     var BaseForm = BaseView.extend({
+        events: {
+            'click .btn-submit': 'onSubmit'
+        },
+
         url: null,
 
         type: "post",
 
+        items: [],
+
+        itemConfig: [],
+
+        initialize: function () {
+            BaseView.prototype.initialize.apply(this, arguments);
+        
+            this.parseItemConfig();
+            this.reset();
+        },
+
+        parseItemConfig: function () {
+            this.items = [];
+            this.itemConfig.forEach(function (config) {
+                var Item = config.type;
+                var item = new Item( {
+                    el: config.el
+                });
+                item.parseConfig(config);
+                this.items.push(item);
+            }, this);
+        },
+
+        reset: function () {
+            this.items.forEach(function (item) {
+                item.reset();
+            }, this);
+        },
+
         trySubmit: function () {
+            this.reset();
             if (this.validateForm()) {
                 this.doSubmit();
             }
         },
 
         validateForm: function () {
-            return true;
+            var result = true;
+            this.items.forEach(function (item) {
+                if (!item.validate()) {
+                    result = false;
+                }
+            }, this);
+            return result;
         },
 
         doSubmit: function () {
