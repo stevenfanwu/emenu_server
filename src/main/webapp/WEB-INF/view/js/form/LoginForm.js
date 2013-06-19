@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     "use strict";
 
     var BaseForm = require('./BaseForm');
+    var $ = require('../lib/jquery');
 
     var Text = require('./item/Text');
     var Required = require('./validator/Required');
@@ -26,7 +27,11 @@ define(function (require, exports, module) {
                 type: Required,
                 errorMessage: '密码不能为空'
             }]
-        }]
+        }],
+
+        onSuccess: function () {
+            window.location = 'home'
+        }
     });
 
     return LoginForm;

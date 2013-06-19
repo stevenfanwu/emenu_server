@@ -16,6 +16,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cloudstone.emenu.util.AuthHelper;
+
 /**
  * @author xuhongfeng
  *
@@ -46,7 +48,10 @@ public class AuthFilter implements Filter {
             }
         }
         
-        //TODO check login
+        if (AuthHelper.isLogin(req, resp)) {
+            chain.doFilter(request, response);
+            return;
+        }
         
         //TODO check api category
         resp.sendRedirect(loginUrl);

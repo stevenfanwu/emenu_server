@@ -14,6 +14,7 @@ import com.cloudstone.emenu.util.NumberUtils;
  *
  */
 public class UserSession {
+    private static final String SPLIT = "::";
     private long userId;
     
     private long createdTime;
@@ -32,15 +33,20 @@ public class UserSession {
         return true;
     }
     
+    private static final String FORMAT = "%d" + SPLIT + "%d" + SPLIT + "%d";
+    public String encode() {
+        return String.format(FORMAT, userId, ip, createdTime);
+    }
+    
     /* ---------- static ---------- */
     /**
-     * return null if parse failed
+     * return null if decode failed
      * 
      * @param sessionStr
      * @return
      */
-    public static UserSession parseSession(String sessionStr) {
-        String[] ss = sessionStr.split("::");
+    public static UserSession decode(String sessionStr) {
+        String[] ss = sessionStr.split(SPLIT);
         if (ss.length != 3) {
             return null;
         }

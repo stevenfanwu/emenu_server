@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainController extends BaseWebController {
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
     
-    @RequestMapping("/")
+    @RequestMapping(value={"/", "/home"})
     public String home(ModelMap model) {
         return "home";
     }

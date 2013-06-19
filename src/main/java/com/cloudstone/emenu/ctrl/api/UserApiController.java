@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.util.AuthHelper;
 
 /**
  * @author xuhongfeng
@@ -29,12 +30,15 @@ public class UserApiController extends BaseApiController {
     @RequestMapping(value="/api/login", method=RequestMethod.POST)
     public @ResponseBody User login(@RequestParam(value="userName") String userName,
             @RequestParam(value="password") String password,
-            HttpServletRequest request, HttpServletResponse response) {
+            HttpServletRequest req, HttpServletResponse resp) {
         LOG.info("user login : " + userName);
         
         //TODO
         User user = new User();
         user.setName(userName);
+        user.setUserId(user.getName().hashCode());
+        
+        AuthHelper.createSession(user, req, resp);
         
         return user;
     }

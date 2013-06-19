@@ -16,6 +16,14 @@ public class SessionUtils {
         //TODO
         String sessionStr = encryptedSession;
         
-        return UserSession.parseSession(sessionStr);
+        return UserSession.decode(sessionStr);
+    }
+
+    public static String encryptSession(UserSession session) {
+        String sessionStr = session.encode();
+        //TODO
+        String encryptSession = sessionStr;
+        
+        return encryptSession;
     }
 }
