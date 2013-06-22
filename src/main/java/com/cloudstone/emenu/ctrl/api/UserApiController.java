@@ -33,14 +33,15 @@ public class UserApiController extends BaseApiController {
             HttpServletRequest req, HttpServletResponse resp) {
         LOG.info("user login : " + userName);
         
-        //TODO
-        User user = new User();
-        user.setName(userName);
-        user.setUserId(user.getName().hashCode());
-        
-        AuthHelper.createSession(user, req, resp);
-        
-        return user;
+        User user = userLogic.login(userName, password);
+        if (user == null) {
+            //TODO handle this in frontend
+            sendError(resp, HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        } else {
+            AuthHelper.createSession(user, req, resp);
+            return user;
+        }
     }
 
 }
