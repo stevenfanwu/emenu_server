@@ -39,10 +39,10 @@ public class AuthHelper {
         UserSession session = new UserSession();
         session.setCreatedTime(System.currentTimeMillis());
         session.setIp(IpUtils.toInt(req.getRemoteAddr()));
-        session.setUserId(user.getUserId());
+        session.setUserId(user.getId());
         
         RequestUtils.addCookie(resp, COOKIE_SESSION, SessionUtils.encryptSession(session));
-        RequestUtils.addCookie(resp, COOKIE_USER_ID, String.valueOf(user.getUserId()));
+        RequestUtils.addCookie(resp, COOKIE_USER_ID, String.valueOf(user.getId()));
     }
     
     private static void removeCoolies(HttpServletResponse resp) {

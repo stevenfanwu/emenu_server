@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.User;
 
 /**
@@ -12,6 +13,7 @@ import com.cloudstone.emenu.data.User;
  */
 public interface IUserDb {
 
-    public User getUserByName(String userName);
-    public User addUser(User user);
+    public User getUserByName(String userName) throws SQLiteException;
+    public User get(long userId) throws SQLiteException;
+    public User addUser(User user) throws SQLiteException;
 }

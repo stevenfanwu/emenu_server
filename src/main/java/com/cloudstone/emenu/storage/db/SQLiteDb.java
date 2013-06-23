@@ -16,16 +16,20 @@ import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.storage.BaseStorage;
+import com.cloudstone.emenu.storage.db.util.RowMapper;
+import com.cloudstone.emenu.storage.db.util.StatementBinder;
 
 /**
  * @author xuhongfeng
  *
  */
+//TODO the jni problem
 public abstract class SQLiteDb extends BaseStorage {
     private static final Logger LOG = LoggerFactory.getLogger(SQLiteDb.class);
     
     private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (%s)";
             
+    //TODO where to store this file
     @Value("${db.file}")
     private String DB_FILE;
     
@@ -43,7 +47,7 @@ public abstract class SQLiteDb extends BaseStorage {
         }
     }
     
-    /* ---------- override ----------*/
+    /* ---------- protected ----------*/
     @PostConstruct
     protected void init() {
         try {
@@ -63,15 +67,35 @@ public abstract class SQLiteDb extends BaseStorage {
     
     protected void checkCreateTable(String tableName, String columnDef) throws SQLiteException {
         String sql = String.format(SQL_CREATE, tableName, columnDef);
-        executeSQL(sql);
+        executeSQL(sql, StatementBinder.NULL);
     }
     
     
-    protected void executeSQL(String sql) throws SQLiteException {
+    protected void executeSQL(String sql, StatementBinder binder) throws SQLiteException {
         SQLiteConnection conn = open();
         SQLiteStatement stmt = conn.prepare(sql);
         try {
+            binder.onBind(stmt);
             stmt.stepThrough();
+        } finally {
+            stmt.dispose();
+            conn.dispose();
+        }
+    }
+    
+    protected <T> T queryOne(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
+        SQLiteConnection conn = open();
+        SQLiteStatement stmt = conn.prepare(sql);
+        try {
+            binder.onBind(stmt);
+            LOG.info("queryOne: " + stmt);
+            if (stmt.step()) {
+                LOG.info("queryOne: sueccess");
+                return rowMapper.map(stmt);
+            } else{
+                LOG.info("queryOne: null");
+                return null;
+            }
         } finally {
             stmt.dispose();
             conn.dispose();
@@ -80,15 +104,4 @@ public abstract class SQLiteDb extends BaseStorage {
     
     /* ---------- abstract ----------*/
     protected abstract void onCheckCreateTable() throws SQLiteException;
-    
-    /* ---------- inner class ----------*/
-    public static class ColumnDefBuilder extends SQLBuilder {
-        public ColumnDefBuilder append(String name, DataType type, String constraint) {
-            if (size() > 0) {
-                append(", ");
-            }
-            append(String.format("%s %s %s", name, type, constraint));
-            return this;
-        }
-    }
 }

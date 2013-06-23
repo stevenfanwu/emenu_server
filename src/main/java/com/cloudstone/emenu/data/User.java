@@ -12,10 +12,29 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 public class User {
     public static enum UserType {
-        USER, ADMIN, SUPER_USER
+        USER(0), ADMIN(1), SUPER_USER(2);
+        
+        private int value;
+        
+        private UserType(int value) {
+            this.value = value;
+        }
+        
+        public int getValue() {
+            return value;
+        }
+        
+        public static UserType getByValue(int value) {
+            for (UserType type:UserType.values()) {
+                if (type.getValue() == value) {
+                    return type;
+                }
+            }
+            throw new RuntimeException("unknow UserType value");
+        }
     };
     
-    private long userId;
+    private long id;
     
     /* login name */
     private String name;
@@ -29,7 +48,7 @@ public class User {
     private String realName;
     
     /* 备注 */
-    private String comment;
+    private String comment = "";
 
     /* ---------- static ---------- */
     public static User newSuperUser() {
@@ -67,12 +86,12 @@ public class User {
         this.password = password;
     }
 
-    public long getUserId() {
-        return userId;
+    public long getId() {
+        return id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setId(long userId) {
+        this.id = userId;
     }
 
     public UserType getType() {

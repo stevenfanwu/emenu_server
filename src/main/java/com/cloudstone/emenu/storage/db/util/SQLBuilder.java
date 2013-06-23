@@ -2,7 +2,7 @@
  * @(#)SQLBuilder.java, 2013-6-22. 
  * 
  */
-package com.cloudstone.emenu.storage.db;
+package com.cloudstone.emenu.storage.db.util;
 
 /**
  * @author xuhongfeng
@@ -15,7 +15,7 @@ public class SQLBuilder {
         super();
     }
     
-    public SQLBuilder append(String s) {
+    protected SQLBuilder append(String s) {
         sb.append(s);
         return this;
     }

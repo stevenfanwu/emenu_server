@@ -31,8 +31,6 @@ public class UserLogic extends BaseLogic {
             return null;
         }
         
-        //TODO
-        user.setPassword("aaaaaa");
         if (!user.getPassword().equals(encryptedPassword)) {
             return null;
         }

@@ -6,7 +6,9 @@ package com.cloudstone.emenu.service;
 
 import org.springframework.stereotype.Service;
 
+import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.exception.ServerError;
 
 /**
  * @author xuhongfeng
@@ -17,11 +19,19 @@ public class UserService extends BaseService implements IUserService {
     
     @Override
     public User getUserByName(String userName) {
-        return userDb.getUserByName(userName);
+        try {
+            return userDb.getUserByName(userName);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
 
     @Override
     public User add(User user) {
-        return userDb.addUser(user);
+        try {
+            return userDb.addUser(user);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
 }
