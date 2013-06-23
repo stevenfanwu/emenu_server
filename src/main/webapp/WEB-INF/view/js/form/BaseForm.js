@@ -40,6 +40,10 @@ define(function (require, exports, module) {
         },
 
         reset: function () {
+            this.resetItems();
+        },
+
+        resetItems: function () {
             this.items.forEach(function (item) {
                 item.reset();
             }, this);
@@ -63,13 +67,31 @@ define(function (require, exports, module) {
         },
 
         doSubmit: function () {
+            var options = this.createAjaxOptions();
+            this.$el.ajaxSubmit(options);
+        },
+
+        createAjaxOptions: function () {
             var options = {
                 url: this.url,
                 type: this.type,
                 resetForm: true,
                 success: this.onSuccess
             };
-            this.$el.ajaxSubmit(options);
+            return options;
+        },
+
+        findItemByName: function (name) {
+            var ret = null;
+            this.items.some(function (item) {
+                if (item.name == name) {
+                    ret = item;
+                    return true;
+                }
+                return false;
+            }, this);
+
+            return ret;
         },
 
         /* ---------- abstract ---------- */

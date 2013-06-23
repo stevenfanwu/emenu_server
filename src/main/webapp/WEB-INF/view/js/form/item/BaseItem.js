@@ -19,6 +19,7 @@ define(function (require, exports, module) {
 
         parseConfig: function (config) {
             //config validators
+            this.name = config.name;
             this.validators = [];
             config.validators.forEach(function (validatorConfig) {
                 var Validator = validatorConfig.type;

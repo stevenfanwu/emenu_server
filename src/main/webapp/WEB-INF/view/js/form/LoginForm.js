@@ -14,6 +14,7 @@ define(function (require, exports, module) {
         url: '/api/login',
 
         itemConfig: [{
+            name: 'name',
             type: Text,
             el: '.input-name',
             validators: [{
@@ -21,6 +22,7 @@ define(function (require, exports, module) {
                 errorMessage: '用户名不能为空'
             }]
         }, {
+            name: 'password',
             type: Text,
             el: '.input-password',
             validators: [{
@@ -28,6 +30,16 @@ define(function (require, exports, module) {
                 errorMessage: '密码不能为空'
             }]
         }],
+
+        createAjaxOptions: function () {
+            var options = BaseForm.prototype.createAjaxOptions.apply(this, arguments);
+            options.statusCode = options.statusCode || {};
+            options.statusCode['401'] = function () {
+                this.resetItems();
+                this.findItemByName('password').showError('用户名或密码错误');
+            }.bind(this);
+            return options;
+        },
 
         onSuccess: function () {
             window.location = 'home'
