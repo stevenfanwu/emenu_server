@@ -25,6 +25,12 @@ define(function (require, exports, module) {
         
             this.parseItemConfig();
             this.reset();
+
+            this.$('input').keypress(function (evt) {
+                if (evt.which === 13) {
+                    this.onSubmit(evt);
+                }
+            }.bind(this));
         },
 
         parseItemConfig: function () {

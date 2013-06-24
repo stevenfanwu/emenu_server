@@ -1,0 +1,9 @@
+<ul class="nav nav-pills nav-stacked">
+    <li #if($pageName=="User")class="active"#end><a href="/user">用户管理</a></li>
+    <li><a href="/operate/table">餐桌管理</a></li>
+    <li><a href="/operate/menu">菜单管理</a></li>
+    <li><a href="/operate/member">会员管理</a></li>
+    <li><a href="/operate/statistics">数据报表</a></li>
+    <li><a href="/operate/printer">打印维护</a></li>
+    <li><a href="/operate/pad">平板管理</a></li>
+</ul>
