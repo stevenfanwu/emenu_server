@@ -1,0 +1,3 @@
+#set($mode="admin")
+#set($pageName="Pad")
+

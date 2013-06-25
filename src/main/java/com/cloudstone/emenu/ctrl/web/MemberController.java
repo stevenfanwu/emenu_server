@@ -1,5 +1,5 @@
 /**
- * @(#)UserController.java, 2013-6-24. 
+ * @(#)MemberController.java, 2013-6-25. 
  * 
  */
 package com.cloudstone.emenu.ctrl.web;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-public class UserController extends BaseWebController {
+public class MemberController {
     
-    @RequestMapping(value={"/user", "/admin"})
+    @RequestMapping("/member")
     public String get() {
-        return "user";
+        return "member";
     }
 
 }

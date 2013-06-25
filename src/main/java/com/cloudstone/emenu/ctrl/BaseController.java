@@ -44,6 +44,14 @@ public class BaseController {
     protected void sendAlert(HttpServletResponse resp, String msg) {
     }
     
+    protected void sendRedirect(String url, HttpServletResponse response) {
+        try {
+            response.sendRedirect(url);
+        } catch (IOException e) {
+            LOG.warn("redirect to \"" + url + "\" failed", e);
+        }
+    }
+    
     protected File getWebHome() {
         return new File(System.getProperty(Const.PARAM_WEB_HOME_DIR));
     }

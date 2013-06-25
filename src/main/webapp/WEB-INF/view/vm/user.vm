@@ -1,4 +1,2 @@
-#set($mode="operate")
+#set($mode="admin")
 #set($pageName="User")
-#@page()
-#end

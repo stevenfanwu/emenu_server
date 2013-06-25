@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toolbox>
+    <tool>
+        <key>StringTool</key>
+        <scope>application</scope>
+        <class>com.cloudstone.emenu.web.velocitytool.StringTool</class>
+    </tool>
+</toolbox>

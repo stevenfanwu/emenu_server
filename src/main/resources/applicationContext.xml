@@ -35,6 +35,7 @@
         <property name="contentType">
             <value>text/html; charset=UTF-8</value>
         </property>
+        <property name="toolboxConfigLocation" value="/WEB-INF/velocity_toolbox.xml" />
     </bean>
 
     <bean id="velocityConfig"
@@ -44,8 +45,9 @@
             <props>
                 <prop key="input.encoding">UTF-8</prop>
                 <prop key="output.encoding">UTF-8</prop>
+                <prop key="tools.view.servlet.error.template">error.vm</prop>
                 <prop key="velocimacro.library">
-                    component/page.vm
+                    layout/common.vm
                 </prop>
                 <prop key="velocimacro.library.autoreload">true</prop>
                 <prop key="file.resource.loader.cache">false</prop>

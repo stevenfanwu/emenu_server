@@ -1,12 +1,13 @@
-<!DOCTYPE HTML>
-<html lang="zh-CN">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        #parse("layout/component/style.vm")
-        <title>CloudMenu电子菜单</title>
-    </head>
-    <body>
-        $screen_content
-        #parse("layout/component/script.vm")
-    </body>
-</html>
+#@layout_common()
+    <div class="container">
+        #parse('component/top_nav.vm')
+        <div class="row">
+            <div class="span2 left-bar well">
+                #parse('component/left_nav.vm')
+            </div>
+            <div class="span9">
+                $screen_content
+            </div>
+        </div>
+    </div>
+#end

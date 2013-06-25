@@ -1,3 +1,5 @@
+#set( $layout = "layout/empty.vm" )
+#set($pageName="Login")
 <div class="container">
     <div class="row">
         <div class="page-header">
@@ -28,5 +30,3 @@
         </div>
     </div>
 </div>
-
-<input id="pageName" type="hidden" value="Login"/>

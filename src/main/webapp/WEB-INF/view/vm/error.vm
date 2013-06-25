@@ -1,0 +1,14 @@
+#set( $layout = "layout/empty.vm" )
+<div>
+    <h1>Velocity Error</h1>
+    $error_cause
+    <h2>stack_trace:<h2>
+    $stack_trace
+#if( $invocation_exception )
+        oh joy! it's a MethodInvocationException!
+
+        Message: $invocation_exception.message
+        Reference name: $invocation_exception.referenceName
+        Method name: $invocation_exception.methodName
+#end
+</div>

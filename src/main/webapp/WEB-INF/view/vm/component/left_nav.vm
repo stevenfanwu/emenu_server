@@ -1,9 +1,23 @@
+#macro(nav_item, $itemName)
+    <li #if($pageName==$itemName)class="active"#end>
+        <a href="/$itemName.toLowerCase()">
+            $!bodyContent
+        </a>
+    </li>
+#end
 <ul class="nav nav-pills nav-stacked">
-    <li #if($pageName=="User")class="active"#end><a href="/user">用户管理</a></li>
-    <li><a href="/operate/table">餐桌管理</a></li>
-    <li><a href="/operate/menu">菜单管理</a></li>
-    <li><a href="/operate/member">会员管理</a></li>
-    <li><a href="/operate/statistics">数据报表</a></li>
-    <li><a href="/operate/printer">打印维护</a></li>
-    <li><a href="/operate/pad">平板管理</a></li>
+    #if($mode=="operate")
+        #@nav_item("Status")餐桌状态#end
+        #@nav_item("History")历史订单#end
+        #@nav_item("Soldout")菜品沽清#end
+        #@nav_item("Monitor")平板监控#end
+    #elseif($mode=="admin")
+        #@nav_item("User")用户管理#end
+        #@nav_item("Table")餐桌管理#end
+        #@nav_item("Menu")菜单管理#end
+        #@nav_item("Member")会员管理#end
+        #@nav_item("Statistics")数据报表#end
+        #@nav_item("Printer")打印维护#end
+        #@nav_item("Pad")平板管理#end
+    #end
 </ul>
