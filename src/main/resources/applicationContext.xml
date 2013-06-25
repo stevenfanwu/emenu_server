@@ -47,7 +47,7 @@
                 <prop key="output.encoding">UTF-8</prop>
                 <prop key="tools.view.servlet.error.template">error.vm</prop>
                 <prop key="velocimacro.library">
-                    layout/common.vm
+                    layout/common.vm, lib/utils.vm
                 </prop>
                 <prop key="velocimacro.library.autoreload">true</prop>
                 <prop key="file.resource.loader.cache">false</prop>

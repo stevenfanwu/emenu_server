@@ -1,0 +1,3 @@
+#macro(pageData, $key, $value)
+    <span class="page-data" data-$key="$value"></span>
+#end

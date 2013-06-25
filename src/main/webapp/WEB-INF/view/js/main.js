@@ -6,8 +6,10 @@ define(function (require, exports, module) {
 
     var Backbone = require('./lib/backbone');
     var $ = require('./lib/jquery');
+    var PageDataUtils = require('./util/PageDataUtils');
 
-    var page = $('#pageName').val();
+    var page = PageDataUtils.get("page-name");
+
     var mod = './page/' + page;
     require.async(mod, function (Page) {
         new Page();
