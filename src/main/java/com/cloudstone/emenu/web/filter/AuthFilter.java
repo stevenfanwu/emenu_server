@@ -16,6 +16,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.cloudstone.emenu.util.AuthHelper;
 
 /**
@@ -25,6 +27,9 @@ import com.cloudstone.emenu.util.AuthHelper;
 public class AuthFilter implements Filter {
     private String loginUrl;
     private AuthPattern[] escapePatterns;
+    
+    @Autowired
+    private AuthHelper authHelper;
 
     /* ---------- Override --------- */
     @Override
@@ -48,7 +53,7 @@ public class AuthFilter implements Filter {
             }
         }
         
-        if (AuthHelper.isLogin(req, resp)) {
+        if (authHelper.isLogin(req, resp)) {
             chain.doFilter(request, response);
             return;
         }

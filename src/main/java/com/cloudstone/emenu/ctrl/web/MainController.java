@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cloudstone.emenu.util.AuthHelper;
@@ -22,13 +24,17 @@ import com.cloudstone.emenu.util.AuthHelper;
 @Controller
 public class MainController extends BaseWebController {
     private static final Logger LOG = LoggerFactory.getLogger(MainController.class);
+    
+    @Autowired
+    private AuthHelper authHelper;
 
     @RequestMapping("/login")
-    public String login(HttpServletRequest req, HttpServletResponse resp) {
-        if (AuthHelper.isLogin(req, resp)) {
+    public String login(HttpServletRequest req, HttpServletResponse resp,
+            ModelMap model) {
+        if (authHelper.isLogin(req, resp)) {
             sendRedirect("/home", resp);
             return null;
         }
-        return "login";
+        return sendView("login", req, resp, model);
     }
 }

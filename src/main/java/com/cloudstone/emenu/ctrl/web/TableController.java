@@ -4,7 +4,11 @@
  */
 package com.cloudstone.emenu.ctrl.web;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -12,15 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-public class TableController {
+public class TableController extends BaseWebController {
 
     @RequestMapping("/table")
-    public String tableManage() {
-        return "table";
+    public String tableManage(HttpServletRequest req, HttpServletResponse resp,
+            ModelMap model) {
+        return sendView("table", req, resp, model);
     }
 
     @RequestMapping(value={"/", "/home", "operate", "/status"})
-    public String tableStatus() {
-        return "status";
+    public String tableStatus(HttpServletRequest req, HttpServletResponse resp,
+            ModelMap model) {
+        return sendView("status", req, resp, model);
     }
 }

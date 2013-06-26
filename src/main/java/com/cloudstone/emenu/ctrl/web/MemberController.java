@@ -4,7 +4,11 @@
  */
 package com.cloudstone.emenu.ctrl.web;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -12,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-public class MemberController {
+public class MemberController extends BaseWebController {
     
     @RequestMapping("/member")
-    public String get() {
-        return "member";
+    public String get(HttpServletRequest req, HttpServletResponse resp,
+            ModelMap model) {
+        return sendView("member", req, resp, model);
     }
-
 }

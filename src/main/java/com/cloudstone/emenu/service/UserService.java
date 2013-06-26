@@ -34,4 +34,13 @@ public class UserService extends BaseService implements IUserService {
             throw new ServerError(e);
         }
     }
+
+    @Override
+    public User get(long userId) {
+        try {
+            return userDb.get(userId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
 }

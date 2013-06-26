@@ -53,4 +53,8 @@ public class UserLogic extends BaseLogic {
         //TODO
         return null;
     }
+    
+    public User getUser(long userId) {
+        return userService.get(userId);
+    }
 }

@@ -9,6 +9,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
+        <jdk.version>1.6</jdk.version>
         <sqlite4java.version>0.282</sqlite4java.version>
         <sqlite4java.platform>libsqlite4java-osx</sqlite4java.platform>
         <sqlite4java.lib.type>jnilib</sqlite4java.lib.type>
@@ -93,5 +94,16 @@
     </dependencies>
     <build>
         <finalName>${pom.name}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>

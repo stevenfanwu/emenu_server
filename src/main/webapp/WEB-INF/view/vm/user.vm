@@ -1,2 +1,15 @@
 #set($mode="admin")
 #set($pageName="User")
+
+#set($current_tab="tab-all")
+
+#macro (user_nav_item, $tab_name)
+  <li #if($current_tab==$tab_name)class="active"#end>
+    <a href="" class="$tab_name">$!bodyContent</a>
+  </li>
+#end
+<ul class="nav nav-tabs">
+    #@user_nav_item("tab-all")所有角色#end
+    #@user_nav_item("tab-admin")管理员#end
+    #@user_nav_item("tab-user")服务员#end
+</ul>

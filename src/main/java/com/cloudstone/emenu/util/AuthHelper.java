@@ -6,51 +6,48 @@ package com.cloudstone.emenu.util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.UserSession;
+import com.cloudstone.emenu.logic.UserLogic;
 
 /**
  * @author xuhongfeng
  *
  */
+@Component
 public class AuthHelper {
     private static final Logger LOG = LoggerFactory.getLogger(AuthHelper.class);
     private static final String COOKIE_SESSION = "session";
     private static final String COOKIE_USER_ID = "userId";
     
+    @Autowired
+    private UserLogic userLogic;
+    
     //TODO
     private static final long SESSION_TIME = 30*UnitUtils.MINUTE;
 
-    public static boolean isLogin(HttpServletRequest req,
+    public boolean isLogin(HttpServletRequest req,
             HttpServletResponse resp) {
-        boolean ret = checkLogin(req);
+        boolean ret = checkLogin(req, resp);
         if (!ret) {
             removeCoolies(resp);
         }
         return ret;
     }
     
-    public static void createSession(User user, HttpServletRequest req,
-            HttpServletResponse resp) {
-        UserSession session = new UserSession();
-        session.setCreatedTime(System.currentTimeMillis());
-        session.setIp(IpUtils.toInt(req.getRemoteAddr()));
-        session.setUserId(user.getId());
-        
-        RequestUtils.addCookie(resp, COOKIE_SESSION, SessionUtils.encryptSession(session));
-        RequestUtils.addCookie(resp, COOKIE_USER_ID, String.valueOf(user.getId()));
-    }
-    
-    private static void removeCoolies(HttpServletResponse resp) {
+    private void removeCoolies(HttpServletResponse resp) {
         RequestUtils.removeCookie(resp, COOKIE_USER_ID);
         RequestUtils.removeCookie(resp, COOKIE_SESSION);
     }
     
-    private static boolean checkLogin(HttpServletRequest req) {
+    private boolean checkLogin(HttpServletRequest req, HttpServletResponse resp) {
         String encryptedSession = RequestUtils.getCookie(req, COOKIE_SESSION);
         String userIdStr = RequestUtils.getCookie(req, COOKIE_USER_ID);
         String ipStr = req.getRemoteAddr();
@@ -68,6 +65,33 @@ public class AuthHelper {
         
         int ip = IpUtils.toInt(ipStr);
         long userId = NumberUtils.toLong(userIdStr, -1);
-        return session.checkSession(userId, ip, SESSION_TIME);
+        boolean checkResult = session.checkSession(userId, ip, SESSION_TIME);
+        if (checkResult) {
+            User loginUser = userLogic.getUser(userId);
+            onAuthSuccess(req, resp, loginUser, false);
+        }
+        return checkResult;
+    }
+    
+    public void onAuthSuccess(HttpServletRequest req, HttpServletResponse resp,
+            User loginUser, boolean needCreateSession) {
+        /* put attrs in servlet session */
+        HttpSession session = req.getSession();
+        session.setAttribute("loginUser", loginUser);
+        
+        if (needCreateSession) {
+            createSession(loginUser.getId(), req, resp);
+        }
+    }
+    
+    private void createSession(long userId, HttpServletRequest req,
+            HttpServletResponse resp) {
+        UserSession session = new UserSession();
+        session.setCreatedTime(System.currentTimeMillis());
+        session.setIp(IpUtils.toInt(req.getRemoteAddr()));
+        session.setUserId(userId);
+        
+        RequestUtils.addCookie(resp, COOKIE_SESSION, SessionUtils.encryptSession(session));
+        RequestUtils.addCookie(resp, COOKIE_USER_ID, String.valueOf(userId));
     }
 }

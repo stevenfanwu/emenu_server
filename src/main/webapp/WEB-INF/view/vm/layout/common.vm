@@ -10,6 +10,7 @@
             $!bodyContent
 
             #pageData("page-name", $pageName)
+            #pageData("login-user", $Utils.toJson($loginUser))
 
             #parse("layout/component/script.vm")
         </body>
