@@ -12,12 +12,14 @@ public class SelectSqlBuilder extends SQLBuilder {
 
     public SelectSqlBuilder(String tableName) {
         super();
-        append("SELECT * from " + tableName + " where ");
+        append("SELECT * from " + tableName);
     }
     
     private boolean firstWhere = true;
     public SelectSqlBuilder appendWhere(String whereColumn) {
-        if (!firstWhere) {
+        if (firstWhere) {
+            append(" where ");
+        } else {
             append("AND ");
         }
         firstWhere = false;

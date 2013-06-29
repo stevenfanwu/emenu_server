@@ -11,28 +11,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  *
  */
 public class User {
-    public static enum UserType {
-        USER(0), ADMIN(1), SUPER_USER(2);
-        
-        private int value;
-        
-        private UserType(int value) {
-            this.value = value;
-        }
-        
-        public int getValue() {
-            return value;
-        }
-        
-        public static UserType getByValue(int value) {
-            for (UserType type:UserType.values()) {
-                if (type.getValue() == value) {
-                    return type;
-                }
-            }
-            throw new RuntimeException("unknow UserType value");
-        }
-    };
+    private static final int USER = 0;
+    private static final int ADMIN = 1;
+    private static final int SUPER_USER = 2;
     
     private long id;
     
@@ -43,7 +24,7 @@ public class User {
     @JsonIgnore
     private String password;
     
-    private UserType type = UserType.USER;
+    private int type;
     
     private String realName;
     
@@ -52,18 +33,18 @@ public class User {
 
     /* ---------- static ---------- */
     public static User newSuperUser() {
-        return newUser(UserType.SUPER_USER);
+        return newUser(SUPER_USER);
     }
     
     public static User newAdminUser() {
-        return newUser(UserType.ADMIN);
+        return newUser(ADMIN);
     }
     
     public static User newUser() {
-        return newUser(UserType.USER);
+        return newUser(USER);
     }
     
-    public static User newUser(UserType type) {
+    public static User newUser(int type) {
         User user = new User();
         user.setType(type);
         return user;
@@ -94,11 +75,11 @@ public class User {
         this.id = userId;
     }
 
-    public UserType getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(UserType type) {
+    public void setType(int type) {
         this.type = type;
     }
 

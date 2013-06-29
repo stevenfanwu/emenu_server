@@ -8,7 +8,33 @@ define(function (require, exports, module) {
     var BaseView = require('../BaseView');
 
     var BasePage = BaseView.extend({
-        el: 'body'
+        el: 'body',
+
+        RouterType: null,
+
+        router: null,
+
+        initialize: function () {
+            BaseView.prototype.initialize.apply(this, arguments);
+        
+            if (this.RouterType) {
+                var Router = this.RouterType;
+                var options = this.createRouterOptions();
+                this.router = new Router(options);
+            }
+
+            this.initEvents();
+        },
+
+        initEvents: function () {
+        },
+
+        createRouterOptions: function () {
+            return {
+                page: this
+            };
+        }
+        
     });
 
     return BasePage;

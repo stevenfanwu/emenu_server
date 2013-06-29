@@ -5,20 +5,22 @@
 package com.cloudstone.emenu.ctrl.web;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.cloudstone.emenu.exception.ServerError;
 
 /**
  * @author xuhongfeng
@@ -34,7 +36,11 @@ public class StaticController extends BaseWebController {
     
     @RequestMapping("/static/**")
     public void get(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        innerGet(request.getRequestURI().toString(), response);
+        try {
+            innerGet(request.getRequestURI().toString(), response);
+        } catch (FileNotFoundException e) {
+            sendError(response, HttpServletResponse.SC_NOT_FOUND);
+        }
     }
     
     private void innerGet(String path, HttpServletResponse response) throws IOException {
@@ -50,21 +56,21 @@ public class StaticController extends BaseWebController {
             response.setContentType("image/" + FilenameUtils.getExtension(path));
         }
         path = "view/" + path;
-        File file = new File(getWebHome(), path);
-        LOG.info(file.getAbsolutePath());
-
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-            byte[] bytes = IOUtils.toByteArray(is);
-
-            response.getOutputStream().write(bytes);
-        } catch (FileNotFoundException e) {
-            sendError(response, HttpServletResponse.SC_NOT_FOUND);
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            IOUtils.closeQuietly(is);
+        if (path.endsWith(".handlebars.js")) {
+            //handlebars
+            response.setContentType("text/javascript; charset=UTF-8");
+            path = path.substring(0, path.length()-3);
+            File file = new File(getWebHome(), path);
+            String content = FileUtils.readFileToString(file, "UTF-8");
+            try {
+                content = HandlebarsObj.toJavaScript(content);
+                LOG.info("handlebars : " + content);
+                IOUtils.write(content.getBytes("UTF-8"), response.getOutputStream());
+            } catch (Exception e) {
+                throw new ServerError(e);
+            }
+        } else {
+            sendFile(response, path);
         }
     }
     
@@ -73,5 +79,27 @@ public class StaticController extends BaseWebController {
         String uri = request.getRequestURI();
         String path = uri.toString().replace("/img", "/static");
         innerGet(path, response);
+    }
+    
+        @SuppressWarnings("unused")
+    private static class HandlebarsObj {
+        private static final String FORMAT = "define(function (require, exports, module) {return %s;});";
+        private static final  ObjectMapper mapper = new ObjectMapper();
+        
+        private String template;
+        
+        public String getTemplate() {
+            return template;
+        }
+
+        public void setTemplate(String template) {
+            this.template = template;
+        }
+
+        public static String toJavaScript(String content) throws Exception {
+            HandlebarsObj obj = new HandlebarsObj();
+            obj.template = content;
+            return String.format(FORMAT, mapper.writeValueAsString(obj));
+        }
     }
 }

@@ -6,17 +6,22 @@ define(function (require, exports, module) {
 
     var BaseUtils = require('./BaseUtils');
     var $ = require('../lib/jquery');
+    var _ = require('../lib/underscore');
     
     var PageDataUtils = BaseUtils.extend({
-        get: function (key) {
-            return $('span.page-data').data(key);
-        },
+        getData: function (name) {
+            var data = document.getElementById(name + 'Data');
+            if (!data) {
+                return null;
+            }
 
-        set: function (key, value) {
-            $('span.page-data').data(key, value);
+            return JSON.parse($(data).html());
         }
     });
+    var Utils = new PageDataUtils();
+    Utils.getData = _.memoize(Utils.getData);
+    Utils.getLoginUser = Utils.getData.bind(Utils, 'loginUser');
 
-    return new PageDataUtils();
+    return Utils;
 });
 

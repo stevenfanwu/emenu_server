@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     "use strict";
 
     var Backbone = require('./lib/backbone');
+    var PageDataUtils = require('./util/PageDataUtils');
 
     var BaseView = Backbone.View.extend({
 
@@ -14,6 +15,23 @@ define(function (require, exports, module) {
             var handlebars = require('./lib/handlebars');
             var template = handlebars.compile(this.tmpl.template);
             return template(data);
+        },
+
+        resetContent: function () {
+        },
+
+        render: function () {
+            Backbone.View.prototype.render.apply(this, arguments);
+        
+            this.el.innerHTML = this.template(this.getRenderData());
+        },
+
+        getRenderData: function () {
+            return this.model.toJSON() || {};
+        },
+
+        getCurrentUser: function () {
+            return PageDataUtils.getData('loginUser');
         }
     });
 

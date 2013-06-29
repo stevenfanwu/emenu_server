@@ -25,4 +25,22 @@ public class Utils {
             return null;
         }
     }
+    
+    public String buildPageConfig(String pageName) {
+        PageConfig config = new PageConfig();
+        config.setName(pageName);
+        return toJson(config);
+    }
+    
+    public static class PageConfig {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }

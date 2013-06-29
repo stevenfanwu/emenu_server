@@ -4,13 +4,14 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.User;
-import com.cloudstone.emenu.data.User.UserType;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
@@ -46,6 +47,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
         }
     }
     
+    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_USER).build();
     private static final String SQL_SELECT_BY_NAME = new SelectSqlBuilder(TABLE_USER)
         .appendWhere(Column.NAME.toString()).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_USER)
@@ -91,6 +93,11 @@ public class UserDb extends SQLiteDb implements IUserDb {
         User user = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return user;
     }
+    
+    @Override
+    public List<User> getAll() throws SQLiteException {
+        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    }
 
     @Override
     public User addUser(User user) throws SQLiteException {
@@ -107,7 +114,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
             user.setId(stmt.columnLong(0));
             user.setName(stmt.columnString(1));
             user.setPassword(stmt.columnString(2));
-            user.setType(UserType.getByValue(stmt.columnInt(3)));
+            user.setType(stmt.columnInt(3));
             user.setRealName(stmt.columnString(4));
             user.setComment(stmt.columnString(5));
             return user;
@@ -142,7 +149,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(1, user.getId());
             stmt.bind(2, user.getName());
             stmt.bind(3, user.getPassword());
-            stmt.bind(4, user.getType().getValue());
+            stmt.bind(4, user.getType());
             stmt.bind(5, user.getRealName());
             stmt.bind(6, user.getComment());
         }

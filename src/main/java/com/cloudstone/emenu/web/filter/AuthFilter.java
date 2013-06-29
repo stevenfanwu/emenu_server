@@ -16,6 +16,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cloudstone.emenu.util.AuthHelper;
@@ -25,6 +27,8 @@ import com.cloudstone.emenu.util.AuthHelper;
  *
  */
 public class AuthFilter implements Filter {
+    private static final Logger LOG = LoggerFactory.getLogger(AuthFilter.class);
+    
     private String loginUrl;
     private AuthPattern[] escapePatterns;
     
@@ -58,15 +62,19 @@ public class AuthFilter implements Filter {
             return;
         }
         
-        //TODO check api category
-        resp.sendRedirect(loginUrl);
+        LOG.info("auth failed: url=" + req.getRequestURI());
+        
+        if (isApiUrl(req.getRequestURI().toString())) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            resp.sendRedirect(loginUrl);
+        }
+    }
+    
+    private boolean isApiUrl(String url) {
+        return url.startsWith("/api");
     }
 
-    @Override
-    public void init(FilterConfig config) throws ServletException {
-    }
-
-    /* ---------- inject --------- */
     public void setLoginUrl(String loginUrl) {
         this.loginUrl = loginUrl;
     }
@@ -126,5 +134,9 @@ public class AuthFilter implements Filter {
             }
             return false;
         }
+    }
+
+    @Override
+    public void init(FilterConfig config) throws ServletException {
     }
 }

@@ -4,10 +4,11 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.User;
-import com.cloudstone.emenu.data.User.UserType;
 import com.cloudstone.emenu.exception.UserNameConflictedException;
 
 /**
@@ -38,7 +39,7 @@ public class UserLogic extends BaseLogic {
         return user;
     }
     
-    public User add(String userName, String encryptedPassword, UserType type) throws UserNameConflictedException {
+    public User add(String userName, String encryptedPassword, int type) throws UserNameConflictedException {
         if (userService.getUserByName(userName) != null) {
             throw new UserNameConflictedException();
         }
@@ -49,12 +50,16 @@ public class UserLogic extends BaseLogic {
     }
     
     public User update(long userId, String userName, String encryptedPassword,
-            UserType type, String realName, String comment) {
+            int type, String realName, String comment) {
         //TODO
         return null;
     }
     
     public User getUser(long userId) {
         return userService.get(userId);
+    }
+    
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 }

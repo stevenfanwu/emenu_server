@@ -5,6 +5,8 @@
 package com.cloudstone.emenu.storage.db;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -100,6 +102,22 @@ public abstract class SQLiteDb extends BaseStorage {
             stmt.dispose();
             conn.dispose();
         }
+    }
+    
+    protected <T> List<T> query(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
+        SQLiteConnection conn = open();
+        SQLiteStatement stmt = conn.prepare(sql);
+        List<T> list = new ArrayList<T>();
+        try {
+            binder.onBind(stmt);
+            while (stmt.step()) {
+                list.add(rowMapper.map(stmt));
+            }
+        } finally {
+            stmt.dispose();
+            conn.dispose();
+        }
+        return list;
     }
     
     /* ---------- abstract ----------*/

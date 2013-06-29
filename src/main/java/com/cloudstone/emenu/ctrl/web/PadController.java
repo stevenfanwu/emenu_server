@@ -27,6 +27,6 @@ public class PadController extends BaseWebController {
     @RequestMapping("/monitor")
     public String padMonitor(HttpServletRequest req, HttpServletResponse resp,
             ModelMap model) {
-        return sendView("model", req, resp, model);
+        return sendView("monitor", req, resp, model);
     }
 }

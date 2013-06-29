@@ -8,10 +8,13 @@ define(function (require, exports, module) {
     var $ = require('./lib/jquery');
     var PageDataUtils = require('./util/PageDataUtils');
 
-    var page = PageDataUtils.get("page-name");
+    var page = PageDataUtils.getData("pageConfig").name;
 
     var mod = './page/' + page;
     require.async(mod, function (Page) {
-        new Page();
+        var page = new Page();
+        if (page.router) {
+            Backbone.history.start();
+        }
     });
 });

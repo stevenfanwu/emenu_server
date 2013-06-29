@@ -24,8 +24,8 @@ import com.cloudstone.emenu.logic.UserLogic;
 @Component
 public class AuthHelper {
     private static final Logger LOG = LoggerFactory.getLogger(AuthHelper.class);
-    private static final String COOKIE_SESSION = "session";
-    private static final String COOKIE_USER_ID = "userId";
+    private static final String COOKIE_SESSION = "SESS";
+    private static final String COOKIE_USER_ID = "UID";
     
     @Autowired
     private UserLogic userLogic;
@@ -50,7 +50,7 @@ public class AuthHelper {
     private boolean checkLogin(HttpServletRequest req, HttpServletResponse resp) {
         String encryptedSession = RequestUtils.getCookie(req, COOKIE_SESSION);
         String userIdStr = RequestUtils.getCookie(req, COOKIE_USER_ID);
-        String ipStr = req.getRemoteAddr();
+        String ipStr = req.getRemoteAddr();//TODO wrong ip
         
         LOG.info(String.format("checkLogin: userId=%s, encryptedSession=%s, ip=%s",
                 userIdStr, encryptedSession, ipStr));

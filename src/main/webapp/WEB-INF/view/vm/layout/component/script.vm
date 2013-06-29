@@ -13,3 +13,6 @@
     });
     seajs.use(['main']);
 </script>
+
+#pageData("pageConfig", $Utils.buildPageConfig($pageName))
+#pageData("loginUser", $Utils.toJson($loginUser))

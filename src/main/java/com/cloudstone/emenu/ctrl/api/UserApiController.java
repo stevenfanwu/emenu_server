@@ -39,7 +39,6 @@ public class UserApiController extends BaseApiController {
         
         User user = userLogic.login(userName, password);
         if (user == null) {
-            //TODO handle this in frontend
             sendError(resp, HttpServletResponse.SC_UNAUTHORIZED);
             return null;
         } else {
@@ -48,4 +47,8 @@ public class UserApiController extends BaseApiController {
         }
     }
 
+    @RequestMapping(value="/api/users", method=RequestMethod.GET)
+    public @ResponseBody User[] get() {
+        return userLogic.getAllUsers().toArray(new User[0]);
+    }
 }

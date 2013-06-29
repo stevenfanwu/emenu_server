@@ -20,10 +20,8 @@ public class RequestUtils {
     
     public static String getCookie(HttpServletRequest req, String name) {
         Cookie[] cookies = req.getCookies();
-        LOG.info("cookies.length = " + cookies.length);
         if (!CollectionUtils.isEmpty(cookies)) {
             for (Cookie c:cookies) {
-                LOG.info("cookie.name = " + c.getName());
                 if (c.getName().equals(name)) {
                     return c.getValue();
                 }

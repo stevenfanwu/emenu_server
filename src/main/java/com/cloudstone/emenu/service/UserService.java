@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -39,6 +41,15 @@ public class UserService extends BaseService implements IUserService {
     public User get(long userId) {
         try {
             return userDb.get(userId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        try {
+            return userDb.getAll();
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

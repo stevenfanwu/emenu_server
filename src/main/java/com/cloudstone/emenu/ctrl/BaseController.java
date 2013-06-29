@@ -5,10 +5,14 @@
 package com.cloudstone.emenu.ctrl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,4 +60,22 @@ public class BaseController {
         return new File(System.getProperty(Const.PARAM_WEB_HOME_DIR));
     }
 
+    protected void sendFile(HttpServletResponse response, String path) throws IOException {
+        File file = new File(getWebHome(), path);
+        LOG.info(file.getAbsolutePath());
+
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            byte[] bytes = IOUtils.toByteArray(is);
+
+            response.getOutputStream().write(bytes);
+        } catch (FileNotFoundException e) {
+            sendError(response, HttpServletResponse.SC_NOT_FOUND);
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
 }
