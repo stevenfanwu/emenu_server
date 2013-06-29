@@ -59,8 +59,14 @@ define(function (require, exports, module) {
                 this.$('.head-row').append('<th>' + head + '</th>');
             }, this);
             this.collection.forEach(function (model) {
-                this.appendModel(model);
+                if (this.filterModel(model)) {
+                    this.appendModel(model);
+                }
             }, this);
+        },
+
+        filterModel: function (model) {
+            return true;
         },
 
         resetContent: function () {
