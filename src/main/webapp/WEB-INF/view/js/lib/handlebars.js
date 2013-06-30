@@ -4,6 +4,8 @@
 define(function (require, exports, module) {
     "use strict";
 
-    return window.Handlebars;
+    var Handlebars = window.Handlebars;
+
+    return Handlebars;
 });
 

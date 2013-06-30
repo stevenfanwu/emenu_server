@@ -11,6 +11,8 @@ define(function (require, exports, module) {
     var BaseItem = BaseView.extend({
         validators: [],
 
+        form: null,
+
         reset: function () {
             this.$el.removeClass('success');
             this.$el.removeClass('error');
@@ -23,7 +25,10 @@ define(function (require, exports, module) {
             this.validators = [];
             config.validators.forEach(function (validatorConfig) {
                 var Validator = validatorConfig.type;
-                var validator = new Validator();
+                var validator = new Validator({
+                    item: this,
+                    form: this.form
+                });
                 validator.parseConfig(validatorConfig);
                 this.validators.push(validator);
             }, this);

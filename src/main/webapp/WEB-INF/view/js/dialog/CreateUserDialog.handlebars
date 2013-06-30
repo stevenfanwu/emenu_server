@@ -1,1 +1,55 @@
-<a>test</a>
+<form class="form-create-user form-horizontal">
+    <div class="control-group input-name">
+        <label class="control-label">帐号:</label>
+        <div class="controls">
+            <input type="text" name="userName"/>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-type">
+        <label class="control-label">类型:</label>
+        <div class="controls">
+            <label class="radio inline">
+                <input type="radio" name="type" value="0" checked="true"/>
+                服务员
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="type" value="1"/>
+                管理员
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="type" value="2"/>
+                超级管理员
+            </label>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-password">
+        <label class="control-label">密码:</label>
+        <div class="controls">
+            <input type="password" name="password"/>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-password-confirm">
+        <label class="control-label">确认密码:</label>
+        <div class="controls">
+            <input type="password" name="password-confirm"/>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-realName">
+        <label class="control-label">姓名:</label>
+        <div class="controls">
+            <input type="text" name="realName"/>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-comment">
+        <label class="control-label">备注:</label>
+        <div class="controls">
+            <input type="text" name="comment"/>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+</form>

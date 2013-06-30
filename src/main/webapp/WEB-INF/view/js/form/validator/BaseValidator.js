@@ -4,7 +4,12 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BaseValidator = function () {};
+    var BaseValidator = function (options) {
+        options = options || {};
+        Object.keys(options).forEach(function (key) {
+            this[key] = options[key];
+        }, this);
+    };
 
     BaseValidator.prototype.errorMessage = null;
 
@@ -24,7 +29,7 @@ define(function (require, exports, module) {
         this.errorMessage = config.errorMessage;
     };
 
-    exports.extend = function (options) {
+    BaseValidator.extend = function (options) {
         var instance = new BaseValidator();
 
         options = options || {};
@@ -32,9 +37,13 @@ define(function (require, exports, module) {
             instance[key] = options[key];
         });
 
-        var SubType = function () {};
+        var SubType = function () {
+            BaseValidator.apply(this, arguments);
+        };
         SubType.prototype = instance;
         return SubType;
     };
+
+    return BaseValidator;
 });
 

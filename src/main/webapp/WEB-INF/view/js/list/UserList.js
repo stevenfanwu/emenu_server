@@ -17,7 +17,7 @@ define(function (require, exports, module) {
     };
 
     var UserList = BaseList.extend({
-        heads: ['登陆名', '真实姓名', '备注', '类型'],
+        heads: ['帐号', '真实姓名', '备注', '类型'],
 
         mode: Mode.ALL,
 

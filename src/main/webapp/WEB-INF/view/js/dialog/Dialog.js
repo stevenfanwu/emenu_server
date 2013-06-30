@@ -17,7 +17,8 @@ define(function (require, exports, module) {
         ContentType: null,
 
         events: {
-            'click .btn-close-dialog': 'onClose'
+            'click .btn-close-dialog': 'onClose',
+            'click .btn-confirm-dialog': 'onConfirm'
         },
 
         tmpl: require('./Dialog.handlebars'),
@@ -63,6 +64,10 @@ define(function (require, exports, module) {
         onClose: function (evt) {
             evt.preventDefault();
             this.hide();
+        },
+        
+        onConfirm: function (evt) {
+            evt.preventDefault();
         }
     });
     

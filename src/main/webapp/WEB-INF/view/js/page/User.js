@@ -21,12 +21,21 @@ define(function (require, exports, module) {
         
             this.on('showAll', function () {
                 this.list.showAll();
+                this.$('.tab-all').addClass('active');
+                this.$('.tab-admin').removeClass('active');
+                this.$('.tab-user').removeClass('active');
             }.bind(this));
             this.on('showAdmin', function () {
                 this.list.showAdmin();
+                this.$('.tab-admin').addClass('active');
+                this.$('.tab-all').removeClass('active');
+                this.$('.tab-user').removeClass('active');
             }.bind(this));
             this.on('showUser', function () {
                 this.list.showUser();
+                this.$('.tab-user').addClass('active');
+                this.$('.tab-admin').removeClass('active');
+                this.$('.tab-all').removeClass('active');
             }.bind(this));
         },
 

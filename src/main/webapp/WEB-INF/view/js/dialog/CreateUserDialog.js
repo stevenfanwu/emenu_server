@@ -14,7 +14,26 @@ define(function (require, exports, module) {
     var CreateUserDialog = Dialog.extend({
         header: '新建用户',
 
-        ContentType: Content
+        ContentType: Content,
+
+        initialize: function () {
+            Dialog.prototype.initialize.apply(this, arguments);
+        
+            var CreateUserForm = require('../form/CreateUserForm');
+            this.form = new CreateUserForm();
+        },
+
+        render: function () {
+            Dialog.prototype.render.apply(this, arguments);
+            this.form.init(this.$('.form-create-user')[0]);
+        },
+        
+
+        onConfirm: function () {
+            Dialog.prototype.onConfirm.apply(this, arguments);
+            this.form.trySubmit();
+        }
+        
     });
     
     return CreateUserDialog;

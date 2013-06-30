@@ -22,7 +22,13 @@ define(function (require, exports, module) {
 
         initialize: function () {
             BaseView.prototype.initialize.apply(this, arguments);
+            if (this.el) {
+                this.init(this.el);
+            }
+        },
         
+        init: function (el) {
+            this.setElement(el);
             this.parseItemConfig();
             this.reset();
 
@@ -37,9 +43,9 @@ define(function (require, exports, module) {
             this.items = [];
             this.itemConfig.forEach(function (config) {
                 var Item = config.type;
-                var item = new Item( {
-                    el: config.el
-                });
+                var item = new Item();
+                item.form = this;
+                item.setElement(this.$(config.el)[0]);
                 item.parseConfig(config);
                 this.items.push(item);
             }, this);
