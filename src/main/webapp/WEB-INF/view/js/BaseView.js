@@ -27,7 +27,10 @@ define(function (require, exports, module) {
         },
 
         getRenderData: function () {
-            return this.model.toJSON() || {};
+            if (!this.model) {
+                return {};
+            }
+            return this.model.toJSON();
         },
 
         getCurrentUser: function () {

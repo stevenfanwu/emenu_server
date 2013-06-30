@@ -10,6 +10,9 @@
     #@user_nav_item("all")所有角色#end
     #@user_nav_item("admin")管理员#end
     #@user_nav_item("user")服务员#end
+    <li class="pull-right">
+        <a href="" class="btn-create-user">新建用户</a>
+    </li>
 </ul>
 <div class="wrap-user-list">
 </div>

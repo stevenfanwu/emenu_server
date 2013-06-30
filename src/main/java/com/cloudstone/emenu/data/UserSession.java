@@ -21,13 +21,8 @@ public class UserSession {
     
     private int ip;
     
-    //TODO timeSpan?
-    public boolean checkSession(long userId, int ip, long timeSpan) {
+    public boolean checkSession(long userId, int ip) {
         if (userId!=this.getUserId() || ip!=this.getIp()) {
-            return false;
-        }
-        long now = System.currentTimeMillis();
-        if (now - createdTime > timeSpan) {
             return false;
         }
         return true;

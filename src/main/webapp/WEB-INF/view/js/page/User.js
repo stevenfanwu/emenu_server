@@ -7,9 +7,14 @@ define(function (require, exports, module) {
     var BasePage = require('./BasePage');
     var UserRouter = require('../router/UserRouter');
     var UserList = require('../list/UserList');
+    var $ = require('../lib/jquery');
     
     var User = BasePage.extend({
         RouterType: UserRouter,
+
+        events: {
+            'click .btn-create-user': 'onCreateUser'
+        },
         
         initEvents: function () {
             BasePage.prototype.initEvents.apply(this, arguments);
@@ -34,6 +39,16 @@ define(function (require, exports, module) {
 
         render: function () {
             this.list.render();
+        },
+
+        
+        /* -------------------- Event Listener ----------------------- */
+        
+        onCreateUser: function (evt) {
+            evt.preventDefault();
+            var Dialog = require('../dialog/CreateUserDialog');
+            var dialog = new Dialog();
+            dialog.show();
         }
     });
 

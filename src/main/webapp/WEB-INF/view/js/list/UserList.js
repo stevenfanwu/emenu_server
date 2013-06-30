@@ -8,6 +8,7 @@ define(function (require, exports, module) {
     var UserCollection = require('../collection/UserCollection');
     var UserItem = require('./item/UserItem');
     var UserType = require('../misc/Const').UserType;
+    var $ = require('../lib/jquery');
 
     var Mode = {
         ALL: 0,

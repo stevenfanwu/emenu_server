@@ -27,11 +27,13 @@ public class AuthHelper {
     private static final String COOKIE_SESSION = "SESS";
     private static final String COOKIE_USER_ID = "UID";
     
+    private static final String SESSION_ACTIVE_TIME = "active_time";
+    
     @Autowired
     private UserLogic userLogic;
     
     //TODO
-    private static final long SESSION_TIME = 30*UnitUtils.MINUTE;
+    private static final long SPAN_TIME = 30*UnitUtils.MINUTE;
 
     public boolean isLogin(HttpServletRequest req,
             HttpServletResponse resp) {
@@ -65,8 +67,16 @@ public class AuthHelper {
         
         int ip = IpUtils.toInt(ipStr);
         long userId = NumberUtils.toLong(userIdStr, -1);
-        boolean checkResult = session.checkSession(userId, ip, SESSION_TIME);
+        boolean checkResult = session.checkSession(userId, ip);
         if (checkResult) {
+            //check active time
+            long now = System.currentTimeMillis();
+            Long activeTime = (Long) req.getSession().getAttribute(SESSION_ACTIVE_TIME);
+            if (activeTime==null || (now-activeTime) > SPAN_TIME) {
+                return false;
+            }
+            req.getSession().setAttribute(SESSION_ACTIVE_TIME, now);
+            
             User loginUser = userLogic.getUser(userId);
             onAuthSuccess(req, resp, loginUser, false);
         }
@@ -93,5 +103,7 @@ public class AuthHelper {
         
         RequestUtils.addCookie(resp, COOKIE_SESSION, SessionUtils.encryptSession(session));
         RequestUtils.addCookie(resp, COOKIE_USER_ID, String.valueOf(userId));
+        
+        req.getSession().setAttribute(SESSION_ACTIVE_TIME, System.currentTimeMillis());
     }
 }

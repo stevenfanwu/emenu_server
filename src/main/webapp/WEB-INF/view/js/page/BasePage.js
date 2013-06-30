@@ -6,6 +6,7 @@ define(function (require, exports, module) {
 
     var Backbone = require('../lib/backbone');
     var BaseView = require('../BaseView');
+    var $ = require('../lib/jquery');
 
     var BasePage = BaseView.extend({
         el: 'body',
