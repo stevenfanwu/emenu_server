@@ -27,6 +27,15 @@ public class UserService extends BaseService implements IUserService {
             throw new ServerError(e);
         }
     }
+    
+    @Override
+    public User update(User user) {
+        try {
+            return userDb.updateUser(user);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
 
     @Override
     public User add(User user) {

@@ -46,7 +46,11 @@ define(function (require, exports, module) {
                 model: model
             });
             item.render();
+            this.initItem(model, item);
             this.appendItem(item);
+        },
+
+        initItem: function (model, item) {
         },
 
         appendItem: function (item) {

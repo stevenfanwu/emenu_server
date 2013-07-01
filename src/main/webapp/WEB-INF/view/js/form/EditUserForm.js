@@ -56,6 +56,17 @@ define(function (require, exports, module) {
             el: '.input-comment'
         }],
 
+        initialize: function () {
+            BaseForm.prototype.initialize.apply(this, arguments);
+
+            if (!this.model.isNew()) {
+                this.hiddenItems = ['password', 'passwordConfirm'];
+            } else {
+                this.hiddenItems = [];
+            }
+        },
+        
+
         onSuccess: function () {
             this.model.trigger('saved');
         },

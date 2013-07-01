@@ -19,4 +19,5 @@ public interface IUserDb {
     public User get(long userId) throws SQLiteException;
     public List<User> getAll() throws SQLiteException;
     public User addUser(User user) throws SQLiteException;
+    public User updateUser(User user) throws SQLiteException;
 }

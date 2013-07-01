@@ -14,16 +14,4 @@ public class SelectSqlBuilder extends SQLBuilder {
         super();
         append("SELECT * from " + tableName);
     }
-    
-    private boolean firstWhere = true;
-    public SelectSqlBuilder appendWhere(String whereColumn) {
-        if (firstWhere) {
-            append(" where ");
-        } else {
-            append("AND ");
-        }
-        firstWhere = false;
-        append(whereColumn + "=? ");
-        return this;
-    }
 }

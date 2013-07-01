@@ -45,6 +45,10 @@ define(function (require, exports, module) {
             return this.$('input').val();
         },
 
+        setValue: function (value) {
+            return this.$('input').val(value);
+        },
+
         isEmpty: function () {
             if (this.getValue()) {
                 return false;
@@ -62,7 +66,7 @@ define(function (require, exports, module) {
             this.$el.addClass('success');
         },
 
-        clearError: function() {
+        clearError: function () {
             this.$('.help-inline').text('');
             this.$('.help-inline').hide();
         }

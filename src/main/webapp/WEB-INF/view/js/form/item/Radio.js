@@ -7,6 +7,12 @@ define(function (require, exports, module) {
     var BaseItem = require('./BaseItem');
 
     var Radio = BaseItem.extend({
+
+        setValue: function (value) {
+            this.$('input').prop('checked', false);
+            this.$('input[value=' + value + ']').prop('checked', true);
+        },
+        
         getValue: function () {
             return this.$('input:checked').val();
         }

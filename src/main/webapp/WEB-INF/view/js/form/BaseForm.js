@@ -15,17 +15,12 @@ define(function (require, exports, module) {
 
         items: [],
 
+        hiddenItems: [],
+
         model: null,
 
         itemConfig: [],
 
-        initialize: function () {
-            BaseView.prototype.initialize.apply(this, arguments);
-            if (this.el) {
-                this.init(this.el);
-            }
-        },
-        
         init: function (el) {
             this.setElement(el);
             this.parseItemConfig();
@@ -41,11 +36,20 @@ define(function (require, exports, module) {
         parseItemConfig: function () {
             this.items = [];
             this.itemConfig.forEach(function (config) {
+                if (this.hiddenItems.indexOf(config.name) !== -1) {
+                    //hide item
+                    this.$(config.el).hide();
+                    return;
+                }
                 var Item = config.type;
                 var item = new Item();
                 item.form = this;
                 item.setElement(this.$(config.el)[0]);
                 item.parseConfig(config);
+                var value = this.model.get(item.name);
+                if (value) {
+                    item.setValue(value);
+                }
                 this.items.push(item);
             }, this);
         },
@@ -105,7 +109,7 @@ define(function (require, exports, module) {
         findItemByName: function (name) {
             var ret = null;
             this.items.some(function (item) {
-                if (item.name == name) {
+                if (item.name === name) {
                     ret = item;
                     return true;
                 }

@@ -38,6 +38,7 @@ define(function (require, exports, module) {
                 this.$('.tab-admin').removeClass('active');
                 this.$('.tab-all').removeClass('active');
             }.bind(this));
+            this.list.collection.on('editUser', this.onEditUser.bind(this));
         },
 
         initialize: function () {
@@ -56,9 +57,20 @@ define(function (require, exports, module) {
         
         onCreateUser: function (evt) {
             evt.preventDefault();
-            var Dialog = require('../dialog/CreateUserDialog');
+            var Dialog = require('../dialog/EditUserDialog');
             var dialog = new Dialog({
                 model: new UserModel()
+            });
+            dialog.model.on('saved', function () {
+                this.list.refresh();
+            }, this);
+            dialog.show();
+        },
+        
+        onEditUser: function (model) {
+            var Dialog = require('../dialog/EditUserDialog');
+            var dialog = new Dialog({
+                model: model
             });
             dialog.model.on('saved', function () {
                 this.list.refresh();

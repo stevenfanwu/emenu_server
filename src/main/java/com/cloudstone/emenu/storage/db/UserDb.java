@@ -18,6 +18,7 @@ import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
+import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 import com.cloudstone.emenu.util.RsaUtils;
 
 /**
@@ -53,6 +54,11 @@ public class UserDb extends SQLiteDb implements IUserDb {
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_USER)
         .appendWhere(Column.ID.toString()).build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_USER, 6).build();
+    private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_USER)
+        .appendSetValue(Column.NAME.toString()).appendSetValue(Column.TYPE.toString())
+        .appendSetValue(Column.REAL_NAME.toString()).appendSetValue(Column.COMMENT.toString())
+        .appendWhereId()
+        .build();
     
     @Override
     protected void onCheckCreateTable() throws SQLiteException {
@@ -85,6 +91,13 @@ public class UserDb extends SQLiteDb implements IUserDb {
             user = addUser(user);
         }
         return user;
+    }
+    
+    @Override
+    public User updateUser(User user) throws SQLiteException {
+        String sql = SQL_UPDATE;
+        executeSQL(sql, new UpdateBinder(user));
+        return get(user.getId());
     }
     
     @Override
@@ -152,6 +165,24 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(4, user.getType());
             stmt.bind(5, user.getRealName());
             stmt.bind(6, user.getComment());
+        }
+    }
+    
+    private class UpdateBinder implements StatementBinder{
+        private final User user;
+
+        public UpdateBinder(User user) {
+            super();
+            this.user = user;
+        }
+
+        @Override
+        public void onBind(SQLiteStatement stmt) throws SQLiteException {
+            stmt.bind(1, user.getName());
+            stmt.bind(2, user.getType());
+            stmt.bind(3, user.getRealName());
+            stmt.bind(4, user.getComment());
+            stmt.bind(5, user.getId());
         }
     }
 }

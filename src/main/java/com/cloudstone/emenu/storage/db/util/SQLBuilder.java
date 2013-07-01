@@ -27,4 +27,20 @@ public class SQLBuilder {
     public int size() {
         return sb.length();
     }
+    
+    private boolean firstWhere = true;
+    public SQLBuilder appendWhere(String whereColumn) {
+        if (firstWhere) {
+            append(" where ");
+        } else {
+            append("AND ");
+        }
+        firstWhere = false;
+        append(whereColumn + "=? ");
+        return this;
+    }
+    
+    public SQLBuilder appendWhereId() {
+        return this.appendWhere("id");
+    }
 }

@@ -48,10 +48,8 @@ public class UserLogic extends BaseLogic {
         return userService.add(user);
     }
     
-    public User update(long userId, String userName, String encryptedPassword,
-            int type, String realName, String comment) {
-        //TODO
-        return null;
+    public User update(User user) {
+        return userService.update(user);
     }
     
     public User getUser(long userId) {

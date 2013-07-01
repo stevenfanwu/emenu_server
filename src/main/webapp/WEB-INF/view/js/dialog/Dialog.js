@@ -12,7 +12,7 @@ define(function (require, exports, module) {
 
         className: 'modal hide fade',
 
-        header: '',
+        header: null,
 
         model: null,
 
@@ -27,7 +27,15 @@ define(function (require, exports, module) {
 
         initialize: function () {
             BaseView.prototype.initialize.apply(this, arguments);
-        
+
+            this.$el.modal({
+                keyboard: true
+            });
+
+            if (!this.header) {
+                this.header = this.getHeader();
+            }
+
             this.$el.on('hidden', function () {
                 this.remove();
             }.bind(this));
@@ -59,6 +67,10 @@ define(function (require, exports, module) {
 
         hide: function () {
             this.$el.modal('hide');
+        },
+
+        getHeader: function () {
+            return null;
         },
 
         /* -------------------- Event Listener ----------------------- */

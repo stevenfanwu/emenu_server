@@ -14,10 +14,10 @@ define(function (require, exports, module) {
         
             var LoginForm = require('../form/LoginForm');
             this.form = new LoginForm({
-                el: '.form-login',
                 model: new UserModel()
             });
-        },
+            this.form.init('.form-login');
+        }
     });
 
     return Login;

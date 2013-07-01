@@ -5,25 +5,20 @@ define(function (require, exports, module) {
     "use strict";
 
     var Dialog = require('./Dialog');
-    var BaseContent = require('./BaseContent');
 
-    var Content = BaseContent.extend({
-        tmpl: require('./CreateUserDialog.handlebars')
-    });
+    var FormDialog = Dialog.extend({
+        FormType: null,
 
-    var CreateUserDialog = Dialog.extend({
-        header: '新建用户',
-
-        ContentType: Content,
+        formEl: '.form-create-user',
 
         initialize: function () {
             Dialog.prototype.initialize.apply(this, arguments);
         
-            var CreateUserForm = require('../form/CreateUserForm');
-            this.form = new CreateUserForm({
+            var Form = this.FormType;
+            this.form = new Form({
                 model: this.model
             });
-
+        
             this.model.on('saved', function () {
                 this.hide();
             }, this);
@@ -31,10 +26,9 @@ define(function (require, exports, module) {
 
         render: function () {
             Dialog.prototype.render.apply(this, arguments);
-            this.form.init(this.$('.form-create-user')[0]);
+            this.form.init(this.$(this.formEl)[0]);
         },
         
-
         onConfirm: function () {
             Dialog.prototype.onConfirm.apply(this, arguments);
             this.form.trySubmit();
@@ -42,7 +36,7 @@ define(function (require, exports, module) {
         
     });
     
-    return CreateUserDialog;
+    return FormDialog;
     
 });
 

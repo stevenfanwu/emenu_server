@@ -35,6 +35,14 @@ define(function (require, exports, module) {
             }
             return model.get('type') === UserType.USER.value;
         },
+
+        initItem: function (model, item) {
+            BaseList.prototype.initItem.apply(this, arguments);
+            model.on('edit', function () {
+                this.collection.trigger('editUser', model);
+            });
+        },
+        
         
         showAll: function () {
             this.mode = Mode.ALL;
