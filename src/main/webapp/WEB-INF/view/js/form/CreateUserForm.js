@@ -8,6 +8,7 @@ define(function (require, exports, module) {
     var Required = require('./validator/Required');
     var IsSame = require('./validator/IsSame');
     var Text = require('./item/Text');
+    var Radio = require('./item/Radio');
 
     var CreateUserForm = BaseForm.extend({
         url: '/api/users',
@@ -45,7 +46,26 @@ define(function (require, exports, module) {
                 type: Required,
                 errorMessage: '姓名不能为空'
             }]
-        }]
+        }, {
+            name: 'type',
+            type: Radio,
+            el: '.input-type'
+        }, {
+            name: 'comment',
+            type: Text,
+            el: '.input-comment'
+        }],
+
+        onSuccess: function () {
+            this.model.trigger('saved');
+        },
+
+        onFailed: function (xhr) {
+            if (xhr.status === 409) {
+                this.resetItems();
+                this.findItemByName('name').showError('该帐号已存在');
+            }
+        }
     });
     
     return CreateUserForm;

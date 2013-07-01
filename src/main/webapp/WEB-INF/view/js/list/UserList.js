@@ -29,11 +29,11 @@ define(function (require, exports, module) {
             BaseList.prototype.filterModel.apply(this, arguments);
             if (this.mode === Mode.ALL) {
                 return true;
-            } else if (this.mode === Mode.ADMIN) {
-                return model.get('type') !== UserType.USER.value;
-            } else {
-                return model.get('type') === UserType.USER.value;
             }
+            if (this.mode === Mode.ADMIN) {
+                return model.get('type') !== UserType.USER.value;
+            }
+            return model.get('type') === UserType.USER.value;
         },
         
         showAll: function () {

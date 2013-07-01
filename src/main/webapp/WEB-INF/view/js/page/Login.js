@@ -6,6 +6,7 @@ define(function (require, exports, module) {
 
     var BasePage = require('./BasePage');
     var LoginForm = require('../form/LoginForm');
+    var UserModel = require('../model/UserModel');
 
     var Login = BasePage.extend({
         initialize: function () {
@@ -13,7 +14,8 @@ define(function (require, exports, module) {
         
             var LoginForm = require('../form/LoginForm');
             this.form = new LoginForm({
-                el: '.form-login'
+                el: '.form-login',
+                model: new UserModel()
             });
         },
     });

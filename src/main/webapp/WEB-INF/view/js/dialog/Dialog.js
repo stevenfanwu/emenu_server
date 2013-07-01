@@ -14,6 +14,8 @@ define(function (require, exports, module) {
 
         header: '',
 
+        model: null,
+
         ContentType: null,
 
         events: {

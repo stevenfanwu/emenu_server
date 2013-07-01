@@ -74,6 +74,11 @@ define(function (require, exports, module) {
 
             this.collection.reset();
             this.render();
+        },
+
+        refresh: function () {
+            this.fetched = false;
+            this.resetContent();
         }
         
     });

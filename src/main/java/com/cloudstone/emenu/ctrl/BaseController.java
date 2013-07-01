@@ -38,6 +38,10 @@ public class BaseController {
         }
     }
     
+    protected void sendSuccess(HttpServletResponse resp, int statusCode) {
+        resp.setStatus(statusCode);
+    }
+    
     /**
      *  send a error message with status code 412
      *  frontend may alert the message

@@ -7,6 +7,7 @@ define(function (require, exports, module) {
     var BasePage = require('./BasePage');
     var UserRouter = require('../router/UserRouter');
     var UserList = require('../list/UserList');
+    var UserModel = require('../model/UserModel');
     var $ = require('../lib/jquery');
     
     var User = BasePage.extend({
@@ -56,7 +57,12 @@ define(function (require, exports, module) {
         onCreateUser: function (evt) {
             evt.preventDefault();
             var Dialog = require('../dialog/CreateUserDialog');
-            var dialog = new Dialog();
+            var dialog = new Dialog({
+                model: new UserModel()
+            });
+            dialog.model.on('saved', function () {
+                this.list.refresh();
+            }, this);
             dialog.show();
         }
     });

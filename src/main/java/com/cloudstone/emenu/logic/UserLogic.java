@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.exception.UserNameConflictedException;
+import com.cloudstone.emenu.util.IdGenerator;
 
 /**
  * @author xuhongfeng
@@ -39,13 +40,11 @@ public class UserLogic extends BaseLogic {
         return user;
     }
     
-    public User add(String userName, String encryptedPassword, int type) throws UserNameConflictedException {
-        if (userService.getUserByName(userName) != null) {
+    public User add(User user) throws UserNameConflictedException {
+        user.setId(IdGenerator.generateId());
+        if (userService.getUserByName(user.getName()) != null) {
             throw new UserNameConflictedException();
         }
-        User user = User.newUser(type);
-        user.setName(userName);
-        user.setPassword(encryptedPassword);
         return userService.add(user);
     }
     

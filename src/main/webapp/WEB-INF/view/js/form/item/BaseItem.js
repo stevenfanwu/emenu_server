@@ -23,6 +23,7 @@ define(function (require, exports, module) {
             //config validators
             this.name = config.name;
             this.validators = [];
+            config.validators = config.validators || [];
             config.validators.forEach(function (validatorConfig) {
                 var Validator = validatorConfig.type;
                 var validator = new Validator({

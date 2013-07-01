@@ -4,6 +4,7 @@
 define(function (require, exports, module) {
     "use strict";
 
+    var $ = require('../lib/jquery');
     var Backbone = require('../lib/backbone');
     var BaseView = require('../BaseView');
 
@@ -12,11 +13,9 @@ define(function (require, exports, module) {
             'click .btn-submit': 'onSubmit'
         },
 
-        url: null,
-
-        type: "post",
-
         items: [],
+
+        model: null,
 
         itemConfig: [],
 
@@ -73,24 +72,34 @@ define(function (require, exports, module) {
             this.items.forEach(function (item) {
                 if (!item.validate()) {
                     result = false;
+                } else {
+                    this.model.set(item.name, item.getValue());
                 }
             }, this);
             return result;
         },
 
         doSubmit: function () {
-            var options = this.createAjaxOptions();
-            this.$el.ajaxSubmit(options);
+            this.model.save({}, {
+                success: function (model, response, options) {
+                    this.onSuccess(response);
+                }.bind(this),
+
+                error: function (model, xhr, options) {
+                    this.onFailed(xhr);
+                }.bind(this)
+            });
         },
 
-        createAjaxOptions: function () {
-            var options = {
-                url: this.url,
-                type: this.type,
-                resetForm: true,
-                success: this.onSuccess
-            };
-            return options;
+        ajaxSubmit: function (options) {
+            options = options || {};
+            var url = options.url || this.model.url;
+            $.ajax(url, {
+                type: 'POST',
+                data: this.getFormData(),
+                success: this.onSuccess.bind(this),
+                error: this.onFailed.bind(this)
+            });
         },
 
         findItemByName: function (name) {
@@ -106,9 +115,15 @@ define(function (require, exports, module) {
             return ret;
         },
 
+        getFormData: function () {
+            return this.model.toJSON();
+        },
+
         /* ---------- abstract ---------- */
 
-        onSuccess: function () {},
+        onSuccess: function (response) {},
+
+        onFailed: function (xhr) {},
 
         /* ---------- Event Listener ---------- */
 

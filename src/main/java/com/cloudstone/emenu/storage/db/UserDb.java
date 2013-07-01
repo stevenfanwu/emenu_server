@@ -61,7 +61,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     
     private void checkCreateUserTable() throws SQLiteException {
         String colDef = new ColumnDefBuilder()
-            .append(Column.ID.toString(), DataType.INTEGER, "NOT NULL PRIMARY KEY ASC AUTOINCREMENT")
+            .append(Column.ID.toString(), DataType.INTEGER, "NOT NULL PRIMARY KEY")
             .append(Column.NAME.toString(), DataType.TEXT, "NOT NULL")
             .append(Column.PASSWORD.toString(), DataType.TEXT, "NOT NULL")
             .append(Column.TYPE.toString(), DataType.INTEGER, "NOT NULL")

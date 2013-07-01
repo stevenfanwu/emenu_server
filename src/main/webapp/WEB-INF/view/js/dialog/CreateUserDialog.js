@@ -20,7 +20,13 @@ define(function (require, exports, module) {
             Dialog.prototype.initialize.apply(this, arguments);
         
             var CreateUserForm = require('../form/CreateUserForm');
-            this.form = new CreateUserForm();
+            this.form = new CreateUserForm({
+                model: this.model
+            });
+
+            this.model.on('saved', function () {
+                this.hide();
+            }, this);
         },
 
         render: function () {

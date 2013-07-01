@@ -11,13 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.exception.UserNameConflictedException;
 import com.cloudstone.emenu.util.AuthHelper;
+import com.cloudstone.emenu.util.JsonUtils;
 
 /**
  * @author xuhongfeng
@@ -32,12 +35,12 @@ public class UserApiController extends BaseApiController {
     
     //TODO encrypt password
     @RequestMapping(value="/api/login", method=RequestMethod.POST)
-    public @ResponseBody User login(@RequestParam(value="userName") String userName,
+    public @ResponseBody User login(@RequestParam(value="name") String name,
             @RequestParam(value="password") String password,
             HttpServletRequest req, HttpServletResponse resp) {
-        LOG.info("user login : " + userName);
+        LOG.info("user login : " + name);
         
-        User user = userLogic.login(userName, password);
+        User user = userLogic.login(name, password);
         if (user == null) {
             sendError(resp, HttpServletResponse.SC_UNAUTHORIZED);
             return null;
@@ -50,5 +53,22 @@ public class UserApiController extends BaseApiController {
     @RequestMapping(value="/api/users", method=RequestMethod.GET)
     public @ResponseBody User[] get() {
         return userLogic.getAllUsers().toArray(new User[0]);
+    }
+    
+    @RequestMapping(value="/api/users", method=RequestMethod.POST)
+    public @ResponseBody User add(@RequestBody String body, HttpServletResponse response) {
+        User user = JsonUtils.fromJson(body, User.class);
+        //password is ignored by json mapper
+        user.setPassword(JsonUtils.getString(body, "password"));
+        
+        LOG.info("add user :" + JsonUtils.toJson(user));
+        try {
+            user = userLogic.add(user);
+            sendSuccess(response, HttpServletResponse.SC_CREATED);
+            return user;
+        } catch (UserNameConflictedException e) {
+            sendError(response, HttpServletResponse.SC_CONFLICT);
+            return null;
+        }
     }
 }

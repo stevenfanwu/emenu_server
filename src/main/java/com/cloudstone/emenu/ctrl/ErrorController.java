@@ -32,6 +32,7 @@ public class ErrorController extends BaseController {
         Throwable exception = (Throwable) req.getAttribute(ATTR_EXCEPTION);
         String requestUrl = (String) req.getAttribute(ATTR_REQUEST_URI);
         
+        LOG.error("url :  + " + requestUrl);
         if (exception != null) {
             LOG.error("", exception);
         }
@@ -48,6 +49,6 @@ public class ErrorController extends BaseController {
     private void apiError(HttpServletRequest req, HttpServletResponse resp,
             ModelMap model) {
         int statusCode = (Integer)req.getAttribute(ATTR_STATUS_CODE);
-        //TODO
+        sendError(resp, statusCode);
     }
 }

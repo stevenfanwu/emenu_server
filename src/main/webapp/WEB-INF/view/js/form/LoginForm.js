@@ -11,8 +11,6 @@ define(function (require, exports, module) {
     var Required = require('./validator/Required');
 
     var LoginForm = BaseForm.extend({
-        url: '/api/login',
-
         itemConfig: [{
             name: 'name',
             type: Text,
@@ -31,18 +29,21 @@ define(function (require, exports, module) {
             }]
         }],
 
-        createAjaxOptions: function () {
-            var options = BaseForm.prototype.createAjaxOptions.apply(this, arguments);
-            options.statusCode = options.statusCode || {};
-            options.statusCode['401'] = function () {
+        doSubmit: function () {
+            this.ajaxSubmit({
+                url: '/api/login'
+            });
+        },
+
+        onFailed: function (xhr) {
+            if (xhr.status === 401) {
                 this.resetItems();
                 this.findItemByName('password').showError('用户名或密码错误');
-            }.bind(this);
-            return options;
+            }
         },
 
         onSuccess: function () {
-            window.location = 'home'
+            window.location = 'home';
         }
     });
 
