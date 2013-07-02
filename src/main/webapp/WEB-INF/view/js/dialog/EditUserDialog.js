@@ -8,7 +8,17 @@ define(function (require, exports, module) {
     var BaseContent = require('./BaseContent');
 
     var Content = BaseContent.extend({
-        tmpl: require('./EditUserDialog.handlebars')
+        tmpl: require('./EditUserDialog.handlebars'),
+
+        getRenderData: function () {
+            var data = BaseContent.prototype.getRenderData.apply(this, arguments);
+            var loginUser = require('../util/PageDataUtils').getData('loginUser');
+            data.loginUser = {
+                isSuperUser: loginUser.type
+                     === require('../misc/Const').UserType.SUPER_USER.value
+            };
+            return data;
+        }
     });
 
     var EditUserDialog = EditDialog.extend({
@@ -17,6 +27,7 @@ define(function (require, exports, module) {
         ContentType: Content,
 
         FormType: require('../form/EditUserForm')
+        
         
     });
     

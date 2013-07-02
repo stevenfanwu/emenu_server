@@ -6,15 +6,13 @@ package com.cloudstone.emenu.data;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.cloudstone.emenu.constant.Const.UserType;
+
 /**
  * @author xuhongfeng
  *
  */
 public class User {
-    private static final int USER = 0;
-    private static final int ADMIN = 1;
-    private static final int SUPER_USER = 2;
-    
     private long id;
     
     /* login name */
@@ -33,15 +31,15 @@ public class User {
 
     /* ---------- static ---------- */
     public static User newSuperUser() {
-        return newUser(SUPER_USER);
+        return newUser(UserType.SUPER_USER);
     }
     
     public static User newAdminUser() {
-        return newUser(ADMIN);
+        return newUser(UserType.ADMIN);
     }
     
     public static User newUser() {
-        return newUser(USER);
+        return newUser(UserType.USER);
     }
     
     public static User newUser(int type) {

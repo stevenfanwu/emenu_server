@@ -10,7 +10,7 @@ define(function (require, exports, module) {
     var Text = require('./item/Text');
     var Radio = require('./item/Radio');
 
-    var CreateUserForm = BaseForm.extend({
+    var EditUserForm = BaseForm.extend({
         url: '/api/users',
 
         itemConfig: [{
@@ -65,7 +65,6 @@ define(function (require, exports, module) {
                 this.hiddenItems = [];
             }
         },
-        
 
         onSuccess: function () {
             this.model.trigger('saved');
@@ -79,7 +78,7 @@ define(function (require, exports, module) {
         }
     });
     
-    return CreateUserForm;
+    return EditUserForm;
     
 });
 

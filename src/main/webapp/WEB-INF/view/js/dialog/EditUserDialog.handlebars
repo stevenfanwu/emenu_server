@@ -17,10 +17,12 @@
                 <input type="radio" name="type" value="1"/>
                 管理员
             </label>
-            <label class="radio inline">
-                <input type="radio" name="type" value="2"/>
-                超级管理员
-            </label>
+            {{#if loginUser.isSuperUser}}
+                <label class="radio inline">
+                    <input type="radio" name="type" value="2"/>
+                    超级管理员
+                </label>
+            {{/if}}
             <span class="help-inline error"></span>
         </div>
     </div>

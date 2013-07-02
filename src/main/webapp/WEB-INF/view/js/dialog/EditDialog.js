@@ -22,7 +22,6 @@ define(function (require, exports, module) {
             return data;
         },
         
-        
         isEditing: function () {
             return !this.model.isNew();
         }

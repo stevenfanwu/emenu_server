@@ -23,7 +23,7 @@ define(function (require, exports, module) {
                 var label = null;
                 Object.keys(this).forEach(function (key) {
                     if (typeof this[key] === 'object'
-                        && this[key].value === value) {
+                            && this[key].value === value) {
                         label = this[key].label;
                     }
                 }.bind(this));

@@ -17,7 +17,7 @@ define(function (require, exports, module) {
     };
 
     var UserList = BaseList.extend({
-        heads: ['帐号', '真实姓名', '备注', '类型'],
+        heads: ['帐号', '真实姓名', '备注', '类型', '操作'],
 
         mode: Mode.ALL,
 
@@ -38,6 +38,7 @@ define(function (require, exports, module) {
 
         initItem: function (model, item) {
             BaseList.prototype.initItem.apply(this, arguments);
+            model.off('edit');
             model.on('edit', function () {
                 this.collection.trigger('editUser', model);
             });

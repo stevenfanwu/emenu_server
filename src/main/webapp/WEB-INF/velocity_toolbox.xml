@@ -5,4 +5,5 @@
         <scope>application</scope>
         <class>com.cloudstone.emenu.web.velocitytool.Utils</class>
     </tool>
+
 </toolbox>
