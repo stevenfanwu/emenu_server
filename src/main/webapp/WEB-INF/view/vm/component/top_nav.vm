@@ -2,12 +2,16 @@
     <li #if($mode==$tab_mode)class="active"#end><a href="/$tab_mode">$!bodyContent</a></li>
 #end
 
-<div class="navbar">
+<div class="navbar top-nav">
     <div class="navbar-inner">
         <a class="brand" href="/home">CloudMenu</a>
         <ul class="nav">
             #@mode_tab("operate")运营模式#end
             #@mode_tab("admin")管理模式#end
         </ul>
+        <span class="pull-right wrap-logout">
+            欢迎你 $loginUser.name,
+            <a href="/logout" class="">退出</a>
+        </span>
     </div>
 </div>

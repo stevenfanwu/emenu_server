@@ -27,6 +27,14 @@ public class MainController extends BaseWebController {
     
     @Autowired
     private AuthHelper authHelper;
+    
+    @RequestMapping("/logout")
+    public String logout(HttpServletRequest req, HttpServletResponse resp,
+            ModelMap model) {
+        authHelper.removeCoolies(resp);
+        sendRedirect("/login", resp);
+        return null;
+    }
 
     @RequestMapping("/login")
     public String login(HttpServletRequest req, HttpServletResponse resp,

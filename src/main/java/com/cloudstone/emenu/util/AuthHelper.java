@@ -44,7 +44,7 @@ public class AuthHelper {
         return ret;
     }
     
-    private void removeCoolies(HttpServletResponse resp) {
+    public void removeCoolies(HttpServletResponse resp) {
         RequestUtils.removeCookie(resp, COOKIE_USER_ID);
         RequestUtils.removeCookie(resp, COOKIE_SESSION);
     }

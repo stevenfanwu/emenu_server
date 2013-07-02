@@ -48,7 +48,8 @@ public class StaticController extends BaseWebController {
         if (FilenameUtils.isExtension(path, "js")) {
             path = "js/" + path;
             response.setContentType("text/javascript; charset=UTF-8");
-        } else if (FilenameUtils.isExtension(path, "css")) {
+        } else if (FilenameUtils.isExtension(path, "css")
+                || FilenameUtils.isExtension(path, "less")) {
             path = "css/" + path;
             response.setContentType("text/css; charset=UTF-8");
         } else if (FilenameUtils.isExtension(path, IMG_EXTENSION)) {
