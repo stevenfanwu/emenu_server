@@ -4,55 +4,40 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BasePage = require('./BasePage');
+    var TabList = require('./TabList');
     var UserRouter = require('../router/UserRouter');
-    var UserList = require('../list/UserList');
     var UserModel = require('../model/UserModel');
     var $ = require('../lib/jquery');
     
-    var User = BasePage.extend({
+    var User = TabList.extend({
         RouterType: UserRouter,
+
+        ListType: require('../list/UserList'),
+
+        tabEl: ['.tab-all', '.tab-admin', '.tab-user'],
 
         events: {
             'click .btn-create-user': 'onCreateUser'
         },
         
         initEvents: function () {
-            BasePage.prototype.initEvents.apply(this, arguments);
+            TabList.prototype.initEvents.apply(this, arguments);
         
             this.on('showAll', function () {
                 this.list.showAll();
-                this.$('.tab-all').addClass('active');
-                this.$('.tab-admin').removeClass('active');
-                this.$('.tab-user').removeClass('active');
+                this.activeTab('.tab-all');
             }.bind(this));
             this.on('showAdmin', function () {
                 this.list.showAdmin();
-                this.$('.tab-admin').addClass('active');
-                this.$('.tab-all').removeClass('active');
-                this.$('.tab-user').removeClass('active');
+                this.activeTab('.tab-admin');
             }.bind(this));
             this.on('showUser', function () {
                 this.list.showUser();
-                this.$('.tab-user').addClass('active');
-                this.$('.tab-admin').removeClass('active');
-                this.$('.tab-all').removeClass('active');
+                this.activeTab('.tab-user');
             }.bind(this));
             this.list.collection.on('edit', this.onEditUser, this);
             this.list.collection.on('modPw', this.onModPw, this);
         },
-
-        initialize: function () {
-            this.list = new UserList({
-                el: this.$('.wrap-user-list')
-            });
-            BasePage.prototype.initialize.apply(this, arguments);
-        },
-
-        render: function () {
-            this.list.render();
-        },
-
         
         /* -------------------- Event Listener ----------------------- */
         
