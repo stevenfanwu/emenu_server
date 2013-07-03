@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     "use strict";
 
     var $ = require('../lib/jquery');
+    var _ = require('../lib/underscore');
     var Backbone = require('../lib/backbone');
     var BaseView = require('../BaseView');
 
@@ -96,14 +97,14 @@ define(function (require, exports, module) {
         },
 
         ajaxSubmit: function (options) {
-            options = options || {};
-            var url = options.url || this.model.url;
-            $.ajax(url, {
+            options = _.extend({
                 type: 'POST',
                 data: this.getFormData(),
                 success: this.onSuccess.bind(this),
-                error: this.onFailed.bind(this)
-            });
+                error: this.onFailed.bind(this),
+                url: this.model.url
+            }, options);
+            $.ajax(options.url, options);
         },
 
         findItemByName: function (name) {
@@ -125,7 +126,9 @@ define(function (require, exports, module) {
 
         /* ---------- abstract ---------- */
 
-        onSuccess: function (response) {},
+        onSuccess: function (response) {
+            this.model.trigger('saved');
+        },
 
         onFailed: function (xhr) {},
 

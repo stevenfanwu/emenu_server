@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.UserLogic;
 
 /**
@@ -81,5 +83,9 @@ public class BaseController {
         } finally {
             IOUtils.closeQuietly(is);
         }
+    }
+    
+    protected User getLoginUser(HttpServletRequest req) {
+        return (User) req.getSession().getAttribute("loginUser");
     }
 }

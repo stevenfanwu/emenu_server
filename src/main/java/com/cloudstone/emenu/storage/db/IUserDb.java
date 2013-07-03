@@ -20,4 +20,5 @@ public interface IUserDb {
     public List<User> getAll() throws SQLiteException;
     public User addUser(User user) throws SQLiteException;
     public User updateUser(User user) throws SQLiteException;
+    public boolean modifyPassword(long userId, String password) throws SQLiteException;
 }

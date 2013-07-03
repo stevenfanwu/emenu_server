@@ -11,7 +11,8 @@ define(function (require, exports, module) {
         tmpl: require('./UserItem.handlebars'),
 
         events: {
-            'click .btn-edit-user': 'onEditUser'
+            'click .btn-edit-user': 'onEditUser',
+            'click .btn-mod-pw': 'onModPw'
         },
 
         getRenderData: function () {
@@ -24,6 +25,7 @@ define(function (require, exports, module) {
             } else {
                 data.showOp = false;
             }
+            data.isMe = loginUser.id === data.id;
             return data;
         },
 
@@ -32,7 +34,13 @@ define(function (require, exports, module) {
         
         onEditUser: function (evt) {
             evt.preventDefault();
-            this.model.trigger('edit');
+            this.model.trigger('edit', this.model);
+            evt.stopPropagation();
+        },
+        
+        onModPw: function (evt) {
+            evt.preventDefault();
+            this.model.trigger('modPw', this.model);
             evt.stopPropagation();
         }
         

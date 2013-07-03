@@ -83,4 +83,19 @@ public class UserApiController extends BaseApiController {
             return null;
         }
     }
+    
+    @RequestMapping(value="/api/users/{id:[\\d]+}/password", method=RequestMethod.PUT)
+    public void password(@PathVariable(value="id") long userId,
+            @RequestParam(value="oldPassword") String oldPassword,
+            @RequestParam(value="newPassword") String newPassword,
+            HttpServletRequest req, HttpServletResponse resp) {
+        User loginUser = getLoginUser(req);
+        if (loginUser==null
+                || loginUser.getId()!=userId
+                || userLogic.login(loginUser.getName(), oldPassword) == null) {
+            sendError(resp, HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        userLogic.modifyPassword(userId, newPassword);
+    }
 }

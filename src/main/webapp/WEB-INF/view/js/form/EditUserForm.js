@@ -66,10 +66,6 @@ define(function (require, exports, module) {
             }
         },
 
-        onSuccess: function () {
-            this.model.trigger('saved');
-        },
-
         onFailed: function (xhr) {
             if (xhr.status === 409) {
                 this.resetItems();

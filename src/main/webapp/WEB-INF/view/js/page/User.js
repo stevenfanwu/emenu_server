@@ -38,7 +38,8 @@ define(function (require, exports, module) {
                 this.$('.tab-admin').removeClass('active');
                 this.$('.tab-all').removeClass('active');
             }.bind(this));
-            this.list.collection.on('editUser', this.onEditUser.bind(this));
+            this.list.collection.on('edit', this.onEditUser, this);
+            this.list.collection.on('modPw', this.onModPw, this);
         },
 
         initialize: function () {
@@ -74,6 +75,18 @@ define(function (require, exports, module) {
             });
             dialog.model.on('saved', function () {
                 this.list.refresh();
+            }, this);
+            dialog.show();
+        },
+        
+        onModPw: function (model) {
+            var Dialog = require('../dialog/ModPwDialog');
+            var dialog = new Dialog({
+                model: model
+            });
+            dialog.model.on('saved', function () {
+                //TODO message
+                window.alert('修改成功');
             }, this);
             dialog.show();
         }

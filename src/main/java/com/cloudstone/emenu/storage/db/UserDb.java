@@ -59,6 +59,8 @@ public class UserDb extends SQLiteDb implements IUserDb {
         .appendSetValue(Column.REAL_NAME.toString()).appendSetValue(Column.COMMENT.toString())
         .appendWhereId()
         .build();
+    private static final String SQL_MODIFY_PASSWORD = new UpdateSqlBuilder(TABLE_USER)
+        .appendSetValue(Column.PASSWORD.toString()).appendWhereId().build();
     
     @Override
     protected void onCheckCreateTable() throws SQLiteException {
@@ -98,6 +100,13 @@ public class UserDb extends SQLiteDb implements IUserDb {
         String sql = SQL_UPDATE;
         executeSQL(sql, new UpdateBinder(user));
         return get(user.getId());
+    }
+    
+    @Override
+    public boolean modifyPassword(long userId, String password)
+            throws SQLiteException {
+        executeSQL(SQL_MODIFY_PASSWORD, new ModifyPasswordBinder(userId, password));
+        return true;
     }
     
     @Override
@@ -165,6 +174,23 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(4, user.getType());
             stmt.bind(5, user.getRealName());
             stmt.bind(6, user.getComment());
+        }
+    }
+    
+    private class ModifyPasswordBinder implements StatementBinder {
+        private final long userId;
+        private final String password;
+
+        public ModifyPasswordBinder(long userId, String password) {
+            super();
+            this.userId = userId;
+            this.password = password;
+        }
+
+        @Override
+        public void onBind(SQLiteStatement stmt) throws SQLiteException {
+            stmt.bind(1, password);
+            stmt.bind(2, userId);
         }
     }
     

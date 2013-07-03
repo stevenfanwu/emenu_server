@@ -36,6 +36,15 @@ public class UserService extends BaseService implements IUserService {
             throw new ServerError(e);
         }
     }
+    
+    @Override
+    public boolean modifyPassword(long userId, String password) {
+        try {
+            return userDb.modifyPassword(userId, password);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
 
     @Override
     public User add(User user) {
