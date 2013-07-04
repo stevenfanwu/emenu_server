@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     "use strict";
 
     var TabList = require('./TabList');
+    var TableModel = require('../model/TableModel');
 
     var Table = TabList.extend({
         RouterType: require('../router/TableRouter'),
@@ -12,6 +13,10 @@ define(function (require, exports, module) {
         ListType: require('../list/TableList'),
 
         tabEl: ['.tab-all', '.tab-room', '.tab-hall', '.tab-booth'],
+
+        events: {
+            'click .btn-create-table': 'onCreateTable'
+        },
         
         initEvents: function () {
             TabList.prototype.initEvents.apply(this, arguments);
@@ -31,6 +36,25 @@ define(function (require, exports, module) {
                 this.list.showBooth();
                 this.activeTab('.tab-booth');
             }, this);
+        },
+
+        
+        /* -------------------- Event Listener ----------------------- */
+        
+        onCreateTable: function (evt) {
+            evt.preventDefault();
+            var Dialog = require('../dialog/EditTableDialog');
+            var dialog = new Dialog({
+                model: new TableModel({
+                    minCharge: 0,
+                    tipMode: 0
+                })
+            });
+            dialog.model.on('saved', function () {
+                this.list.refresh();
+            }, this);
+            dialog.show();
+            evt.stopPropagation();
         }
         
     });

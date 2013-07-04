@@ -14,8 +14,6 @@ define(function (require, exports, module) {
         form: null,
 
         reset: function () {
-            this.$el.removeClass('success');
-            this.$el.removeClass('error');
             this.clearError();
         },
 
@@ -67,8 +65,25 @@ define(function (require, exports, module) {
         },
 
         clearError: function () {
+            this.$el.removeClass('success');
+            this.$el.removeClass('error');
             this.$('.help-inline').text('');
             this.$('.help-inline').hide();
+        },
+
+        init: function () {
+            this.setValueFromModel(this.form.model);
+        },
+
+        setValueFromModel: function (model) {
+            var value = model.get(this.name);
+            if (value !== undefined) {
+                this.setValue(value);
+            }
+        },
+
+        saveValueToModel: function (model) {
+            model.set(this.name, this.getValue());
         }
     });
 

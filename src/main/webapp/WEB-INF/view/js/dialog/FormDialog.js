@@ -9,8 +9,6 @@ define(function (require, exports, module) {
     var FormDialog = Dialog.extend({
         FormType: null,
 
-        formEl: '.form-create-user',
-
         initialize: function () {
             Dialog.prototype.initialize.apply(this, arguments);
         

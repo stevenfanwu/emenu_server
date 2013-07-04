@@ -26,6 +26,8 @@ define(function (require, exports, module) {
 
         ContentType: Content,
 
+        formEl: '.form-create-user',
+
         FormType: require('../form/EditUserForm')
         
         

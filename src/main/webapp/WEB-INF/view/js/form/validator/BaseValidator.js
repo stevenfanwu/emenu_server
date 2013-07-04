@@ -18,6 +18,7 @@ define(function (require, exports, module) {
             item.showError(this.errorMessage);
             return false;
         }
+        item.showSuccess();
         return true;
     };
 
@@ -26,7 +27,7 @@ define(function (require, exports, module) {
     };
 
     BaseValidator.prototype.parseConfig = function (config) {
-        this.errorMessage = config.errorMessage;
+        this.errorMessage = config.errorMessage || this.errorMessage;
     };
 
     BaseValidator.extend = function (options) {

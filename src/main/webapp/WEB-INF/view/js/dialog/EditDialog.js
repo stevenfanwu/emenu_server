@@ -10,7 +10,6 @@ define(function (require, exports, module) {
         headerSuffix: null,
 
         getHeader: function () {
-            FormDialog.prototype.getHeader.apply(this, arguments);
             if (this.headerSuffix) {
                 return (this.isEditing() ? '编辑' : '新建') + this.headerSuffix;
             }

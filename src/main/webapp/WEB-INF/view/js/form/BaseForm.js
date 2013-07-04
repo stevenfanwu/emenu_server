@@ -37,6 +37,9 @@ define(function (require, exports, module) {
         parseItemConfig: function () {
             this.items = [];
             this.itemConfig.forEach(function (config) {
+                if (!config.el) {
+                    config.el = '.input-' + config.name;
+                }
                 if (this.hiddenItems.indexOf(config.name) !== -1) {
                     //hide item
                     this.$(config.el).hide();
@@ -47,10 +50,7 @@ define(function (require, exports, module) {
                 item.form = this;
                 item.setElement(this.$(config.el)[0]);
                 item.parseConfig(config);
-                var value = this.model.get(item.name);
-                if (value) {
-                    item.setValue(value);
-                }
+                item.init();
                 this.items.push(item);
             }, this);
         },
@@ -78,7 +78,7 @@ define(function (require, exports, module) {
                 if (!item.validate()) {
                     result = false;
                 } else {
-                    this.model.set(item.name, item.getValue());
+                    item.saveValueToModel(this.model);
                 }
             }, this);
             return result;
