@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.cloudstone.emenu.exception.DbNotFoundException;
+
 /**
  * @author xuhongfeng
  *
@@ -33,7 +35,11 @@ public class ErrorController extends BaseController {
         String requestUrl = (String) req.getAttribute(ATTR_REQUEST_URI);
         
         LOG.error("url :  + " + requestUrl);
+        
         if (exception != null) {
+            if (exception.getClass() == DbNotFoundException.class) {
+                return "/init";
+            }
             LOG.error("", exception);
         }
         

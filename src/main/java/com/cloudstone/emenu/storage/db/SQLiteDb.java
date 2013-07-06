@@ -5,18 +5,17 @@
 package com.cloudstone.emenu.storage.db;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
@@ -31,9 +30,7 @@ public abstract class SQLiteDb extends BaseStorage {
     
     private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (%s)";
             
-    //TODO where to store this file
-    @Value("${db.file}")
-    private String DB_FILE;
+    private static File DB_FILE;
     
     public static enum DataType {
         NULL("NULL"), INTEGER("INTEGER"), REAL("REAL"), TEXT("TEXT"), BLOB("BLOB");
@@ -50,8 +47,16 @@ public abstract class SQLiteDb extends BaseStorage {
     }
     
     /* ---------- protected ----------*/
-    @PostConstruct
     protected void init() {
+        DB_FILE = new File(System.getProperty(Const.PARAM_DB_FILE));
+        LOG.info("db file = " + DB_FILE.getAbsolutePath());
+        if (!DB_FILE.exists()) {
+            try {
+                DB_FILE.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         try {
             onCheckCreateTable();
         } catch (SQLiteException e) {
@@ -60,9 +65,10 @@ public abstract class SQLiteDb extends BaseStorage {
     }
     
     protected SQLiteConnection open() throws SQLiteException {
-        File dbFile = new File(DB_FILE);
-//        LOG.info("dbFile=" + dbFile.getAbsolutePath() + ", exists=" + dbFile.exists());
-        SQLiteConnection conn = new SQLiteConnection(dbFile);
+        if (DB_FILE == null) {
+            init();
+        }
+        SQLiteConnection conn = new SQLiteConnection(DB_FILE);
         conn.open();
         return conn;
     }

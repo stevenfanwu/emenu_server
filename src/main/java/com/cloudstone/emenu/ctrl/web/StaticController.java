@@ -61,7 +61,7 @@ public class StaticController extends BaseWebController {
             //handlebars
             response.setContentType("text/javascript; charset=UTF-8");
             path = path.substring(0, path.length()-3);
-            File file = new File(getWebHome(), path);
+            File file = new File(getWebInf(), path);
             String content = FileUtils.readFileToString(file, "UTF-8");
             try {
                 content = HandlebarsObj.toJavaScript(content);

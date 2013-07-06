@@ -62,12 +62,12 @@ public class BaseController {
         }
     }
     
-    protected File getWebHome() {
-        return new File(System.getProperty(Const.PARAM_WEB_HOME_DIR));
+    protected File getWebInf() {
+        return new File(System.getProperty(Const.PARAM_WEB_HOME_DIR), "WEB-INF");
     }
 
     protected void sendFile(HttpServletResponse response, String path) throws IOException {
-        File file = new File(getWebHome(), path);
+        File file = new File(getWebInf(), path);
         LOG.info(file.getAbsolutePath());
 
         InputStream is = null;

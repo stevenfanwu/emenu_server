@@ -4,6 +4,9 @@
  */
 package com.cloudstone.emenu;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
@@ -21,8 +24,24 @@ public class Dispatcher extends DispatcherServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        String homeDir = config.getServletContext().getRealPath("WEB-INF");
-        System.setProperty(Const.PARAM_WEB_HOME_DIR, homeDir);
+        File homeDir = new File(config.getServletContext().getRealPath("/"));
+        System.setProperty(Const.PARAM_WEB_HOME_DIR, homeDir.getAbsolutePath());
+        File tomcatHome = homeDir.getParentFile().getParentFile();
+        System.setProperty(Const.PARAM_TOMCAT_HOME, tomcatHome.getAbsolutePath());
+        File dataDir = new File(tomcatHome, "cloudstone-data");
+        System.setProperty(Const.PARAM_CLOUDSTONE_DATA_DIR, dataDir.getAbsolutePath());
+        if (!dataDir.exists()) {
+            dataDir.mkdir();
+        }
+        File dbFile = new File(dataDir, "cloudstone.db");
+        System.setProperty(Const.PARAM_DB_FILE, dbFile.getAbsolutePath());
+        if (!dbFile.exists()) {
+            try {
+                dbFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         super.init(config);
     }
 }

@@ -10,6 +10,9 @@ package com.cloudstone.emenu.constant;
  */
 public class Const {
     public static final String PARAM_WEB_HOME_DIR = "emenu.home";
+    public static final String PARAM_TOMCAT_HOME = "tomcat.home";
+    public static final String PARAM_CLOUDSTONE_DATA_DIR = "cloudstone.data.dir";
+    public static final String PARAM_DB_FILE = "cloudstone.db";
     
     public static class UserType {
         public static final int USER = 0;
