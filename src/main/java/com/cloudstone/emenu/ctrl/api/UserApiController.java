@@ -59,8 +59,7 @@ public class UserApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/users/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void delete(@PathVariable(value="id") long userId,
-            @RequestBody String body, HttpServletResponse response) {
+    public void delete(@PathVariable(value="id") long userId, HttpServletResponse response) {
         userLogic.delete(userId);
     }
     

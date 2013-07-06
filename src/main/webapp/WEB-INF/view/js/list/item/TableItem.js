@@ -10,6 +10,11 @@ define(function (require, exports, module) {
     var TableItem = BaseItem.extend({
         tmpl: require('./TableItem.handlebars'),
 
+        events: {
+            'click .btn-edit-table': 'onEditTable',
+            'click .btn-delete-table': 'onDeleteTable'
+        },
+
         getRenderData: function () {
             var data = BaseItem.prototype.getRenderData.apply(this, arguments);
             data.typeLabel = Const.TableType.getLabel(data.type);
@@ -24,7 +29,22 @@ define(function (require, exports, module) {
                 data.tipLabel = data.tip;
             }
             return data;
+        },
+        
+        /* -------------------- Event Listener ----------------------- */
+        
+        onEditTable: function (evt) {
+            evt.preventDefault();
+            this.model.trigger('edit', this.model);
+            evt.stopPropagation();
+        },
+
+        onDeleteTable: function (evt) {
+            evt.preventDefault();
+            this.model.trigger('delete', this.model);
+            evt.stopPropagation();
         }
+        
         
         
     });

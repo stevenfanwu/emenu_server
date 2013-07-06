@@ -55,6 +55,10 @@ define(function (require, exports, module) {
         },
 
         onDeleteUser: function (model) {
+            if (model.get('id') === this.getCurrentUser().id) {
+                window.alert('不能删除自己');
+                return;
+            }
             if (window.confirm('确定删除用户' + model.get('name') + '?')) {
                 model.destroy({
                     success: function () {

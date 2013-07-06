@@ -16,4 +16,6 @@ public interface ITableService {
 
     public Table add(Table table);
     public List<Table> getAll();
+    public void delete(long tableId);
+    public Table update(Table table);
 }

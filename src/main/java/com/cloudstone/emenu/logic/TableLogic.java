@@ -31,4 +31,12 @@ public class TableLogic extends BaseLogic {
         return tableService.getAll();
     }
 
+    
+    public Table update(Table table) {
+        return tableService.update(table);
+    }
+    
+    public void delete(long tableId) {
+        tableService.delete(tableId);
+    }
 }

@@ -65,7 +65,6 @@ public class StaticController extends BaseWebController {
             String content = FileUtils.readFileToString(file, "UTF-8");
             try {
                 content = HandlebarsObj.toJavaScript(content);
-                LOG.info("handlebars : " + content);
                 IOUtils.write(content.getBytes("UTF-8"), response.getOutputStream());
             } catch (Exception e) {
                 throw new ServerError(e);

@@ -15,9 +15,9 @@ import com.cloudstone.emenu.data.User;
 public interface IUserService {
     public User getUserByName(String userName);
     public User add(User user);
-    public User update(User user);
     public boolean modifyPassword(long userId, String password);
     public User get(long userId);
     public List<User> getAll();
     public void delete(long userId);
+    public User update(User user);
 }

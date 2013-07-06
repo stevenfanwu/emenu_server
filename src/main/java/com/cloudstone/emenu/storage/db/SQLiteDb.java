@@ -61,7 +61,7 @@ public abstract class SQLiteDb extends BaseStorage {
     
     protected SQLiteConnection open() throws SQLiteException {
         File dbFile = new File(DB_FILE);
-        LOG.info("dbFile=" + dbFile.getAbsolutePath() + ", exists=" + dbFile.exists());
+//        LOG.info("dbFile=" + dbFile.getAbsolutePath() + ", exists=" + dbFile.exists());
         SQLiteConnection conn = new SQLiteConnection(dbFile);
         conn.open();
         return conn;
@@ -76,6 +76,8 @@ public abstract class SQLiteDb extends BaseStorage {
     protected void executeSQL(String sql, StatementBinder binder) throws SQLiteException {
         SQLiteConnection conn = open();
         SQLiteStatement stmt = conn.prepare(sql);
+        //TODO
+        LOG.info("stmt = " + stmt);
         try {
             binder.onBind(stmt);
             stmt.stepThrough();
@@ -90,12 +92,9 @@ public abstract class SQLiteDb extends BaseStorage {
         SQLiteStatement stmt = conn.prepare(sql);
         try {
             binder.onBind(stmt);
-            LOG.info("queryOne: " + stmt);
             if (stmt.step()) {
-                LOG.info("queryOne: sueccess");
                 return rowMapper.map(stmt);
             } else{
-                LOG.info("queryOne: null");
                 return null;
             }
         } finally {

@@ -17,4 +17,6 @@ public interface ITableDb {
     public Table add(Table table) throws SQLiteException;
     public Table get(long id) throws SQLiteException;
     public List<Table> getAll() throws SQLiteException;
+    public Table update(Table table) throws SQLiteException;
+    public void delete(long tableId) throws SQLiteException;
 }

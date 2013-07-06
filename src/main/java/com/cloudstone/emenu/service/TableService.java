@@ -41,4 +41,22 @@ public class TableService extends BaseService implements ITableService {
         }
     }
 
+    
+    @Override
+    public Table update(Table table) {
+        try {
+            return tableDb.update(table);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public void delete(long tableId) {
+        try {
+            tableDb.delete(tableId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
 }
