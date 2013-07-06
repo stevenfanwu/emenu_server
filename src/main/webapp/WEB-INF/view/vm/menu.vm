@@ -1,2 +1,18 @@
 #set($mode="admin")
 #set($pageName="Menu")
+
+#macro (menu_nav_item, $tab_name)
+  <li class="tab-$tab_name">
+    <a href="#$tab_name" class="link-$tab_name">$!bodyContent</a>
+  </li>
+#end
+
+<ul class="nav nav-tabs">
+    #@menu_nav_item("dish")菜品#end
+    #@menu_nav_item("menu")菜单#end
+    #@menu_nav_item("taste")菜品做法#end
+    <li class="pull-right li-right">
+    </li>
+</ul>
+<div class="bottom-content">
+</div>

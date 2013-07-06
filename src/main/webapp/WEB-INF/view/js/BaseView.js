@@ -18,6 +18,8 @@ define(function (require, exports, module) {
         },
 
         resetContent: function () {
+            this.$el.empty();
+            this.render();
         },
 
         render: function () {
