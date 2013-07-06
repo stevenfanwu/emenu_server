@@ -31,7 +31,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     @Value("${admin.password.default}")
     private String DEFAULT_ADMIN_PASSWORD;
     
-    private static final String TABLE_USER = "user";
+    private static final String TABLE_NAME = "user";
     
     private static enum Column {
         ID("id"), NAME("name"), PASSWORD("password"),
@@ -48,27 +48,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
         }
     }
     
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_USER).build();
-    private static final String SQL_SELECT_BY_NAME = new SelectSqlBuilder(TABLE_USER)
-        .appendWhere(Column.NAME.toString()).build();
-    private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_USER)
-        .appendWhere(Column.ID.toString()).build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_USER, 6).build();
-    private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_USER)
-        .appendSetValue(Column.NAME.toString()).appendSetValue(Column.TYPE.toString())
-        .appendSetValue(Column.REAL_NAME.toString()).appendSetValue(Column.COMMENT.toString())
-        .appendWhereId()
-        .build();
-    private static final String SQL_MODIFY_PASSWORD = new UpdateSqlBuilder(TABLE_USER)
-        .appendSetValue(Column.PASSWORD.toString()).appendWhereId().build();
-    
-    @Override
-    protected void onCheckCreateTable() throws SQLiteException {
-        checkCreateUserTable();
-    }
-    
-    private void checkCreateUserTable() throws SQLiteException {
-        String colDef = new ColumnDefBuilder()
+    private static final String COL_DEF = new ColumnDefBuilder()
             .append(Column.ID.toString(), DataType.INTEGER, "NOT NULL PRIMARY KEY")
             .append(Column.NAME.toString(), DataType.TEXT, "NOT NULL")
             .append(Column.PASSWORD.toString(), DataType.TEXT, "NOT NULL")
@@ -76,7 +56,24 @@ public class UserDb extends SQLiteDb implements IUserDb {
             .append(Column.REAL_NAME.toString(), DataType.TEXT, "NOT NULL")
             .append(Column.COMMENT.toString(), DataType.TEXT, "DEFAULT ''")
             .build();
-        checkCreateTable(TABLE_USER, colDef);
+    
+    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
+    private static final String SQL_SELECT_BY_NAME = new SelectSqlBuilder(TABLE_NAME)
+        .appendWhere(Column.NAME.toString()).build();
+    private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
+        .appendWhere(Column.ID.toString()).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 6).build();
+    private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
+        .appendSetValue(Column.NAME.toString()).appendSetValue(Column.TYPE.toString())
+        .appendSetValue(Column.REAL_NAME.toString()).appendSetValue(Column.COMMENT.toString())
+        .appendWhereId()
+        .build();
+    private static final String SQL_MODIFY_PASSWORD = new UpdateSqlBuilder(TABLE_NAME)
+        .appendSetValue(Column.PASSWORD.toString()).appendWhereId().build();
+    
+    @Override
+    protected void onCheckCreateTable() throws SQLiteException {
+        checkCreateTable(TABLE_NAME, COL_DEF);
     }
     
     @Override
@@ -125,7 +122,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     public User addUser(User user) throws SQLiteException {
         UserBinder binder = new UserBinder(user);
         executeSQL(SQL_INSERT, binder);
-        return getUserByName(user.getName());
+        return get(user.getId());
     }
     
     private RowMapper<User> rowMapper = new RowMapper<User>() {

@@ -13,6 +13,7 @@ define(function (require, exports, module) {
     var TableTipValidator = require('./validator/TableTipValidator');
 
     var Text = require('./item/Text');
+    var Radio = require('./item/Radio');
     var TableTip = require('./item/TableTip');
 
     var EditTableForm = BaseForm.extend({
@@ -25,6 +26,14 @@ define(function (require, exports, module) {
                 type: Required,
                 errorMessage: '桌名不能为空'
             }]
+        }, {
+            name: 'type',
+            type: Radio,
+            el: '.input-type'
+        }, {
+            name: 'shape',
+            type: Radio,
+            el: '.input-shape'
         }, {
             name: 'capacity',
             type: Text,

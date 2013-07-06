@@ -9,6 +9,7 @@ package com.cloudstone.emenu.data;
  *
  */
 public class Table {
+    private long id;
     private String name;
     private int type;//类型
     private int shape;//桌型
@@ -57,5 +58,11 @@ public class Table {
     }
     public void setTip(double tip) {
         this.tip = tip;
+    }
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
     }
 }
