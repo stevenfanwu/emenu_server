@@ -13,6 +13,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
+import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -57,6 +58,8 @@ public class UserDb extends SQLiteDb implements IUserDb {
             .append(Column.COMMENT.toString(), DataType.TEXT, "DEFAULT ''")
             .build();
     
+    private static final String SQL_DELETE = new DeleteSqlBuilder(TABLE_NAME)
+        .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_SELECT_BY_NAME = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.NAME.toString()).build();
@@ -77,7 +80,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     }
     
     @Override
-    public User getUserByName(String userName) throws SQLiteException {
+    public User getByName(String userName) throws SQLiteException {
         GetByNameBinder binder = new GetByNameBinder(userName);
         User user = queryOne(SQL_SELECT_BY_NAME, binder, rowMapper);
         if (user==null && userName.equals("admin")) {
@@ -87,16 +90,21 @@ public class UserDb extends SQLiteDb implements IUserDb {
             user.setComment("默认密码admin,请及时修改");
             user.setPassword(RsaUtils.encrypt(DEFAULT_ADMIN_PASSWORD));
             user.setRealName("超级用户");
-            user = addUser(user);
+            user = add(user);
         }
         return user;
     }
     
     @Override
-    public User updateUser(User user) throws SQLiteException {
+    public User update(User user) throws SQLiteException {
         String sql = SQL_UPDATE;
         executeSQL(sql, new UpdateBinder(user));
         return get(user.getId());
+    }
+    
+    @Override
+    public void delete(long userId) throws SQLiteException {
+        executeSQL(SQL_DELETE, new IdStatementBinder(userId));
     }
     
     @Override
@@ -119,7 +127,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     }
 
     @Override
-    public User addUser(User user) throws SQLiteException {
+    public User add(User user) throws SQLiteException {
         UserBinder binder = new UserBinder(user);
         executeSQL(SQL_INSERT, binder);
         return get(user.getId());

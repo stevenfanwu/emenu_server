@@ -12,6 +12,7 @@ define(function (require, exports, module) {
 
         events: {
             'click .btn-edit-user': 'onEditUser',
+            'click .btn-delete-user': 'onDeleteUser',
             'click .btn-mod-pw': 'onModPw'
         },
 
@@ -42,7 +43,14 @@ define(function (require, exports, module) {
             evt.preventDefault();
             this.model.trigger('modPw', this.model);
             evt.stopPropagation();
+        },
+
+        onDeleteUser: function (evt) {
+            evt.preventDefault();
+            this.model.trigger('delete', this.model);
+            evt.stopPropagation();
         }
+        
         
     });
     

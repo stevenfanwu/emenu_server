@@ -37,6 +37,7 @@ define(function (require, exports, module) {
             }.bind(this));
             this.list.collection.on('edit', this.onEditUser, this);
             this.list.collection.on('modPw', this.onModPw, this);
+            this.list.collection.on('delete', this.onDeleteUser, this);
         },
         
         /* -------------------- Event Listener ----------------------- */
@@ -51,6 +52,16 @@ define(function (require, exports, module) {
                 this.list.refresh();
             }, this);
             dialog.show();
+        },
+
+        onDeleteUser: function (model) {
+            if (window.confirm('确定删除用户' + model.get('name') + '?')) {
+                model.destroy({
+                    success: function () {
+                        this.list.refresh();
+                    }.bind(this)
+                });
+            }
         },
         
         onEditUser: function (model) {

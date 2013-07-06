@@ -63,4 +63,8 @@ public class UserLogic extends BaseLogic {
     public boolean modifyPassword(long userId, String password) {
         return userService.modifyPassword(userId, password);
     }
+    
+    public void delete(long userId) {
+        userService.delete(userId);
+    }
 }

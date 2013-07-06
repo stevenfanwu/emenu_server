@@ -58,6 +58,12 @@ public class UserApiController extends BaseApiController {
         return userLogic.getAll();
     }
     
+    @RequestMapping(value="/api/users/{id:[\\d]+}", method=RequestMethod.DELETE)
+    public void delete(@PathVariable(value="id") long userId,
+            @RequestBody String body, HttpServletResponse response) {
+        userLogic.delete(userId);
+    }
+    
     @RequestMapping(value="/api/users/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody User update(@PathVariable(value="id") long userId,
             @RequestBody String body, HttpServletResponse response) {

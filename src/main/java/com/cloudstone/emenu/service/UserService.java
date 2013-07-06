@@ -22,7 +22,7 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User getUserByName(String userName) {
         try {
-            return userDb.getUserByName(userName);
+            return userDb.getByName(userName);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
@@ -31,7 +31,7 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User update(User user) {
         try {
-            return userDb.updateUser(user);
+            return userDb.update(user);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
@@ -49,7 +49,7 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User add(User user) {
         try {
-            return userDb.addUser(user);
+            return userDb.add(user);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
@@ -68,6 +68,15 @@ public class UserService extends BaseService implements IUserService {
     public List<User> getAll() {
         try {
             return userDb.getAll();
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public void delete(long userId) {
+        try {
+            userDb.delete(userId);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

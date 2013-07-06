@@ -15,10 +15,11 @@ import com.cloudstone.emenu.data.User;
  */
 public interface IUserDb {
 
-    public User getUserByName(String userName) throws SQLiteException;
+    public User getByName(String userName) throws SQLiteException;
     public User get(long userId) throws SQLiteException;
     public List<User> getAll() throws SQLiteException;
-    public User addUser(User user) throws SQLiteException;
-    public User updateUser(User user) throws SQLiteException;
+    public User add(User user) throws SQLiteException;
+    public User update(User user) throws SQLiteException;
+    public void delete(long userId) throws SQLiteException;
     public boolean modifyPassword(long userId, String password) throws SQLiteException;
 }
