@@ -65,7 +65,7 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> getAll() {
         try {
             return userDb.getAll();
         } catch (SQLiteException e) {

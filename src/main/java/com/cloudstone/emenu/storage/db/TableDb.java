@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -54,6 +56,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ID.toString()).build();
+    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
 
     @Override
     public Table add(Table table) throws SQLiteException {
@@ -72,6 +75,11 @@ public class TableDb extends SQLiteDb implements ITableDb {
     @Override
     protected void onCheckCreateTable() throws SQLiteException {
         checkCreateTable(TABLE_NAME, COL_DEF);
+    }
+    
+    @Override
+    public List<Table> getAll() throws SQLiteException {
+        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
     private class TableBinder implements StatementBinder {

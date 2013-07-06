@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,10 @@ public class TableLogic extends BaseLogic {
     public Table add(Table table) {
         table.setId(IdGenerator.generateId());
         return tableService.add(table);
+    }
+    
+    public List<Table> getAll() {
+        return tableService.getAll();
     }
 
 }

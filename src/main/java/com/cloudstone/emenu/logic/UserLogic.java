@@ -56,8 +56,8 @@ public class UserLogic extends BaseLogic {
         return userService.get(userId);
     }
     
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<User> getAll() {
+        return userService.getAll();
     }
     
     public boolean modifyPassword(long userId, String password) {

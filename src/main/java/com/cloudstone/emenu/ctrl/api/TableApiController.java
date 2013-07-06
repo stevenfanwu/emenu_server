@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.ctrl.api;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +35,10 @@ public class TableApiController extends BaseApiController {
         table = tableLogic.add(table);
         sendSuccess(resp, HttpServletResponse.SC_CREATED);
         return table;
+    }
+
+    @RequestMapping(value="/api/tables", method=RequestMethod.GET)
+    public @ResponseBody List<Table> get() {
+        return tableLogic.getAll();
     }
 }

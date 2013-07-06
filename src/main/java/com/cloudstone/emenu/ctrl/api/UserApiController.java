@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.ctrl.api;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -52,8 +54,8 @@ public class UserApiController extends BaseApiController {
     }
 
     @RequestMapping(value="/api/users", method=RequestMethod.GET)
-    public @ResponseBody User[] get() {
-        return userLogic.getAllUsers().toArray(new User[0]);
+    public @ResponseBody List<User> get() {
+        return userLogic.getAll();
     }
     
     @RequestMapping(value="/api/users/{id:[\\d]+}", method=RequestMethod.PUT)

@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.service;
 
+import java.util.List;
+
 import com.cloudstone.emenu.data.Table;
 
 /**
@@ -13,4 +15,5 @@ import com.cloudstone.emenu.data.Table;
 public interface ITableService {
 
     public Table add(Table table);
+    public List<Table> getAll();
 }

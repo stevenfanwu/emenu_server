@@ -18,5 +18,5 @@ public interface IUserService {
     public User update(User user);
     public boolean modifyPassword(long userId, String password);
     public User get(long userId);
-    public List<User> getAllUsers();
+    public List<User> getAll();
 }

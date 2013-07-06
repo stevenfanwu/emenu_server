@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,15 @@ public class TableService extends BaseService implements ITableService {
     public Table add(Table table) {
         try {
             return tableDb.add(table);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public List<Table> getAll() {
+        try {
+            return tableDb.getAll();
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
