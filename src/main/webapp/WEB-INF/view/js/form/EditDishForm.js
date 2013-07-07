@@ -66,6 +66,10 @@ define(function (require, exports, module) {
             type: Radio,
             el: '.input-unit'
         }, {
+            name: 'spicy',
+            type: Radio,
+            el: '.input-spicy'
+        }, {
             name: 'specialPrice',
             type: Radio,
             el: '.input-specialPrice'

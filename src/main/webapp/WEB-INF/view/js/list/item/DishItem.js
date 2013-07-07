@@ -10,6 +10,11 @@ define(function (require, exports, module) {
     var DishItem = BaseItem.extend({
         tmpl: require('./DishItem.handlebars'),
 
+        events: {
+            'click .btn-edit-dish': 'onEditDish',
+            'click .btn-delete-dish': 'onDeleteDish'
+        },
+
         getRenderData: function () {
             var data = BaseItem.prototype.getRenderData.apply(this, arguments);
             data.typeLabel = Const.DishType.getLabel(data.type);
@@ -19,6 +24,21 @@ define(function (require, exports, module) {
             data.specialPriceLabel = Const.Boolean.getLabel(data.specialPrice);
             data.inMenu = Const.Boolean.getLabel(data.menuIds.length !== 0);
             return data;
+        },
+
+        
+        /* -------------------- Event Listener ----------------------- */
+        
+        onDeleteDish: function (evt) {
+            evt.preventDefault();
+            this.model.trigger('delete', this.model);
+            evt.stopPropagation();
+        },
+        
+        onEditDish: function (evt) {
+            evt.preventDefault();
+            this.model.trigger('edit', this.model);
+            evt.stopPropagation();
         }
         
         
