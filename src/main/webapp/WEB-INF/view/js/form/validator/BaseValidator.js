@@ -15,11 +15,14 @@ define(function (require, exports, module) {
 
     BaseValidator.prototype.validate = function (item) {
         if (!this.doValidate(item)) {
-            item.showError(this.errorMessage);
-            return false;
+            return {
+                success: false,
+                error: this.errorMessage
+            };
         }
-        item.showSuccess();
-        return true;
+        return {
+            success: true
+        };
     };
 
     BaseValidator.prototype.doValidate = function (item) {

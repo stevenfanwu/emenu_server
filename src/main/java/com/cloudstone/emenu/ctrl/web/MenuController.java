@@ -29,4 +29,10 @@ public class MenuController extends BaseWebController {
             ModelMap model) {
         return sendView("soldout", req, resp, model);
     }
+    
+    @RequestMapping("/dish/new")
+    public String addDish(HttpServletRequest req, HttpServletResponse resp,
+            ModelMap model) {
+        return sendView("editDish", req, resp, model);
+    }
 }

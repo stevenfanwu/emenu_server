@@ -50,7 +50,7 @@ define(function (require, exports, module) {
             this.$('.wrap-tip').addClass('success');
         },
 
-        clearError: function () {
+        clearTip: function () {
             this.$('.wrap-tip').removeClass('success');
             this.$('.wrap-tip').removeClass('error');
             this.$('.help-inline').text('');

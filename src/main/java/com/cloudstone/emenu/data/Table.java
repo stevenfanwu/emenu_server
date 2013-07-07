@@ -8,7 +8,7 @@ package com.cloudstone.emenu.data;
  * @author xuhongfeng
  *
  */
-public class Table {
+public class Table extends BaseData {
     private long id;
     private String name;
     private int type;//类型

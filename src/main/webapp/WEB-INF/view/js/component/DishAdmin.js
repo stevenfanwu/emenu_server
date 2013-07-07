@@ -5,10 +5,31 @@ define(function (require, exports, module) {
     "use strict";
 
     var BaseView = require('../BaseView');
+    var DishModel = require('../model/DishModel');
 
     var DishAdmin = BaseView.extend({
-        tmpl: require('./DishAdmin.handlebars')
+        tmpl: require('./DishAdmin.handlebars'),
+
+        events: {
+            'click .btn-add-dish': 'onAddDish'
+        },
+
         
+        /* -------------------- Event Listener ----------------------- */
+        
+        onAddDish: function (evt) {
+            evt.preventDefault();
+            var Dialog = require('../dialog/EditDishDialog');
+            var dialog = new Dialog({
+                model: new DishModel()
+            });
+            dialog.model.on('saved', function () {
+                //TODO
+                this.list.refresh();
+            }, this);
+            dialog.show();
+            evt.stopPropagation();
+        }
     });
     
     return DishAdmin;

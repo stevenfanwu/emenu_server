@@ -45,4 +45,16 @@ public class Const {
         public static final int FIXED = 1;//固定值
         public static final int PERCENTAGE = 2;//按比例
     }
+    
+    public static class DishType {
+        public static final int HOT = 0; //热菜
+        public static final int COLD = 1; //凉菜
+        public static final int DRINK = 2; //饮料
+        public static final int SPECIAL = 3; //特色菜
+    }
+    
+    public static class DishUnit {
+        public static final int JIN = 0; // 斤
+        public static final int FEN = 1; // 份
+    }
 }

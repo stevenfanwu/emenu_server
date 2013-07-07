@@ -12,7 +12,7 @@ import com.cloudstone.emenu.constant.Const.UserType;
  * @author xuhongfeng
  *
  */
-public class User {
+public class User extends BaseData {
     private long id;
     
     /* login name */

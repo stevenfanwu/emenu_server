@@ -55,6 +55,11 @@ define(function (require, exports, module) {
                 type: Required,
                 errorMessage: '请输入最低消费'
             }, {
+                type: MoreThan,
+                other: 0,
+                including: true,
+                errorMessage: '请输入大于0的数字'
+            }, {
                 type: Number,
                 errorMessage: '请输入数字'
             }]

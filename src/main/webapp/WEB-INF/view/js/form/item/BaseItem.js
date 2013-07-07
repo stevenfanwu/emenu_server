@@ -13,8 +13,10 @@ define(function (require, exports, module) {
 
         form: null,
 
+        valueEl: 'input',
+
         reset: function () {
-            this.clearError();
+            this.clearTip();
         },
 
         parseConfig: function (config) {
@@ -34,17 +36,28 @@ define(function (require, exports, module) {
         },
 
         validate: function () {
-            return this.validators.every(function (validator) {
-                return validator.validate(this);
+            var result = {
+                success: true
+            };
+            this.validators.every(function (validator) {
+                result = validator.validate(this);
+                return result.success;
             }, this);
+            this.clearTip();
+            if (result.success) {
+                this.showSuccess();
+            } else {
+                this.showError(result.error);
+            }
+            return result.success;
         },
 
         getValue: function () {
-            return this.$('input').val();
+            return this.$(this.valueEl).val();
         },
 
         setValue: function (value) {
-            return this.$('input').val(value);
+            return this.$(this.valueEl).val(value);
         },
 
         isEmpty: function () {
@@ -64,7 +77,7 @@ define(function (require, exports, module) {
             this.$el.addClass('success');
         },
 
-        clearError: function () {
+        clearTip: function () {
             this.$el.removeClass('success');
             this.$el.removeClass('error');
             this.$('.help-inline').text('');

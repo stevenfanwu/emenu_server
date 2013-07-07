@@ -9,13 +9,22 @@ define(function (require, exports, module) {
     var MoreThan = BaseValidator.extend({
         other: null,
 
+        including: false,
+
         parseConfig: function (config) {
             BaseValidator.prototype.parseConfig.apply(this, arguments);
             this.other = config.other;
+            if (config.including !== undefined) {
+                this.including = config.including;
+            }
         },
         
         doValidate: function (item) {
-            return item.getValue() > this.other;
+            var value = parseInt(item.getValue(), 10);
+            if (this.including) {
+                return value >= this.other;
+            }
+            return value > this.other;
         }
     });
 
