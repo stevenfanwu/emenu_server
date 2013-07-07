@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.exception.UserNameConflictedException;
-import com.cloudstone.emenu.util.AuthHelper;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -32,9 +30,6 @@ import com.cloudstone.emenu.util.JsonUtils;
 @Controller
 public class UserApiController extends BaseApiController {
     private static final Logger LOG = LoggerFactory.getLogger(UserApiController.class);
-    
-    @Autowired
-    private AuthHelper authHelper;
     
     //TODO encrypt password
     @RequestMapping(value="/api/login", method=RequestMethod.POST)

@@ -18,12 +18,12 @@ public class UpdateSqlBuilder extends SQLBuilder {
     }
 
     private boolean firstValue = true;
-    public UpdateSqlBuilder appendSetValue(String key) {
+    public UpdateSqlBuilder appendSetValue(Object column) {
         if (!firstValue) {
             append(",");
         }
         firstValue = false;
-        this.append(key + "=?");
+        this.append(column + "=?");
         return this;
     }
 }

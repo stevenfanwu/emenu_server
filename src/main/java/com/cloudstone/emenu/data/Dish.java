@@ -19,7 +19,7 @@ public class Dish extends BaseData {
     private boolean specialPrice = false;
     private boolean nonInt = false; //是否允许小数份
     private String desc;
-    private String imageId;
+    private String imageId = "";
     
     //check data
     private int[] menuIds = new int[0];

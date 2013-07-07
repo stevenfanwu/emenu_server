@@ -8,11 +8,11 @@ import com.cloudstone.emenu.storage.db.SQLiteDb.DataType;
  *
  */
 public class ColumnDefBuilder extends SQLBuilder {
-    public ColumnDefBuilder append(String name, DataType type, String constraint) {
+    public ColumnDefBuilder append(Object column, DataType type, String constraint) {
         if (size() > 0) {
             append(", ");
         }
-        append(String.format("%s %s %s", name, type, constraint));
+        append(String.format("%s %s %s", column.toString(), type, constraint));
         return this;
     }
 }

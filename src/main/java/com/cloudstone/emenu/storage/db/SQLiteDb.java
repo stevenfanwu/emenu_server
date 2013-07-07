@@ -49,7 +49,6 @@ public abstract class SQLiteDb extends BaseStorage {
     /* ---------- protected ----------*/
     protected void init() {
         DB_FILE = new File(System.getProperty(Const.PARAM_DB_FILE));
-        LOG.info("db file = " + DB_FILE.getAbsolutePath());
         if (!DB_FILE.exists()) {
             try {
                 DB_FILE.createNewFile();
@@ -59,7 +58,8 @@ public abstract class SQLiteDb extends BaseStorage {
         }
         try {
             onCheckCreateTable();
-        } catch (SQLiteException e) {
+        } catch (Throwable e) {
+            LOG.error("", e);
             throw new RuntimeException(e);
         }
     }
@@ -75,6 +75,7 @@ public abstract class SQLiteDb extends BaseStorage {
     
     protected void checkCreateTable(String tableName, String columnDef) throws SQLiteException {
         String sql = String.format(SQL_CREATE, tableName, columnDef);
+        LOG.info("create table sql: " + sql);
         executeSQL(sql, StatementBinder.NULL);
     }
     

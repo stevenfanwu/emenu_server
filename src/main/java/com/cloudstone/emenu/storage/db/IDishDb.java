@@ -1,0 +1,22 @@
+/**
+ * @(#)IDishDb.java, 2013-7-7. 
+ * 
+ */
+package com.cloudstone.emenu.storage.db;
+
+import java.util.List;
+
+import com.almworks.sqlite4java.SQLiteException;
+import com.cloudstone.emenu.data.Dish;
+
+/**
+ * @author xuhongfeng
+ *
+ */
+public interface IDishDb {
+    public void add(Dish dish) throws SQLiteException;
+    public void update(Dish dish) throws SQLiteException;
+    public Dish get(long dishId) throws SQLiteException;
+    public List<Dish> getAll() throws SQLiteException;
+    public void delete(long dishId) throws SQLiteException;
+}

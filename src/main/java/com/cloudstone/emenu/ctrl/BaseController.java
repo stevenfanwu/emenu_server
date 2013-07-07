@@ -20,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.logic.DishLogic;
+import com.cloudstone.emenu.logic.TableLogic;
 import com.cloudstone.emenu.logic.UserLogic;
+import com.cloudstone.emenu.util.AuthHelper;
 
 /**
  * @author xuhongfeng
@@ -29,8 +32,15 @@ import com.cloudstone.emenu.logic.UserLogic;
 public class BaseController {
     private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
     
+    
+    @Autowired
+    protected AuthHelper authHelper;
     @Autowired
     protected UserLogic userLogic;
+    @Autowired
+    protected TableLogic tableLogic;
+    @Autowired
+    protected DishLogic dishLogic;
 
     protected void sendError(HttpServletResponse response, int statusCode) {
         try {

@@ -21,7 +21,6 @@ import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
-import com.cloudstone.emenu.util.JsonUtils;
 
 /**
  * @author xuhongfeng
@@ -103,10 +102,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
     
     @Override
     public Table update(Table table) throws SQLiteException {
-        //TODO
-        LOG.info("update " + JsonUtils.toJson(table));
         String sql = SQL_UPDATE;
-        LOG.info(sql);
         executeSQL(sql, new UpdateBinder(table));
         return get(table.getId());
     }

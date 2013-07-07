@@ -6,6 +6,8 @@ package com.cloudstone.emenu.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cloudstone.emenu.service.IDishService;
+import com.cloudstone.emenu.service.ITableService;
 import com.cloudstone.emenu.service.IUserService;
 
 /**
@@ -15,4 +17,8 @@ import com.cloudstone.emenu.service.IUserService;
 public class BaseLogic {
     @Autowired
     protected IUserService userService;
+    @Autowired
+    protected ITableService tableService;
+    @Autowired
+    protected IDishService dishService;
 }
