@@ -6,6 +6,7 @@ define(function (require, exports, module) {
 
     var BaseView = require('../BaseView');
     var DishModel = require('../model/DishModel');
+    var SearchQuery = require('./SearchQuery');
 
     var DishAdmin = BaseView.extend({
         tmpl: require('./DishAdmin.handlebars'),
@@ -25,6 +26,12 @@ define(function (require, exports, module) {
                 this.list = new List();
                 this.list.collection.on('edit', this.onEditDish.bind(this));
                 this.list.collection.on('delete', this.onDeleteDish.bind(this));
+            }
+            if (!this.searchQuery) {
+                this.searchQuery = new SearchQuery({
+                    el: this.$('.wrap-search-query')
+                });
+                this.searchQuery.on('query', this.list.onQuery, this.list);
             }
             this.list.render();
             this.$('.wrap-list').empty();
