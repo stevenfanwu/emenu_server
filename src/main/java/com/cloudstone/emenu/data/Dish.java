@@ -19,7 +19,7 @@ public class Dish extends BaseData {
     private boolean specialPrice = false;
     private boolean nonInt = false; //是否允许小数份
     private String desc;
-    private String imageId = "";
+    private String imageData;// data:image/png;base64,...
     
     //check data
     private int[] menuIds = new int[0];
@@ -104,14 +104,6 @@ public class Dish extends BaseData {
         this.desc = desc;
     }
 
-    public String getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(String imageId) {
-        this.imageId = imageId;
-    }
-
     public int[] getMenuIds() {
         return menuIds;
     }
@@ -119,6 +111,12 @@ public class Dish extends BaseData {
     public void setMenuIds(int[] menuIds) {
         this.menuIds = menuIds;
     }
-    
-    
+
+    public String getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(String imageData) {
+        this.imageData = imageData;
+    }
 }

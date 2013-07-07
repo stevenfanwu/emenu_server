@@ -20,6 +20,10 @@ import com.cloudstone.emenu.constant.Const;
  *
  */
 public class Dispatcher extends DispatcherServlet {
+    //Global TODO
+    //TODO database upgrade
+    //TODO image
+    
     private static final long serialVersionUID = 1245712434233720170L;
 
     @Override

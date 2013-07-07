@@ -30,7 +30,7 @@ public abstract class SQLiteDb extends BaseStorage {
     
     private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (%s)";
             
-    private static File DB_FILE;
+    private File DB_FILE;
     
     public static enum DataType {
         NULL("NULL"), INTEGER("INTEGER"), REAL("REAL"), TEXT("TEXT"), BLOB("BLOB");

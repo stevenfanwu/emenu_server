@@ -7,6 +7,7 @@ define(function (require, exports, module) {
     var BaseForm = require('./BaseForm');
     var Required = require('./validator/Required');
     var Text = require('./item/Text');
+    var Image = require('./item/Image');
     var Textarea = require('./item/Textarea');
     var Radio = require('./item/Radio');
     var Number = require('./validator/Number');
@@ -85,6 +86,10 @@ define(function (require, exports, module) {
                 type: Required,
                 errorMessage: '请输入菜品描述'
             }]
+        }, {
+            name: 'imageData',
+            type: Image,
+            el: '.input-imageData'
         }]
         
     });
