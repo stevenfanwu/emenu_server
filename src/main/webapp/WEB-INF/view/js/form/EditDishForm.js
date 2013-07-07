@@ -24,7 +24,11 @@ define(function (require, exports, module) {
                 errorMessage: '菜品名称不能为空'
             }]
         }, {
-            name: 'pirce',
+            name: 'type',
+            type: Radio,
+            el: '.input-type'
+        }, {
+            name: 'price',
             type: Text,
             el: '.input-price',
             validators: [{

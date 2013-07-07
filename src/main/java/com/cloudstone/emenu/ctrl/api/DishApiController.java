@@ -26,17 +26,17 @@ import com.cloudstone.emenu.util.JsonUtils;
 @Controller
 public class DishApiController extends BaseApiController {
 
-    @RequestMapping(value="/api/dishes")
+    @RequestMapping(value="/api/dishes", method=RequestMethod.GET)
     public @ResponseBody List<Dish> get() {
         return dishLogic.getAll();
     }
     
-    @RequestMapping(value="/api/dishs/{id:[\\d]+}", method=RequestMethod.DELETE)
+    @RequestMapping(value="/api/dishes/{id:[\\d]+}", method=RequestMethod.DELETE)
     public void delete(@PathVariable(value="id") long dishId, HttpServletResponse response) {
         dishLogic.delete(dishId);
     }
     
-    @RequestMapping(value="/api/dishs/{id:[\\d]+}", method=RequestMethod.PUT)
+    @RequestMapping(value="/api/dishes/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody Dish update(@PathVariable(value="id") long dishId,
             @RequestBody String body, HttpServletResponse response) {
         Dish dish = JsonUtils.fromJson(body, Dish.class);
@@ -47,7 +47,7 @@ public class DishApiController extends BaseApiController {
         return dishLogic.update(dish);
     }
     
-    @RequestMapping(value="/api/dishs", method=RequestMethod.POST)
+    @RequestMapping(value="/api/dishes", method=RequestMethod.POST)
     public @ResponseBody Dish add(@RequestBody String body, HttpServletResponse response) {
         Dish dish = JsonUtils.fromJson(body, Dish.class);
         dish = dishLogic.add(dish);

@@ -14,6 +14,20 @@ define(function (require, exports, module) {
             'click .btn-add-dish': 'onAddDish'
         },
 
+        initialize: function () {
+            BaseView.prototype.initialize.apply(this, arguments);
+        },
+        
+        render: function () {
+            BaseView.prototype.render.apply(this, arguments);
+            if (!this.list) {
+                var List = require('../list/DishList');
+                this.list = new List();
+            }
+            this.list.render();
+            this.$('.wrap-list').empty();
+            this.$('.wrap-list').append(this.list.el);
+        },
         
         /* -------------------- Event Listener ----------------------- */
         
@@ -24,7 +38,6 @@ define(function (require, exports, module) {
                 model: new DishModel()
             });
             dialog.model.on('saved', function () {
-                //TODO
                 this.list.refresh();
             }, this);
             dialog.show();

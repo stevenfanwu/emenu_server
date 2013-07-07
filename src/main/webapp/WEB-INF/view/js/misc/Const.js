@@ -77,5 +77,73 @@ define(function (require, exports, module) {
             label: '按比例'
         }
     });
+
+    exports.DishType = new Const({
+        HOT: {
+            value: 0,
+            label: '热菜'
+        },
+        COLD: {
+            value: 1,
+            label: '凉菜'
+        },
+        DRINK: {
+            value: 2,
+            label: '饮料'
+        },
+        SPECIAL: {
+            value: 3,
+            label: '特色菜'
+        }
+    });
+
+    exports.Spicy = new Const({
+        NONE: {
+            value: 0,
+            label: '不辣'
+        },
+        LOW: {
+            value: 1,
+            label: '微辣'
+        },
+        MID: {
+            value: 2,
+            label: '中辣'
+        },
+        HIGH: {
+            value: 3,
+            label: '特辣'
+        }
+    });
+
+    exports.DishUnit = new Const({
+        JIN: {
+            value: 0,
+            label: '斤'
+        },
+        FEN: {
+            value: 1,
+            label: '份'
+        }
+    });
+
+    exports.Boolean = new Const({
+        ONE: {
+            value: 1,
+            label: '是'
+        },
+        ZERO: {
+            value: 0,
+            label: '否'
+        },
+        TRUE: {
+            value: true,
+            label: '是'
+        },
+        FALSE: {
+            value: false,
+            label: '否'
+        }
+    });
 });
 

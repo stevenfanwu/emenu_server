@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.util.IdGenerator;
 
 /**
  * @author xuhongfeng
@@ -18,6 +19,7 @@ import com.cloudstone.emenu.data.Dish;
 public class DishLogic extends BaseLogic {
     
     public Dish add(Dish dish) {
+        dish.setId(IdGenerator.generateId());
         return dishService.add(dish);
     }
     

@@ -6,6 +6,8 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -20,6 +22,7 @@ import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.SqlUtils;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
+import com.cloudstone.emenu.util.JsonUtils;
 
 /**
  * @author xuhongfeng
@@ -27,9 +30,12 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
  */
 @Repository
 public class DishDb extends SQLiteDb implements IDishDb {
+    private static final Logger LOG = LoggerFactory.getLogger(DishDb.class);
     
     @Override
     public void add(Dish dish) throws SQLiteException {
+        //TODO
+        LOG.info("add dish = " + JsonUtils.toJson(dish));
         DishBinder binder = new DishBinder(dish);
         executeSQL(SQL_INSERT, binder);
     }
