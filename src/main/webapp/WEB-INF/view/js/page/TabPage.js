@@ -18,6 +18,20 @@ define(function (require, exports, module) {
                     this.$(t).removeClass('active');
                 }
             }, this);
+        },
+
+        emptyPullRightTab: function () {
+            this.$('.li-right').empty();
+        },
+
+        appendPullRight: function (label) {
+            this.emptyPullRightTab();
+            var PullRightTab = require('../component/widget/PullRightTab');
+            var tab = new PullRightTab();
+            tab.label = label;
+            tab.render();
+            this.$('.li-right').append(tab.el);
+            return tab;
         }
     });
     
