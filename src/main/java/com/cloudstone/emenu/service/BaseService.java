@@ -6,6 +6,7 @@ package com.cloudstone.emenu.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cloudstone.emenu.storage.db.IChapterDb;
 import com.cloudstone.emenu.storage.db.IDishDb;
 import com.cloudstone.emenu.storage.db.IMenuDb;
 import com.cloudstone.emenu.storage.db.ITableDb;
@@ -25,5 +26,7 @@ public class BaseService {
     protected IDishDb dishDb;
     @Autowired
     protected IMenuDb menuDb;
+    @Autowired
+    protected IChapterDb chapterDb;
 
 }
