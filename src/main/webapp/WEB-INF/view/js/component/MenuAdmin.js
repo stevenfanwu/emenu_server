@@ -21,25 +21,43 @@ define(function (require, exports, module) {
             if (!this.list) {
                 var List = require('../list/MenuList');
                 this.list = new List();
+                this.list.collection.on('edit', this.onEditMenu, this);
+                this.list.collection.on('delete', this.onDeleteMenu, this);
             }
             this.list.render();
             this.$el.append(this.list.el);
         },
 
-        
-        /* -------------------- Event Listener ----------------------- */
-        
-        onCreateMenu: function () {
+        showEditMenuDialog: function (menuModel) {
             var Dialog = require('../dialog/EditMenuDialog');
             var dialog = new Dialog({
-                model: new MenuModel()
+                model: menuModel
             });
             dialog.model.on('saved', function () {
                 this.list.refresh();
             }, this);
             dialog.show();
-        }
+        },
         
+        /* -------------------- Event Listener ----------------------- */
+
+        onDeleteMenu: function (menuModel) {
+            if (window.confirm('确定删除菜单"' + menuModel.get('name') + '"?')) {
+                menuModel.destroy({
+                    success: function () {
+                        this.list.refresh();
+                    }.bind(this)
+                });
+            }
+        },
+
+        onEditMenu: function (menuModel) {
+            this.showEditMenuDialog(menuModel);
+        },
+        
+        onCreateMenu: function () {
+            this.showEditMenuDialog(new MenuModel());
+        }
         
     });
     

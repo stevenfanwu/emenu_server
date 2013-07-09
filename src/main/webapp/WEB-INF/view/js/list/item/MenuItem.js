@@ -9,7 +9,9 @@ define(function (require, exports, module) {
 
     var MenuItem = BaseItem.extend({
         events: {
-            'mouseenter .hover-tip': 'onMouseEnter'
+            'mouseenter .hover-tip': 'onMouseEnter',
+            'click .btn-edit-menu': 'onEditMenu',
+            'click .btn-delete-menu': 'onDeleteMenu'
         },
 
         tmpl: require('./MenuItem.handlebars'),
@@ -20,6 +22,18 @@ define(function (require, exports, module) {
         onMouseEnter: function (evt) {
             evt.preventDefault();
             $(evt.currentTarget).tooltip('show');
+            evt.stopPropagation();
+        },
+
+        onDeleteMenu: function (evt) {
+            evt.preventDefault();
+            this.model.trigger('delete', this.model);
+            evt.stopPropagation();
+        },
+
+        onEditMenu: function (evt) {
+            evt.preventDefault();
+            this.model.trigger('edit', this.model);
             evt.stopPropagation();
         }
     });
