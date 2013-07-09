@@ -6,7 +6,6 @@ define(function (require, exports, module) {
 
     var TabPage = require('./TabPage');
     var MenuRouter = require('../router/MenuRouter');
-    var MenuModel = require('../model/MenuModel');
 
     var Menu = TabPage.extend({
         RouterType: MenuRouter,
@@ -17,26 +16,25 @@ define(function (require, exports, module) {
             TabPage.prototype.initEvents.apply(this, arguments);
 
             this.on('showDish', function () {
+                //TODO 抽取
                 this.emptyPullRightTab();
                 this.activeTab('.tab-dish');
                 var DishAdmin = require('../component/DishAdmin');
-                var view = new DishAdmin();
-                view.render();
+                var dishView = new DishAdmin();
+                dishView.render();
                 this.$('.bottom-content').empty();
-                this.$('.bottom-content').append(view.el);
+                this.$('.bottom-content').append(dishView.el);
             }, this);
             this.on('showMenu', function () {
                 this.activeTab('.tab-menu');
+                var DishMenu = require('../component/MenuAdmin');
+                var menuView = new DishMenu();
+                menuView.render();
+                this.$('.bottom-content').empty();
+                this.$('.bottom-content').append(menuView.el);
                 var tab = this.appendPullRight('添加菜单');
                 tab.on('click', function () {
-                    var Dialog = require('../dialog/EditMenuDialog');
-                    var dialog = new Dialog({
-                        model: new MenuModel()
-                    });
-                    dialog.model.on('saved', function () {
-                        this.list.refresh();
-                    }, this);
-                    dialog.show();
+                    menuView.trigger('createMenu');
                 }, this);
             }, this);
             this.on('showTaste', function () {

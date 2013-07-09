@@ -4,10 +4,10 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BaseItem = require('./BaseItem');
+    var Tr = require('./Tr');
     var Const = require('../../misc/Const');
     
-    var DishItem = BaseItem.extend({
+    var DishItem = Tr.extend({
         tmpl: require('./DishItem.handlebars'),
 
         events: {
@@ -16,7 +16,7 @@ define(function (require, exports, module) {
         },
 
         getRenderData: function () {
-            var data = BaseItem.prototype.getRenderData.apply(this, arguments);
+            var data = Tr.prototype.getRenderData.apply(this, arguments);
             data.typeLabel = Const.DishType.getLabel(data.type);
             data.unitLabel = Const.DishUnit.getLabel(data.unit);
             data.spicyLabel = Const.Spicy.getLabel(data.spicy);

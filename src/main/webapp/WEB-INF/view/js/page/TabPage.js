@@ -11,6 +11,7 @@ define(function (require, exports, module) {
         tabEl: [],
 
         activeTab: function (tab) {
+            //TODO tab animation
             this.tabEl.forEach(function (t) {
                 if (t === tab) {
                     this.$(t).addClass('active');

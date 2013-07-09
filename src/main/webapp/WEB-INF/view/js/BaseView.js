@@ -24,8 +24,9 @@ define(function (require, exports, module) {
 
         render: function () {
             Backbone.View.prototype.render.apply(this, arguments);
-        
-            this.el.innerHTML = this.template(this.getRenderData());
+            if (this.tmpl) {
+                this.el.innerHTML = this.template(this.getRenderData());
+            }
         },
 
         getRenderData: function () {

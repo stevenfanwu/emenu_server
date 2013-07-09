@@ -4,7 +4,7 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BaseList = require('./BaseList');
+    var BaseTable = require('./BaseTable');
     var Const = require('../misc/Const');
     var TableType = Const.TableType;
 
@@ -15,7 +15,7 @@ define(function (require, exports, module) {
         BOOTH: 3
     };
 
-    var TableList = BaseList.extend({
+    var TableList = BaseTable.extend({
         heads: ['桌名', '类型', '桌型', '最多人数', '最低消费', '服务费收取模式', '服务费',
             '操作'],
 
@@ -26,7 +26,7 @@ define(function (require, exports, module) {
         CollectionType: require('../collection/TableCollection'),
 
         filterModel: function (model) {
-            BaseList.prototype.filterModel.apply(this, arguments);
+            BaseTable.prototype.filterModel.apply(this, arguments);
             if (this.mode === Mode.ALL) {
                 return true;
             }

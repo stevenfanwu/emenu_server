@@ -7,14 +7,9 @@ define(function (require, exports, module) {
     var BaseView = require('../BaseView');
 
     var BaseList = BaseView.extend({
-
-        tmpl: require('./BaseList.handlebars'),
-
-        heads: null,
+        CollectionType: null,
 
         collection: null,
-
-        CollectionType: null,
 
         ItemType: null,
 
@@ -25,6 +20,48 @@ define(function (require, exports, module) {
 
             var Collection = this.CollectionType;
             this.collection = new Collection();
+        },
+
+        appendModel: function (model) {
+            var Item = this.ItemType;
+            var item = new Item({
+                model: model
+            });
+            item.render();
+            this.initItem(model, item);
+            this.appendItem(item);
+        },
+
+        filterModel: function (model) {
+            return true;
+        },
+
+        initItem: function (model, item) {
+        },
+
+        resetContent: function () {
+            BaseView.prototype.resetContent.apply(this, arguments);
+
+            this.collection.reset();
+            this.render();
+        },
+
+        refresh: function () {
+            this.fetched = false;
+            this.resetContent();
+        },
+
+        appendItem: function (item) {
+            this.$el.append(item.el);
+        },
+
+        doRender: function () {
+            BaseView.prototype.render.apply(this, arguments);
+            this.collection.forEach(function (model) {
+                if (this.filterModel(model)) {
+                    this.appendModel(model);
+                }
+            }, this);
         },
         
         render: function () {
@@ -38,51 +75,6 @@ define(function (require, exports, module) {
                 return;
             }
             this.doRender();
-        },
-
-        appendModel: function (model) {
-            var Item = this.ItemType;
-            var item = new Item({
-                model: model
-            });
-            item.render();
-            this.initItem(model, item);
-            this.appendItem(item);
-        },
-
-        initItem: function (model, item) {
-        },
-
-        appendItem: function (item) {
-            this.$('tbody').append(item.el);
-        },
-
-        doRender: function () {
-            this.el.innerHTML = this.template();
-            this.heads.forEach(function (head) {
-                this.$('.head-row').append('<th>' + head + '</th>');
-            }, this);
-            this.collection.forEach(function (model) {
-                if (this.filterModel(model)) {
-                    this.appendModel(model);
-                }
-            }, this);
-        },
-
-        filterModel: function (model) {
-            return true;
-        },
-
-        resetContent: function () {
-            BaseView.prototype.resetContent.apply(this, arguments);
-
-            this.collection.reset();
-            this.render();
-        },
-
-        refresh: function () {
-            this.fetched = false;
-            this.resetContent();
         }
         
     });

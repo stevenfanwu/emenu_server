@@ -4,10 +4,10 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BaseItem = require('./BaseItem');
+    var Tr = require('./Tr');
     var UserType = require('../../misc/Const').UserType;
 
-    var UserItem = BaseItem.extend({
+    var UserItem = Tr.extend({
         tmpl: require('./UserItem.handlebars'),
 
         events: {
@@ -17,7 +17,7 @@ define(function (require, exports, module) {
         },
 
         getRenderData: function () {
-            var data = BaseItem.prototype.getRenderData.apply(this, arguments);
+            var data = Tr.prototype.getRenderData.apply(this, arguments);
             data.typeLabel = UserType.getLabel(data.type);
             var loginUser = this.getCurrentUser();
             if (loginUser.type > UserType.USER.value

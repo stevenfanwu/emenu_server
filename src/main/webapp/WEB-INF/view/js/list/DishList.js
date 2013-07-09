@@ -4,10 +4,10 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BaseList = require('./BaseList');
+    var BaseTable = require('./BaseTable');
     var Const = require('../misc/Const');
 
-    var DishList = BaseList.extend({
+    var DishList = BaseTable.extend({
         query: null,
 
         heads: ['名称', '类型', '价格', '会员价', '单位', '辣度', '允许小数份', '特价菜', '菜品描述', '已加入菜单', '操作'],

@@ -7,10 +7,11 @@ define(function (require, exports, module) {
     var BaseView = require('../../BaseView');
 
     var BaseItem = BaseView.extend({
-        tagName: 'tr'
+        
     });
     
     return BaseItem;
+    
     
 });
 

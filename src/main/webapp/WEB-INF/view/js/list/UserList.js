@@ -4,7 +4,7 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BaseList = require('./BaseList');
+    var BaseTable = require('./BaseTable');
     var UserCollection = require('../collection/UserCollection');
     var UserItem = require('./item/UserItem');
     var UserType = require('../misc/Const').UserType;
@@ -16,7 +16,7 @@ define(function (require, exports, module) {
         USER: 2
     };
 
-    var UserList = BaseList.extend({
+    var UserList = BaseTable.extend({
         heads: ['帐号', '真实姓名', '备注', '类型', '操作'],
 
         mode: Mode.ALL,
@@ -26,7 +26,7 @@ define(function (require, exports, module) {
         ItemType: UserItem,
 
         filterModel: function (model) {
-            BaseList.prototype.filterModel.apply(this, arguments);
+            BaseTable.prototype.filterModel.apply(this, arguments);
             if (this.mode === Mode.ALL) {
                 return true;
             }

@@ -4,13 +4,11 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BaseView = require('./BaseView');
+    var BaseItem = require('./BaseItem');
 
-    var MenuAdminPanel = BaseView.extend({
-        
+    var Tr = BaseItem.extend({
+        tagName: 'tr'
     });
     
-    return MenuAdminPanel;
-    
+    return Tr;
 });
-
