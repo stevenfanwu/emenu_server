@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.cloudstone.emenu.storage.db.IChapterDb;
 import com.cloudstone.emenu.storage.db.IDishDb;
 import com.cloudstone.emenu.storage.db.IMenuDb;
+import com.cloudstone.emenu.storage.db.IMenuPageDb;
 import com.cloudstone.emenu.storage.db.ITableDb;
 import com.cloudstone.emenu.storage.db.IUserDb;
 
@@ -28,5 +29,7 @@ public class BaseService {
     protected IMenuDb menuDb;
     @Autowired
     protected IChapterDb chapterDb;
+    @Autowired
+    protected IMenuPageDb menuPageDb;
 
 }

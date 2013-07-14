@@ -2,7 +2,7 @@
  * @(#)IChapterService.java, 2013-7-10. 
  * 
  */
-package com.cloudstone.emenu.storage.db;
+package com.cloudstone.emenu.service;
 
 import java.util.List;
 

@@ -6,9 +6,11 @@ package com.cloudstone.emenu.logic;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Chapter;
+import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.util.IdGenerator;
 
 /**
@@ -17,6 +19,8 @@ import com.cloudstone.emenu.util.IdGenerator;
  */
 @Component
 public class ChapterLogic extends BaseLogic {
+    @Autowired
+    private MenuPageLogic menuPageLogic;
 
     public Chapter addChapter(Chapter chapter) {
         chapter.setId(IdGenerator.generateId());
@@ -37,8 +41,17 @@ public class ChapterLogic extends BaseLogic {
         return chapterService.getChapter(chapter.getId());
     }
     
-    public void deleteChapter(long id) {
+    public void deleteChapter(final long id) {
         chapterService.deleteChapter(id);
+        runTask(new Runnable() {
+            @Override
+            public void run() {
+                List<MenuPage> pages = menuPageLogic.listMenuPage(id);
+                for (MenuPage page:pages) {
+                    menuPageLogic.deleteMenuPage(page.getId());
+                }
+            }
+        });
     }
     
     public List<Chapter> listByMenuId(long menuId) {

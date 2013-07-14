@@ -1,77 +1,76 @@
 /**
- * @(#)ChapterService.java, 2013-7-10. 
+ * @(#)MenuPageService.java, Jul 15, 2013. 
  * 
  */
-package com.cloudstone.emenu.storage.db;
+package com.cloudstone.emenu.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.almworks.sqlite4java.SQLiteException;
-import com.cloudstone.emenu.data.Chapter;
+import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.exception.ServerError;
-import com.cloudstone.emenu.service.BaseService;
 
 /**
  * @author xuhongfeng
  *
  */
 @Service
-public class ChapterService extends BaseService implements IChapterService {
+public class MenuPageService extends BaseService implements IMenuPageService {
 
     @Override
-    public void addChapter(Chapter chapter) {
+    public void addMenuPage(MenuPage page) {
         try {
-            chapterDb.addChapter(chapter);
+            menuPageDb.addMenuPage(page);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
 
     @Override
-    public void updateChapter(Chapter chapter) {
+    public void updateMenuPage(MenuPage page) {
         try {
-            chapterDb.updateChapter(chapter);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
-        
-    }
-
-    @Override
-    public void deleteChapter(long id) {
-        try {
-            chapterDb.deleteChapter(id);
+            menuPageDb.updateMenuPage(page);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
 
     @Override
-    public List<Chapter> getAllChapter() {
+    public void deleteMenuPage(long id) {
         try {
-            return chapterDb.getAllChapter();
+            menuPageDb.deleteMenuPage(id);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
 
     @Override
-    public Chapter getChapter(long id) {
+    public List<MenuPage> getAllMenuPage() {
         try {
-            return chapterDb.getChapter(id);
+            return menuPageDb.getAllMenuPage();
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
 
     @Override
-    public List<Chapter> listByMenuId(long menuId) {
+    public List<MenuPage> listByChapterId(long chapterId) {
         try {
-            return chapterDb.listChapters(menuId);
+            return menuPageDb.listMenuPages(chapterId);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
+
+    @Override
+    public MenuPage getMenuPage(long id) {
+        try {
+            return menuPageDb.getMenuPage(id);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
 }

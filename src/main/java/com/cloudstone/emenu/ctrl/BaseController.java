@@ -23,6 +23,7 @@ import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.ChapterLogic;
 import com.cloudstone.emenu.logic.DishLogic;
 import com.cloudstone.emenu.logic.MenuLogic;
+import com.cloudstone.emenu.logic.MenuPageLogic;
 import com.cloudstone.emenu.logic.TableLogic;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.util.AuthHelper;
@@ -46,6 +47,8 @@ public class BaseController {
     protected MenuLogic menuLogic;
     @Autowired
     protected ChapterLogic chapterLogic;
+    @Autowired
+    protected MenuPageLogic menuPageLogic;
 
     protected void sendError(HttpServletResponse response, int statusCode) {
         try {
