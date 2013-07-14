@@ -18,8 +18,10 @@ define(function (require, exports, module) {
         initialize: function () {
             BaseView.prototype.initialize.apply(this, arguments);
 
-            var Collection = this.CollectionType;
-            this.collection = new Collection();
+            if (!this.collection) {
+                var Collection = this.CollectionType;
+                this.collection = new Collection();
+            }
         },
 
         appendModel: function (model) {
@@ -40,10 +42,8 @@ define(function (require, exports, module) {
         },
 
         resetContent: function () {
-            BaseView.prototype.resetContent.apply(this, arguments);
-
             this.collection.reset();
-            this.render();
+            BaseView.prototype.resetContent.apply(this, arguments);
         },
 
         refresh: function () {

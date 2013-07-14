@@ -66,4 +66,12 @@ public class ChapterService extends BaseService implements IChapterService {
         }
     }
 
+    @Override
+    public List<Chapter> listByMenuId(long menuId) {
+        try {
+            return chapterDb.listChapters(menuId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
 }

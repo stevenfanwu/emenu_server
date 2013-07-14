@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Chapter;
@@ -39,9 +40,14 @@ public class ChapterApiController extends BaseApiController {
         chapterLogic.deleteChapter(id);
     }
 
-    @RequestMapping(value="/api/chapters", method=RequestMethod.GET)
+    @RequestMapping(value="/api/chapters/all", method=RequestMethod.GET)
     public @ResponseBody List<Chapter> get() {
         return chapterLogic.getAllChapter();
+    }
+    
+    @RequestMapping(value="/api/chapters", method=RequestMethod.GET)
+    public @ResponseBody List<Chapter> getByMenuId(@RequestParam("menuId") long menuId) {
+        return chapterLogic.listByMenuId(menuId);
     }
     
     @RequestMapping(value="/api/chapters/{id:[\\d]+}", method=RequestMethod.PUT)

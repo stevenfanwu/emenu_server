@@ -4,14 +4,16 @@
 define(function (require, exports, module) {
     "use strict";
     
-    var BaseItem = require('./BaseItem');
+    var AccordionItem = require('./AccordionItem');
     var ChapterModel = require('../../model/ChapterModel');
     var $ = require('../../lib/jquery');
+    var ChapterList = require('../ChapterList');
+    var ChapterCollection = require('../../collection/ChapterCollection');
 
-    var MenuItem = BaseItem.extend({
+    var MenuItem = AccordionItem.extend({
+
         events: {
             'mouseenter .hover-tip': 'onMouseEnter',
-            'click .btn-toggle-menu': 'onToggleMenu',
             'click .btn-edit-menu': 'onEditMenu',
             'click .btn-delete-menu': 'onDeleteMenu',
             'click .btn-add-chapter': 'onAddChapter'
@@ -25,11 +27,30 @@ define(function (require, exports, module) {
                 model: chapterModel
             });
             dialog.model.on('saved', function () {
-                this.list.refresh();
+                if (!this.createListIfNecessary()) {
+                    this.list.refresh();
+                }
+                this.expand();
             }, this);
             dialog.show();
         },
-        
+
+        createListIfNecessary: function () {
+            if (!this.list) {
+                var collection = new ChapterCollection();
+                collection.on('edit', this.onEditChapter, this);
+                collection.on('delete', this.onDeleteChapter, this);
+                collection.parentId = this.model.get('id');
+                this.list = new ChapterList({
+                    collection: collection
+                });
+                this.list.render();
+                this.$('.wrap-chapter').html(this.list.el);
+                return true;
+            }
+            return false;
+        },
+
         /* -------------------- Event Listener ----------------------- */
         
         onMouseEnter: function (evt) {
@@ -52,17 +73,33 @@ define(function (require, exports, module) {
 
         onAddChapter: function (evt) {
             evt.preventDefault();
-            this.showEditChapterDialog(new ChapterModel());
+            var chapterModel = new ChapterModel();
+            chapterModel.set('menuId', this.model.get('id'));
+            this.showEditChapterDialog(chapterModel);
             evt.stopPropagation();
         },
-        
-        onToggleMenu: function (evt) {
-            evt.preventDefault();
-            evt.stopPropagation();
+
+        onEditChapter: function (chapterModel) {
+            this.showEditChapterDialog(chapterModel);
+        },
+
+        onDeleteChapter: function (chapterModel) {
+            if (window.confirm('确定删除分类"' + chapterModel.get('name') + '"?')) {
+                chapterModel.destroy({
+                    success: function () {
+                        this.list.refresh();
+                    }.bind(this)
+                });
+            }
+        },
+
+        onToggle: function () {
+            AccordionItem.prototype.onToggle.apply(this, arguments);
+            this.createListIfNecessary();
         }
+        
     });
     
     return MenuItem;
     
 });
-

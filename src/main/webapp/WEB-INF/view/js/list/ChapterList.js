@@ -6,16 +6,15 @@ define(function (require, exports, module) {
 
     var BaseList = require('./BaseList');
 
-    var MenuList = BaseList.extend({
+    var ChapterList = BaseList.extend({
         className: 'accordion color-list',
 
-        CollectionType: require('../collection/MenuCollection'),
+        CollectionType: require('../collection/ChapterCollection'),
 
-        ItemType: require('./item/MenuItem')
+        ItemType: require('./item/ChapterItem')
         
     });
     
-    return MenuList;
-    
+    return ChapterList;
 });
 

@@ -29,7 +29,7 @@ public class SQLBuilder {
     }
     
     private boolean firstWhere = true;
-    public SQLBuilder appendWhere(String whereColumn) {
+    public SQLBuilder appendWhere(Object whereColumn) {
         if (firstWhere) {
             append(" where ");
         } else {

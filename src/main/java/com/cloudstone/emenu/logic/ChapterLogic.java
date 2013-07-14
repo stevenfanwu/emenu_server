@@ -40,5 +40,16 @@ public class ChapterLogic extends BaseLogic {
     public void deleteChapter(long id) {
         chapterService.deleteChapter(id);
     }
+    
+    public List<Chapter> listByMenuId(long menuId) {
+        return chapterService.listByMenuId(menuId);
+    }
+    
+    public void deleteChaptersByMenuId(long menuId) {
+        List<Chapter> chapters = listByMenuId(menuId);
+        for(Chapter chapter:chapters) {
+            deleteChapter(chapter.getId());
+        }
+    }
 
 }

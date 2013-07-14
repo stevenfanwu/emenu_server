@@ -17,6 +17,7 @@ public interface IChapterService {
     public void updateChapter(Chapter chapter);
     public void deleteChapter(long id);
     public List<Chapter> getAllChapter();
+    public List<Chapter> listByMenuId(long menuId);
     public Chapter getChapter(long id);
 
 }

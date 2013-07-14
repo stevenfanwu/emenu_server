@@ -17,6 +17,7 @@ import com.cloudstone.emenu.util.IdGenerator;
  */
 @Component
 public class MenuLogic extends BaseLogic {
+    private ChapterLogic chapterLogic;
 
     public Menu addMenu(Menu menu) {
         menu.setId(IdGenerator.generateId());
@@ -37,7 +38,14 @@ public class MenuLogic extends BaseLogic {
         return menuService.getMenu(menu.getId());
     }
     
-    public void deleteMenu(long id) {
+    public void deleteMenu(final long id) {
         menuService.deleteMenu(id);
+        runTask(new Runnable() {
+            @Override
+            public void run() {
+                chapterLogic.deleteChaptersByMenuId(id);
+                //TODO handle dish
+            }
+        });
     }
 }

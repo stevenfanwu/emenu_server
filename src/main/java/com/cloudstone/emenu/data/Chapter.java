@@ -11,6 +11,7 @@ package com.cloudstone.emenu.data;
 public class Chapter extends BaseData {
     private String name;
     private long id;
+    private long menuId;
 
     public String getName() {
         return name;
@@ -26,5 +27,13 @@ public class Chapter extends BaseData {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(long menuId) {
+        this.menuId = menuId;
     }
 }

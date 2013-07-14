@@ -26,6 +26,12 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
  */
 @Repository
 public class ChapterDb extends SQLiteDb implements IChapterDb {
+    
+    @Override
+    public List<Chapter> listChapters(long menuId) throws SQLiteException {
+        GetByMenuIdBinder binder = new GetByMenuIdBinder(menuId);
+        return query(SQL_SELECT_BY_MENU_ID, binder, rowMapper);
+    }
 
     @Override
     public void addChapter(Chapter chapter) throws SQLiteException {
@@ -62,7 +68,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     /* ---------- SQL ---------- */
     private static final String TABLE_NAME = "chapter";
     private static enum Column {
-        ID("id"), NAME("name");
+        ID("id"), NAME("name"), MENU_ID("menuId");
         
         private final String str;
         private Column(String str) {
@@ -78,15 +84,18 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     private static final String COL_DEF = new ColumnDefBuilder()
         .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
         .append(Column.NAME, DataType.TEXT, "NOT NULL")
+        .append(Column.MENU_ID, DataType.INTEGER, "NOT NULL")
         .build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME).appendWhereId().build();
+        .appendSetValue(Column.NAME).appendSetValue(Column.MENU_ID).appendWhereId().build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
+    private static final String SQL_SELECT_BY_MENU_ID = new SelectSqlBuilder(TABLE_NAME)
+        .appendWhere(Column.MENU_ID).build();
     private static final String SQL_DELETE = new DeleteSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 2).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 3).build();
     
     private static final RowMapper<Chapter> rowMapper = new RowMapper<Chapter>() {
 
@@ -95,6 +104,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             Chapter chapter = new Chapter();
             chapter.setId(stmt.columnLong(0));
             chapter.setName(stmt.columnString(1));
+            chapter.setMenuId(stmt.columnLong(2));
             return chapter;
         }
     };
@@ -110,6 +120,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, chapter.getId());
             stmt.bind(2, chapter.getName());
+            stmt.bind(3, chapter.getMenuId());
         }
     }
     private static class UpdateBinder implements StatementBinder {
@@ -123,7 +134,23 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, chapter.getName());
-            stmt.bind(2, chapter.getId());
+            stmt.bind(2, chapter.getMenuId());
+            stmt.bind(3, chapter.getId());
+        }
+    }
+    
+    private static class GetByMenuIdBinder implements StatementBinder {
+        private final long menuId;
+
+        public GetByMenuIdBinder(long menuId) {
+            super();
+            this.menuId = menuId;
+        }
+
+
+        @Override
+        public void onBind(SQLiteStatement stmt) throws SQLiteException {
+            stmt.bind(1, menuId);
         }
     }
 }
