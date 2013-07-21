@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -30,6 +31,16 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 @Repository
 public class DishDb extends SQLiteDb implements IDishDb {
     private static final Logger LOG = LoggerFactory.getLogger(DishDb.class);
+    
+    @Override
+    protected String getTableName() {
+        return TABLE_NAME;
+    }
+    
+    @Override
+    public List<IdName> getDishSuggestion() throws SQLiteException {
+        return getIdNames();
+    }
     
     @Override
     public void add(Dish dish) throws SQLiteException {

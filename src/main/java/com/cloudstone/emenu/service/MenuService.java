@@ -13,6 +13,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.exception.HttpStatusError;
@@ -142,6 +143,17 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     /* ---------- Dish ---------- */
+    
+    @Override
+    public void bindDish(long menuPageId, long dishId, int pos) {
+        try {
+            dishPageDb.add(menuPageId, dishId, pos);
+            checkDishInMenu(dishId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
     @Override
     public Dish addDish(Dish dish) {
         try {
@@ -212,24 +224,29 @@ public class MenuService extends BaseService implements IMenuService {
     @Override
     public void deleteMenuPage(long id) {
         try {
+            //delete page
             menuPageDb.deleteMenuPage(id);
             List<DishPage> relation = dishPageDb.getByMenuPageId(id);
             dishPageDb.deleteByMenuPageId(id);
             for (DishPage r:relation) {
                 long dishId = r.getDishId();
-                Dish dish = dishDb.get(dishId);
-                if (dish != null) {
-                    int count = dishPageDb.countByDishId(dishId);
-                    int oldStatus = dish.getStatus();
-                    int status = count==0? Const.DishStatus.STATUS_INIT : Const.DishStatus.STATUS_IN_MENU;
-                    if (status != oldStatus) {
-                        dish.setStatus(status);
-                        dishDb.update(dish);
-                    }
-                }
+                checkDishInMenu(dishId);
             }
         } catch (SQLiteException e) {
             throw new ServerError(e);
+        }
+    }
+    
+    private void checkDishInMenu(long dishId) throws SQLiteException {
+        Dish dish = dishDb.get(dishId);
+        if (dish != null) {
+            int count = dishPageDb.countByDishId(dishId);
+            int oldStatus = dish.getStatus();
+            int status = count==0? Const.DishStatus.STATUS_INIT : Const.DishStatus.STATUS_IN_MENU;
+            if (status != oldStatus) {
+                dish.setStatus(status);
+                dishDb.update(dish);
+            }
         }
     }
 
@@ -287,6 +304,15 @@ public class MenuService extends BaseService implements IMenuService {
             throw new ServerError(e);
         }
         return ret;
+    }
+    
+    @Override
+    public List<IdName> getDishSuggestion() {
+        try {
+            return dishDb.getDishSuggestion();
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
     
 }

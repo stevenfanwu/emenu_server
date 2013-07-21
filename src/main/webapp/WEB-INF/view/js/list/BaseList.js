@@ -31,6 +31,7 @@ define(function (require, exports, module) {
             var item = new Item({
                 model: model
             });
+            item.index = this.collection.indexOf(model);
             item.render();
             this.initItem(model, item);
             this.appendItem(item);

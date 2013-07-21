@@ -26,6 +26,10 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
  */
 @Repository
 public class ChapterDb extends SQLiteDb implements IChapterDb {
+    @Override
+    protected String getTableName() {
+        return TABLE_NAME;
+    }
     
     @Override
     public List<Chapter> listChapters(long menuId) throws SQLiteException {

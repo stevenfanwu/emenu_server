@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.IdName;
 
 /**
  * @author xuhongfeng
@@ -19,4 +20,5 @@ public interface IDishDb {
     public Dish get(long dishId) throws SQLiteException;
     public List<Dish> getAll() throws SQLiteException;
     public void delete(long dishId) throws SQLiteException;
+    public List<IdName> getDishSuggestion() throws SQLiteException;
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.util.IdGenerator;
@@ -26,6 +27,10 @@ public class MenuLogic extends BaseLogic {
         menu.setId(IdGenerator.generateId());
         menuService.addMenu(menu);
         return menuService.getMenu(menu.getId());
+    }
+    
+    public void bindDish(long menuPageId, long dishId, int pos) {
+        menuService.bindDish(menuPageId, dishId, pos);
     }
     
     public Menu getMenu(long id) {
@@ -53,6 +58,10 @@ public class MenuLogic extends BaseLogic {
     
     public Dish updateDish(Dish dish) {
         return menuService.updateDish(dish);
+    }
+    
+    public List<IdName> getDishSuggestion() {
+        return menuService.getDishSuggestion();
     }
     
     public List<Dish> getAllDish() {

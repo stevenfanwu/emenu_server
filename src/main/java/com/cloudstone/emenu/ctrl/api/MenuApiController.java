@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.util.JsonUtils;
@@ -41,6 +42,14 @@ public class MenuApiController extends BaseApiController {
     public void deleteMenu(@PathVariable(value="id") long id,
             HttpServletResponse response) {
         menuLogic.deleteMenu(id);
+    }
+    
+    @RequestMapping(value="/api/menus/bind", method=RequestMethod.PUT)
+    public @ResponseBody Dish bindDish(@RequestParam("menuPageId") long menuPageId,
+            @RequestParam("dishId") long dishId,
+            @RequestParam("pos") int pos) {
+        menuLogic.bindDish(menuPageId, dishId, pos);
+        return menuLogic.getDish(dishId);
     }
 
     @RequestMapping(value="/api/menus", method=RequestMethod.GET)
@@ -111,6 +120,12 @@ public class MenuApiController extends BaseApiController {
             return null;
         }
         return menuLogic.updateChapter(chapter);
+    }
+    
+    
+    @RequestMapping(value="/api/dishes/suggestion", method=RequestMethod.GET)
+    public @ResponseBody List<IdName> getDishSuggestion() {
+        return menuLogic.getDishSuggestion();
     }
 
     @RequestMapping(value="/api/dishes", method=RequestMethod.GET)

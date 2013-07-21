@@ -10,9 +10,7 @@ import com.cloudstone.emenu.constant.Const;
  * @author xuhongfeng
  *
  */
-public class Dish extends BaseData {
-    private long id = 0;
-    private String name;
+public class Dish extends IdName {
     private int type;
     private double price;
     private double memberPrice;
@@ -24,22 +22,6 @@ public class Dish extends BaseData {
     private String imageData;// data:image/png;base64,...
     private int status = Const.DishStatus.STATUS_INIT;
     
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getType() {
         return type;
     }

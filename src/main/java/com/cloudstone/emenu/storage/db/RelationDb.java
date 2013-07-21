@@ -133,7 +133,7 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
             stmt.bind(1, id1);
             stmt.bind(2, id2);
             for (int i=0; i<config.columns.length; i++) {
-                onBind(stmt, i+2, i);
+                onBind(stmt, i+3, i);
             }
         }
         

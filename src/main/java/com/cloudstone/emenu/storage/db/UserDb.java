@@ -29,6 +29,11 @@ import com.cloudstone.emenu.util.RsaUtils;
 @Repository
 public class UserDb extends SQLiteDb implements IUserDb {
     
+    @Override
+    protected String getTableName() {
+        return TABLE_NAME;
+    }
+    
     @Value("${admin.password.default}")
     private String DEFAULT_ADMIN_PASSWORD;
     

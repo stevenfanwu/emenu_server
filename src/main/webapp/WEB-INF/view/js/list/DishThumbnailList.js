@@ -13,7 +13,13 @@ define(function (require, exports, module) {
 
         CollectionType : require('../collection/DishCollection'),
 
-        ItemType: require('./item/DishThumbnail')
+        ItemType: require('./item/DishThumbnail'),
+
+        initItem: function (model, item) {
+            ListWithParentId.prototype.initItem.apply(this, arguments);
+            item.menuPageId = this.collection.parentId;
+        }
+        
     });
     
     return DishThumbnailList;

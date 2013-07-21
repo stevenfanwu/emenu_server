@@ -7,6 +7,10 @@
 <div class="modal-body">
 </div>
 <div class="modal-footer">
-    <a href="#" class="btn btn-close-dialog">取消</a>
-    <a href="#" class="btn btn-primary btn-confirm-dialog">确定</a>
+    {{#if cancelLael}}
+        <a href="#" class="btn btn-close-dialog">{{cancelLael}}</a>
+    {{/if}}
+    {{#if confirmLabel}}
+        <a href="#" class="btn btn-primary btn-confirm-dialog">{{confirmLabel}}</a>
+    {{/if}}
 </div>

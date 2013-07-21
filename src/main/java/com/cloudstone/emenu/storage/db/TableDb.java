@@ -30,6 +30,11 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 public class TableDb extends SQLiteDb implements ITableDb {
     private static final Logger LOG = LoggerFactory.getLogger(TableDb.class);
     
+    @Override
+    protected String getTableName() {
+        return TABLE_NAME;
+    }
+    
     private static final String TABLE_NAME = "'table'";
     
     private static enum Column {

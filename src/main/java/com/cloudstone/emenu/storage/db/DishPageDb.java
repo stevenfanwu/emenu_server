@@ -6,6 +6,8 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -22,7 +24,13 @@ import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
  */
 @Repository
 public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
+    private static final Logger LOG = LoggerFactory.getLogger(DishPageDb.class);
     private static final String TABLE_NAME = "dishPage";
+    
+    @Override
+    protected String getTableName() {
+        return TABLE_NAME;
+    }
     
     //dish position in the MenuPage
     private static final RelationDbColumn COL_POS = new RelationDbColumn("pos", DataType.INTEGER);
@@ -44,10 +52,11 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     /* ---------- public ---------- */
     @Override
     public void add(long menuPageId, long dishId, final int pos) throws SQLiteException {
+        LOG.info(String.format("menuPageId=%d, dishId=%d, pos=%d", menuPageId, dishId, pos));
         add(new InsertBinder(menuPageId, dishId) {
             @Override
             protected void onBind(SQLiteStatement stmt, int indexStmt, int indexValue) throws SQLiteException {
-                stmt.bind(indexValue, pos);
+                stmt.bind(indexStmt, pos);
             }
         });
     }

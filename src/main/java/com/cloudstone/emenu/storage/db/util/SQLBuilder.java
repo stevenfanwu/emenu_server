@@ -46,6 +46,10 @@ public class SQLBuilder {
         return this;
     }
     
+    public SQLBuilder appendWhereName() {
+        return this.appendWhere("name");
+    }
+    
     public SQLBuilder appendWhereId() {
         return this.appendWhere("id");
     }

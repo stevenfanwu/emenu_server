@@ -12,11 +12,7 @@ import com.cloudstone.emenu.constant.Const.UserType;
  * @author xuhongfeng
  *
  */
-public class User extends BaseData {
-    private long id;
-    
-    /* login name */
-    private String name;
+public class User extends IdName {
     
     /* encrypted */
     @JsonIgnore
@@ -49,13 +45,6 @@ public class User extends BaseData {
     }
     
     /* ---------- getter and setter ---------- */
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getPassword() {
         return password;
@@ -63,14 +52,6 @@ public class User extends BaseData {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long userId) {
-        this.id = userId;
     }
 
     public int getType() {

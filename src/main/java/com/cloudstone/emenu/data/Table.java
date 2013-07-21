@@ -8,21 +8,14 @@ package com.cloudstone.emenu.data;
  * @author xuhongfeng
  *
  */
-public class Table extends BaseData {
-    private long id;
-    private String name;
+public class Table extends IdName {
     private int type;//类型
     private int shape;//桌型
     private int capacity;//最多人数
     private double minCharge;//最低消费
     private int tipMode;//服务费收取模式
     private double tip;
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+    
     public int getType() {
         return type;
     }
@@ -58,11 +51,5 @@ public class Table extends BaseData {
     }
     public void setTip(double tip) {
         this.tip = tip;
-    }
-    public long getId() {
-        return id;
-    }
-    public void setId(long id) {
-        this.id = id;
     }
 }

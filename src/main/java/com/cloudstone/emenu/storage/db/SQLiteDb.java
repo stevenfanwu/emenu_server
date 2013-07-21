@@ -16,6 +16,7 @@ import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.CreateIndexBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -47,6 +48,11 @@ public abstract class SQLiteDb extends BaseStorage {
     }
     
     /* ---------- protected ----------*/
+    protected List<IdName> getIdNames() throws SQLiteException {
+        String sql = "SELECT id, name FROM " + getTableName();
+        return query(sql, StatementBinder.NULL, ID_NAME_ROW_MAPPER);
+    }
+    
     protected void init() {
         DB_FILE = new File(System.getProperty(Const.PARAM_DB_FILE));
         if (!DB_FILE.exists()) {
@@ -111,6 +117,7 @@ public abstract class SQLiteDb extends BaseStorage {
     
     /* ---------- abstract ----------*/
     protected abstract void onCheckCreateTable() throws SQLiteException;
+    protected abstract String getTableName();
     
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
@@ -166,7 +173,23 @@ public abstract class SQLiteDb extends BaseStorage {
         @Override
         protected Integer parseData(SQLiteStatement stmt,
                 RowMapper<Integer> rowMapper) throws SQLiteException {
-            return stmt.columnInt(0);
+            if (stmt.step()) {
+                return stmt.columnInt(0);
+            } else {
+                return 0;
+            }
         }
     }
+    
+    private static final RowMapper<IdName> ID_NAME_ROW_MAPPER = new RowMapper<IdName> (){
+    
+        @Override
+        public IdName map(SQLiteStatement stmt) throws SQLiteException {
+            IdName o = new IdName();
+            o.setId(stmt.columnLong(0));
+            o.setName(stmt.columnString(1));
+            return o;
+        }
+    
+    };
 }

@@ -26,6 +26,11 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
  */
 @Repository
 public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
+    
+    @Override
+    protected String getTableName() {
+        return TABLE_NAME;
+    }
 
     @Override
     public void addMenuPage(MenuPage page) throws SQLiteException {

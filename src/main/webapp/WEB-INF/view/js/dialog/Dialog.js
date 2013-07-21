@@ -18,6 +18,10 @@ define(function (require, exports, module) {
 
         ContentType: null,
 
+        cancelLael: '取消',
+
+        confirmLabel: '确定',
+
         events: {
             'click .btn-close-dialog': 'onClose',
             'click .btn-confirm-dialog': 'onConfirm'
@@ -39,6 +43,8 @@ define(function (require, exports, module) {
             this.$el.on('hidden', function () {
                 this.remove();
             }.bind(this));
+
+            this.on('submit', this.onConfirm, this);
         },
 
         render: function () {
@@ -55,6 +61,8 @@ define(function (require, exports, module) {
         getRenderData: function () {
             var data = BaseView.prototype.getRenderData.apply(this, arguments);
             data.header = this.header;
+            data.cancelLael = this.cancelLael;
+            data.confirmLabel = this.confirmLabel;
 
             return data;
         },
@@ -80,8 +88,7 @@ define(function (require, exports, module) {
             this.hide();
         },
         
-        onConfirm: function (evt) {
-            evt.preventDefault();
+        onConfirm: function () {
         }
     });
     
