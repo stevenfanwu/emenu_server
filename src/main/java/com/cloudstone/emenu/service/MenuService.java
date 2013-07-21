@@ -155,6 +155,16 @@ public class MenuService extends BaseService implements IMenuService {
     }
     
     @Override
+    public void unbindDish(long menuPageId, long dishId, int pos) {
+        try {
+            dishPageDb.delete(menuPageId, pos);
+            checkDishInMenu(dishId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
     public Dish addDish(Dish dish) {
         try {
             dishDb.add(dish);
@@ -295,8 +305,7 @@ public class MenuService extends BaseService implements IMenuService {
             for (int i=0; i<dishes.length; i++) {
                 Dish dish = dishes[i];
                 if (dish == null) {
-                    dish = new Dish();
-                    dish.setId(0-i); //id<0 means Null Dish
+                    dish = Dish.getNullDish(i);
                 }
                 ret.add(dish);
             }

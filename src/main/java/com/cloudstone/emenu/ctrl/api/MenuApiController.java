@@ -44,6 +44,14 @@ public class MenuApiController extends BaseApiController {
         menuLogic.deleteMenu(id);
     }
     
+    @RequestMapping(value="/api/menus/unbind", method=RequestMethod.PUT)
+    public @ResponseBody Dish unbindDish(@RequestParam("menuPageId") long menuPageId,
+            @RequestParam("dishId") long dishId,
+            @RequestParam("pos") int pos) {
+        menuLogic.unbindDish(menuPageId, dishId, pos);
+        return Dish.getNullDish(pos);
+    }
+    
     @RequestMapping(value="/api/menus/bind", method=RequestMethod.PUT)
     public @ResponseBody Dish bindDish(@RequestParam("menuPageId") long menuPageId,
             @RequestParam("dishId") long dishId,

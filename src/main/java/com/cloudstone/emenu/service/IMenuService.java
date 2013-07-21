@@ -38,6 +38,7 @@ public interface IMenuService {
     public List<Dish> getDishByMenuPageId(long menuPageId);
     public List<IdName> getDishSuggestion();
     public void bindDish(long menuPageId, long dishId, int pos);
+    public void unbindDish(long menuPageId, long dishId, int pos);
     
     public void addMenuPage(MenuPage page);
     public void updateMenuPage(MenuPage page);

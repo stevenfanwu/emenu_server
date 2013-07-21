@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -35,7 +36,15 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
         for (RelationDbColumn c:config.columns) {
             columnDefBuilder.append(c.name, c.type, "NOT NULL");
         }
-        columnDefBuilder.appendPrimaryKey(ID1, ID2);
+        List<String> primaryKeys = new ArrayList<String>();
+        primaryKeys.add(ID1);
+        primaryKeys.add(ID2);
+        for (RelationDbColumn c:config.columns) {
+            if (c.isPrimaryKey) {
+                primaryKeys.add(c.name);
+            }
+        }
+        columnDefBuilder.appendPrimaryKey(primaryKeys.toArray(new String[0]));
         checkCreateTable(config.tableName, columnDefBuilder.build());
         
         //create index
@@ -108,13 +117,15 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     }
     
     protected static class RelationDbColumn {
-        private final String name;
+        protected final String name;
         private final DataType type;
+        private final boolean isPrimaryKey;
         
-        public RelationDbColumn(String name, DataType type) {
+        public RelationDbColumn(String name, DataType type, boolean isPrimaryKey) {
             super();
             this.name = name;
             this.type = type;
+            this.isPrimaryKey = isPrimaryKey;
         }
     }
     

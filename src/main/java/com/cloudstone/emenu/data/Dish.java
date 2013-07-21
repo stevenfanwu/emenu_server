@@ -22,6 +22,17 @@ public class Dish extends IdName {
     private String imageData;// data:image/png;base64,...
     private int status = Const.DishStatus.STATUS_INIT;
     
+    /**
+     * id < 0 means NullDish
+     * @param pos
+     * @return
+     */
+    public static Dish getNullDish(int pos) {
+        Dish dish = new Dish();
+        dish.setId(0-pos);
+        return dish;
+    }
+    
     public int getType() {
         return type;
     }

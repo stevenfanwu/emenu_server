@@ -33,6 +33,10 @@ public class MenuLogic extends BaseLogic {
         menuService.bindDish(menuPageId, dishId, pos);
     }
     
+    public void unbindDish(long menuPageId, long dishId, int pos) {
+        menuService.unbindDish(menuPageId, dishId, pos);
+    }
+    
     public Menu getMenu(long id) {
         return menuService.getMenu(id);
     }

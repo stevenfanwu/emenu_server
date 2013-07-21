@@ -19,6 +19,7 @@ public interface IDishPageDb {
     public List<DishPage> getByMenuPageId(long menuPageId) throws SQLiteException;
     public int countByDishId(long dishId) throws SQLiteException;
     public void add(long menuPageId, long dishId, int pos) throws SQLiteException;
+    public void delete(long menuPageId, int pos) throws SQLiteException;
     
     public static class DishPage extends Relation {
         private int pos;

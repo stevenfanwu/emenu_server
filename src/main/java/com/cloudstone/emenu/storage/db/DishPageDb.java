@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
+import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
+import com.cloudstone.emenu.storage.db.util.StatementBinder;
 
 /**
  * 
@@ -33,7 +35,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     }
     
     //dish position in the MenuPage
-    private static final RelationDbColumn COL_POS = new RelationDbColumn("pos", DataType.INTEGER);
+    private static final RelationDbColumn COL_POS = new RelationDbColumn("pos", DataType.INTEGER, true);
 
     /* ---------- protected ---------- */
     @Override
@@ -80,6 +82,18 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     @Override
     public int countByDishId(long dishId) throws SQLiteException {
         return countId2(dishId);
+    }
+    
+    @Override
+    public void delete(final long menuPageId, final int pos) throws SQLiteException {
+        String sql = new DeleteSqlBuilder(getTableName()).appendWhere(ID1).appendWhere(COL_POS.name).build();
+        executeSQL(sql, new StatementBinder() {
+            @Override
+            public void onBind(SQLiteStatement stmt) throws SQLiteException {
+                stmt.bind(1, menuPageId);
+                stmt.bind(2, pos);
+            }
+        });
     }
     
     /* ---------- Inner Class ---------- */

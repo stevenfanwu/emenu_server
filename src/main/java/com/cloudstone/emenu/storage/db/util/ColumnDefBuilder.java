@@ -16,7 +16,7 @@ public class ColumnDefBuilder extends SQLBuilder {
         return this;
     }
     
-    public ColumnDefBuilder appendPrimaryKey(Object... keys) {
+    public ColumnDefBuilder appendPrimaryKey(Object[] keys) {
         append(", primary key (");
         boolean first = true;
         for (Object key:keys) {
