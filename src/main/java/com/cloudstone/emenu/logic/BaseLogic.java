@@ -9,9 +9,6 @@ import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.cloudstone.emenu.service.IChapterService;
-import com.cloudstone.emenu.service.IDishService;
-import com.cloudstone.emenu.service.IMenuPageService;
 import com.cloudstone.emenu.service.IMenuService;
 import com.cloudstone.emenu.service.ITableService;
 import com.cloudstone.emenu.service.IUserService;
@@ -27,13 +24,7 @@ public class BaseLogic {
     @Autowired
     protected ITableService tableService;
     @Autowired
-    protected IDishService dishService;
-    @Autowired
     protected IMenuService menuService;
-    @Autowired
-    protected IChapterService chapterService;
-    @Autowired
-    protected IMenuPageService menuPageService;
     
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
     

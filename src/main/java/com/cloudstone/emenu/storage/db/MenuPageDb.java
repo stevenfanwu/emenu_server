@@ -109,7 +109,8 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
         }
     }
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.CHAPTER_ID).appendSetValue(Column.DISH_COUNT).appendWhereId().build();
+        .appendSetValue(Column.CHAPTER_ID).appendSetValue(Column.DISH_COUNT)
+        .appendWhereId().build();
     private static class UpdateBinder implements StatementBinder {
         private final MenuPage page;
 

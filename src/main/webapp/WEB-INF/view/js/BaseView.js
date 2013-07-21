@@ -11,9 +11,10 @@ define(function (require, exports, module) {
 
         tmpl: null,
 
-        template : function (data) {
+        template : function (data, tmpl) {
             var handlebars = require('./lib/handlebars');
-            var template = handlebars.compile(this.tmpl.template);
+            tmpl = tmpl || this.tmpl;
+            var template = handlebars.compile(tmpl.template);
             return template(data);
         },
 

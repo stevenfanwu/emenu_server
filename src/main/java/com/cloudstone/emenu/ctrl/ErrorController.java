@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cloudstone.emenu.exception.DbNotFoundException;
+import com.cloudstone.emenu.exception.HttpStatusError;
 
 /**
  * @author xuhongfeng
@@ -28,9 +28,7 @@ public class ErrorController extends BaseController {
     public static final String ATTR_REQUEST_URI = "javax.servlet.error.request_uri";
 
     @RequestMapping("/error")
-    public String get(HttpServletRequest req, HttpServletResponse resp,
-            ModelMap model) {
-        int statusCode = (Integer)req.getAttribute(ATTR_STATUS_CODE);
+    public String get(HttpServletRequest req, HttpServletResponse resp) {
         Throwable exception = (Throwable) req.getAttribute(ATTR_EXCEPTION);
         String requestUrl = (String) req.getAttribute(ATTR_REQUEST_URI);
         
@@ -44,7 +42,7 @@ public class ErrorController extends BaseController {
         }
         
         if (requestUrl.contains("/api/")) {
-            apiError(req, resp, model);
+            apiError(req, resp);
             return null;
         }
         //TODO
@@ -52,9 +50,16 @@ public class ErrorController extends BaseController {
         return "";
     }
     
-    private void apiError(HttpServletRequest req, HttpServletResponse resp,
-            ModelMap model) {
-        int statusCode = (Integer)req.getAttribute(ATTR_STATUS_CODE);
-        sendError(resp, statusCode);
+    private int getStatusCode(HttpServletRequest req) {
+        Throwable exception = (Throwable) req.getAttribute(ATTR_EXCEPTION);
+        if (exception != null && exception instanceof HttpStatusError) {
+            HttpStatusError e = (HttpStatusError) exception;
+            return e.getStatusCode();
+        }
+        return (Integer)req.getAttribute(ATTR_STATUS_CODE);
+    }
+    
+    private void apiError(HttpServletRequest req, HttpServletResponse resp) {
+        sendError(resp, getStatusCode(req));
     }
 }

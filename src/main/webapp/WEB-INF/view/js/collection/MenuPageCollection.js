@@ -6,18 +6,17 @@ define(function (require, exports, module) {
 
     var CollectionWithParentId = require('./CollectionWithParentId');
 
-    var DishModel = require('../model/DishModel');
+    var MenuPageModel = require('../model/MenuPageModel');
 
-    var DishCollection = CollectionWithParentId.extend({
-        baseUrl: '/api/dishes',
+    var MenuPageCollection = CollectionWithParentId.extend({
+        baseUrl: '/api/pages',
 
-        parentKey: 'menuPageId',
+        parentKey: 'chapterId',
 
-        model: DishModel
-
+        model: MenuPageModel
     });
     
-    return DishCollection;
-    
+    return MenuPageCollection;
+
 });
 

@@ -4,9 +4,9 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var BaseList = require('./BaseList');
+    var ListWithParentId = require('./ListWithParentId');
 
-    var ChapterList = BaseList.extend({
+    var ChapterList = ListWithParentId.extend({
         className: 'accordion color-list',
 
         CollectionType: require('../collection/ChapterCollection'),

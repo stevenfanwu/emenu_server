@@ -10,14 +10,20 @@ package com.cloudstone.emenu.storage.db.util;
  */
 public class SQLBuilder {
     private final StringBuilder sb = new StringBuilder();
+    
+    private static final String COMMA = ",";
 
     public SQLBuilder() {
         super();
     }
     
-    protected SQLBuilder append(String s) {
+    protected SQLBuilder append(Object s) {
         sb.append(s);
         return this;
+    }
+    
+    protected SQLBuilder appendComma() {
+        return append(COMMA);
     }
     
     public String build() {

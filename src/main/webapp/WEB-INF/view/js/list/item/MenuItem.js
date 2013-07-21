@@ -37,13 +37,11 @@ define(function (require, exports, module) {
 
         createListIfNecessary: function () {
             if (!this.list) {
-                var collection = new ChapterCollection();
-                collection.on('edit', this.onEditChapter, this);
-                collection.on('delete', this.onDeleteChapter, this);
-                collection.parentId = this.model.get('id');
                 this.list = new ChapterList({
-                    collection: collection
+                    parentId: this.model.get('id')
                 });
+                this.list.collection.on('edit', this.onEditChapter, this);
+                this.list.collection.on('delete', this.onDeleteChapter, this);
                 this.list.render();
                 this.$('.wrap-chapter').html(this.list.el);
                 return true;

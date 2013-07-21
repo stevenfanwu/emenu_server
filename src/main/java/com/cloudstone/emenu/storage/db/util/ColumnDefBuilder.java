@@ -15,4 +15,18 @@ public class ColumnDefBuilder extends SQLBuilder {
         append(String.format("%s %s %s", column.toString(), type, constraint));
         return this;
     }
+    
+    public ColumnDefBuilder appendPrimaryKey(Object... keys) {
+        append(", primary key (");
+        boolean first = true;
+        for (Object key:keys) {
+            if (!first) {
+                appendComma();
+            }
+            first = false;
+            append(key);
+        }
+        append(")");
+        return this;
+    }
 }

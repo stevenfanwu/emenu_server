@@ -15,6 +15,8 @@ define(function (require, exports, module) {
 
         fetched: false,
 
+        items: [],
+
         initialize: function () {
             BaseView.prototype.initialize.apply(this, arguments);
 
@@ -53,10 +55,12 @@ define(function (require, exports, module) {
 
         appendItem: function (item) {
             this.$el.append(item.el);
+            this.items.push(item);
         },
 
         doRender: function () {
             BaseView.prototype.render.apply(this, arguments);
+            this.items = [];
             this.collection.forEach(function (model) {
                 if (this.filterModel(model)) {
                     this.appendModel(model);

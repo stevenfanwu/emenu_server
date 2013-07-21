@@ -14,7 +14,10 @@ define(function (require, exports, module) {
         baseUrl: null,
 
         url: function () {
-            return this.baseUrl + "?" + this.parentKey + "=" + this.parentId;
+            if (this.parentId) {
+                return this.baseUrl + "?" + this.parentKey + "=" + this.parentId;
+            }
+            return this.baseUrl;
         }
         
     });

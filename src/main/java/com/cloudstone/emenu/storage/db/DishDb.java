@@ -82,7 +82,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             dish.setNonInt(SqlUtils.intToBoolean(stmt.columnInt(8)));
             dish.setDesc(stmt.columnString(9));
             dish.setImageData(stmt.columnString(10));
-            dish.setMenuIds(SqlUtils.strToIds(stmt.columnString(11)));
+            dish.setStatus(stmt.columnInt(11));
             
             return dish;
         }
@@ -109,7 +109,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(9, SqlUtils.booleanToInt(dish.isNonInt()));
             stmt.bind(10, dish.getDesc());
             stmt.bind(11, dish.getImageData());
-            stmt.bind(12, SqlUtils.idsToStr(dish.getMenuIds()));
+            stmt.bind(12, dish.getStatus());
         }
     }
     
@@ -133,7 +133,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(8, SqlUtils.booleanToInt(dish.isNonInt()));
             stmt.bind(9, dish.getDesc());
             stmt.bind(10, dish.getImageData());
-            stmt.bind(11, SqlUtils.idsToStr(dish.getMenuIds()));
+            stmt.bind(11, dish.getStatus());
             stmt.bind(12, dish.getId());
         }
     }
@@ -145,7 +145,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         ID("id"), NAME("name"), TYPE("type"), PRICE("price"),
         MEMBER_PRICE("memberPrice"), UNIT("unit"), SPICY("spicy"),
         SPECIAL_PRICE("specialPrice"), NON_INT("nonInt"), DESC("desc"),
-        IMAGE_DATA("imageData"), MENU_IDS("menuIds");
+        IMAGE_DATA("imageData"), STATUS("status");
         
         private final String str;
         private Column(String str) {
@@ -170,7 +170,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .append(Column.NON_INT, DataType.INTEGER, "NOT NULL")
         .append(Column.DESC, DataType.TEXT, "NOT NULL")
         .append(Column.IMAGE_DATA, DataType.TEXT, "DEFAULT ''")
-        .append(Column.MENU_IDS, DataType.TEXT, "DEFAULT ''")
+        .append(Column.STATUS, DataType.INTEGER, "DEFAULT ''")
         .build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 12).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
@@ -189,7 +189,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .appendSetValue(Column.NON_INT)
         .appendSetValue(Column.DESC)
         .appendSetValue(Column.IMAGE_DATA)
-        .appendSetValue(Column.MENU_IDS)
+        .appendSetValue(Column.STATUS)
         .appendWhereId()
         .build();
 }

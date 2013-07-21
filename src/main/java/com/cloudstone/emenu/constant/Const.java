@@ -57,4 +57,9 @@ public class Const {
         public static final int JIN = 0; // 斤
         public static final int FEN = 1; // 份
     }
+    
+    public static class DishStatus {
+        public static final int STATUS_INIT = 0;
+        public static final int STATUS_IN_MENU = 1;
+    }
 }

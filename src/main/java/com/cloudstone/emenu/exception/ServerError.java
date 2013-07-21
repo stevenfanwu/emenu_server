@@ -8,24 +8,14 @@ package com.cloudstone.emenu.exception;
  * @author xuhongfeng
  *
  */
-public class ServerError extends RuntimeException {
+public class ServerError extends HttpStatusError {
     private static final long serialVersionUID = 8202952708899156300L;
 
     public ServerError() {
-        super();
-    }
-
-    public ServerError(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ServerError(String message) {
-        super(message);
+        super(500);
     }
 
     public ServerError(Throwable cause) {
-        super(cause);
+        super(500, cause);
     }
-    
-    
 }

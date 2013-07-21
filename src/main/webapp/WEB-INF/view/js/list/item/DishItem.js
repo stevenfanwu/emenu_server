@@ -22,7 +22,7 @@ define(function (require, exports, module) {
             data.spicyLabel = Const.Spicy.getLabel(data.spicy);
             data.nonIntLabel = Const.Boolean.getLabel(data.nonInt);
             data.specialPriceLabel = Const.Boolean.getLabel(data.specialPrice);
-            data.inMenu = Const.Boolean.getLabel(data.menuIds.length !== 0);
+            data.inMenu = Const.Boolean.getLabel(data.status === 1);
             return data;
         },
 

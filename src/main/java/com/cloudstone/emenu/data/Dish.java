@@ -4,12 +4,14 @@
  */
 package com.cloudstone.emenu.data;
 
+import com.cloudstone.emenu.constant.Const;
+
 /**
  * @author xuhongfeng
  *
  */
 public class Dish extends BaseData {
-    private long id;
+    private long id = 0;
     private String name;
     private int type;
     private double price;
@@ -20,10 +22,8 @@ public class Dish extends BaseData {
     private boolean nonInt = false; //是否允许小数份
     private String desc;
     private String imageData;// data:image/png;base64,...
+    private int status = Const.DishStatus.STATUS_INIT;
     
-    //check data
-    private int[] menuIds = new int[0];
-
     public long getId() {
         return id;
     }
@@ -104,19 +104,19 @@ public class Dish extends BaseData {
         this.desc = desc;
     }
 
-    public int[] getMenuIds() {
-        return menuIds;
-    }
-
-    public void setMenuIds(int[] menuIds) {
-        this.menuIds = menuIds;
-    }
-
     public String getImageData() {
         return imageData;
     }
 
     public void setImageData(String imageData) {
         this.imageData = imageData;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

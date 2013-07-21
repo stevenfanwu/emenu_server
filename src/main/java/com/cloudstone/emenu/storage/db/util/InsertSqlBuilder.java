@@ -8,8 +8,17 @@ package com.cloudstone.emenu.storage.db.util;
 public class InsertSqlBuilder extends SQLBuilder {
 
     public InsertSqlBuilder(String tableName, int columnCount) {
+        this(tableName, columnCount, false);
+    }
+    
+    public InsertSqlBuilder(String tableName, int columnCount, boolean replace) {
         super();
-        append("INSERT INTO " + tableName + " VALUES");
+        if (replace) {
+            append("REPLACE ");
+        } else {
+            append("INSERT ");
+        }
+        append("INTO " + tableName + " VALUES");
         append(" (");
         for (int i=0; i<columnCount; i++) {
             if (i != 0) {

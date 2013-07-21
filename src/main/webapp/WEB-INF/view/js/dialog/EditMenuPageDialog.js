@@ -8,21 +8,21 @@ define(function (require, exports, module) {
     var BaseContent = require('./BaseContent');
 
     var Content = BaseContent.extend({
-        tmpl: require('./EditChapterDialog.handlebars')
+        tmpl: require('./EditMenuPageDialog.handlebars')
 
     });
-
-    var EditChapterDialog = EditDialog.extend({
-        headerSuffix: '分类',
+    
+    var EditMenuPageDialog = EditDialog.extend({
+        headerSuffix: '菜单页',
 
         ContentType: Content,
 
-        formEl: '.form-edit-chapter',
+        formEl: '.form-edit-menu-page',
 
-        FormType: require('../form/EditChapterForm')
+        FormType: require('../form/EditMenuPageForm')
         
     });
     
-    return EditChapterDialog;
+    return EditMenuPageDialog;
     
 });
