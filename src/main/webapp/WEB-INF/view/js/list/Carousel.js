@@ -7,12 +7,24 @@ define(function (require, exports, module) {
     var BaseList = require('./BaseList');
 
     var Carousel = BaseList.extend({
+        className: 'carousel-wrap',
+
         tmpl: require('./Carousel.handlebars'),
 
         events: {
             'slide .carousel': 'onSlideStart',
-            'slid .carousel': 'onSlideFinish'
+            'slid .carousel': 'onSlideFinish',
+            'click .btn-previous': 'onPreviousClick',
+            'click .btn-next': 'onNextClick'
         },
+
+        doRender: function () {
+            BaseList.prototype.doRender.apply(this, arguments);
+            this.$('.carousel').carousel({
+                interval: false
+            });
+        },
+        
 
         appendItem: function (item) {
             this.$('.carousel-inner').append(item.el);
@@ -41,7 +53,20 @@ define(function (require, exports, module) {
             this.items.forEach(function (item) {
                 item.checkActive();
             }, this);
+        },
+
+        onPreviousClick: function (evt) {
+            evt.preventDefault();
+            this.$('.carousel').carousel('prev');
+            evt.stopPropagation();
+        },
+
+        onNextClick: function (evt) {
+            evt.preventDefault();
+            this.$('.carousel').carousel('next');
+            evt.stopPropagation();
         }
+        
     });
     
     return Carousel;
