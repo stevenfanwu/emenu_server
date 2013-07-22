@@ -88,7 +88,10 @@ define(function (require, exports, module) {
             this.hide();
         },
         
-        onConfirm: function () {
+        onConfirm: function (evt) {
+            if (evt) {
+                evt.preventDefault();
+            }
         }
     });
     

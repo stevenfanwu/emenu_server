@@ -7,12 +7,15 @@ define(function (require, exports, module) {
     var BaseItem = require('./BaseItem');
     var SelectDishDialog = require('../../dialog/SelectDishDialog');
     var $ = require('../../lib/jquery');
+    var DishModel = require('../../model/DishModel');
+    var EditDishDialog = require('../../dialog/EditDishDialog');
 
     var DishThumbnail = BaseItem.extend({
         tmpl: require('./DishThumbnail.handlebars'),
 
         events: {
             'click .btn-img': 'onImgClick',
+            'click .btn-edit-dish': 'onEditDish',
             'click .btn-select-dish': 'onSelectDish',
             'click .btn-remove-dish': 'onRemoveDish'
         },
@@ -26,12 +29,43 @@ define(function (require, exports, module) {
 
             return data;
         },
+
+        editDish: function () {
+            var dialog = new EditDishDialog({
+                model: this.model
+            });
+            dialog.model.on('saved', function () {
+                this.resetContent();
+            }, this);
+            dialog.show();
+        },
         
+        addDish: function () {
+            var dialog = new EditDishDialog({
+                model: new DishModel()
+            });
+            dialog.model.on('saved', function () {
+                this.model = dialog.model;
+                this.resetContent();
+            }, this);
+            dialog.show();
+        },
 
         /* -------------------- Event Listener ----------------------- */
         
         onImgClick: function (evt) {
             evt.preventDefault();
+            if (this.model.get('id') > 0) {
+                this.editDish();
+            } else {
+                this.addDish();
+            }
+            evt.stopPropagation();
+        },
+
+        onEditDish: function (evt) {
+            evt.preventDefault();
+            this.editDish();
             evt.stopPropagation();
         },
 
