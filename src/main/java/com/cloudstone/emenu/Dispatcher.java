@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.storage.db.DishTagDb;
 
 
 /**
@@ -42,6 +43,7 @@ public class Dispatcher extends DispatcherServlet {
         if (!dbFile.exists()) {
             try {
                 dbFile.createNewFile();
+                DishTagDb.initData();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

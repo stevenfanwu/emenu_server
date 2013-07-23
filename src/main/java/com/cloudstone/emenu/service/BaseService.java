@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.cloudstone.emenu.storage.db.IChapterDb;
 import com.cloudstone.emenu.storage.db.IDishDb;
 import com.cloudstone.emenu.storage.db.IDishPageDb;
+import com.cloudstone.emenu.storage.db.IDishTagDb;
 import com.cloudstone.emenu.storage.db.IMenuDb;
 import com.cloudstone.emenu.storage.db.IMenuPageDb;
 import com.cloudstone.emenu.storage.db.ITableDb;
@@ -37,6 +38,8 @@ public class BaseService {
     protected IMenuPageDb menuPageDb;
     @Autowired
     protected IDishPageDb dishPageDb;
+    @Autowired
+    protected IDishTagDb dishTagDb;
 
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
     

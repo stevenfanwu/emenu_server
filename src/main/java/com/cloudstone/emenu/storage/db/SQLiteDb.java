@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,11 @@ public abstract class SQLiteDb extends BaseStorage {
     private static final Logger LOG = LoggerFactory.getLogger(SQLiteDb.class);
     
     private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (%s)";
+    
+    //TODO
+    private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
+    private static final Lock READ_LOCK = LOCK.readLock();
+    private static final Lock WRITE_LOCK = LOCK.writeLock();
             
     private File DB_FILE;
     
@@ -94,12 +101,14 @@ public abstract class SQLiteDb extends BaseStorage {
     protected void executeSQL(String sql, StatementBinder binder) throws SQLiteException {
         SQLiteConnection conn = open();
         SQLiteStatement stmt = conn.prepare(sql);
+        WRITE_LOCK.lock();
         try {
             binder.onBind(stmt);
             stmt.stepThrough();
         } finally {
             stmt.dispose();
             conn.dispose();
+            WRITE_LOCK.unlock();
         }
     }
     
@@ -126,7 +135,12 @@ public abstract class SQLiteDb extends BaseStorage {
             SQLiteStatement stmt = conn.prepare(sql);
             try {
                 binder.onBind(stmt);
-                return parseData(stmt, rowMapper);
+                READ_LOCK.lock();
+                try {
+                    return parseData(stmt, rowMapper);
+                } finally {
+                    READ_LOCK.unlock();
+                }
             } finally {
                 stmt.dispose();
                 conn.dispose();

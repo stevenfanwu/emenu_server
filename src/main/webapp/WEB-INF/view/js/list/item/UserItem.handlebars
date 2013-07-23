@@ -12,14 +12,10 @@
 </td>
 <td>
 {{#if showOp}}
-    <a href="" class="btn-edit-user">编辑</a>
-    |
-    <a href="" class="btn-delete-user">删除</a>
+    <a href="" class="btn-edit-user hover-tip" title="编辑用户"><i class="icon-edit"></i></a>
+    <a href="" class="btn-delete-user hover-tip" title="删除用户"><i class="icon-remove"></i></a>
 {{/if}}
 {{#if isMe}}
-    {{#if showOp}}
-        |
-    {{/if}}
-    <a href="" class="btn-mod-pw">修改密码</a>
+    <a href="" class="btn-mod-pw hover-tip" title="修改密码"><i class="icon-lock"></i></a>
 {{/if}}
 </td>

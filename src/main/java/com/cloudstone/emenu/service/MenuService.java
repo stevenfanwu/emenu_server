@@ -13,6 +13,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
@@ -324,4 +325,51 @@ public class MenuService extends BaseService implements IMenuService {
         }
     }
     
+    /* ---------- DishTag ---------- */
+    
+
+    @Override
+    public List<DishTag> listAllDishTag() {
+        try {
+            return dishTagDb.listAll();
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public void addDishTag(DishTag tag) {
+        try {
+            dishTagDb.addDishTag(tag);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public void updateDishTag(DishTag tag) {
+        try {
+            dishTagDb.updateDishTag(tag);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public void deleteDishTag(long id) {
+        try {
+            dishTagDb.deleteDishTag(id);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public DishTag getDishTag(long id) {
+        try {
+            return dishTagDb.getDishTag(id);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
 }

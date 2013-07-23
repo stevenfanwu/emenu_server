@@ -7,17 +7,17 @@ define(function (require, exports, module) {
     var AccordionItem = require('./AccordionItem');
     var ChapterModel = require('../../model/ChapterModel');
     var $ = require('../../lib/jquery');
+    var _ = require('../../lib/underscore');
     var ChapterList = require('../ChapterList');
     var ChapterCollection = require('../../collection/ChapterCollection');
 
     var MenuItem = AccordionItem.extend({
 
-        events: {
-            'mouseenter .hover-tip': 'onMouseEnter',
+        events: _.defaults({
             'click .btn-edit-menu': 'onEditMenu',
             'click .btn-delete-menu': 'onDeleteMenu',
             'click .btn-add-chapter': 'onAddChapter'
-        },
+        }, AccordionItem.prototype.events),
 
         tmpl: require('./MenuItem.handlebars'),
 

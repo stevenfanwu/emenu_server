@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
@@ -125,5 +126,23 @@ public class MenuLogic extends BaseLogic {
     
     public List<MenuPage> listMenuPage(long chapterId) {
         return menuService.listMenuPageByChapterId(chapterId);
+    }
+    
+    /* ---------- DishTag ---------- */
+    public List<DishTag> listAllDisTag() {
+        return menuService.listAllDishTag();
+    }
+    
+    public DishTag addDishTag(DishTag tag) {
+        tag.setId(IdGenerator.generateId());
+        menuService.addDishTag(tag);
+        return menuService.getDishTag(tag.getId());
+    }
+    public DishTag updateDishTag(DishTag tag) {
+        menuService.updateDishTag(tag);
+        return menuService.getDishTag(tag.getId());
+    }
+    public void deleteDishTag(long id) {
+        menuService.deleteDishTag(id);
     }
 }

@@ -6,10 +6,15 @@ define(function (require, exports, module) {
 
     var Backbone = require('./lib/backbone');
     var PageDataUtils = require('./util/PageDataUtils');
+    var $ = require('./lib/jquery');
 
     var BaseView = Backbone.View.extend({
 
         tmpl: null,
+
+        events: {
+            'mouseenter .hover-tip': 'onMouseEnter'
+        },
 
         template : function (data, tmpl) {
             var handlebars = require('./lib/handlebars');
@@ -39,6 +44,14 @@ define(function (require, exports, module) {
 
         getCurrentUser: function () {
             return PageDataUtils.getData('loginUser');
+        },
+
+        /* -------------------- Event Listener ----------------------- */
+        
+        onMouseEnter: function (evt) {
+            evt.preventDefault();
+            $(evt.currentTarget).tooltip('show');
+            evt.stopPropagation();
         }
     });
 

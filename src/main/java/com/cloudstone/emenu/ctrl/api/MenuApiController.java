@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
@@ -168,5 +169,31 @@ public class MenuApiController extends BaseApiController {
         dish = menuLogic.addDish(dish);
         sendSuccess(response, HttpServletResponse.SC_CREATED);
         return dish;
+    }
+    
+    @RequestMapping(value="/api/dish/tags", method=RequestMethod.GET)
+    public @ResponseBody List<DishTag> getAllDishTag() {
+        return menuLogic.listAllDisTag();
+    }
+    
+    @RequestMapping(value="/api/dish/tags", method=RequestMethod.POST)
+    public @ResponseBody DishTag addDishTag(@RequestBody String body) {
+        DishTag tag = JsonUtils.fromJson(body, DishTag.class);
+        tag = menuLogic.addDishTag(tag);
+        return tag;
+    }
+    
+    @RequestMapping(value="/api/dish/tags/{id:[\\d]+}", method=RequestMethod.PUT)
+    public @ResponseBody DishTag updateDishTag(@RequestBody String body,
+            @PathVariable(value="id") long id) {
+        DishTag tag = JsonUtils.fromJson(body, DishTag.class);
+        tag = menuLogic.updateDishTag(tag);
+        return tag;
+    }
+    
+    @RequestMapping(value="/api/dish/tags/{id:[\\d]+}", method=RequestMethod.DELETE)
+    public void deleteDishTag(@PathVariable(value="id") long id,
+            HttpServletResponse response) {
+        menuLogic.deleteDishTag(id);
     }
 }

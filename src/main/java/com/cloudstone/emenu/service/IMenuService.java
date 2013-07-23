@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
@@ -46,4 +47,10 @@ public interface IMenuService {
     public List<MenuPage> getAllMenuPage();
     public List<MenuPage> listMenuPageByChapterId(long chapterId);
     public MenuPage getMenuPage(long id);
+    
+    public List<DishTag> listAllDishTag();
+    public void addDishTag(DishTag tag);
+    public void updateDishTag(DishTag tag);
+    public void deleteDishTag(long id);
+    public DishTag getDishTag(long id);
 }
