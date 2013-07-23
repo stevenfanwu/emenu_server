@@ -7,16 +7,7 @@ define(function (require, exports, module) {
     var BaseItem = require('./BaseItem');
 
     var Select = BaseItem.extend({
-
-        setValue: function (value) {
-            this.$('input').prop('selected', false);
-            this.$('input[value=' + value + ']').prop('selected', true);
-        },
-        
-        getValue: function () {
-            return this.$('option:selected').val();
-        }
-        
+        valueEl: 'select'
     });
 
     return Select;

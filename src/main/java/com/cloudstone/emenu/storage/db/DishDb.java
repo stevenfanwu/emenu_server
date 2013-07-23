@@ -44,6 +44,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     
     @Override
     public void add(Dish dish) throws SQLiteException {
+//        LOG.info("add dish, dishTag=" + dish.getDishTag());
         DishBinder binder = new DishBinder(dish);
         executeSQL(SQL_INSERT, binder);
     }
@@ -84,7 +85,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             
             dish.setId(stmt.columnLong(0));
             dish.setName(stmt.columnString(1));
-            dish.setType(stmt.columnInt(2));
+            dish.setDishTag(stmt.columnString(2));
             dish.setPrice(stmt.columnDouble(3));
             dish.setMemberPrice(stmt.columnDouble(4));
             dish.setUnit(stmt.columnInt(5));
@@ -111,7 +112,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, dish.getId());
             stmt.bind(2, dish.getName());
-            stmt.bind(3, dish.getType());
+            stmt.bind(3, dish.getDishTag());
             stmt.bind(4, dish.getPrice());
             stmt.bind(5, dish.getMemberPrice());
             stmt.bind(6, dish.getUnit());
@@ -135,7 +136,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, dish.getName());
-            stmt.bind(2, dish.getType());
+            stmt.bind(2, dish.getDishTag());
             stmt.bind(3, dish.getPrice());
             stmt.bind(4, dish.getMemberPrice());
             stmt.bind(5, dish.getUnit());
@@ -153,7 +154,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final String TABLE_NAME = "dish";
     
     private static enum Column {
-        ID("id"), NAME("name"), TYPE("type"), PRICE("price"),
+        ID("id"), NAME("name"), DISH_TAG("dishTag"), PRICE("price"),
         MEMBER_PRICE("memberPrice"), UNIT("unit"), SPICY("spicy"),
         SPECIAL_PRICE("specialPrice"), NON_INT("nonInt"), DESC("desc"),
         IMAGE_DATA("imageData"), STATUS("status");
@@ -172,7 +173,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final String COL_DEF = new ColumnDefBuilder()
         .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
         .append(Column.NAME, DataType.TEXT, "NOT NULL")
-        .append(Column.TYPE, DataType.INTEGER, "NOT NULL")
+        .append(Column.DISH_TAG, DataType.TEXT, "NOT NULL")
         .append(Column.PRICE, DataType.REAL, "NOT NULL")
         .append(Column.MEMBER_PRICE, DataType.REAL, "NOT NULL")
         .append(Column.UNIT, DataType.INTEGER, "NOT NULL")
@@ -191,7 +192,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .appendWhereId().build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME)
-        .appendSetValue(Column.TYPE)
+        .appendSetValue(Column.DISH_TAG)
         .appendSetValue(Column.PRICE)
         .appendSetValue(Column.MEMBER_PRICE)
         .appendSetValue(Column.UNIT)

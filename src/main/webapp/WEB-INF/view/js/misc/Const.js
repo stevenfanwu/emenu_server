@@ -78,25 +78,6 @@ define(function (require, exports, module) {
         }
     });
 
-    exports.DishType = new Const({
-        HOT: {
-            value: 0,
-            label: '热菜'
-        },
-        COLD: {
-            value: 1,
-            label: '凉菜'
-        },
-        DRINK: {
-            value: 2,
-            label: '饮料'
-        },
-        SPECIAL: {
-            value: 3,
-            label: '特色菜'
-        }
-    });
-
     exports.Spicy = new Const({
         NONE: {
             value: 0,

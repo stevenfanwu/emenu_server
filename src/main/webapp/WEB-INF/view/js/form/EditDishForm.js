@@ -10,6 +10,8 @@ define(function (require, exports, module) {
     var Image = require('./item/Image');
     var Textarea = require('./item/Textarea');
     var Radio = require('./item/Radio');
+    var AjaxSelect = require('./item/AjaxSelect');
+
     var Number = require('./validator/Number');
     var MoreThan = require('./validator/MoreThan');
 
@@ -25,9 +27,10 @@ define(function (require, exports, module) {
                 errorMessage: '菜品名称不能为空'
             }]
         }, {
-            name: 'type',
-            type: Radio,
-            el: '.input-type'
+            name: 'dishTag',
+            type: AjaxSelect,
+            el: '.input-dishTag',
+            CollectionType: require('../collection/DishTagCollection')
         }, {
             name: 'price',
             type: Text,

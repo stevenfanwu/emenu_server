@@ -17,7 +17,6 @@ define(function (require, exports, module) {
 
         getRenderData: function () {
             var data = Tr.prototype.getRenderData.apply(this, arguments);
-            data.typeLabel = Const.DishType.getLabel(data.type);
             data.unitLabel = Const.DishUnit.getLabel(data.unit);
             data.spicyLabel = Const.Spicy.getLabel(data.spicy);
             data.nonIntLabel = Const.Boolean.getLabel(data.nonInt);

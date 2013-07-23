@@ -11,7 +11,7 @@ import com.cloudstone.emenu.constant.Const;
  *
  */
 public class Dish extends IdName {
-    private int type;
+    private String dishTag;
     private double price;
     private double memberPrice;
     private int unit;
@@ -33,13 +33,14 @@ public class Dish extends IdName {
         return dish;
     }
     
-    public int getType() {
-        return type;
+    public String getDishTag() {
+        return dishTag;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setDishTag(String dishTag) {
+        this.dishTag = dishTag;
     }
+
 
     public double getPrice() {
         return price;
