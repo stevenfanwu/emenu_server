@@ -44,7 +44,7 @@ define(function (require, exports, module) {
                 this.remove();
             }.bind(this));
 
-            this.on('submit', this.onConfirm, this);
+            this.on('submit', this.onSubmit, this);
         },
 
         render: function () {
@@ -89,9 +89,12 @@ define(function (require, exports, module) {
         },
         
         onConfirm: function (evt) {
-            if (evt) {
-                evt.preventDefault();
-            }
+            evt.preventDefault();
+            this.onSubmit();
+        },
+
+        onSubmit: function () {
+            this.hide();
         }
     });
     

@@ -9,6 +9,7 @@ define(function (require, exports, module) {
     var $ = require('../../lib/jquery');
     var DishModel = require('../../model/DishModel');
     var EditDishDialog = require('../../dialog/EditDishDialog');
+    var MenuUtils = require('../../util/MenuUtils');
 
     var DishThumbnail = BaseItem.extend({
         tmpl: require('./DishThumbnail.handlebars'),
@@ -47,8 +48,23 @@ define(function (require, exports, module) {
             dialog.model.on('saved', function () {
                 this.model = dialog.model;
                 this.resetContent();
+                this.bindDish(this.model.get('id'));
             }, this);
             dialog.show();
+        },
+
+        bindDish: function (dishId) {
+            var options = {};
+            options.data = {
+                dishId: dishId,
+                menuPageId: this.menuPageId,
+                pos: this.index
+            };
+            options.success = function (dish) {
+                this.model.set(dish);
+                this.resetContent();
+            }.bind(this);
+            MenuUtils.bindDish(options);
         },
 
         /* -------------------- Event Listener ----------------------- */
@@ -73,19 +89,7 @@ define(function (require, exports, module) {
             evt.preventDefault();
             var dialog = new SelectDishDialog();
             dialog.on('submit', function (idName) {
-                var data = {
-                    dishId: idName.id,
-                    menuPageId: this.menuPageId,
-                    pos: this.index
-                };
-                $.ajax({
-                    url: '/api/menus/bind',
-                    type: 'PUT',
-                    data: data
-                }).done(function (dish) {
-                    this.model.set(dish);
-                    this.resetContent();
-                }.bind(this));
+                this.bindDish(idName.id);
             }, this);
             dialog.show();
             evt.stopPropagation();
@@ -94,19 +98,17 @@ define(function (require, exports, module) {
         onRemoveDish: function (evt) {
             evt.preventDefault();
             if (window.confirm('确定移除菜品"' + this.model.get('name') + '"?')) {
-                var data = {
+                var options = {};
+                options.data = {
                     dishId: this.model.get('id'),
                     menuPageId: this.menuPageId,
                     pos: this.index
                 };
-                $.ajax({
-                    url: '/api/menus/unbind',
-                    type: 'PUT',
-                    data: data
-                }).done(function (dish) {
+                options.success = function (dish) {
                     this.model.set(dish);
                     this.resetContent();
-                }.bind(this));
+                }.bind(this);
+                MenuUtils.unbindDish(options);
             }
             evt.stopPropagation();
         }

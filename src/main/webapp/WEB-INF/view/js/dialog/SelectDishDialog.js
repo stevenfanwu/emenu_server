@@ -63,9 +63,8 @@ define(function (require, exports, module) {
             });
         },
 
-        onConfirm: function () {
-            Dialog.prototype.onConfirm.apply(this, arguments);
-            this.hide();
+        onSubmit: function () {
+            Dialog.prototype.onSubmit.apply(this, arguments);
         }
         
 
