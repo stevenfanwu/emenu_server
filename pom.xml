@@ -17,6 +17,18 @@
 
     <dependencies>
         <dependency>
+            <groupId>cloudstone.api</groupId>
+            <artifactId>thrift</artifactId>
+            <version>0.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/thrift.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>3.2.2.RELEASE</version>

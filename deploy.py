@@ -15,6 +15,7 @@ def main():
     subprocess.check_call(['rm', '-fr', TOMCAT_HOME + '/webapps/ROOT'])
 
     subprocess.check_call(['cp', '-r', 'target/CloudMenuServer', TOMCAT_HOME + '/webapps/ROOT'])
+    subprocess.check_call(['cp', 'lib/thrift.jar', TOMCAT_HOME + '/webapps/ROOT/WEB-INF/lib/'])
     subprocess.check_call(['cp', 'lib/sqlite/libsqlite4java-osx.jnilib', TOMCAT_HOME + '/webapps/ROOT/WEB-INF/lib/'])
     subprocess.check_call(['cp', 'lib/sqlite/libsqlite4java-osx-ppc.jnilib', TOMCAT_HOME + '/webapps/ROOT/WEB-INF/lib/'])
     subprocess.check_call(['cp', 'lib/sqlite/sqlite4java-win32-x86.dll', TOMCAT_HOME + '/webapps/ROOT/WEB-INF/lib/'])

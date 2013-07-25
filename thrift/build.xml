@@ -1,0 +1,55 @@
+<project name="thrift" >
+	<property name="gen.dir" location="gen-java"/>
+	<property name="build.dir" location="build" />
+	<property name="lib.dir" location="../WebContent/WEB-INF/lib" />
+	<property name="jar.name" value="cloudstone.cloudmenu.web.api.jar" />
+	<property name="deploy.dir" location="../WebContent/WEB-INF/lib" />
+	
+	<path id="libs.classpath">
+	<fileset dir="../WebContent/WEB-INF/lib">
+		<include name="*.jar" />
+	</fileset>
+	</path>
+  
+	<condition property="isWindows">  
+		<os family="windows" />  
+	</condition>  
+	
+	<target name="clean">
+		<echo>Clean folders</echo>
+		<delete dir="${gen.dir}" />
+		<delete dir="${build.dir}" />
+	</target>
+	
+	<target name="init">
+		<mkdir dir="${build.dir}"/>
+	</target>
+	
+	<target name="generate" if="isWindows" >
+		<echo>Generating .java files</echo>
+		<exec executable="cmd">
+			<arg value="/c" />
+			<arg value="gen.bat java" />
+		</exec>
+	</target>
+	
+	<target name="compile" depends="generate, init">
+		<echo>Compiling</echo>
+		
+		<copy todir="${build.dir}" overwrite="true">
+           <fileset dir="${gen.dir}">
+				<include name="/" />
+           </fileset>
+        </copy>
+		
+		<javac srcdir="${gen.dir}" destdir="${build.dir}" classpathref="libs.classpath" />
+	</target>
+	
+	<target name="package" depends="compile">
+		<jar jarfile="${build.dir}/${jar.name}" basedir="${build.dir}" excludes="*.jar" />
+	</target>
+	
+	<target name="deploy" depends="package">
+		<copy file="${build.dir}/${jar.name}" todir="${deploy.dir}" overwrite="true"/>
+	</target>
+</project>

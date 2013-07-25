@@ -48,6 +48,12 @@ public class AuthFilter implements Filter {
 
         String url = req.getRequestURI().toLowerCase();
         String method = req.getMethod().toLowerCase();
+        
+        //thrift
+        if (url.endsWith(".thrift")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         //check escape
         for (AuthPattern p : escapePatterns) {
