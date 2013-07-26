@@ -23,6 +23,8 @@ import org.apache.thrift.transport.TTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
+
 import com.cloudstone.emenu.ctrl.BaseController;
 import com.cloudstone.emenu.data.ThriftSession;
 
@@ -38,6 +40,13 @@ public abstract class BaseThriftController extends BaseController {
     
     //TODO session expired
     protected static final Map<String, ThriftSession> sessionMap = new HashMap<String, ThriftSession>();
+    
+    protected ThriftSession authorize(String sessionId) throws UserNotLoginException {
+        if (!sessionMap.containsKey(sessionId)) {
+            throw new UserNotLoginException();
+        }
+        return sessionMap.get(sessionId);
+    }
     
     protected void process(HttpServletRequest request, HttpServletResponse response)
             throws IOException, TException {
