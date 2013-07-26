@@ -5,8 +5,8 @@
 package com.cloudstone.emenu.ctrl.thrift;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +21,12 @@ import cn.com.cloudstone.menu.server.thrift.api.IMEINotAllowedException;
 import cn.com.cloudstone.menu.server.thrift.api.IProfileService;
 import cn.com.cloudstone.menu.server.thrift.api.Login;
 import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
+import cn.com.cloudstone.menu.server.thrift.api.UserType;
 import cn.com.cloudstone.menu.server.thrift.api.WrongUsernameOrPasswordException;
+
+import com.cloudstone.emenu.data.ThriftSession;
+import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.util.ThriftUtils;
 
 /**
  * @author xuhongfeng
@@ -30,25 +35,7 @@ import cn.com.cloudstone.menu.server.thrift.api.WrongUsernameOrPasswordException
 @Controller
 public class ProfileThriftController extends BaseThriftController {
     
-    @RequestMapping(value="/*.thrift", method=RequestMethod.GET)
-    public void get(HttpServletRequest request,
-            HttpServletResponse response) throws IOException, TException {
-        process(request, response);
-    }
-    
-    @RequestMapping(value="/*.thrift", method=RequestMethod.PUT)
-    public void put(HttpServletRequest request,
-            HttpServletResponse response) throws IOException, TException {
-        process(request, response);
-    }
-    
-    @RequestMapping(value="/*.thrift", method=RequestMethod.DELETE)
-    public void delete(HttpServletRequest request,
-            HttpServletResponse response) throws IOException, TException {
-        process(request, response);
-    }
-    
-    @RequestMapping(value="/*.thrift", method=RequestMethod.POST)
+    @RequestMapping(value="/profileservice.thrift", method=RequestMethod.POST)
     public void post(HttpServletRequest request,
             HttpServletResponse response) throws IOException, TException {
         process(request, response);
@@ -66,30 +53,39 @@ public class ProfileThriftController extends BaseThriftController {
         public Login loginUser(String username, String pwd, String imei)
                 throws WrongUsernameOrPasswordException,
                 IMEINotAllowedException, TException {
-            // TODO Auto-generated method stub
-            return null;
+            //TODO check imei
+            User user = userLogic.login(username, pwd);
+            if (user == null) {
+                throw new WrongUsernameOrPasswordException();
+            }
+            
+            //build session
+            long ran = new Random().nextLong();
+            String sessionId = String.valueOf(ran);
+            ThriftSession session = new ThriftSession();
+            sessionMap.put(sessionId, session);
+            
+            //build Login
+            UserType type = ThriftUtils.getUserType(user);
+            Login login = new Login(sessionId, username, type);
+            return login;
         }
 
         @Override
         public boolean logout(String sessionId) throws TException {
-            // TODO Auto-generated method stub
-            return false;
+            return sessionMap.remove(sessionId) != null;
         }
 
         @Override
         public boolean changePassword(String sessionId, String oldPwd,
                 String newPwd) throws UserNotLoginException,
                 WrongUsernameOrPasswordException, TException {
-            // TODO Auto-generated method stub
-            return false;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public List<String> getAllUsers() throws TException {
-            List<String> users = new ArrayList<String>();
-            users.add("a");
-            users.add("b");
-            return users;
+            return userLogic.listUserNames();
         }
     }
 }

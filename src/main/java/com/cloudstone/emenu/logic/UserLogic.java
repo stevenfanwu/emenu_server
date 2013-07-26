@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -66,5 +67,14 @@ public class UserLogic extends BaseLogic {
     
     public void delete(long userId) {
         userService.delete(userId);
+    }
+    
+    public List<String> listUserNames() {
+        List<User> users = getAll();
+        List<String> names = new ArrayList<String>(users.size());
+        for (User user:users) {
+            names.add(user.getName());
+        }
+        return names;
     }
 }

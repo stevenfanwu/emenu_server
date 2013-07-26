@@ -33,8 +33,7 @@ public class PadThriftController extends BaseThriftController {
         return processor;
     }
 
-    //TODO
-//    @RequestMapping(value="/padinfoservice.thrift", method=RequestMethod.POST)
+    @RequestMapping(value="/padinfoservice.thrift", method=RequestMethod.POST)
     public void thrift(HttpServletRequest request,
             HttpServletResponse response) throws IOException, TException {
         process(request, response);
