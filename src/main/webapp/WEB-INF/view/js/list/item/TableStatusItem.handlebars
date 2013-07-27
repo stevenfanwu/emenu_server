@@ -1,0 +1,12 @@
+<div class>
+    <div>{{name}}</div>
+    <div>
+        <span class="label label-{{#if empty}}success{{else}}important{{/if}}">
+            状态:{{#if empty}}空闲{{else}}已用{{/if}}
+        </span>
+    </div>
+    <div class='btn-wrap'>
+        <span class="btn btn-primary btn-mini btn-bill">结账</span>
+        <span class="btn btn-primary btn-mini btn-change">换桌</span>
+    </div>
+</div>

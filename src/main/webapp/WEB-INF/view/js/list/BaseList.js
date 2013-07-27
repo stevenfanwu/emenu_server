@@ -46,11 +46,11 @@ define(function (require, exports, module) {
 
         resetContent: function () {
             this.collection.reset();
+            this.fetched = false;
             BaseView.prototype.resetContent.apply(this, arguments);
         },
 
         refresh: function () {
-            this.fetched = false;
             this.resetContent();
         },
 

@@ -40,7 +40,6 @@ define(function (require, exports, module) {
             this.list.collection.on('delete', this.onDeleteTable, this);
         },
 
-        
         /* -------------------- Event Listener ----------------------- */
         
         onCreateTable: function (evt) {

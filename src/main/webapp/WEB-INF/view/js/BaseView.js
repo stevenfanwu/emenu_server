@@ -24,14 +24,19 @@ define(function (require, exports, module) {
         },
 
         resetContent: function () {
-            this.$el.empty();
             this.render();
+        },
+
+        empty: function () {
+            this.$el.empty();
         },
 
         render: function () {
             Backbone.View.prototype.render.apply(this, arguments);
             if (this.tmpl) {
                 this.el.innerHTML = this.template(this.getRenderData());
+            } else {
+                this.empty();
             }
         },
 
