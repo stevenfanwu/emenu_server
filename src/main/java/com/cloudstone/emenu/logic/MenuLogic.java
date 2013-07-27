@@ -4,8 +4,10 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Chapter;
@@ -14,6 +16,8 @@ import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
+import com.cloudstone.emenu.exception.ServerError;
+import com.cloudstone.emenu.storage.file.ImageStorage;
 
 /**
  * @author xuhongfeng
@@ -21,6 +25,9 @@ import com.cloudstone.emenu.data.MenuPage;
  */
 @Component
 public class MenuLogic extends BaseLogic {
+    //TODO
+    @Autowired
+    private ImageStorage imageStorage;
 
     /* ---------- menu ---------- */
     public Menu addMenu(Menu menu) {
@@ -69,7 +76,15 @@ public class MenuLogic extends BaseLogic {
     }
     
     public List<Dish> getAllDish() {
-        return menuService.getAllDish();
+        List<Dish> dishes = menuService.getAllDish();
+        for (Dish dish:dishes) {
+            try {
+                imageStorage.saveDishImage(dish.getImageData());
+            } catch (IOException e) {
+                throw new ServerError(e);
+            }
+        }
+        return dishes;
     }
     
     public List<Dish> getDishByMenuPageId(int menuPageId) {
