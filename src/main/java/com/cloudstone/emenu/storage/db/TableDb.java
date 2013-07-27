@@ -92,6 +92,11 @@ public class TableDb extends SQLiteDb implements ITableDb {
         Table table = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return table;
     }
+    
+    @Override
+    public Table getByTableName(String name) throws SQLiteException {
+        return getByName(name, rowMapper);
+    }
 
     @Override
     protected void onCheckCreateTable() throws SQLiteException {

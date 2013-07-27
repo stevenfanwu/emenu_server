@@ -22,11 +22,13 @@ import org.apache.thrift.transport.TIOStreamTransport;
 import org.apache.thrift.transport.TTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 
 import com.cloudstone.emenu.ctrl.BaseController;
 import com.cloudstone.emenu.data.ThriftSession;
+import com.cloudstone.emenu.logic.ThriftLogic;
 
 /**
  * @author xuhongfeng
@@ -38,6 +40,10 @@ public abstract class BaseThriftController extends BaseController {
     protected static final TProtocolFactory inProtocolFactory = new TBinaryProtocol.Factory();  
     protected static final TProtocolFactory outProtocolFactory = new TBinaryProtocol.Factory();  
     
+    @Autowired
+    protected ThriftLogic thriftLogic;
+    
+    //TODO 持久化
     //TODO session expired
     protected static final Map<String, ThriftSession> sessionMap = new HashMap<String, ThriftSession>();
     

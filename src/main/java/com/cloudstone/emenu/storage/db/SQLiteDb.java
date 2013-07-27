@@ -21,7 +21,9 @@ import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.CreateIndexBuilder;
+import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
+import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.util.IdGenerator;
 
@@ -67,6 +69,12 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     protected int genId() throws SQLiteException {
         return idGenerator.generateId(this);
     }
+    
+    protected <T> T getByName(String name, RowMapper<T> rowMapper) throws SQLiteException {
+        String sql = new SelectSqlBuilder(getTableName()).appendWhereName().build();
+        return queryOne(sql, new NameStatementBinder(name), rowMapper);
+    }
+    
     protected List<IdName> getIdNames() throws SQLiteException {
         String sql = "SELECT id, name FROM " + getTableName();
         return query(sql, StatementBinder.NULL, ID_NAME_ROW_MAPPER);

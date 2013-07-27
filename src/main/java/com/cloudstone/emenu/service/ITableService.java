@@ -16,6 +16,7 @@ public interface ITableService {
 
     public void add(Table table);
     public Table get(int id);
+    public Table getByName(String name);
     public List<Table> getAll();
     public void delete(int tableId);
     public void update(Table table);

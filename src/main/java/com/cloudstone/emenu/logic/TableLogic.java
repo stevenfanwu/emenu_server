@@ -35,4 +35,8 @@ public class TableLogic extends BaseLogic {
     public void delete(int tableId) {
         tableService.delete(tableId);
     }
+    
+    public Table getByName(String name) {
+        return tableService.getByName(name);
+    }
 }

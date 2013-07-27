@@ -57,6 +57,15 @@ public class TableService extends BaseService implements ITableService {
     }
     
     @Override
+    public Table getByName(String name) {
+        try {
+            return tableDb.getByTableName(name);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
     public Table get(int id) {
         try {
             return tableDb.get(id);
