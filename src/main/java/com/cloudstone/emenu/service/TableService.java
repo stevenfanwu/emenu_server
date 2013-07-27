@@ -20,9 +20,9 @@ import com.cloudstone.emenu.exception.ServerError;
 public class TableService extends BaseService implements ITableService {
 
     @Override
-    public Table add(Table table) {
+    public void add(Table table) {
         try {
-            return tableDb.add(table);
+            tableDb.add(table);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
@@ -39,18 +39,27 @@ public class TableService extends BaseService implements ITableService {
 
     
     @Override
-    public Table update(Table table) {
+    public void update(Table table) {
         try {
-            return tableDb.update(table);
+            tableDb.update(table);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
     
     @Override
-    public void delete(long tableId) {
+    public void delete(int tableId) {
         try {
             tableDb.delete(tableId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public Table get(int id) {
+        try {
+            return tableDb.get(id);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

@@ -29,16 +29,16 @@ public class UserService extends BaseService implements IUserService {
     }
     
     @Override
-    public User update(User user) {
+    public void update(User user) {
         try {
-            return userDb.update(user);
+            userDb.update(user);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
     
     @Override
-    public boolean modifyPassword(long userId, String password) {
+    public boolean modifyPassword(int userId, String password) {
         try {
             return userDb.modifyPassword(userId, password);
         } catch (SQLiteException e) {
@@ -47,16 +47,16 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
-    public User add(User user) {
+    public void add(User user) {
         try {
-            return userDb.add(user);
+            userDb.add(user);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
 
     @Override
-    public User get(long userId) {
+    public User get(int userId) {
         try {
             return userDb.get(userId);
         } catch (SQLiteException e) {
@@ -74,7 +74,7 @@ public class UserService extends BaseService implements IUserService {
     }
     
     @Override
-    public void delete(long userId) {
+    public void delete(int userId) {
         try {
             userDb.delete(userId);
         } catch (SQLiteException e) {

@@ -13,12 +13,12 @@ import com.cloudstone.emenu.data.MenuPage;
  * @author xuhongfeng
  *
  */
-public interface IMenuPageDb {
+public interface IMenuPageDb extends IDb {
 
     public void addMenuPage(MenuPage page) throws SQLiteException;
     public void updateMenuPage(MenuPage page) throws SQLiteException;
-    public void deleteMenuPage(long id) throws SQLiteException;
+    public void deleteMenuPage(int id) throws SQLiteException;
     public List<MenuPage> getAllMenuPage() throws SQLiteException;
-    public List<MenuPage> listMenuPages(long chapterId) throws SQLiteException;
-    public MenuPage getMenuPage(long id) throws SQLiteException;
+    public List<MenuPage> listMenuPages(int chapterId) throws SQLiteException;
+    public MenuPage getMenuPage(int id) throws SQLiteException;
 }

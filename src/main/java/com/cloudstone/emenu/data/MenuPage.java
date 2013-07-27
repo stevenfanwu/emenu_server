@@ -8,21 +8,14 @@ package com.cloudstone.emenu.data;
  * @author xuhongfeng
  *
  */
-public class MenuPage extends BaseData {
-    private long id;
-    private long chapterId;
+public class MenuPage extends IEntity {
+    private int chapterId;
     private int dishCount;
     
-    public long getId() {
-        return id;
-    }
-    public void setId(long id) {
-        this.id = id;
-    }
-    public long getChapterId() {
+    public int getChapterId() {
         return chapterId;
     }
-    public void setChapterId(long chapterId) {
+    public void setChapterId(int chapterId) {
         this.chapterId = chapterId;
     }
     public int getDishCount() {

@@ -49,7 +49,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public void deleteMenu(long id) {
+    public void deleteMenu(int id) {
         try {
             menuDb.deleteMenu(id);
             deleteChaptersByMenuId(id);
@@ -68,7 +68,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public Menu getMenu(long id) {
+    public Menu getMenu(int id) {
         try {
             return menuDb.getMenu(id);
         } catch (SQLiteException e) {
@@ -97,7 +97,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public void deleteChapter(long id) {
+    public void deleteChapter(int id) {
         try {
             chapterDb.deleteChapter(id);
             List<MenuPage> pages = listMenuPageByChapterId(id);
@@ -119,7 +119,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public Chapter getChapter(long id) {
+    public Chapter getChapter(int id) {
         try {
             return chapterDb.getChapter(id);
         } catch (SQLiteException e) {
@@ -128,7 +128,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public List<Chapter> listChapterByMenuId(long menuId) {
+    public List<Chapter> listChapterByMenuId(int menuId) {
         try {
             return chapterDb.listChapters(menuId);
         } catch (SQLiteException e) {
@@ -136,7 +136,7 @@ public class MenuService extends BaseService implements IMenuService {
         }
     }
     
-    public void deleteChaptersByMenuId(long menuId) {
+    public void deleteChaptersByMenuId(int menuId) {
         List<Chapter> chapters = listChapterByMenuId(menuId);
         for(Chapter chapter:chapters) {
             deleteChapter(chapter.getId());
@@ -146,7 +146,7 @@ public class MenuService extends BaseService implements IMenuService {
     /* ---------- Dish ---------- */
     
     @Override
-    public void bindDish(long menuPageId, long dishId, int pos) {
+    public void bindDish(int menuPageId, int dishId, int pos) {
         try {
             dishPageDb.add(menuPageId, dishId, pos);
             checkDishInMenu(dishId);
@@ -156,7 +156,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
     
     @Override
-    public void unbindDish(long menuPageId, long dishId, int pos) {
+    public void unbindDish(int menuPageId, int dishId, int pos) {
         try {
             dishPageDb.delete(menuPageId, pos);
             checkDishInMenu(dishId);
@@ -166,10 +166,9 @@ public class MenuService extends BaseService implements IMenuService {
     }
     
     @Override
-    public Dish addDish(Dish dish) {
+    public void addDish(Dish dish) {
         try {
             dishDb.add(dish);
-            return dishDb.get(dish.getId());
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
@@ -185,7 +184,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public void deleteDish(long id) {
+    public void deleteDish(int id) {
         try {
             dishDb.delete(id);
             dishPageDb.deleteByDishId(id);
@@ -195,17 +194,16 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public Dish updateDish(Dish dish) {
+    public void updateDish(Dish dish) {
         try {
             dishDb.update(dish);
-            return dishDb.get(dish.getId());
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
 
     @Override
-    public Dish getDish(long id) {
+    public Dish getDish(int id) {
         try {
             return dishDb.get(id);
         } catch (SQLiteException e) {
@@ -233,14 +231,14 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public void deleteMenuPage(long id) {
+    public void deleteMenuPage(int id) {
         try {
             //delete page
             menuPageDb.deleteMenuPage(id);
             List<DishPage> relation = dishPageDb.getByMenuPageId(id);
             dishPageDb.deleteByMenuPageId(id);
             for (DishPage r:relation) {
-                long dishId = r.getDishId();
+                int dishId = r.getDishId();
                 checkDishInMenu(dishId);
             }
         } catch (SQLiteException e) {
@@ -248,7 +246,7 @@ public class MenuService extends BaseService implements IMenuService {
         }
     }
     
-    private void checkDishInMenu(long dishId) throws SQLiteException {
+    private void checkDishInMenu(int dishId) throws SQLiteException {
         Dish dish = dishDb.get(dishId);
         if (dish != null) {
             int count = dishPageDb.countByDishId(dishId);
@@ -271,7 +269,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public List<MenuPage> listMenuPageByChapterId(long chapterId) {
+    public List<MenuPage> listMenuPageByChapterId(int chapterId) {
         try {
             return menuPageDb.listMenuPages(chapterId);
         } catch (SQLiteException e) {
@@ -280,7 +278,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public MenuPage getMenuPage(long id) {
+    public MenuPage getMenuPage(int id) {
         try {
             return menuPageDb.getMenuPage(id);
         } catch (SQLiteException e) {
@@ -289,7 +287,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
     
     @Override
-    public List<Dish> getDishByMenuPageId(long menuPageId) {
+    public List<Dish> getDishByMenuPageId(int menuPageId) {
         List<Dish> ret = new ArrayList<Dish>();
         try {
             MenuPage page = getMenuPage(menuPageId);
@@ -299,7 +297,7 @@ public class MenuService extends BaseService implements IMenuService {
             Dish[] dishes = new Dish[page.getDishCount()];
             List<DishPage> relation = dishPageDb.getByMenuPageId(menuPageId);
             for (DishPage r:relation) {
-                long dishId = r.getDishId();
+                int dishId = r.getDishId();
                 int pos = r.getPos();
                 dishes[pos] = getDish(dishId);
             }
@@ -356,7 +354,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
 
     @Override
-    public void deleteDishTag(long id) {
+    public void deleteDishTag(int id) {
         try {
             dishTagDb.deleteDishTag(id);
         } catch (SQLiteException e) {
@@ -365,7 +363,7 @@ public class MenuService extends BaseService implements IMenuService {
     }
     
     @Override
-    public DishTag getDishTag(long id) {
+    public DishTag getDishTag(int id) {
         try {
             return dishTagDb.getDishTag(id);
         } catch (SQLiteException e) {

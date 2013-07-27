@@ -20,7 +20,7 @@ public class MenuDb extends IdNameDb<Menu> implements IMenuDb {
     private static final String TABLE_NAME = "menu";
     
     @Override
-    protected String getTableName() {
+    public String getTableName() {
         return TABLE_NAME;
     }
 
@@ -35,7 +35,7 @@ public class MenuDb extends IdNameDb<Menu> implements IMenuDb {
     }
 
     @Override
-    public void deleteMenu(long id) throws SQLiteException {
+    public void deleteMenu(int id) throws SQLiteException {
         delete(id);
     }
 
@@ -45,7 +45,7 @@ public class MenuDb extends IdNameDb<Menu> implements IMenuDb {
     }
 
     @Override
-    public Menu getMenu(long id) throws SQLiteException {
+    public Menu getMenu(int id) throws SQLiteException {
         return get(id);
     }
     

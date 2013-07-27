@@ -31,10 +31,6 @@ define(function (require, exports, module) {
             type: Radio,
             el: '.input-type'
         }, {
-            name: 'shape',
-            type: Radio,
-            el: '.input-shape'
-        }, {
             name: 'capacity',
             type: Text,
             validators: [{

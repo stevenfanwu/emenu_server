@@ -64,41 +64,41 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
         executeSQL(sql, binder);
     }
     
-    protected void deleteById2(long id2) throws SQLiteException {
+    protected void deleteById2(int id2) throws SQLiteException {
         deleteById(ID2, id2);
     }
     
-    protected void deleteById1(long id1) throws SQLiteException {
+    protected void deleteById1(int id1) throws SQLiteException {
         deleteById(ID1, id1);
     }
     
-    private void deleteById(String idName, long id) throws SQLiteException {
+    private void deleteById(String idName, int id) throws SQLiteException {
         String sql = new DeleteSqlBuilder(config.tableName).appendWhere(idName).build();
         executeSQL(sql, new IdStatementBinder(id));
     }
     
-    protected List<T> listById1(long id1) throws SQLiteException {
+    protected List<T> listById1(int id1) throws SQLiteException {
         return listById(ID1, id1);
     }
     
-    protected List<T> listById2(long id2) throws SQLiteException {
+    protected List<T> listById2(int id2) throws SQLiteException {
         return listById(ID2, id2);
     }
     
-    private List<T> listById(String idName, long id) throws SQLiteException {
+    private List<T> listById(String idName, int id) throws SQLiteException {
         String sql = new SelectSqlBuilder(config.tableName).appendWhere(idName).build();
         return query(sql, new IdStatementBinder(id), rowMapper);
     }
     
-    protected int countId1(long id1) throws SQLiteException {
+    protected int countId1(int id1) throws SQLiteException {
         return countId(ID1, id1);
     }
     
-    protected int countId2(long id2) throws SQLiteException {
+    protected int countId2(int id2) throws SQLiteException {
         return countId(ID2, id2);
     }
     
-    private int countId(String idName, long id) throws SQLiteException {
+    private int countId(String idName, int id) throws SQLiteException {
         String sql = new CountSqlBuilder(config.tableName).appendWhere(idName).build();
         return queryInt(sql, new IdStatementBinder(id));
     }
@@ -130,10 +130,10 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     }
     
     protected abstract class InsertBinder implements StatementBinder {
-        private final long id1;
-        private final long id2;
+        private final int id1;
+        private final int id2;
 
-        public InsertBinder(long id1, long id2) {
+        public InsertBinder(int id1, int id2) {
             super();
             this.id1 = id1;
             this.id2 = id2;
@@ -159,19 +159,19 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     }
     
     public static class Relation {
-        private long id1;
-        private long id2;
+        private int id1;
+        private int id2;
         
-        public long getId1() {
+        public int getId1() {
             return id1;
         }
-        public void setId1(long id1) {
+        public void setId1(int id1) {
             this.id1 = id1;
         }
-        public long getId2() {
+        public int getId2() {
             return id2;
         }
-        public void setId2(long id2) {
+        public void setId2(int id2) {
             this.id2 = id2;
         }
     }
@@ -181,8 +181,8 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
         @Override
         public T map(SQLiteStatement stmt) throws SQLiteException {
             T relation = newRelation();
-            relation.setId1(stmt.columnLong(0));
-            relation.setId2(stmt.columnLong(1));
+            relation.setId1(stmt.columnInt(0));
+            relation.setId2(stmt.columnInt(1));
             return relation;
         }
         

@@ -23,12 +23,13 @@ import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.CreateIndexBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
+import com.cloudstone.emenu.util.IdGenerator;
 
 /**
  * @author xuhongfeng
  *
  */
-public abstract class SQLiteDb extends BaseStorage {
+public abstract class SQLiteDb extends BaseStorage implements IDb {
     private static final Logger LOG = LoggerFactory.getLogger(SQLiteDb.class);
     
     private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (%s)";
@@ -39,6 +40,8 @@ public abstract class SQLiteDb extends BaseStorage {
     private static final Lock WRITE_LOCK = LOCK.writeLock();
             
     private File DB_FILE;
+    
+    private IdGenerator idGenerator = new IdGenerator();
     
     public static enum DataType {
         NULL("NULL"), INTEGER("INTEGER"), REAL("REAL"), TEXT("TEXT"), BLOB("BLOB");
@@ -54,7 +57,16 @@ public abstract class SQLiteDb extends BaseStorage {
         }
     }
     
+    @Override
+    public int getMaxId() throws SQLiteException {
+        String sql = "SELECT MAX(id) FROM " + getTableName();
+        return queryInt(sql, StatementBinder.NULL);
+    }
+    
     /* ---------- protected ----------*/
+    protected int genId() throws SQLiteException {
+        return idGenerator.generateId(this);
+    }
     protected List<IdName> getIdNames() throws SQLiteException {
         String sql = "SELECT id, name FROM " + getTableName();
         return query(sql, StatementBinder.NULL, ID_NAME_ROW_MAPPER);
@@ -126,7 +138,6 @@ public abstract class SQLiteDb extends BaseStorage {
     
     /* ---------- abstract ----------*/
     protected abstract void onCheckCreateTable() throws SQLiteException;
-    protected abstract String getTableName();
     
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
@@ -200,7 +211,7 @@ public abstract class SQLiteDb extends BaseStorage {
         @Override
         public IdName map(SQLiteStatement stmt) throws SQLiteException {
             IdName o = new IdName();
-            o.setId(stmt.columnLong(0));
+            o.setId(stmt.columnInt(0));
             o.setName(stmt.columnString(1));
             return o;
         }

@@ -9,13 +9,13 @@ package com.cloudstone.emenu.data;
  *
  */
 public class Chapter extends IdName {
-    private long menuId;
+    private int menuId;
 
-    public long getMenuId() {
+    public int getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(long menuId) {
+    public void setMenuId(int menuId) {
         this.menuId = menuId;
     }
 }

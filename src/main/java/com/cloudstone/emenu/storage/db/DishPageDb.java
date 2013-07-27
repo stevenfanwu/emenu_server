@@ -30,7 +30,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     private static final String TABLE_NAME = "dishPage";
     
     @Override
-    protected String getTableName() {
+    public String getTableName() {
         return TABLE_NAME;
     }
     
@@ -53,8 +53,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
 
     /* ---------- public ---------- */
     @Override
-    public void add(long menuPageId, long dishId, final int pos) throws SQLiteException {
-        LOG.info(String.format("menuPageId=%d, dishId=%d, pos=%d", menuPageId, dishId, pos));
+    public void add(int menuPageId, int dishId, final int pos) throws SQLiteException {
         add(new InsertBinder(menuPageId, dishId) {
             @Override
             protected void onBind(SQLiteStatement stmt, int indexStmt, int indexValue) throws SQLiteException {
@@ -64,28 +63,28 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     }
 
     @Override
-    public void deleteByDishId(long dishId) throws SQLiteException {
+    public void deleteByDishId(int dishId) throws SQLiteException {
         deleteById2(dishId);
     }
 
     @Override
-    public void deleteByMenuPageId(long menuPageId) throws SQLiteException {
+    public void deleteByMenuPageId(int menuPageId) throws SQLiteException {
         deleteById1(menuPageId);
     }
 
     @Override
-    public List<DishPage> getByMenuPageId(long menuPageId)
+    public List<DishPage> getByMenuPageId(int menuPageId)
             throws SQLiteException {
         return listById1(menuPageId);
     }
 
     @Override
-    public int countByDishId(long dishId) throws SQLiteException {
+    public int countByDishId(int dishId) throws SQLiteException {
         return countId2(dishId);
     }
     
     @Override
-    public void delete(final long menuPageId, final int pos) throws SQLiteException {
+    public void delete(final int menuPageId, final int pos) throws SQLiteException {
         String sql = new DeleteSqlBuilder(getTableName()).appendWhere(ID1).appendWhere(COL_POS.name).build();
         executeSQL(sql, new StatementBinder() {
             @Override

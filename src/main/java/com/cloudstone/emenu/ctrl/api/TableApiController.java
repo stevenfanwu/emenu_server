@@ -39,7 +39,7 @@ public class TableApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/tables/{id:[\\d]+}", method=RequestMethod.PUT)
-    public @ResponseBody Table update(@PathVariable(value="id") long tableId,
+    public @ResponseBody Table update(@PathVariable(value="id") int tableId,
             @RequestBody String body, HttpServletResponse response) {
         Table table = JsonUtils.fromJson(body, Table.class);
         if (table.getId() != tableId) {
@@ -50,7 +50,7 @@ public class TableApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/tables/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void delete(@PathVariable(value="id") long tableId,
+    public void delete(@PathVariable(value="id") int tableId,
             HttpServletResponse response) {
         tableLogic.delete(tableId);
     }

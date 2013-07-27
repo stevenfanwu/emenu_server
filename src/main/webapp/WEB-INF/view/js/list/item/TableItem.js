@@ -18,7 +18,6 @@ define(function (require, exports, module) {
         getRenderData: function () {
             var data = Tr.prototype.getRenderData.apply(this, arguments);
             data.typeLabel = Const.TableType.getLabel(data.type);
-            data.shapeLabel = Const.TableShape.getLabel(data.shape);
             data.minChargeLabel = data.minCharge === 0 ? '无' : data.minCharge;
             data.tipModeLabel = Const.TipMode.getLabel(data.tipMode);
             if (data.tipMode === Const.TipMode.NONE.value) {

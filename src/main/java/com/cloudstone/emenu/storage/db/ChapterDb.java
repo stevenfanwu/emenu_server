@@ -27,18 +27,19 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 @Repository
 public class ChapterDb extends SQLiteDb implements IChapterDb {
     @Override
-    protected String getTableName() {
+    public String getTableName() {
         return TABLE_NAME;
     }
     
     @Override
-    public List<Chapter> listChapters(long menuId) throws SQLiteException {
+    public List<Chapter> listChapters(int menuId) throws SQLiteException {
         GetByMenuIdBinder binder = new GetByMenuIdBinder(menuId);
         return query(SQL_SELECT_BY_MENU_ID, binder, rowMapper);
     }
 
     @Override
     public void addChapter(Chapter chapter) throws SQLiteException {
+        chapter.setId(genId());
         executeSQL(SQL_INSERT, new ChapterBinder(chapter));
     }
 
@@ -48,7 +49,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     }
 
     @Override
-    public void deleteChapter(long id) throws SQLiteException {
+    public void deleteChapter(int id) throws SQLiteException {
         executeSQL(SQL_DELETE, new IdStatementBinder(id));
     }
 
@@ -58,7 +59,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     }
 
     @Override
-    public Chapter getChapter(long id) throws SQLiteException {
+    public Chapter getChapter(int id) throws SQLiteException {
         IdStatementBinder binder = new IdStatementBinder(id);
         Chapter chapter = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return chapter;
@@ -106,9 +107,9 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         @Override
         public Chapter map(SQLiteStatement stmt) throws SQLiteException {
             Chapter chapter = new Chapter();
-            chapter.setId(stmt.columnLong(0));
+            chapter.setId(stmt.columnInt(0));
             chapter.setName(stmt.columnString(1));
-            chapter.setMenuId(stmt.columnLong(2));
+            chapter.setMenuId(stmt.columnInt(2));
             return chapter;
         }
     };
@@ -144,9 +145,9 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     }
     
     private static class GetByMenuIdBinder implements StatementBinder {
-        private final long menuId;
+        private final int menuId;
 
-        public GetByMenuIdBinder(long menuId) {
+        public GetByMenuIdBinder(int menuId) {
             super();
             this.menuId = menuId;
         }

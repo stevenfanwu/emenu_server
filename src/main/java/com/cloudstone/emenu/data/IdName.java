@@ -8,8 +8,7 @@ package com.cloudstone.emenu.data;
  * @author xuhongfeng
  *
  */
-public class IdName extends BaseData {
-    private long id;
+public class IdName extends IEntity {
     private String name;
     
     public IdName() {
@@ -18,16 +17,10 @@ public class IdName extends BaseData {
     
     public IdName(IdName other) {
         super();
-        this.id = other.id;
         this.name = other.name;
+        setId(other.getId());
     }
     
-    public long getId() {
-        return id;
-    }
-    public void setId(long id) {
-        this.id = id;
-    }
     public String getName() {
         return name;
     }

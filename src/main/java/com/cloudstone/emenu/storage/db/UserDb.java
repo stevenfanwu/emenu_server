@@ -30,7 +30,7 @@ import com.cloudstone.emenu.util.RsaUtils;
 public class UserDb extends SQLiteDb implements IUserDb {
     
     @Override
-    protected String getTableName() {
+    public String getTableName() {
         return TABLE_NAME;
     }
     
@@ -108,19 +108,19 @@ public class UserDb extends SQLiteDb implements IUserDb {
     }
     
     @Override
-    public void delete(long userId) throws SQLiteException {
+    public void delete(int userId) throws SQLiteException {
         executeSQL(SQL_DELETE, new IdStatementBinder(userId));
     }
     
     @Override
-    public boolean modifyPassword(long userId, String password)
+    public boolean modifyPassword(int userId, String password)
             throws SQLiteException {
         executeSQL(SQL_MODIFY_PASSWORD, new ModifyPasswordBinder(userId, password));
         return true;
     }
     
     @Override
-    public User get(long userId) throws SQLiteException {
+    public User get(int userId) throws SQLiteException {
         IdStatementBinder binder = new IdStatementBinder(userId);
         User user = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return user;
@@ -133,6 +133,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
 
     @Override
     public User add(User user) throws SQLiteException {
+        user.setId(genId());
         UserBinder binder = new UserBinder(user);
         executeSQL(SQL_INSERT, binder);
         return get(user.getId());
@@ -143,7 +144,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
         @Override
         public User map(SQLiteStatement stmt) throws SQLiteException {
             User user = new User();
-            user.setId(stmt.columnLong(0));
+            user.setId(stmt.columnInt(0));
             user.setName(stmt.columnString(1));
             user.setPassword(stmt.columnString(2));
             user.setType(stmt.columnInt(3));
@@ -188,10 +189,10 @@ public class UserDb extends SQLiteDb implements IUserDb {
     }
     
     private class ModifyPasswordBinder implements StatementBinder {
-        private final long userId;
+        private final int userId;
         private final String password;
 
-        public ModifyPasswordBinder(long userId, String password) {
+        public ModifyPasswordBinder(int userId, String password) {
             super();
             this.userId = userId;
             this.password = password;

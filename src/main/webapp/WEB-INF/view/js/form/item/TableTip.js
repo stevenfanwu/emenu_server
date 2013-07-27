@@ -75,10 +75,10 @@ define(function (require, exports, module) {
                 this.$('.add-on').hide();
             } else if (mode === 1) {
                 this.$('.wrap-tip').show();
-                this.$('.add-on').show();
+                this.$('.add-on').hide();
             } else {
                 this.$('.wrap-tip').show();
-                this.$('.add-on').hide();
+                this.$('.add-on').show();
             }
         }
         

@@ -13,13 +13,13 @@ import com.cloudstone.emenu.storage.db.RelationDb.Relation;
  * @author xuhongfeng
  *
  */
-public interface IDishPageDb {
-    public void deleteByDishId(long dishId) throws SQLiteException;
-    public void deleteByMenuPageId(long menuPageId) throws SQLiteException;
-    public List<DishPage> getByMenuPageId(long menuPageId) throws SQLiteException;
-    public int countByDishId(long dishId) throws SQLiteException;
-    public void add(long menuPageId, long dishId, int pos) throws SQLiteException;
-    public void delete(long menuPageId, int pos) throws SQLiteException;
+public interface IDishPageDb extends IDb {
+    public void deleteByDishId(int dishId) throws SQLiteException;
+    public void deleteByMenuPageId(int menuPageId) throws SQLiteException;
+    public List<DishPage> getByMenuPageId(int menuPageId) throws SQLiteException;
+    public int countByDishId(int dishId) throws SQLiteException;
+    public void add(int menuPageId, int dishId, int pos) throws SQLiteException;
+    public void delete(int menuPageId, int pos) throws SQLiteException;
     
     public static class DishPage extends Relation {
         private int pos;
@@ -32,19 +32,19 @@ public interface IDishPageDb {
             this.pos = pos;
         }
         
-        public void setMenuPageId(long id) {
+        public void setMenuPageId(int id) {
             setId1(id);
         }
         
-        public void setDishId(long id) {
+        public void setDishId(int id) {
             setId2(id);
         }
         
-        public long getMenuPageId() {
+        public int getMenuPageId() {
             return getId1();
         }
         
-        public long getDishId() {
+        public int getDishId() {
             return getId2();
         }
     }

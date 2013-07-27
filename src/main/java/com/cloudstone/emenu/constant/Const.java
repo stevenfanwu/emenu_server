@@ -35,9 +35,12 @@ public class Const {
         public static final int ROOM = 0;//包间
         public static final int HALL = 1;//散台
         public static final int BOOTH = 2;//卡座
-        
-        public static final int SQUARE = 0;//方桌
-        public static final int ROUNT = 1;//圆桌
+    }
+    
+    public static class TableStatus {
+        public static final int EMPTY = 0;
+        public static final int OCCUPIED = 1;
+        public static final int ORDERED = 2;
     }
     
     public static class TipMode {//服务费收取模式

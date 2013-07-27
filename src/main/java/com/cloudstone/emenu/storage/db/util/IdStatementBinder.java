@@ -12,9 +12,9 @@ import com.almworks.sqlite4java.SQLiteStatement;
  *
  */
 public class IdStatementBinder implements StatementBinder {
-    private final long id;
+    private final int id;
 
-    public IdStatementBinder(long id) {
+    public IdStatementBinder(int id) {
         super();
         this.id = id;
     }

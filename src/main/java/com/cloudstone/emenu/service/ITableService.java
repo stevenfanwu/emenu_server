@@ -14,8 +14,9 @@ import com.cloudstone.emenu.data.Table;
  */
 public interface ITableService {
 
-    public Table add(Table table);
+    public void add(Table table);
+    public Table get(int id);
     public List<Table> getAll();
-    public void delete(long tableId);
-    public Table update(Table table);
+    public void delete(int tableId);
+    public void update(Table table);
 }

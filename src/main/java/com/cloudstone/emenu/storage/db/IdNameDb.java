@@ -30,6 +30,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
     }
     
     protected void add(T data) throws SQLiteException {
+        data.setId(genId());
         executeSQL(SQL_INSERT, new IdNameBinder(data));
     }
     
@@ -37,7 +38,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
         executeSQL(SQL_UPDATE, new UpdateBinder(data));
     }
     
-    protected void delete(long id) throws SQLiteException {
+    protected void delete(int id) throws SQLiteException {
         executeSQL(SQL_DELETE, new IdStatementBinder(id));
     }
     
@@ -45,7 +46,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
-    protected T get(long id) throws SQLiteException {
+    protected T get(int id) throws SQLiteException {
         IdStatementBinder binder = new IdStatementBinder(id);
         T data = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return data;
@@ -115,7 +116,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
         @Override
         public T map(SQLiteStatement stmt) throws SQLiteException {
             T data = newObject();
-            data.setId(stmt.columnLong(0));
+            data.setId(stmt.columnInt(0));
             data.setName(stmt.columnString(1));
             return data;
         }

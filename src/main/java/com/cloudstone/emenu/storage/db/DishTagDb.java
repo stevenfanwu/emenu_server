@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.DishTag;
-import com.cloudstone.emenu.util.IdGenerator;
 
 /**
  * @author xuhongfeng
@@ -26,9 +25,10 @@ public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
     
     public static void initData() {
         DishTagDb db = new DishTagDb();
+        int id=1;
         for (String name: DEFAULT_DISH_TAGS) {
             DishTag tag = new DishTag();
-            tag.setId(IdGenerator.generateId());
+            tag.setId(id++);
             tag.setName(name);
             try {
                 db.add(tag);
@@ -39,7 +39,7 @@ public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
     }
     
     @Override
-    public DishTag getDishTag(long id) throws SQLiteException {
+    public DishTag getDishTag(int id) throws SQLiteException {
         return get(id);
     }
 
@@ -59,12 +59,12 @@ public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
     }
 
     @Override
-    public void deleteDishTag(long id) throws SQLiteException {
+    public void deleteDishTag(int id) throws SQLiteException {
         delete(id);
     }
     
     @Override
-    protected String getTableName() {
+    public String getTableName() {
         return TABLE_NAME;
     }
     

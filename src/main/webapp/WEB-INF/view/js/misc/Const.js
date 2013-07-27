@@ -52,17 +52,6 @@ define(function (require, exports, module) {
         }
     });
 
-    exports.TableShape = new Const({
-        SQUARE: {
-            value: 0,
-            label: '方桌'
-        },
-        ROUNT: {
-            value: 1,
-            label: '圆桌'
-        }
-    });
-
     exports.TipMode = new Const({
         NONE: {
             value: 0,

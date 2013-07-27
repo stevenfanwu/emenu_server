@@ -14,7 +14,6 @@ import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
-import com.cloudstone.emenu.util.IdGenerator;
 
 /**
  * @author xuhongfeng
@@ -25,20 +24,19 @@ public class MenuLogic extends BaseLogic {
 
     /* ---------- menu ---------- */
     public Menu addMenu(Menu menu) {
-        menu.setId(IdGenerator.generateId());
         menuService.addMenu(menu);
         return menuService.getMenu(menu.getId());
     }
     
-    public void bindDish(long menuPageId, long dishId, int pos) {
+    public void bindDish(int menuPageId, int dishId, int pos) {
         menuService.bindDish(menuPageId, dishId, pos);
     }
     
-    public void unbindDish(long menuPageId, long dishId, int pos) {
+    public void unbindDish(int menuPageId, int dishId, int pos) {
         menuService.unbindDish(menuPageId, dishId, pos);
     }
     
-    public Menu getMenu(long id) {
+    public Menu getMenu(int id) {
         return menuService.getMenu(id);
     }
     
@@ -51,18 +49,19 @@ public class MenuLogic extends BaseLogic {
         return menuService.getMenu(menu.getId());
     }
     
-    public void deleteMenu(final long id) {
+    public void deleteMenu(final int id) {
         menuService.deleteMenu(id);
     }
     
     /* ---------- dish ---------- */
     public Dish addDish(Dish dish) {
-        dish.setId(IdGenerator.generateId());
-        return menuService.addDish(dish);
+        menuService.addDish(dish);
+        return menuService.getDish(dish.getId());
     }
     
     public Dish updateDish(Dish dish) {
-        return menuService.updateDish(dish);
+        menuService.updateDish(dish);
+        return menuService.getDish(dish.getId());
     }
     
     public List<IdName> getDishSuggestion() {
@@ -73,26 +72,25 @@ public class MenuLogic extends BaseLogic {
         return menuService.getAllDish();
     }
     
-    public List<Dish> getDishByMenuPageId(long menuPageId) {
+    public List<Dish> getDishByMenuPageId(int menuPageId) {
         return menuService.getDishByMenuPageId(menuPageId);
     }
     
-    public void deleteDish(long id) {
+    public void deleteDish(int id) {
         menuService.deleteDish(id);
     }
 
-    public Dish getDish(long id) {
+    public Dish getDish(int id) {
         return menuService.getDish(id);
     }
     
     /* ---------- chapter ---------- */
     public Chapter addChapter(Chapter chapter) {
-        chapter.setId(IdGenerator.generateId());
         menuService.addChapter(chapter);
         return menuService.getChapter(chapter.getId());
     }
     
-    public Chapter getChapter(long id) {
+    public Chapter getChapter(int id) {
         return menuService.getChapter(id);
     }
     
@@ -105,26 +103,25 @@ public class MenuLogic extends BaseLogic {
         return menuService.getChapter(chapter.getId());
     }
     
-    public void deleteChapter(final long id) {
+    public void deleteChapter(final int id) {
         menuService.deleteChapter(id);
     }
     
-    public List<Chapter> listChapterByMenuId(long menuId) {
+    public List<Chapter> listChapterByMenuId(int menuId) {
         return menuService.listChapterByMenuId(menuId);
     }
     
     /* ---------- MenuPage ---------- */
     public MenuPage addMenuPage(MenuPage page) {
-        page.setId(IdGenerator.generateId());
         menuService.addMenuPage(page);
         return menuService.getMenuPage(page.getId());
     }
     
-    public void deleteMenuPage(long id) {
+    public void deleteMenuPage(int id) {
         menuService.deleteMenuPage(id);
     }
     
-    public List<MenuPage> listMenuPage(long chapterId) {
+    public List<MenuPage> listMenuPage(int chapterId) {
         return menuService.listMenuPageByChapterId(chapterId);
     }
     
@@ -134,7 +131,6 @@ public class MenuLogic extends BaseLogic {
     }
     
     public DishTag addDishTag(DishTag tag) {
-        tag.setId(IdGenerator.generateId());
         menuService.addDishTag(tag);
         return menuService.getDishTag(tag.getId());
     }
@@ -142,7 +138,7 @@ public class MenuLogic extends BaseLogic {
         menuService.updateDishTag(tag);
         return menuService.getDishTag(tag.getId());
     }
-    public void deleteDishTag(long id) {
+    public void deleteDishTag(int id) {
         menuService.deleteDishTag(id);
     }
 }

@@ -20,23 +20,23 @@ public class SqlUtils {
         return flag? 1 : 0;
     }
     
-    public static long[] strToIds(String str) {
+    public static int[] strToIds(String str) {
         if (StringUtils.isBlank(str)) {
-            return new long[0];
+            return new int[0];
         } else {
             String[] ss = str.split(",");
-            long[] r = new long[ss.length];
+            int[] r = new int[ss.length];
             for (int i=0; i<r.length; i++) {
-                r[i] = Long.valueOf(ss[i]);
+                r[i] = Integer.valueOf(ss[i]);
             }
             return r;
         }
     }
     
-    public static String idsToStr(long[] ids) {
+    public static String idsToStr(int[] ids) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (long id:ids) {
+        for (int id:ids) {
             if (!first) {
                 sb.append(",");
             }

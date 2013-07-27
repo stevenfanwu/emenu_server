@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Table;
-import com.cloudstone.emenu.util.IdGenerator;
 
 /**
  * @author xuhongfeng
@@ -19,8 +18,8 @@ import com.cloudstone.emenu.util.IdGenerator;
 public class TableLogic extends BaseLogic {
     
     public Table add(Table table) {
-        table.setId(IdGenerator.generateId());
-        return tableService.add(table);
+        tableService.add(table);
+        return tableService.get(table.getId());
     }
     
     public List<Table> getAll() {
@@ -29,10 +28,11 @@ public class TableLogic extends BaseLogic {
 
     
     public Table update(Table table) {
-        return tableService.update(table);
+        tableService.update(table);
+        return tableService.get(table.getId());
     }
     
-    public void delete(long tableId) {
+    public void delete(int tableId) {
         tableService.delete(tableId);
     }
 }

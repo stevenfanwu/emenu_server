@@ -20,37 +20,37 @@ import com.cloudstone.emenu.data.MenuPage;
 public interface IMenuService {
     public void addMenu(Menu menu);
     public void updateMenu(Menu menu);
-    public void deleteMenu(long id);
+    public void deleteMenu(int id);
     public List<Menu> getAllMenu();
-    public Menu getMenu(long id);
+    public Menu getMenu(int id);
     
     public void addChapter(Chapter chapter);
     public void updateChapter(Chapter chapter);
-    public void deleteChapter(long id);
+    public void deleteChapter(int id);
     public List<Chapter> getAllChapter();
-    public List<Chapter> listChapterByMenuId(long menuId);
-    public Chapter getChapter(long id);
+    public List<Chapter> listChapterByMenuId(int menuId);
+    public Chapter getChapter(int id);
     
-    public Dish addDish(Dish dish);
+    public void addDish(Dish dish);
     public List<Dish> getAllDish();
-    public Dish getDish(long id);
-    public void deleteDish(long id);
-    public Dish updateDish(Dish dish);
-    public List<Dish> getDishByMenuPageId(long menuPageId);
+    public Dish getDish(int id);
+    public void deleteDish(int id);
+    public void updateDish(Dish dish);
+    public List<Dish> getDishByMenuPageId(int menuPageId);
     public List<IdName> getDishSuggestion();
-    public void bindDish(long menuPageId, long dishId, int pos);
-    public void unbindDish(long menuPageId, long dishId, int pos);
+    public void bindDish(int menuPageId, int dishId, int pos);
+    public void unbindDish(int menuPageId, int dishId, int pos);
     
     public void addMenuPage(MenuPage page);
     public void updateMenuPage(MenuPage page);
-    public void deleteMenuPage(long id);
+    public void deleteMenuPage(int id);
     public List<MenuPage> getAllMenuPage();
-    public List<MenuPage> listMenuPageByChapterId(long chapterId);
-    public MenuPage getMenuPage(long id);
+    public List<MenuPage> listMenuPageByChapterId(int chapterId);
+    public MenuPage getMenuPage(int id);
     
     public List<DishTag> listAllDishTag();
     public void addDishTag(DishTag tag);
     public void updateDishTag(DishTag tag);
-    public void deleteDishTag(long id);
-    public DishTag getDishTag(long id);
+    public void deleteDishTag(int id);
+    public DishTag getDishTag(int id);
 }

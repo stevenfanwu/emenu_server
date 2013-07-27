@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.exception.UserNameConflictedException;
-import com.cloudstone.emenu.util.IdGenerator;
 
 /**
  * @author xuhongfeng
@@ -42,18 +41,19 @@ public class UserLogic extends BaseLogic {
     }
     
     public User add(User user) throws UserNameConflictedException {
-        user.setId(IdGenerator.generateId());
         if (userService.getUserByName(user.getName()) != null) {
             throw new UserNameConflictedException();
         }
-        return userService.add(user);
+        userService.add(user);
+        return userService.get(user.getId());
     }
     
     public User update(User user) {
-        return userService.update(user);
+        userService.update(user);
+        return userService.get(user.getId());
     }
     
-    public User getUser(long userId) {
+    public User getUser(int userId) {
         return userService.get(userId);
     }
     
@@ -61,11 +61,11 @@ public class UserLogic extends BaseLogic {
         return userService.getAll();
     }
     
-    public boolean modifyPassword(long userId, String password) {
+    public boolean modifyPassword(int userId, String password) {
         return userService.modifyPassword(userId, password);
     }
     
-    public void delete(long userId) {
+    public void delete(int userId) {
         userService.delete(userId);
     }
     

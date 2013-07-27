@@ -28,12 +28,13 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     
     @Override
-    protected String getTableName() {
+    public String getTableName() {
         return TABLE_NAME;
     }
 
     @Override
     public void addMenuPage(MenuPage page) throws SQLiteException {
+        page.setId(genId());
         executeSQL(SQL_INSERT, new MenuPageBinder(page));
     }
 
@@ -43,7 +44,7 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     }
 
     @Override
-    public void deleteMenuPage(long id) throws SQLiteException {
+    public void deleteMenuPage(int id) throws SQLiteException {
         executeSQL(SQL_DELETE, new IdStatementBinder(id));
     }
 
@@ -53,13 +54,13 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     }
 
     @Override
-    public List<MenuPage> listMenuPages(long chapterId) throws SQLiteException {
+    public List<MenuPage> listMenuPages(int chapterId) throws SQLiteException {
         GetByChapterIdBinder binder = new  GetByChapterIdBinder(chapterId);
         return query(SQL_SELECT_BY_CHAPTER_ID, binder, rowMapper);
     }
 
     @Override
-    public MenuPage getMenuPage(long id) throws SQLiteException {
+    public MenuPage getMenuPage(int id) throws SQLiteException {
         IdStatementBinder binder = new IdStatementBinder(id);
         MenuPage page = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return page;
@@ -92,8 +93,8 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
         @Override
         public MenuPage map(SQLiteStatement stmt) throws SQLiteException {
             MenuPage page = new MenuPage();
-            page.setId(stmt.columnLong(0));
-            page.setChapterId(stmt.columnLong(1));
+            page.setId(stmt.columnInt(0));
+            page.setChapterId(stmt.columnInt(1));
             page.setDishCount(stmt.columnInt(2));
             return page;
         }
@@ -135,9 +136,9 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
         .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static class GetByChapterIdBinder implements StatementBinder {
-        private final long chapterId;
+        private final int chapterId;
 
-        public GetByChapterIdBinder(long chapterId) {
+        public GetByChapterIdBinder(int chapterId) {
             super();
             this.chapterId = chapterId;
         }

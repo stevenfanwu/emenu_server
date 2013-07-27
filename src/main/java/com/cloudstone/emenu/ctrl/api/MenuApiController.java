@@ -40,22 +40,22 @@ public class MenuApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/menus/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void deleteMenu(@PathVariable(value="id") long id,
+    public void deleteMenu(@PathVariable(value="id") int id,
             HttpServletResponse response) {
         menuLogic.deleteMenu(id);
     }
     
     @RequestMapping(value="/api/menus/unbind", method=RequestMethod.PUT)
-    public @ResponseBody Dish unbindDish(@RequestParam("menuPageId") long menuPageId,
-            @RequestParam("dishId") long dishId,
+    public @ResponseBody Dish unbindDish(@RequestParam("menuPageId") int menuPageId,
+            @RequestParam("dishId") int dishId,
             @RequestParam("pos") int pos) {
         menuLogic.unbindDish(menuPageId, dishId, pos);
         return Dish.getNullDish(pos);
     }
     
     @RequestMapping(value="/api/menus/bind", method=RequestMethod.PUT)
-    public @ResponseBody Dish bindDish(@RequestParam("menuPageId") long menuPageId,
-            @RequestParam("dishId") long dishId,
+    public @ResponseBody Dish bindDish(@RequestParam("menuPageId") int menuPageId,
+            @RequestParam("dishId") int dishId,
             @RequestParam("pos") int pos) {
         menuLogic.bindDish(menuPageId, dishId, pos);
         return menuLogic.getDish(dishId);
@@ -67,7 +67,7 @@ public class MenuApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/menus/{id:[\\d]+}", method=RequestMethod.PUT)
-    public @ResponseBody Menu updateMenu(@PathVariable(value="id") long id,
+    public @ResponseBody Menu updateMenu(@PathVariable(value="id") int id,
             @RequestBody String body, HttpServletResponse response) {
         Menu menu = JsonUtils.fromJson(body, Menu.class);
         if (menu.getId() != id) {
@@ -86,13 +86,13 @@ public class MenuApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/pages/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void deleteMenuPage(@PathVariable(value="id") long id,
+    public void deleteMenuPage(@PathVariable(value="id") int id,
             HttpServletResponse response) {
         menuLogic.deleteMenuPage(id);
     }
 
     @RequestMapping(value="/api/pages", method=RequestMethod.GET)
-    public @ResponseBody List<MenuPage> getMenuPageByChapterId(@RequestParam("chapterId") long chapterId) {
+    public @ResponseBody List<MenuPage> getMenuPageByChapterId(@RequestParam("chapterId") int chapterId) {
         return menuLogic.listMenuPage(chapterId);
     }
 
@@ -105,7 +105,7 @@ public class MenuApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/chapters/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void deleteChapter(@PathVariable(value="id") long id,
+    public void deleteChapter(@PathVariable(value="id") int id,
             HttpServletResponse response) {
         menuLogic.deleteChapter(id);
     }
@@ -116,12 +116,12 @@ public class MenuApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/chapters", method=RequestMethod.GET)
-    public @ResponseBody List<Chapter> getChapterByMenuId(@RequestParam("menuId") long menuId) {
+    public @ResponseBody List<Chapter> getChapterByMenuId(@RequestParam("menuId") int menuId) {
         return menuLogic.listChapterByMenuId(menuId);
     }
     
     @RequestMapping(value="/api/chapters/{id:[\\d]+}", method=RequestMethod.PUT)
-    public @ResponseBody Chapter updateChapter(@PathVariable(value="id") long id,
+    public @ResponseBody Chapter updateChapter(@PathVariable(value="id") int id,
             @RequestBody String body, HttpServletResponse response) {
         Chapter chapter = JsonUtils.fromJson(body, Chapter.class);
         if (chapter.getId() != id) {
@@ -139,7 +139,7 @@ public class MenuApiController extends BaseApiController {
 
     @RequestMapping(value="/api/dishes", method=RequestMethod.GET)
     public @ResponseBody List<Dish> listDish(
-            @RequestParam(value="menuPageId", required=false, defaultValue="0") long menuPageId) {
+            @RequestParam(value="menuPageId", required=false, defaultValue="0") int menuPageId) {
         if (menuPageId == 0) {
             return menuLogic.getAllDish();
         } else {
@@ -148,12 +148,12 @@ public class MenuApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/dishes/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void deleteDish(@PathVariable(value="id") long dishId, HttpServletResponse response) {
+    public void deleteDish(@PathVariable(value="id") int dishId, HttpServletResponse response) {
         menuLogic.deleteDish(dishId);
     }
     
     @RequestMapping(value="/api/dishes/{id:[\\d]+}", method=RequestMethod.PUT)
-    public @ResponseBody Dish updateDish(@PathVariable(value="id") long dishId,
+    public @ResponseBody Dish updateDish(@PathVariable(value="id") int dishId,
             @RequestBody String body, HttpServletResponse response) {
         Dish dish = JsonUtils.fromJson(body, Dish.class);
         if (dish.getId() != dishId) {
@@ -185,14 +185,14 @@ public class MenuApiController extends BaseApiController {
     
     @RequestMapping(value="/api/dish/tags/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody DishTag updateDishTag(@RequestBody String body,
-            @PathVariable(value="id") long id) {
+            @PathVariable(value="id") int id) {
         DishTag tag = JsonUtils.fromJson(body, DishTag.class);
         tag = menuLogic.updateDishTag(tag);
         return tag;
     }
     
     @RequestMapping(value="/api/dish/tags/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void deleteDishTag(@PathVariable(value="id") long id,
+    public void deleteDishTag(@PathVariable(value="id") int id,
             HttpServletResponse response) {
         menuLogic.deleteDishTag(id);
     }

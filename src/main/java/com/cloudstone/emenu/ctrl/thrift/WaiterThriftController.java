@@ -59,6 +59,9 @@ public class WaiterThriftController extends BaseThriftController {
                 throws UserNotLoginException, PermissionDenyExcpetion,
                 TException {
             authorize(sessionId);
+            
+            //TODO
+            return null;
         }
 
         @Override

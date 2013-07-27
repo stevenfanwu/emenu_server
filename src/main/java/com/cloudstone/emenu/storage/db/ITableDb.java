@@ -13,10 +13,10 @@ import com.cloudstone.emenu.data.Table;
  * @author xuhongfeng
  *
  */
-public interface ITableDb {
+public interface ITableDb extends IDb {
     public Table add(Table table) throws SQLiteException;
-    public Table get(long id) throws SQLiteException;
+    public Table get(int id) throws SQLiteException;
     public List<Table> getAll() throws SQLiteException;
     public Table update(Table table) throws SQLiteException;
-    public void delete(long tableId) throws SQLiteException;
+    public void delete(int tableId) throws SQLiteException;
 }

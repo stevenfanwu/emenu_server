@@ -66,7 +66,7 @@ public class AuthHelper {
         }
         
         int ip = IpUtils.toInt(ipStr);
-        long userId = NumberUtils.toLong(userIdStr, -1);
+        int userId = NumberUtils.toInt(userIdStr, -1);
         boolean checkResult = session.checkSession(userId, ip);
         if (checkResult) {
             //check active time
@@ -94,7 +94,7 @@ public class AuthHelper {
         }
     }
     
-    private void createSession(long userId, HttpServletRequest req,
+    private void createSession(int userId, HttpServletRequest req,
             HttpServletResponse resp) {
         UserSession session = new UserSession();
         session.setCreatedTime(System.currentTimeMillis());

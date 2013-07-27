@@ -14,10 +14,10 @@ import com.cloudstone.emenu.data.User;
  */
 public interface IUserService {
     public User getUserByName(String userName);
-    public User add(User user);
-    public boolean modifyPassword(long userId, String password);
-    public User get(long userId);
+    public void add(User user);
+    public boolean modifyPassword(int userId, String password);
+    public User get(int userId);
     public List<User> getAll();
-    public void delete(long userId);
-    public User update(User user);
+    public void delete(int userId);
+    public void update(User user);
 }

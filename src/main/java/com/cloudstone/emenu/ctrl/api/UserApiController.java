@@ -54,12 +54,12 @@ public class UserApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/users/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void delete(@PathVariable(value="id") long userId, HttpServletResponse response) {
+    public void delete(@PathVariable(value="id") int userId, HttpServletResponse response) {
         userLogic.delete(userId);
     }
     
     @RequestMapping(value="/api/users/{id:[\\d]+}", method=RequestMethod.PUT)
-    public @ResponseBody User update(@PathVariable(value="id") long userId,
+    public @ResponseBody User update(@PathVariable(value="id") int userId,
             @RequestBody String body, HttpServletResponse response) {
         User user = JsonUtils.fromJson(body, User.class);
         if (user.getId() != userId) {
@@ -87,7 +87,7 @@ public class UserApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/users/{id:[\\d]+}/password", method=RequestMethod.PUT)
-    public void password(@PathVariable(value="id") long userId,
+    public void password(@PathVariable(value="id") int userId,
             @RequestParam(value="oldPassword") String oldPassword,
             @RequestParam(value="newPassword") String newPassword,
             HttpServletRequest req, HttpServletResponse resp) {

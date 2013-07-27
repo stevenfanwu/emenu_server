@@ -15,13 +15,13 @@ import com.cloudstone.emenu.util.NumberUtils;
  */
 public class UserSession {
     private static final String SPLIT = "::";
-    private long userId;
+    private int userId;
     
     private long createdTime;
     
     private int ip;
     
-    public boolean checkSession(long userId, int ip) {
+    public boolean checkSession(int userId, int ip) {
         if (userId!=this.getUserId() || ip!=this.getIp()) {
             return false;
         }
@@ -46,7 +46,7 @@ public class UserSession {
             return null;
         }
         
-        long userId = NumberUtils.toLong(ss[0], -1);
+        int userId = NumberUtils.toInt(ss[0], -1);
         if (userId == -1) {
             return null;
         }
@@ -70,11 +70,11 @@ public class UserSession {
     }
     
     /* ---------- setter and getter ---------- */
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 

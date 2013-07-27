@@ -4,19 +4,24 @@
  */
 package com.cloudstone.emenu.util;
 
+import com.almworks.sqlite4java.SQLiteException;
+import com.cloudstone.emenu.storage.db.IDb;
+
 /**
  * @author xuhongfeng
  *
  */
 public class IdGenerator {
-    private static long lastId;
-
-    public static synchronized long generateId() {
-        long id = System.currentTimeMillis();
-        if (id <= lastId) {
-            id = lastId+1;
+    
+    private int lastId = -1;
+    public synchronized int generateId(IDb db) throws SQLiteException {
+        if (lastId == -1) {
+            lastId = db.getMaxId();
         }
-        lastId = id;
-        return id;
+        lastId++;
+        if (lastId < 1) {
+            lastId = 1;
+        }
+        return lastId;
     }
 }

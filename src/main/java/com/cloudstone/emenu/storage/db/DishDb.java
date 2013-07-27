@@ -33,7 +33,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final Logger LOG = LoggerFactory.getLogger(DishDb.class);
     
     @Override
-    protected String getTableName() {
+    public String getTableName() {
         return TABLE_NAME;
     }
     
@@ -44,13 +44,13 @@ public class DishDb extends SQLiteDb implements IDishDb {
     
     @Override
     public void add(Dish dish) throws SQLiteException {
-//        LOG.info("add dish, dishTag=" + dish.getDishTag());
+        dish.setId(genId());
         DishBinder binder = new DishBinder(dish);
         executeSQL(SQL_INSERT, binder);
     }
     
     @Override
-    public Dish get(long dishId) throws SQLiteException {
+    public Dish get(int dishId) throws SQLiteException {
         IdStatementBinder binder = new IdStatementBinder(dishId);
         Dish dish = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return dish;
@@ -67,7 +67,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     }
     
     @Override
-    public void delete(long dishId) throws SQLiteException {
+    public void delete(int dishId) throws SQLiteException {
         executeSQL(SQL_DELETE, new IdStatementBinder(dishId));
     }
     
@@ -83,7 +83,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         public Dish map(SQLiteStatement stmt) throws SQLiteException {
             Dish dish = new Dish();
             
-            dish.setId(stmt.columnLong(0));
+            dish.setId(stmt.columnInt(0));
             dish.setName(stmt.columnString(1));
             dish.setDishTag(stmt.columnString(2));
             dish.setPrice(stmt.columnDouble(3));
