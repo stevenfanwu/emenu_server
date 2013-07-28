@@ -48,8 +48,7 @@ public class MenuThriftController extends BaseThriftController {
         @Override
         public Menu getCurrentMenu() throws TException {
             LOG.info("getCurrentMenu");
-            // TODO Auto-generated method stub
-            return null;
+            return thriftLogic.getCurrentMenu();
         }
 
         @Override

@@ -47,6 +47,7 @@ public class MenuService extends BaseService implements IMenuService {
         }
         
     }
+    
 
     @Override
     public void deleteMenu(int id) {
@@ -272,6 +273,21 @@ public class MenuService extends BaseService implements IMenuService {
     public List<MenuPage> listMenuPageByChapterId(int chapterId) {
         try {
             return menuPageDb.listMenuPages(chapterId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public List<MenuPage> listMenuPageByMenuId(int menuId) {
+        try {
+            List<MenuPage> ret = new ArrayList<MenuPage>();
+            List<Chapter> chapters = chapterDb.listChapters(menuId);
+            for (Chapter chapter:chapters) {
+                List<MenuPage> pages = menuPageDb.listMenuPages(chapter.getId());
+                ret.addAll(pages);
+            }
+            return ret;
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

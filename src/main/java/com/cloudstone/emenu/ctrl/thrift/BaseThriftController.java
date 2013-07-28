@@ -56,8 +56,6 @@ public abstract class BaseThriftController extends BaseController {
     
     protected void process(HttpServletRequest request, HttpServletResponse response)
             throws IOException, TException {
-        LOG.info("thrift start: " + request.getRequestURI());
-
         response.setContentType("application/x-thrift");
         InputStream in = request.getInputStream();
         OutputStream out = response.getOutputStream();
@@ -71,8 +69,6 @@ public abstract class BaseThriftController extends BaseController {
         getProcessor().process(inProtocol, outProtocol);
 
         out.flush();
-        
-        LOG.info("thrift end");
     }
     
     protected abstract TProcessor getProcessor();

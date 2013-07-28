@@ -46,6 +46,7 @@ public interface IMenuService {
     public void deleteMenuPage(int id);
     public List<MenuPage> getAllMenuPage();
     public List<MenuPage> listMenuPageByChapterId(int chapterId);
+    public List<MenuPage> listMenuPageByMenuId(int menuId);
     public MenuPage getMenuPage(int id);
     
     public List<DishTag> listAllDishTag();

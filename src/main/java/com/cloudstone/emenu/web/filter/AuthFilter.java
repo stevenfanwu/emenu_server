@@ -70,7 +70,7 @@ public class AuthFilter implements Filter {
         
         LOG.info("auth failed: url=" + url);
         
-        if (url.startsWith("/api") || url.startsWith("/images")) {
+        if (url.startsWith("/api")) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             resp.sendRedirect(loginUrl);
