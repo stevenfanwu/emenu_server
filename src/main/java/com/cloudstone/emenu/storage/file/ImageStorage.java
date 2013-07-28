@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cloudstone.emenu.exception.HttpStatusError;
+import com.cloudstone.emenu.util.ImageUtils;
 import com.cloudstone.emenu.util.MD5Utils;
 
 /**
@@ -30,7 +30,6 @@ public class ImageStorage extends FileStorage {
     private static final Logger LOG = LoggerFactory.getLogger(ImageStorage.class);
     
     private static final Pattern PATTERN_URI_DATA = Pattern.compile("data:image/(\\w+);base64,(.*)");
-    private static final String FORMAT_URI_DATA = "data:image/%s;base64,%s";
     
     public File getImageDir() {
         File root = getCloudstoneDataDir();
@@ -61,9 +60,7 @@ public class ImageStorage extends FileStorage {
     
     public String getUriData(String imageId) throws IOException {
         byte[] bytes = getImage(imageId);
-        String base64 = Base64.encodeBase64String(bytes);
-        String extension = FilenameUtils.getExtension(imageId);
-        return String.format(FORMAT_URI_DATA, extension, base64);
+        return ImageUtils.toUriData(bytes, imageId);
     }
     
     public byte[] getImage(String imageId) throws IOException {

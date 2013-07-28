@@ -68,18 +68,15 @@ public class AuthFilter implements Filter {
             return;
         }
         
-        LOG.info("auth failed: url=" + req.getRequestURI());
+        LOG.info("auth failed: url=" + url);
         
-        if (isApiUrl(req.getRequestURI().toString())) {
+        if (url.startsWith("/api") || url.startsWith("/images")) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             resp.sendRedirect(loginUrl);
         }
     }
     
-    private boolean isApiUrl(String url) {
-        return url.startsWith("/api");
-    }
 
     public void setLoginUrl(String loginUrl) {
         this.loginUrl = loginUrl;
