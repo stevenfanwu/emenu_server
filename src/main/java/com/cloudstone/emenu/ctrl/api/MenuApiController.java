@@ -58,7 +58,7 @@ public class MenuApiController extends BaseApiController {
             @RequestParam("dishId") int dishId,
             @RequestParam("pos") int pos) {
         menuLogic.bindDish(menuPageId, dishId, pos);
-        return menuLogic.getDish(dishId);
+        return menuLogic.getDish(dishId, false);
     }
 
     @RequestMapping(value="/api/menus", method=RequestMethod.GET)

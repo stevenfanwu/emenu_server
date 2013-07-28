@@ -90,9 +90,9 @@ define(function (require, exports, module) {
                 errorMessage: '请输入菜品描述'
             }]
         }, {
-            name: 'imageData',
+            name: 'uriData',
             type: Image,
-            el: '.input-imageData'
+            el: '.input-uriData'
         }]
         
     });

@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cloudstone.emenu.service.IImageService;
 import com.cloudstone.emenu.service.IMenuService;
 import com.cloudstone.emenu.service.ITableService;
 import com.cloudstone.emenu.service.IUserService;
@@ -25,6 +26,8 @@ public class BaseLogic {
     protected ITableService tableService;
     @Autowired
     protected IMenuService menuService;
+    @Autowired
+    protected IImageService imageService;
     
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
     

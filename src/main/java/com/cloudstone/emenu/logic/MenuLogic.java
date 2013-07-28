@@ -4,10 +4,8 @@
  */
 package com.cloudstone.emenu.logic;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Chapter;
@@ -16,8 +14,7 @@ import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
-import com.cloudstone.emenu.exception.ServerError;
-import com.cloudstone.emenu.storage.file.ImageStorage;
+import com.cloudstone.emenu.util.StringUtils;
 
 /**
  * @author xuhongfeng
@@ -25,10 +22,6 @@ import com.cloudstone.emenu.storage.file.ImageStorage;
  */
 @Component
 public class MenuLogic extends BaseLogic {
-    //TODO
-    @Autowired
-    private ImageStorage imageStorage;
-
     /* ---------- menu ---------- */
     public Menu addMenu(Menu menu) {
         menuService.addMenu(menu);
@@ -62,13 +55,28 @@ public class MenuLogic extends BaseLogic {
     
     /* ---------- dish ---------- */
     public Dish addDish(Dish dish) {
+        //save image
+        String uriData = dish.getUriData();
+        if (!StringUtils.isBlank(uriData)) {
+            String imageId = imageService.saveDishImage(uriData);
+            dish.setImageId(imageId);
+        }
+        //save to db
         menuService.addDish(dish);
-        return menuService.getDish(dish.getId());
+        //get with uriData
+        return getDish(dish.getId(), true);
     }
     
     public Dish updateDish(Dish dish) {
+        //save image
+        if (!StringUtils.isBlank(dish.getUriData())) {
+            String imageId = imageService.saveDishImage(dish.getUriData());
+            dish.setImageId(imageId);
+        }
+        //save to db
         menuService.updateDish(dish);
-        return menuService.getDish(dish.getId());
+        //get with uriData
+        return getDish(dish.getId(), true);
     }
     
     public List<IdName> getDishSuggestion() {
@@ -76,15 +84,7 @@ public class MenuLogic extends BaseLogic {
     }
     
     public List<Dish> getAllDish() {
-        List<Dish> dishes = menuService.getAllDish();
-        for (Dish dish:dishes) {
-            try {
-                imageStorage.saveDishImage(dish.getImageData());
-            } catch (IOException e) {
-                throw new ServerError(e);
-            }
-        }
-        return dishes;
+        return menuService.getAllDish();
     }
     
     public List<Dish> getDishByMenuPageId(int menuPageId) {
@@ -95,8 +95,14 @@ public class MenuLogic extends BaseLogic {
         menuService.deleteDish(id);
     }
 
-    public Dish getDish(int id) {
-        return menuService.getDish(id);
+    public Dish getDish(int id, boolean withUriData) {
+        Dish dish = menuService.getDish(id);
+        String imageId = dish.getImageId();
+        if (withUriData && !StringUtils.isBlank(imageId)) {
+            String uriData = imageService.getDishUriData(imageId);
+            dish.setUriData(uriData);
+        }
+        return dish;
     }
     
     /* ---------- chapter ---------- */

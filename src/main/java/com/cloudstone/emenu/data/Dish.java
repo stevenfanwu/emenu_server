@@ -19,8 +19,10 @@ public class Dish extends IdName {
     private boolean specialPrice = false;
     private boolean nonInt = false; //是否允许小数份
     private String desc;
-    private String imageData;// data:image/png;base64,...
+    private String imageId;
     private int status = Const.DishStatus.STATUS_INIT;
+    
+    private String uriData;
     
     /**
      * id < 0 means NullDish
@@ -98,19 +100,27 @@ public class Dish extends IdName {
         this.desc = desc;
     }
 
-    public String getImageData() {
-        return imageData;
-    }
-
-    public void setImageData(String imageData) {
-        this.imageData = imageData;
-    }
-
     public int getStatus() {
         return status;
     }
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
+
+    public String getUriData() {
+        return uriData;
+    }
+
+    public void setUriData(String uriData) {
+        this.uriData = uriData;
     }
 }

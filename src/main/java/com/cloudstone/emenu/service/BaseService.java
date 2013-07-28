@@ -17,6 +17,7 @@ import com.cloudstone.emenu.storage.db.IMenuDb;
 import com.cloudstone.emenu.storage.db.IMenuPageDb;
 import com.cloudstone.emenu.storage.db.ITableDb;
 import com.cloudstone.emenu.storage.db.IUserDb;
+import com.cloudstone.emenu.storage.file.ImageStorage;
 
 /**
  * @author xuhongfeng
@@ -40,7 +41,12 @@ public class BaseService {
     protected IDishPageDb dishPageDb;
     @Autowired
     protected IDishTagDb dishTagDb;
+    
+    
+    @Autowired
+    protected ImageStorage imageStorage;
 
+    //TODO spring bean
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
     
     protected void runTask(Runnable task) {
