@@ -7,16 +7,24 @@ package com.cloudstone.emenu.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.thrift.TException;
 import org.springframework.stereotype.Component;
 
 import cn.com.cloudstone.menu.server.thrift.api.Goods;
+import cn.com.cloudstone.menu.server.thrift.api.GoodsOrder;
+import cn.com.cloudstone.menu.server.thrift.api.HasInvalidGoodsException;
 import cn.com.cloudstone.menu.server.thrift.api.Img;
 import cn.com.cloudstone.menu.server.thrift.api.Menu;
 import cn.com.cloudstone.menu.server.thrift.api.MenuPage;
+import cn.com.cloudstone.menu.server.thrift.api.Order;
+import cn.com.cloudstone.menu.server.thrift.api.TableEmptyException;
 import cn.com.cloudstone.menu.server.thrift.api.TableInfo;
+import cn.com.cloudstone.menu.server.thrift.api.UnderMinChargeException;
 
+import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.util.StringUtils;
 import com.cloudstone.emenu.util.ThriftUtils;
@@ -84,5 +92,58 @@ public class ThriftLogic extends BaseLogic {
             }
         }
         return ret;
+    }
+    
+    public void submitOrder(Order order) throws TableEmptyException, HasInvalidGoodsException,
+        UnderMinChargeException, TException {
+        int tableId = Integer.valueOf(order.getTableId());
+        
+        //check table
+        Table table = tableService.get(tableId);
+        if (table == null) {
+            throw new TException("table not found");
+        }
+        if (table.getStatus() == TableStatus.EMPTY) {
+            throw new TableEmptyException();
+        }
+        if (order.getPrice() < table.getMinCharge()) {
+            throw new UnderMinChargeException();
+        }
+        
+        //check goods
+        List<Dish> dishes = new ArrayList<Dish>();
+        for (GoodsOrder g:order.getGoods()) {
+            int dishId = g.getId();
+            Dish dish = menuService.getDish(dishId);
+            if (dish == null) {
+                throw new HasInvalidGoodsException();
+            }
+            dishes.add(dish);
+        }
+        
+        com.cloudstone.emenu.data.Order orderValue = new com.cloudstone.emenu.data.Order();
+        orderValue.setOriginPrice(order.getOriginalPrice());
+        orderValue.setPrice(order.getPrice());
+        orderValue.setTableId(tableId);
+        orderService.addOrder(orderValue);
+        
+        List<OrderDish> relations = new ArrayList<OrderDish>(dishes.size());
+        for (int i=0; i<dishes.size(); i++) {
+            Dish dish = dishes.get(i);
+            GoodsOrder g = order.getGoods().get(i);
+            
+            OrderDish r = new OrderDish();
+            r.setDishId(dish.getId());
+            r.setOrderId(orderValue.getId());
+            r.setNumber(g.getNumber());
+            r.setPrice(g.getPrice());
+            r.setRemarks(g.getRemarks().toArray(new String[0]));
+            r.setStatus(ThriftUtils.getOrderDishStatus(g));
+            
+            relations.add(r);
+        }
+        for (OrderDish r:relations) {
+            orderService.addOrderDish(r);
+        }
     }
 }

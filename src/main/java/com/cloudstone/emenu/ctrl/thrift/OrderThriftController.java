@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +32,7 @@ import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
  */
 @Controller
 public class OrderThriftController extends BaseThriftController {
+    private static final Logger LOG = LoggerFactory.getLogger(OrderThriftController.class);
 
     @RequestMapping(value="/orderservice.thrift", method=RequestMethod.POST)
     public void thrift(HttpServletRequest request,
@@ -49,13 +52,16 @@ public class OrderThriftController extends BaseThriftController {
         public boolean submitOrder(String sessionId, Order order)
                 throws UserNotLoginException, TableEmptyException,
                 HasInvalidGoodsException, UnderMinChargeException, TException {
-            // TODO Auto-generated method stub
-            return false;
+            LOG.info("submitOrder");
+            authorize(sessionId);
+            thriftLogic.submitOrder(order);
+            return true;
         }
 
         @Override
         public List<Order> queryOrder(String sessionId, String tableId)
                 throws UserNotLoginException, TableEmptyException, TException {
+            LOG.info("queryOrder");
             // TODO Auto-generated method stub
             return null;
         }
@@ -63,6 +69,7 @@ public class OrderThriftController extends BaseThriftController {
         @Override
         public boolean cancelGoods(String sessionId, int orderId, int goodsId)
                 throws UserNotLoginException, AException, TException {
+            LOG.info("cancelGoods");
             // TODO Auto-generated method stub
             return false;
         }

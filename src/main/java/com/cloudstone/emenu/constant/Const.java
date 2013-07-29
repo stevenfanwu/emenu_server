@@ -58,4 +58,12 @@ public class Const {
         public static final int STATUS_INIT = 0;
         public static final int STATUS_IN_MENU = 1;
     }
+    
+    public static class OrderDishStatus {
+        public static final int ORDERED = 0;
+        public static final int SERVED = 1;
+        public static final int TAKE_OUT = 2;
+        public static final int WAITING = 3;
+        public static final int CANCELED = 4;
+    }
 }

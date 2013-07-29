@@ -143,19 +143,17 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
         public final void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, id1);
             stmt.bind(2, id2);
-            for (int i=0; i<config.columns.length; i++) {
-                onBind(stmt, i+3, i);
-            }
+            bindOthers(stmt);
         }
         
         /**
-         * stmt.bind(indexStmt, getValue(indexValue);
+         *  stmt.bind(3, ...)
+         *  ...
+         * 
          * @param stmt
-         * @param indexStmt
-         * @param indexValue
-         * @throws SQLiteException 
+         * @throws SQLiteException
          */
-        protected abstract void onBind(SQLiteStatement stmt, int indexStmt, int indexValue) throws SQLiteException;
+        protected abstract void bindOthers(SQLiteStatement stmt) throws SQLiteException;
     }
     
     public static class Relation {

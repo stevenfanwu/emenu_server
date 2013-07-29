@@ -15,6 +15,8 @@ import com.cloudstone.emenu.storage.db.IDishPageDb;
 import com.cloudstone.emenu.storage.db.IDishTagDb;
 import com.cloudstone.emenu.storage.db.IMenuDb;
 import com.cloudstone.emenu.storage.db.IMenuPageDb;
+import com.cloudstone.emenu.storage.db.IOrderDb;
+import com.cloudstone.emenu.storage.db.IOrderDishDb;
 import com.cloudstone.emenu.storage.db.ITableDb;
 import com.cloudstone.emenu.storage.db.IUserDb;
 import com.cloudstone.emenu.storage.file.ImageStorage;
@@ -41,6 +43,10 @@ public class BaseService {
     protected IDishPageDb dishPageDb;
     @Autowired
     protected IDishTagDb dishTagDb;
+    @Autowired
+    protected IOrderDb orderDb;
+    @Autowired
+    protected IOrderDishDb orderDishDb;
     
     
     @Autowired

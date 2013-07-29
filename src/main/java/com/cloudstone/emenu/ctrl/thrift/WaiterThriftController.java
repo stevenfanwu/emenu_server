@@ -69,7 +69,6 @@ public class WaiterThriftController extends BaseThriftController {
             if (info.getStatus() != TableStatus.Empty) {
                 throw new TableOccupiedException();
             }
-            //TODO check table capacity
             //TODO save customNumber
             table.setStatus(Const.TableStatus.OCCUPIED);
             tableLogic.update(table);

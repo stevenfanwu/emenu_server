@@ -7,12 +7,15 @@ package com.cloudstone.emenu.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.com.cloudstone.menu.server.thrift.api.GoodState;
+import cn.com.cloudstone.menu.server.thrift.api.GoodsOrder;
 import cn.com.cloudstone.menu.server.thrift.api.PageLayoutType;
 import cn.com.cloudstone.menu.server.thrift.api.TableInfo;
 import cn.com.cloudstone.menu.server.thrift.api.TableStatus;
 import cn.com.cloudstone.menu.server.thrift.api.UserType;
 
 import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.constant.Const.OrderDishStatus;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
 
@@ -65,5 +68,20 @@ public class ThriftUtils {
             case 6: type=PageLayoutType.Grid6; break;
         }
         return type;
+    }
+    
+    public static int getOrderDishStatus(GoodsOrder g) {
+        GoodState state = g.getGoodstate();
+        if (state == GoodState.Ordered) {
+            return OrderDishStatus.ORDERED;
+        } else if (state == GoodState.Canceled) {
+            return OrderDishStatus.CANCELED;
+        } else if (state == GoodState.Servered) {
+            return OrderDishStatus.SERVED;
+        } else if (state == GoodState.Takeout) {
+            return OrderDishStatus.TAKE_OUT;
+        } else {
+            return OrderDishStatus.WAITING;
+        }
     }
 }
