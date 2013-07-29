@@ -48,10 +48,15 @@ public abstract class BaseThriftController extends BaseController {
     protected static final Map<String, ThriftSession> sessionMap = new HashMap<String, ThriftSession>();
     
     protected ThriftSession authorize(String sessionId) throws UserNotLoginException {
-        if (!sessionMap.containsKey(sessionId)) {
-            throw new UserNotLoginException();
-        }
-        return sessionMap.get(sessionId);
+        //TODO
+//        if (!sessionMap.containsKey(sessionId)) {
+//            throw new UserNotLoginException();
+//        }
+//        ThriftSession session = sessionMap.get(sessionId);
+//        session.setActivateTime(System.currentTimeMillis());
+//        return session;
+        
+        return null;
     }
     
     protected void process(HttpServletRequest request, HttpServletResponse response)

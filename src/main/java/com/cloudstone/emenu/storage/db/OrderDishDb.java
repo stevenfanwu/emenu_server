@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -38,6 +40,11 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
                 stmt.bind(6, data.getStatus());
             }
         });
+    }
+    
+    @Override
+    public List<OrderDish> listOrderDish(int orderId) throws SQLiteException {
+        return listById1(orderId);
     }
 
     @Override

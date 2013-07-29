@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.MenuLogic;
+import com.cloudstone.emenu.logic.OrderLogic;
 import com.cloudstone.emenu.logic.TableLogic;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.util.AuthHelper;
@@ -40,6 +41,8 @@ public class BaseController {
     protected TableLogic tableLogic;
     @Autowired
     protected MenuLogic menuLogic;
+    @Autowired
+    protected OrderLogic orderLogic;
 
     protected void sendError(HttpServletResponse response, int statusCode) {
         try {

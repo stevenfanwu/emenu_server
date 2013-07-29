@@ -11,6 +11,7 @@ package com.cloudstone.emenu.data;
 public class ThriftSession {
     private String sessionId;
     private User user;
+    private long activateTime;
 
     public String getSessionId() {
         return sessionId;
@@ -26,5 +27,13 @@ public class ThriftSession {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public long getActivateTime() {
+        return activateTime;
+    }
+
+    public void setActivateTime(long activateTime) {
+        this.activateTime = activateTime;
     }
 }

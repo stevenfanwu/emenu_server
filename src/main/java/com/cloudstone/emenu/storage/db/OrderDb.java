@@ -47,7 +47,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     }
 
     /* ---------- SQL ---------- */
-    private static final String TABLE_NAME = "order";
+    private static final String TABLE_NAME = "`order`";
     
     private static enum Column {
         ID("id"), ORIGIN_PRICE("originPrice"), PRICE("price"), TABLE_ID("tableId");

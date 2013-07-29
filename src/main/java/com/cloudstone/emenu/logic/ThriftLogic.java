@@ -26,6 +26,7 @@ import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.StringUtils;
 import com.cloudstone.emenu.util.ThriftUtils;
 
@@ -68,11 +69,11 @@ public class ThriftLogic extends BaseLogic {
                         goods.setId(dish.getId());
                         goods.setName(dish.getName());
                         goods.setShortName(dish.getName());
-                        goods.setCategory(chapter.getName());
                         goods.setPrice(dish.getPrice());
                         goods.setIntroduction(dish.getDesc());
                         goods.setCategory(dish.getDishTag());
-                        goods.setOnSales(dish.getMemberPrice()!=0 && dish.getMemberPrice()<dish.getPrice());
+                        //TODO
+//                        goods.setOnSales(dish.getMemberPrice()!=0 && dish.getMemberPrice()<dish.getPrice());
                         goods.setSpicy(dish.getSpicy());
                         goods.setSoldout(false);//TODO
                         goods.setNumberDecimalPermited(dish.isNonInt());
@@ -83,7 +84,6 @@ public class ThriftLogic extends BaseLogic {
                             imgs.add(img);
                             goods.setImgs(imgs);
                         }
-                        
                         goodsList.add(goods);
                     }
                 }
@@ -96,10 +96,10 @@ public class ThriftLogic extends BaseLogic {
     
     public void submitOrder(Order order) throws TableEmptyException, HasInvalidGoodsException,
         UnderMinChargeException, TException {
-        int tableId = Integer.valueOf(order.getTableId());
+        String tableName = order.getTableId();
         
         //check table
-        Table table = tableService.get(tableId);
+        Table table = tableService.getByName(tableName);
         if (table == null) {
             throw new TException("table not found");
         }
@@ -124,7 +124,7 @@ public class ThriftLogic extends BaseLogic {
         com.cloudstone.emenu.data.Order orderValue = new com.cloudstone.emenu.data.Order();
         orderValue.setOriginPrice(order.getOriginalPrice());
         orderValue.setPrice(order.getPrice());
-        orderValue.setTableId(tableId);
+        orderValue.setTableId(table.getId());
         orderService.addOrder(orderValue);
         
         List<OrderDish> relations = new ArrayList<OrderDish>(dishes.size());
@@ -137,7 +137,9 @@ public class ThriftLogic extends BaseLogic {
             r.setOrderId(orderValue.getId());
             r.setNumber(g.getNumber());
             r.setPrice(g.getPrice());
-            r.setRemarks(g.getRemarks().toArray(new String[0]));
+            if (g.getRemarks() != null) {
+                r.setRemarks(g.getRemarks().toArray(new String[0]));
+            }
             r.setStatus(ThriftUtils.getOrderDishStatus(g));
             
             relations.add(r);
@@ -145,5 +147,34 @@ public class ThriftLogic extends BaseLogic {
         for (OrderDish r:relations) {
             orderService.addOrderDish(r);
         }
+        
+        //update table
+        table.setOrderId(orderValue.getId());
+        tableService.update(table);
+    }
+    
+    public List<GoodsOrder> listGoodsInOrder(int orderId) {
+        List<GoodsOrder> goods = new ArrayList<GoodsOrder>();
+        List<OrderDish> relations = orderService.listOrderDish(orderId);
+        for (OrderDish r:relations) {
+            Dish dish = menuService.getDish(r.getDishId());
+            if (dish == null) {
+                continue;
+            }
+            GoodsOrder g = new GoodsOrder();
+            g.setId(dish.getId());
+            g.setNumber(r.getNumber());
+            g.setPrice(r.getPrice());
+            g.setRemarks(CollectionUtils.arrayToList(r.getRemarks()));
+            g.setName(dish.getName());
+            g.setShortName(dish.getName());
+            g.setCategory(dish.getDishTag());
+            g.setOrderid(orderId);
+            //TODO
+//            g.setOnSales(onSales)
+//            g.setGoodstate(goodstate);
+            goods.add(g);
+        }
+        return goods;
     }
 }

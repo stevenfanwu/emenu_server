@@ -104,12 +104,17 @@ public class WaiterThriftController extends BaseThriftController {
         }
 
         @Override
-        public boolean emptyTable(String sessionId, String tableId)
+        public boolean emptyTable(String sessionId, String tableName)
                 throws UserNotLoginException, PermissionDenyExcpetion,
                 TException {
             LOG.info("emptyTable");
-            // TODO Auto-generated method stub
-            return false;
+            authorize(sessionId);
+            
+            Table table = tableLogic.getByName(tableName);
+            table.setOrderId(0);
+            table.setStatus(Const.TableStatus.EMPTY);
+            tableLogic.update(table);
+            return true;
         }
 
         @Override

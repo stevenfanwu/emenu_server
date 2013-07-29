@@ -4,6 +4,9 @@
  */
 package com.cloudstone.emenu.service;
 
+import java.util.List;
+
+import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 
@@ -13,5 +16,8 @@ import com.cloudstone.emenu.data.OrderDish;
  */
 public interface IOrderService {
     public void addOrder(Order order);
+    public Order getOrder(int orderId);
     public void addOrderDish(OrderDish orderDish);
+    public List<Dish> listDishes(int orderId);
+    public List<OrderDish> listOrderDish(int orderId);
 }

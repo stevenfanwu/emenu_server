@@ -63,6 +63,7 @@ public class ProfileThriftController extends BaseThriftController {
             long ran = new Random().nextLong();
             String sessionId = String.valueOf(ran);
             ThriftSession session = new ThriftSession();
+            session.setActivateTime(System.currentTimeMillis());
             sessionMap.put(sessionId, session);
             
             //build Login
