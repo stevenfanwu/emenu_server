@@ -12,11 +12,24 @@ define(function (require, exports, module) {
         tagName: 'li',
 
         className: 'span2 thumbnail table-status-item-wrap',
-        
+
+        events: {
+            'click .btn-bill': 'onBill'
+        },
+
         getRenderData: function () {
             var data = BaseItem.prototype.getRenderData.apply(this, arguments);
             data.empty = data.status === 0;
             return data;
+        },
+
+        
+        /* -------------------- Event Listener ----------------------- */
+        
+        onBill: function (evt) {
+            if (this.model.get('status') === 0) {
+                evt.preventDefault();
+            }
         }
         
     });

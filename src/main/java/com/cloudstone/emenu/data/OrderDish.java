@@ -16,6 +16,20 @@ public class OrderDish extends Relation {
     private String[] remarks;
     private int status;
     
+    public OrderDish() {
+        super();
+    }
+    
+    public OrderDish(OrderDish r) {
+        this();
+        setOrderId(r.getOrderId());
+        setDishId(r.getDishId());
+        setNumber(r.getNumber());
+        setPrice(r.getPrice());
+        setRemarks(r.getRemarks());
+        setStatus(r.getStatus());
+    }
+    
     public int getOrderId() {
         return getId1();
     }

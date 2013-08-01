@@ -56,8 +56,6 @@ define(function (require, exports, module) {
                 errorMessage: '价格不能为空'
             }, {
                 type: Number,
-                other: 0,
-                including: true,
                 errorMessage: '请输入数字'
             }, {
                 type: MoreThan,

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.storage.db.DishTagDb;
+import com.cloudstone.emenu.storage.db.PayTypeDb;
 
 
 /**
@@ -44,6 +45,7 @@ public class Dispatcher extends DispatcherServlet {
             try {
                 dbFile.createNewFile();
                 DishTagDb.initData();
+                PayTypeDb.initData();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

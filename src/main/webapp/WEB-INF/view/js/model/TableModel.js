@@ -6,8 +6,28 @@ define(function (require, exports, module) {
 
     var BaseModel = require('./BaseModel');
 
+    var TipMode = {
+        NONE: 0,
+        FIXED: 1,
+        PERCENTAGE: 2
+    };
+
     var TableModel = BaseModel.extend({
-        urlRoot: '/api/tables'
+        urlRoot: '/api/tables',
+
+        computeTip: function (originPrice) {
+            var tipMode = this.get('tipMode');
+            var tipValue = this.get('tip');
+            if (tipMode === TipMode.NONE) {
+                return 0;
+            }
+            if (tipMode === TipMode.FIXED) {
+                return tipValue;
+            }
+
+            //TODO round
+            return originPrice * tipValue / 100;
+        }
     });
     
     return TableModel;

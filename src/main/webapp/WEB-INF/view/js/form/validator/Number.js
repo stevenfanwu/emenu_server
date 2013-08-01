@@ -10,6 +10,9 @@ define(function (require, exports, module) {
         
         doValidate: function (item) {
             var value = item.getValue();
+            if (value === '') {
+                return true;
+            }
             return !isNaN(parseFloat(value)) && isFinite(value);
         }
     });

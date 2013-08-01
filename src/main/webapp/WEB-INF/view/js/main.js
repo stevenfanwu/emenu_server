@@ -10,6 +10,10 @@ define(function (require, exports, module) {
 
     var page = PageDataUtils.getData("pageConfig").name;
 
+    window.Number.prototype.toMoney = function () {
+        return Math.round(this * 100) / 100;
+    };
+
     var mod = './page/' + page;
     require.async(mod, function (Page) {
         var page = new Page();

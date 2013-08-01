@@ -13,6 +13,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
+import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.exception.ServerError;
 
 /**
@@ -71,6 +72,15 @@ public class OrderService extends BaseService implements IOrderService {
     public List<OrderDish> listOrderDish(int orderId) {
         try {
             return orderDishDb.listOrderDish(orderId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public List<PayType> listPayTypes() {
+        try {
+            return payTypeDb.getAllPayType();
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

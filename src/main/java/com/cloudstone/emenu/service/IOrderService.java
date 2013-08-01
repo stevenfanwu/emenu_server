@@ -9,6 +9,7 @@ import java.util.List;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
+import com.cloudstone.emenu.data.PayType;
 
 /**
  * @author xuhongfeng
@@ -20,4 +21,6 @@ public interface IOrderService {
     public void addOrderDish(OrderDish orderDish);
     public List<Dish> listDishes(int orderId);
     public List<OrderDish> listOrderDish(int orderId);
+    
+    public List<PayType> listPayTypes();
 }

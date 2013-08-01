@@ -9,6 +9,9 @@ define(function (require, exports, module) {
     var Integer = BaseValidator.extend({
         doValidate: function (item) {
             var value = item.getValue();
+            if (value === '') {
+                return true;
+            }
             return String(parseInt(value, 10)) === String(value);
         }
     });

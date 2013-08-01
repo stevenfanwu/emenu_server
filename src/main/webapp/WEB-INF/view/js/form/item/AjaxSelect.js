@@ -22,6 +22,7 @@ define(function (require, exports, module) {
         parseConfig: function (config) {
             Select.prototype.parseConfig.apply(this, arguments);
             this.CollectionType = config.CollectionType;
+            this.wrapId = config.wrapId === true;
         },
 
         initValue: null,

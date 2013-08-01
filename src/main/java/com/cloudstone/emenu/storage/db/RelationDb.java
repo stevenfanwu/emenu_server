@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.storage.db.RelationDb.Relation;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.CountSqlBuilder;
@@ -156,7 +157,7 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
         protected abstract void bindOthers(SQLiteStatement stmt) throws SQLiteException;
     }
     
-    public static class Relation {
+    public static class Relation extends BaseData {
         private int id1;
         private int id2;
         

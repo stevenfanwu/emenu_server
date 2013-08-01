@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
+import com.cloudstone.emenu.data.OrderDish;
+import com.cloudstone.emenu.data.PayType;
 
 
 /**
@@ -24,5 +26,13 @@ public class OrderLogic extends BaseLogic {
     
     public List<Dish> listDishes(int orderId) {
         return orderService.listDishes(orderId);
+    }
+    
+    public List<OrderDish> listOrderDishes(int orderId) {
+        return orderService.listOrderDish(orderId);
+    }
+    
+    public List<PayType> listPayTypes() {
+        return orderService.listPayTypes();
     }
 }

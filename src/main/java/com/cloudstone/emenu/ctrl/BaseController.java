@@ -25,6 +25,7 @@ import com.cloudstone.emenu.logic.OrderLogic;
 import com.cloudstone.emenu.logic.TableLogic;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.util.AuthHelper;
+import com.cloudstone.emenu.wrap.OrderWraper;
 
 /**
  * @author xuhongfeng
@@ -43,6 +44,9 @@ public class BaseController {
     protected MenuLogic menuLogic;
     @Autowired
     protected OrderLogic orderLogic;
+    
+    @Autowired
+    protected OrderWraper orderWraper;
 
     protected void sendError(HttpServletResponse response, int statusCode) {
         try {

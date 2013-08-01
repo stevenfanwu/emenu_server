@@ -98,6 +98,14 @@ public class ThriftLogic extends BaseLogic {
         UnderMinChargeException, TException {
         String tableName = order.getTableId();
         
+        double price = 0;
+        for (GoodsOrder o:order.getGoods()) {
+            price += o.getPrice()*o.getNumber();
+        }
+        //TODO round
+        order.setOriginalPrice(price);
+        order.setPrice(price);
+        
         //check table
         Table table = tableService.getByName(tableName);
         if (table == null) {
@@ -106,7 +114,7 @@ public class ThriftLogic extends BaseLogic {
         if (table.getStatus() == TableStatus.EMPTY) {
             throw new TableEmptyException();
         }
-        if (order.getPrice() < table.getMinCharge()) {
+        if (order.getOriginalPrice() < table.getMinCharge()) {
             throw new UnderMinChargeException();
         }
         

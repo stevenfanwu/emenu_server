@@ -57,7 +57,7 @@ public class OrderThriftController extends BaseThriftController {
         public boolean submitOrder(String sessionId, Order order)
                 throws UserNotLoginException, TableEmptyException,
                 HasInvalidGoodsException, UnderMinChargeException, TException {
-            LOG.info("submitOrder");
+            LOG.info("submitOrder, order.price="  +order.getPrice() + ",originPrice=" + order.getOriginalPrice());
             authorize(sessionId);
             thriftLogic.submitOrder(order);
             return true;

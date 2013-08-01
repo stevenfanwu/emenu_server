@@ -13,6 +13,18 @@ public class Order extends IEntity {
     private double price;
     private int tableId;
     
+    public Order() {
+        super();
+    }
+    
+    public Order(Order order) {
+        this();
+        setId(order.getId());
+        setOriginPrice(order.getOriginPrice());
+        setPrice(order.getPrice());
+        setTableId(order.getTableId());
+    }
+    
     public double getOriginPrice() {
         return originPrice;
     }

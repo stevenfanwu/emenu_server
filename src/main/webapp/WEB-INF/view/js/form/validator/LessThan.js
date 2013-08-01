@@ -6,7 +6,7 @@ define(function (require, exports, module) {
 
     var BaseValidator = require('./BaseValidator');
 
-    var MoreThan = BaseValidator.extend({
+    var LessThan = BaseValidator.extend({
         other: null,
 
         including: false,
@@ -26,12 +26,14 @@ define(function (require, exports, module) {
             }
             value = parseFloat(value, 10);
             if (this.including) {
-                return value >= this.other;
+                return value <= this.other;
             }
-            return value > this.other;
+            return value < this.other;
         }
+        
     });
-
-    return MoreThan;
+    
+    return LessThan;
+    
 });
 

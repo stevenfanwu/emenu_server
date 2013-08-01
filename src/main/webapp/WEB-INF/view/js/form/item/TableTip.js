@@ -28,6 +28,8 @@ define(function (require, exports, module) {
 
         setValue: function (value) {
             this.onModeChanged(value.tipMode);
+            this.$('input[name=tipMode]').prop('checked', false);
+            this.$('input[name=tipMode]input[value=' + value.tipMode + ']').prop('checked', true);
             this.$('input[name=tip]').val(value.tip);
         },
 

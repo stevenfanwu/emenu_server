@@ -1,0 +1,97 @@
+#set( $layout = "layout/empty.vm" )
+#set($pageName="Bill")
+
+<div class="container bill-page-wrap">
+    <div class="row">
+        <div class="page-header">
+            <h1>
+                结账
+            </h1>
+        </div>
+    </div>
+    <form class="form-bill row">
+        <div class="span3 well container">
+            <div class="row">
+                <span class="span1">餐桌:</span>
+                <span class="span2">$order.table.name</span>
+            </div>
+            <div class="row">
+                <span class="span1">开台时间:</span>
+                <span class="span2">$order.createdTime</span>
+            </div>
+            <div class="row">
+                <span class="span1">菜品总价:</span>
+                <span class="span2">$order.originPrice</span>
+            </div>
+            <div class="input-tip control-group">
+                <div class="row controls">
+                    <div class="span1">服务费:</div><input class="span2" type="text" name="tip"/>
+                </div>
+                <div class="help-inline error"></div>
+            </div>
+            <div class="input-discount control-group">
+                <div class="row controls">
+                    <div class="span1">折扣:</div><input class="span2" type="text" name="discount"/>
+                </div>
+                <div class="help-inline error"></div>
+            </div>
+            <div class="input-cost control-group">
+                <div class="row controls">
+                    <div class="span1">实收款:</div><input class="span2" type="text" name="cost"/>
+                </div>
+                <div class="help-inline error"></div>
+            </div>
+            <div class="input-invoice control-group">
+                <div class="row controls">
+                    <div class="span1">开发票:</div>
+                    <input class="span2" type="checkbox" name="invoice"/>
+                </div>
+                <div class="help-inline error"></div>
+            </div>
+            <div class="row">
+                <div class="span1 item-label">打印小票:</div>
+                <input class="span2 item-control" type="checkbox" checked/>
+            </div>
+            <div class="input-payType control-group">
+                <div class="row controls">
+                    <div class="span1">结账方式:</div>
+                    <select class="span2 item-control">
+                    </select>
+                </div>
+                <div class="help-inline error"></div>
+            </div>
+            <div class="input-remarks control-group">
+                <div class="row controls">
+                    <div class="span1">备注:</div><input class="span2" type="text" name="remarks"/>
+                </div>
+                <div class="help-inline error"></div>
+            </div>
+        </div>
+        <div class="span8 well">
+            <table class="table table-striped table-hover table-dish">
+                <thead>
+                    <tr class='head-row'>
+                        <th>菜品</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>总价</th>
+                        <th>是否参加折扣</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    #foreach($dish in $order.dishes)
+                        <tr id="dish-item-$dish.id">
+                            <td>$dish.name</td>
+                            <td>$dish.price</td>
+                            <td>$dish.number</td>
+                            <td>$dish.totalCost</td>
+                            <td><input type="checkbox" class="cb-discount" checked/></td>
+                        <tr>
+                    #end
+                </tbody>
+            </table>
+            <span class="btn btn-primary btn-submit">结账</span>
+        </div>
+    </form>
+</div>
+#pageData("order", $Utils.toJson($order))

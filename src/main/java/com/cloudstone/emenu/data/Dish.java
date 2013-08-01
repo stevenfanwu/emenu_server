@@ -24,6 +24,25 @@ public class Dish extends IdName {
     
     private String uriData;
     
+    public Dish() {
+        super();
+    }
+
+    public Dish(Dish dish) {
+        super(dish);
+        setDishTag(dish.getDishTag());
+        setPrice(dish.getPrice());
+        setMemberPrice(dish.getMemberPrice());
+        setUnit(dish.getUnit());
+        setSpicy(dish.getSpicy());
+        setSpecialPrice(dish.isSpecialPrice());
+        setNonInt(dish.isNonInt());
+        setDesc(dish.getDesc());
+        setImageId(dish.getImageId());
+        setStatus(dish.getStatus());
+        setUriData(dish.getUriData());
+    }
+
     /**
      * id < 0 means NullDish
      * @param pos
