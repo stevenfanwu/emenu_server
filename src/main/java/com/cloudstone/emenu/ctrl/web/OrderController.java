@@ -12,6 +12,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
 
@@ -26,7 +27,17 @@ public class OrderController extends BaseWebController {
     public String menuManage(HttpServletRequest req, HttpServletResponse resp,
             @RequestParam("tableId") int tableId, ModelMap model) {
         Table table = tableLogic.get(tableId);
+        if (table == null) {
+            sendError(resp, 404);
+            return null;
+        }
         Order order = orderLogic.getOrder(table.getOrderId());
+        if (order == null) {
+            table.setStatus(TableStatus.EMPTY);
+            tableLogic.update(table);
+            sendError(resp, HttpServletResponse.SC_PRECONDITION_FAILED);
+            return null;
+        }
         model.put("order", orderWraper.wrap(order));
         return sendView("bill", req, resp, model);
     }

@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.almworks.sqlite4java.SQLiteException;
+import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
@@ -22,6 +23,14 @@ import com.cloudstone.emenu.exception.ServerError;
  */
 @Service
 public class OrderService extends BaseService implements IOrderService {
+    @Override
+    public Bill getBillByOrderId(int orderId) {
+        try {
+            return billDb.getByOrderId(orderId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
     
     @Override
     public Order getOrder(int orderId) {
@@ -81,6 +90,33 @@ public class OrderService extends BaseService implements IOrderService {
     public List<PayType> listPayTypes() {
         try {
             return payTypeDb.getAllPayType();
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public void addBill(Bill bill) {
+        try {
+            billDb.add(bill);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public List<Bill> listBills() {
+        try {
+            return billDb.listBills();
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public Bill getBill(int id) {
+        try {
+            return billDb.get(id);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

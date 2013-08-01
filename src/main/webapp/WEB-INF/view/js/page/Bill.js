@@ -10,6 +10,7 @@ define(function (require, exports, module) {
     var PageDataUtils = require('../util/PageDataUtils');
     var BillForm = require('../form/BillForm');
     var $ = require('../lib/jquery');
+    var _ = require('../lib/underscore');
     var Backbone = require('../lib/Backbone');
 
     var DishItem = Backbone.View.extend({
@@ -28,10 +29,10 @@ define(function (require, exports, module) {
 
     var Bill = BasePage.extend({
 
-        events: {
+        events: _.defaults({
             'keyup input[name=discount]': 'onDiscountChange',
             'keyup input[name=tip]': 'onTipChange'
-        },
+        }, BasePage.prototype.events),
 
         dishItems: [],
 
@@ -45,7 +46,8 @@ define(function (require, exports, module) {
             var originPrice = this.orderModel.get('originPrice');
             var bill = {
                 tip : this.orderModel.tableModel.computeTip(originPrice),
-                discount: 10
+                discount: 10,
+                orderId: this.orderModel.get('id')
             };
             this.model = new BillModel();
             this.model.set(bill);

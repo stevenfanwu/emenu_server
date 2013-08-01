@@ -13,7 +13,8 @@ define(function (require, exports, module) {
         tmpl: null,
 
         events: {
-            'mouseenter .hover-tip': 'onMouseEnter'
+            'mouseenter .hover-tip': 'onMouseEnter',
+            'click .btn-back': 'onHistoryBack'
         },
 
         template : function (data, tmpl) {
@@ -56,6 +57,12 @@ define(function (require, exports, module) {
         onMouseEnter: function (evt) {
             evt.preventDefault();
             $(evt.currentTarget).tooltip('show');
+            evt.stopPropagation();
+        },
+
+        onHistoryBack: function (evt) {
+            evt.preventDefault();
+            history.back();
             evt.stopPropagation();
         }
     });

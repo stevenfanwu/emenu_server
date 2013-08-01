@@ -6,6 +6,7 @@ package com.cloudstone.emenu.service;
 
 import java.util.List;
 
+import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
@@ -23,4 +24,9 @@ public interface IOrderService {
     public List<OrderDish> listOrderDish(int orderId);
     
     public List<PayType> listPayTypes();
+    
+    public void addBill(Bill bill);
+    public List<Bill> listBills();
+    public Bill getBill(int id);
+    public Bill getBillByOrderId(int orderId);
 }

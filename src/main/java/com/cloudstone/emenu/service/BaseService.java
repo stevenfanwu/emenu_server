@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cloudstone.emenu.storage.db.IBillDb;
 import com.cloudstone.emenu.storage.db.IChapterDb;
 import com.cloudstone.emenu.storage.db.IDishDb;
 import com.cloudstone.emenu.storage.db.IDishPageDb;
@@ -50,7 +51,8 @@ public class BaseService {
     protected IOrderDishDb orderDishDb;
     @Autowired
     protected IPayTypeDb payTypeDb;
-    
+    @Autowired
+    protected IBillDb billDb;
     
     @Autowired
     protected ImageStorage imageStorage;

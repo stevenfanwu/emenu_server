@@ -87,7 +87,13 @@ define(function (require, exports, module) {
         }, {
             name: 'discountDishIds',
             type: BillOrders
-        }]
+        }],
+
+        /* -------------------- Event Listener ----------------------- */
+        
+        onSuccess: function (evt) {
+            window.location = '/home';
+        }
     });
     
     return BillForm;
