@@ -109,7 +109,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     protected void checkCreateTable(String tableName, String columnDef) throws SQLiteException {
         String sql = String.format(SQL_CREATE, tableName, columnDef);
-        LOG.info("create table sql: " + sql);
+//        LOG.info("create table sql: " + sql);
         executeSQL(sql, StatementBinder.NULL);
     }
     
@@ -131,6 +131,10 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
             conn.dispose();
             WRITE_LOCK.unlock();
         }
+    }
+    
+    protected String queryString(String sql, StatementBinder binder) throws SQLiteException {
+        return new QueryStringGetter().exec(sql, binder);
     }
     
     protected int queryInt(String sql, StatementBinder binder) throws SQLiteException {
@@ -197,6 +201,21 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
                 list.add(rowMapper.map(stmt));
             }
             return list;
+        }
+    }
+    
+    private class QueryStringGetter extends QueryObjectGetter<String> {
+        public String exec(String sql, StatementBinder binder) throws SQLiteException {
+            return super.exec(sql, binder, null);
+        }
+        @Override
+        protected String parseData(SQLiteStatement stmt,
+                RowMapper<String> rowMapper) throws SQLiteException {
+            if (stmt.step()) {
+                return stmt.columnString(0);
+            } else {
+                return null;
+            }
         }
     }
     

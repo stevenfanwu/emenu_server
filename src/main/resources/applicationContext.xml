@@ -63,10 +63,13 @@
         <property name="maxUploadSize" value="100000000" />
     </bean>
 
+    <bean id="upgradingFilter" class="com.cloudstone.emenu.web.filter.UpgradingFilter">
+    </bean>
     <bean id="authFilter" class="com.cloudstone.emenu.web.filter.AuthFilter">
         <property name="loginUrl" value="login" />
         <property name="escapePatterns">
             <list>
+                <value>/upgrading</value>
                 <value>/login</value>
                 <value>/api/login</value>
                 <value>/static/.*</value>

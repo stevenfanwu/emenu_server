@@ -11,6 +11,7 @@ package com.cloudstone.emenu.data;
 public class MenuPage extends IEntity {
     private int chapterId;
     private int dishCount;
+    private int ordinal;
     
     public int getChapterId() {
         return chapterId;
@@ -23,5 +24,11 @@ public class MenuPage extends IEntity {
     }
     public void setDishCount(int dishCount) {
         this.dishCount = dishCount;
+    }
+    public int getOrdinal() {
+        return ordinal;
+    }
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
     }
 }

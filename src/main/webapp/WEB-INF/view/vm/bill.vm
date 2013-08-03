@@ -1,4 +1,4 @@
-#set( $layout = "layout/empty.vm" )
+#set( $layout = "layout/empty.vm")
 #set($pageName="Bill")
 
 <div class="container bill-page-wrap">
