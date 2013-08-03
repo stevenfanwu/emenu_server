@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -101,5 +102,11 @@ public class UserApiController extends BaseApiController {
             return;
         }
         userLogic.modifyPassword(userId, newPassword);
+    }
+    
+    @RequestMapping(value="/api/public/user-names", method=RequestMethod.GET)
+    public @ResponseBody String getUserNames() {
+        List<String> names = userLogic.listUserNames();
+        return CollectionUtils.join(names, ",");
     }
 }

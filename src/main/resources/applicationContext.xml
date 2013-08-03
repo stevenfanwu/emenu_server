@@ -71,6 +71,7 @@
                 <value>/api/login</value>
                 <value>/static/.*</value>
                 <value>/images/.*</value>
+                <value>/api/public/.*</value>
             </list>
         </property>
     </bean>

@@ -225,6 +225,10 @@ public class CollectionUtils {
         return reduce(boxed, joiner, "");
     }
     
+    public static String join(List<String> array, String separator) {
+        return join(array.toArray(new String[0]), separator);
+    }
+    
     public static String join(String[] array, String separator) {
         Joiner<String> joiner = new Joiner<String>(separator);
         return reduce(array, joiner, "");

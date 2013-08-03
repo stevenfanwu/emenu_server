@@ -94,7 +94,6 @@ public class UserLogic extends BaseLogic {
     
     public List<String> listUserNames() {
         List<User> users = getAll();
-        DataUtils.filterDeleted(users);
         List<String> names = new ArrayList<String>(users.size());
         for (User user:users) {
             names.add(user.getName());
