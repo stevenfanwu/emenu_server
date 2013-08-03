@@ -35,6 +35,7 @@ define(function (require, exports, module) {
             item.render();
             this.initItem(model, item);
             this.appendItem(item);
+            this.items.push(item);
         },
 
         filterModel: function (model) {
@@ -56,7 +57,6 @@ define(function (require, exports, module) {
 
         appendItem: function (item) {
             this.$el.append(item.el);
-            this.items.push(item);
         },
 
         doRender: function () {

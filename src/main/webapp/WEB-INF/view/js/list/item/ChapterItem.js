@@ -5,7 +5,7 @@ define(function (require, exports, module) {
     "use strict";
 
     var AccordionItem = require('./AccordionItem');
-    var MenuPageList = require('../MenuPageList');
+    var MenuPage = require('../../component/MenuPage');
 
     var ChapterItem = AccordionItem.extend({
 
@@ -17,16 +17,15 @@ define(function (require, exports, module) {
 
         tmpl: require('./ChapterItem.handlebars'),
 
-        createListIfNecessary: function () {
-            if (!this.list) {
-                this.list = new MenuPageList({
-                    parentId: this.model.get('id')
-                });
-                this.list.render();
-                this.$('.wrap-page').html(this.list.el);
-                return true;
+        renderPage: function (options) {
+            options = options || {};
+            if (!this.menuPage || options.reset) {
+                delete options.reset;
+                options.parentId = this.model.get('id');
+                this.menuPage = new MenuPage(options);
+                this.menuPage.render();
+                this.$('.page-wrap').html(this.menuPage.el);
             }
-            return false;
         },
 
         /* -------------------- Event Listener ----------------------- */
@@ -53,9 +52,11 @@ define(function (require, exports, module) {
                 model: pageModel
             });
             dialog.model.on('saved', function () {
-                if (!this.createListIfNecessary()) {
-                    this.list.refresh();
-                }
+                var options = {
+                    reset: true,
+                    menuPageId: pageModel.get('id')
+                };
+                this.renderPage(options);
                 this.expand();
             }, this);
             dialog.show();
@@ -64,7 +65,7 @@ define(function (require, exports, module) {
 
         onToggle: function () {
             AccordionItem.prototype.onToggle.apply(this, arguments);
-            this.createListIfNecessary();
+            this.renderPage();
         }
         
         

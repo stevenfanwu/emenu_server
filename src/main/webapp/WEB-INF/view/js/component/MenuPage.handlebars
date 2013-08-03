@@ -1,0 +1,21 @@
+<div class="pager-wrap">
+    <div class="pagination pagination-right">
+        <ul>
+            <li class="{{#unless hasLast}}disabled{{/unless}}">
+                <a href="#" class="page-item" value="{{lastIndex}}">
+                上一页
+                </a>
+            </li>
+            {{#each pages}}
+            <li class="{{#if this.active}}active{{/if}}">
+                <a href="#" class="page-item" value="{{this.index}}">{{this.index}}</a>
+            </li>
+            {{/each}}
+            <li class="{{#unless hasNext}}disabled{{/unless}}">
+                <a href="#" class="page-item" value="{{nextIndex}}">下一页</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="page-content">
+</div>
