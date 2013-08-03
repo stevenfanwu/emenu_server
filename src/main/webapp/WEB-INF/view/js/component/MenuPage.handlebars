@@ -1,21 +1,36 @@
-<div class="pager-wrap">
-    <div class="pagination pagination-right">
+<div class="pager-wrap overflow-hidden">
+    <div class="pagination pagination-left pull-left">
         <ul>
-            <li class="{{#unless hasLast}}disabled{{/unless}}">
+            <li class="{{#unless hasLast}}active{{/unless}}">
                 <a href="#" class="page-item" value="{{lastIndex}}">
-                上一页
+                    上一页
                 </a>
             </li>
-            {{#each pages}}
-            <li class="{{#if this.active}}active{{/if}}">
-                <a href="#" class="page-item" value="{{this.index}}">{{this.index}}</a>
-            </li>
+            {{#each pagers}}
+            {{#if this.isActive}}
+                <li class="active">
+                    <a href="#" class="page-item" value="{{this.index}}">{{this.index}}</a>
+                </li>
+            {{/if}}
+            {{#if this.isNormal}}
+                <li>
+                    <a href="#" class="page-item" value="{{this.index}}">{{this.index}}</a>
+                </li>
+            {{/if}}
+            {{#if this.isDot}}
+                <li>
+                    <a href="#" class="page-item" value="0">...</a>
+                </li>
+            {{/if}}
             {{/each}}
-            <li class="{{#unless hasNext}}disabled{{/unless}}">
+            <li class="{{#unless hasNext}}active{{/unless}}">
                 <a href="#" class="page-item" value="{{nextIndex}}">下一页</a>
             </li>
         </ul>
     </div>
+    <div class="pull-right pager-go">
+        第<input type="text" class="input-page" value="{{currentIndex}}"></input>页<span class="btn-link btn-go">GO</span>
+    </div>
 </div>
-<div class="page-content">
+<div class="page-content clear-both">
 </div>

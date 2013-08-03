@@ -12,7 +12,8 @@ define(function (require, exports, module) {
         tmpl: require('./MenuPage.handlebars'),
 
         events: {
-            'click .page-item': 'onPageClick'
+            'click .page-item': 'onPageClick',
+            'click .btn-go': 'onPageGo'
         },
 
         collection: new MenuPageCollection(),
@@ -56,16 +57,42 @@ define(function (require, exports, module) {
 
         getRenderData: function () {
             var data = BaseView.prototype.getRenderData.apply(this, arguments);
-            data.pages = this.collection.toJSON();
-            data.pages.forEach(function (page, index) {
-                page.index = index + 1;
-                page.active = page.index === this.currentIndex;
-            }, this);
-            data.maxIndex = data.pages.length;
+            data.maxIndex = this.collection.length;
             data.lastIndex = this.currentIndex - 1;
             data.nextIndex = this.currentIndex + 1;
             data.hasLast = data.lastIndex > 0;
             data.hasNext = data.nextIndex <= data.maxIndex;
+            data.currentIndex = this.currentIndex;
+
+            var pagers = [];
+            var i = 1;
+            var walk = function (end) {
+                while (i <= data.maxIndex && i <= end) {
+                    pagers.push({
+                        isActive: i === this.currentIndex,
+                        isNormal: i !== this.currentIndex,
+                        index: i
+                    });
+                    i = i + 1;
+                }
+            }.bind(this);
+            walk(3);
+            if (this.currentIndex - 1 > i) {
+                pagers.push({
+                    isDot: true
+                });
+                i = this.currentIndex - 1;
+            }
+            walk(this.currentIndex + 1);
+            if (i < data.maxIndex - 2) {
+                pagers.push({
+                    isDot: true
+                });
+                i = data.maxIndex - 2;
+            }
+            walk(data.maxIndex);
+
+            data.pagers = pagers;
             return data;
         },
 
@@ -79,7 +106,18 @@ define(function (require, exports, module) {
                 this.showPage(index);
             }
             evt.stopPropagation();
+        },
+
+        onPageGo: function (evt) {
+            evt.preventDefault();
+            var value = this.$('.input-page').val();
+            var index = parseInt(value, 10);
+            if (String(index) === String(value)) {
+                this.showPage(index);
+            }
+            evt.stopPropagation();
         }
+        
         
     });
     
