@@ -7,6 +7,7 @@ package com.cloudstone.emenu.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -19,7 +20,13 @@ import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.exception.ServerError;
+import com.cloudstone.emenu.storage.db.IChapterDb;
+import com.cloudstone.emenu.storage.db.IDishDb;
+import com.cloudstone.emenu.storage.db.IDishPageDb;
 import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
+import com.cloudstone.emenu.storage.db.IDishTagDb;
+import com.cloudstone.emenu.storage.db.IMenuDb;
+import com.cloudstone.emenu.storage.db.IMenuPageDb;
 import com.cloudstone.emenu.util.DataUtils;
 
 /**
@@ -28,6 +35,18 @@ import com.cloudstone.emenu.util.DataUtils;
  */
 @Service
 public class MenuService extends BaseService implements IMenuService {
+    @Autowired
+    private IMenuDb menuDb;
+    @Autowired
+    private IChapterDb chapterDb;
+    @Autowired
+    private IMenuPageDb menuPageDb;
+    @Autowired
+    private IDishDb dishDb;
+    @Autowired
+    private IDishPageDb dishPageDb;
+    @Autowired
+    private IDishTagDb dishTagDb;
 
     /* ---------- menu ---------- */
     @Override

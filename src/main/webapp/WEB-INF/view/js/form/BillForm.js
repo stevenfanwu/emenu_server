@@ -92,6 +92,7 @@ define(function (require, exports, module) {
         /* -------------------- Event Listener ----------------------- */
         
         onSuccess: function (evt) {
+            window.alert('结账成功');
             window.location = '/home';
         }
     });

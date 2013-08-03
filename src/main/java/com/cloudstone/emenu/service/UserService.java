@@ -6,11 +6,13 @@ package com.cloudstone.emenu.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.exception.ServerError;
+import com.cloudstone.emenu.storage.db.IUserDb;
 
 /**
  * @author xuhongfeng
@@ -18,6 +20,8 @@ import com.cloudstone.emenu.exception.ServerError;
  */
 @Service
 public class UserService extends BaseService implements IUserService {
+    @Autowired
+    private IUserDb userDb;
     
     @Override
     public User getUserByName(String userName) {

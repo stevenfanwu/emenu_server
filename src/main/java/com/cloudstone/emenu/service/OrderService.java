@@ -7,6 +7,7 @@ package com.cloudstone.emenu.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -16,6 +17,11 @@ import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.exception.ServerError;
+import com.cloudstone.emenu.storage.db.IBillDb;
+import com.cloudstone.emenu.storage.db.IOrderDb;
+import com.cloudstone.emenu.storage.db.IOrderDishDb;
+import com.cloudstone.emenu.storage.db.IPayTypeDb;
+import com.cloudstone.emenu.util.DataUtils;
 
 /**
  * @author xuhongfeng
@@ -23,6 +29,18 @@ import com.cloudstone.emenu.exception.ServerError;
  */
 @Service
 public class OrderService extends BaseService implements IOrderService {
+    @Autowired
+    private IBillDb billDb;
+    @Autowired
+    private IOrderDb orderDb;
+    @Autowired
+    private IOrderDishDb orderDishDb;
+    @Autowired
+    private IPayTypeDb payTypeDb;
+    
+    @Autowired
+    private IMenuService menuService;
+    
     @Override
     public Bill getBillByOrderId(int orderId) {
         try {
@@ -63,10 +81,11 @@ public class OrderService extends BaseService implements IOrderService {
     public List<Dish> listDishes(int orderId) {
         try {
             List<OrderDish> relations = orderDishDb.listOrderDish(orderId);
+            DataUtils.filterDeleted(relations);
             List<Dish> dishes = new ArrayList<Dish>();
             for (OrderDish r:relations) {
                 int dishId = r.getDishId();
-                Dish dish = dishDb.get(dishId);
+                Dish dish = menuService.getDish(dishId);
                 if (dish != null) {
                     dishes.add(dish);
                 }

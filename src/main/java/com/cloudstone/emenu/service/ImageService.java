@@ -6,9 +6,11 @@ package com.cloudstone.emenu.service;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cloudstone.emenu.exception.ServerError;
+import com.cloudstone.emenu.storage.file.ImageStorage;
 
 /**
  * @author xuhongfeng
@@ -16,6 +18,9 @@ import com.cloudstone.emenu.exception.ServerError;
  */
 @Service
 public class ImageService extends BaseService implements IImageService {
+    
+    @Autowired
+    private ImageStorage imageStorage;
     
     @Override
     public String saveDishImage(String uriData) {

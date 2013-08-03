@@ -7,10 +7,12 @@ package com.cloudstone.emenu.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.service.UserService;
 import com.cloudstone.emenu.util.DataUtils;
 
 /**
@@ -19,6 +21,8 @@ import com.cloudstone.emenu.util.DataUtils;
  */
 @Component
 public class UserLogic extends BaseLogic {
+    @Autowired
+    private UserService userService;
     
     /**
      * 

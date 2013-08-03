@@ -6,11 +6,12 @@ package com.cloudstone.emenu.logic;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.DataConflictException;
-import com.cloudstone.emenu.exception.NotFoundException;
+import com.cloudstone.emenu.service.TableService;
 import com.cloudstone.emenu.util.DataUtils;
 
 /**
@@ -19,6 +20,8 @@ import com.cloudstone.emenu.util.DataUtils;
  */
 @Component
 public class TableLogic extends BaseLogic {
+    @Autowired
+    private TableService tableService;
     
     public Table add(Table table) {
         Table oldTable = getByName(table.getName());

@@ -6,6 +6,7 @@ package com.cloudstone.emenu.logic;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Chapter;
@@ -15,6 +16,7 @@ import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.service.MenuService;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
 
@@ -24,6 +26,12 @@ import com.cloudstone.emenu.util.StringUtils;
  */
 @Component
 public class MenuLogic extends BaseLogic {
+    @Autowired
+    private MenuService menuService;
+    
+    @Autowired
+    private ImageLogic imageLogic;
+    
     /* ---------- menu ---------- */
     public Menu addMenu(Menu menu) {
         Menu old = menuService.getMenuByName(menu.getName());
@@ -88,7 +96,7 @@ public class MenuLogic extends BaseLogic {
         //save image
         String uriData = dish.getUriData();
         if (!StringUtils.isBlank(uriData)) {
-            String imageId = imageService.saveDishImage(uriData);
+            String imageId = imageLogic.saveDishImage(uriData);
             dish.setImageId(imageId);
         }
         
@@ -112,7 +120,7 @@ public class MenuLogic extends BaseLogic {
         dish.setUpdateTime(System.currentTimeMillis());
         //save image
         if (!StringUtils.isBlank(dish.getUriData())) {
-            String imageId = imageService.saveDishImage(dish.getUriData());
+            String imageId = imageLogic.saveDishImage(dish.getUriData());
             dish.setImageId(imageId);
         }
         //save to db
@@ -145,7 +153,7 @@ public class MenuLogic extends BaseLogic {
         Dish dish = menuService.getDish(id);
         String imageId = dish.getImageId();
         if (withUriData && !StringUtils.isBlank(imageId)) {
-            String uriData = imageService.getDishUriData(imageId);
+            String uriData = imageLogic.getDishUriData(imageId);
             dish.setUriData(uriData);
         }
         return dish;
@@ -199,6 +207,12 @@ public class MenuLogic extends BaseLogic {
         List<Chapter> chapters = menuService.listChapterByMenuId(menuId);
         DataUtils.filterDeleted(chapters);
         return chapters;
+    }
+    
+    public List<MenuPage> listMenuPageByChapterId(int chapterId) {
+        List<MenuPage> datas = menuService.listMenuPageByChapterId(chapterId);
+        DataUtils.filterDeleted(datas);
+        return datas;
     }
     
     /* ---------- MenuPage ---------- */

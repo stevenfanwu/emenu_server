@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.com.cloudstone.menu.server.thrift.api.Goods;
@@ -36,15 +37,21 @@ import com.cloudstone.emenu.util.ThriftUtils;
  */
 @Component
 public class ThriftLogic extends BaseLogic {
+    @Autowired
+    private TableLogic tableLogic;
+    @Autowired
+    private MenuLogic menuLogic;
+    @Autowired
+    private OrderLogic orderLogic;
 
     public TableInfo getTableInfo(String tableId) {
         String tableName = tableId;
-        Table table = tableService.getByName(tableName);
+        Table table = tableLogic.getByName(tableName);
         return ThriftUtils.toTableInfo(table);
     }
     
     public Menu getCurrentMenu() {
-        com.cloudstone.emenu.data.Menu m = menuService.getAllMenu().get(0);
+        com.cloudstone.emenu.data.Menu m = menuLogic.getAllMenu().get(0);
         if (m == null) {
             return null;
         }
@@ -56,12 +63,12 @@ public class ThriftLogic extends BaseLogic {
     
     public List<MenuPage> listMenuPage(int menuId) {
         List<MenuPage> ret = new ArrayList<MenuPage>();
-        List<Chapter> chapters = menuService.listChapterByMenuId(menuId);
+        List<Chapter> chapters = menuLogic.listChapterByMenuId(menuId);
         for (Chapter chapter:chapters) {
             List<com.cloudstone.emenu.data.MenuPage> pages =
-                    menuService.listMenuPageByChapterId(chapter.getId());
+                    menuLogic.listMenuPageByChapterId(chapter.getId());
             for (com.cloudstone.emenu.data.MenuPage page:pages) {
-                List<Dish> dishes = menuService.getDishByMenuPageId(page.getId());
+                List<Dish> dishes = menuLogic.getDishByMenuPageId(page.getId());
                 List<Goods> goodsList = new ArrayList<Goods>();
                 for (Dish dish:dishes) {
                     if (dish.getId() >= 0) {//<0 means Null Dish
@@ -107,7 +114,7 @@ public class ThriftLogic extends BaseLogic {
         order.setPrice(price);
         
         //check table
-        Table table = tableService.getByName(tableName);
+        Table table = tableLogic.getByName(tableName);
         if (table == null) {
             throw new TException("table not found");
         }
@@ -122,7 +129,7 @@ public class ThriftLogic extends BaseLogic {
         List<Dish> dishes = new ArrayList<Dish>();
         for (GoodsOrder g:order.getGoods()) {
             int dishId = g.getId();
-            Dish dish = menuService.getDish(dishId);
+            Dish dish = menuLogic.getDish(dishId, false);
             if (dish == null) {
                 throw new HasInvalidGoodsException();
             }
@@ -133,7 +140,7 @@ public class ThriftLogic extends BaseLogic {
         orderValue.setOriginPrice(order.getOriginalPrice());
         orderValue.setPrice(order.getPrice());
         orderValue.setTableId(table.getId());
-        orderService.addOrder(orderValue);
+        orderLogic.addOrder(orderValue);
         
         List<OrderDish> relations = new ArrayList<OrderDish>(dishes.size());
         for (int i=0; i<dishes.size(); i++) {
@@ -153,19 +160,19 @@ public class ThriftLogic extends BaseLogic {
             relations.add(r);
         }
         for (OrderDish r:relations) {
-            orderService.addOrderDish(r);
+            orderLogic.addOrderDish(r);
         }
         
         //update table
         table.setOrderId(orderValue.getId());
-        tableService.update(table);
+        tableLogic.update(table);
     }
     
     public List<GoodsOrder> listGoodsInOrder(int orderId) {
         List<GoodsOrder> goods = new ArrayList<GoodsOrder>();
-        List<OrderDish> relations = orderService.listOrderDish(orderId);
+        List<OrderDish> relations = orderLogic.listOrderDish(orderId);
         for (OrderDish r:relations) {
-            Dish dish = menuService.getDish(r.getDishId());
+            Dish dish = menuLogic.getDish(r.getDishId(), false);
             if (dish == null) {
                 continue;
             }
