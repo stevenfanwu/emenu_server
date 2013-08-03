@@ -13,7 +13,6 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -41,7 +40,8 @@ public class UserDb extends SQLiteDb implements IUserDb {
     
     private static enum Column {
         ID("id"), NAME("name"), PASSWORD("password"),
-        TYPE("type"), REAL_NAME("realName"), COMMENT("comment");
+        TYPE("type"), REAL_NAME("realName"), COMMENT("comment"),
+        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {
@@ -61,19 +61,20 @@ public class UserDb extends SQLiteDb implements IUserDb {
             .append(Column.TYPE.toString(), DataType.INTEGER, "NOT NULL")
             .append(Column.REAL_NAME.toString(), DataType.TEXT, "NOT NULL")
             .append(Column.COMMENT.toString(), DataType.TEXT, "DEFAULT ''")
+            .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
             .build();
     
-    private static final String SQL_DELETE = new DeleteSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
-    private static final String SQL_SELECT_BY_NAME = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.NAME.toString()).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ID.toString()).build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 6).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME.toString()).appendSetValue(Column.TYPE.toString())
-        .appendSetValue(Column.REAL_NAME.toString()).appendSetValue(Column.COMMENT.toString())
+        .appendSetValue(Column.NAME).appendSetValue(Column.TYPE)
+        .appendSetValue(Column.REAL_NAME).appendSetValue(Column.COMMENT)
+        .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
+        .appendSetValue(Column.DELETED)
         .appendWhereId()
         .build();
     private static final String SQL_MODIFY_PASSWORD = new UpdateSqlBuilder(TABLE_NAME)
@@ -86,9 +87,8 @@ public class UserDb extends SQLiteDb implements IUserDb {
     
     @Override
     public User getByName(String userName) throws SQLiteException {
-        GetByNameBinder binder = new GetByNameBinder(userName);
-        User user = queryOne(SQL_SELECT_BY_NAME, binder, rowMapper);
-        if (user==null && userName.equals("admin")) {
+        User user = super.getByName(userName, rowMapper);
+        if (user==null && userName.equals("admin") && getAll().size()==0) {
             //create a default admin user
             user = User.newSuperUser();
             user.setName("admin");
@@ -105,11 +105,6 @@ public class UserDb extends SQLiteDb implements IUserDb {
         String sql = SQL_UPDATE;
         executeSQL(sql, new UpdateBinder(user));
         return get(user.getId());
-    }
-    
-    @Override
-    public void delete(int userId) throws SQLiteException {
-        executeSQL(SQL_DELETE, new IdStatementBinder(userId));
     }
     
     @Override
@@ -150,24 +145,12 @@ public class UserDb extends SQLiteDb implements IUserDb {
             user.setType(stmt.columnInt(3));
             user.setRealName(stmt.columnString(4));
             user.setComment(stmt.columnString(5));
+            user.setCreatedTime(stmt.columnLong(6));
+            user.setUpdateTime(stmt.columnLong(7));
+            user.setDeleted(stmt.columnInt(8) == 1);
             return user;
         }
     };
-    
-    private class GetByNameBinder implements StatementBinder {
-        private final String name;
-
-        public GetByNameBinder(String name) {
-            super();
-            this.name = name;
-        }
-
-
-        @Override
-        public void onBind(SQLiteStatement stmt) throws SQLiteException {
-            stmt.bind(1, name);
-        }
-    }
     
     private class UserBinder implements StatementBinder{
         private final User user;
@@ -185,6 +168,9 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(4, user.getType());
             stmt.bind(5, user.getRealName());
             stmt.bind(6, user.getComment());
+            stmt.bind(7, user.getCreatedTime());
+            stmt.bind(8, user.getUpdateTime());
+            stmt.bind(9, user.isDeleted() ? 1 : 0);
         }
     }
     
@@ -219,7 +205,10 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(2, user.getType());
             stmt.bind(3, user.getRealName());
             stmt.bind(4, user.getComment());
-            stmt.bind(5, user.getId());
+            stmt.bind(5, user.getCreatedTime());
+            stmt.bind(6, user.getUpdateTime());
+            stmt.bind(7, user.isDeleted() ? 1 : 0);
+            stmt.bind(8, user.getId());
         }
     }
 }

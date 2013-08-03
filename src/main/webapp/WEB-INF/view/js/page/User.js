@@ -8,6 +8,7 @@ define(function (require, exports, module) {
     var UserRouter = require('../router/UserRouter');
     var UserModel = require('../model/UserModel');
     var $ = require('../lib/jquery');
+    var _ = require('../lib/underscore');
     
     var User = TabList.extend({
         RouterType: UserRouter,

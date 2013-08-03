@@ -14,6 +14,8 @@ import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
+import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
 
 /**
@@ -24,7 +26,21 @@ import com.cloudstone.emenu.util.StringUtils;
 public class MenuLogic extends BaseLogic {
     /* ---------- menu ---------- */
     public Menu addMenu(Menu menu) {
-        menuService.addMenu(menu);
+        Menu old = menuService.getMenuByName(menu.getName());
+        if (old!=null && !old.isDeleted()) {
+            throw new DataConflictException("该菜单已存在");
+        }
+        
+        long now = System.currentTimeMillis();
+        menu.setUpdateTime(now);
+        if (old != null) {
+            menu.setId(old.getId());
+            menu.setCreatedTime(old.getCreatedTime());
+            menuService.updateMenu(menu);
+        } else {
+            menu.setCreatedTime(now);
+            menuService.addMenu(menu);
+        }
         return menuService.getMenu(menu.getId());
     }
     
@@ -41,10 +57,17 @@ public class MenuLogic extends BaseLogic {
     }
     
     public List<Menu> getAllMenu() {
-        return menuService.getAllMenu();
+        List<Menu> menus = menuService.getAllMenu();
+        DataUtils.filterDeleted(menus);
+        return menus;
     }
     
     public Menu updateMenu(Menu menu) {
+        Menu old = menuService.getMenuByName(menu.getName());
+        if (old!=null && old.getId()!=menu.getId() && !old.isDeleted()) {
+            throw new DataConflictException("该菜单已存在");
+        }
+        menu.setUpdateTime(System.currentTimeMillis());
         menuService.updateMenu(menu);
         return menuService.getMenu(menu.getId());
     }
@@ -55,19 +78,38 @@ public class MenuLogic extends BaseLogic {
     
     /* ---------- dish ---------- */
     public Dish addDish(Dish dish) {
+        Dish old = menuService.getDishByName(dish.getName());
+        if (old!=null && !old.isDeleted()) {
+            throw new DataConflictException("该菜品已存在");
+        }
+        long now = System.currentTimeMillis();
+        dish.setUpdateTime(now);
+        
         //save image
         String uriData = dish.getUriData();
         if (!StringUtils.isBlank(uriData)) {
             String imageId = imageService.saveDishImage(uriData);
             dish.setImageId(imageId);
         }
-        //save to db
-        menuService.addDish(dish);
+        
+        if (old != null) {
+            dish.setId(old.getId());
+            dish.setCreatedTime(old.getCreatedTime());
+            menuService.updateDish(dish);
+        } else {
+            dish.setCreatedTime(now);
+            menuService.addDish(dish);
+        }
         //get with uriData
         return getDish(dish.getId(), true);
     }
     
     public Dish updateDish(Dish dish) {
+        Dish old = menuService.getDishByName(dish.getName());
+        if (old!=null && old.getId()!=dish.getId() && !old.isDeleted()) {
+            throw new DataConflictException("该菜品已存在");
+        }
+        dish.setUpdateTime(System.currentTimeMillis());
         //save image
         if (!StringUtils.isBlank(dish.getUriData())) {
             String imageId = imageService.saveDishImage(dish.getUriData());
@@ -80,11 +122,15 @@ public class MenuLogic extends BaseLogic {
     }
     
     public List<IdName> getDishSuggestion() {
-        return menuService.getDishSuggestion();
+        List<IdName> names = menuService.getDishSuggestion();
+        DataUtils.filterDeleted(names);
+        return names;
     }
     
     public List<Dish> getAllDish() {
-        return menuService.getAllDish();
+        List<Dish> dishes = menuService.getAllDish();
+        DataUtils.filterDeleted(dishes);
+        return dishes;
     }
     
     public List<Dish> getDishByMenuPageId(int menuPageId) {
@@ -107,7 +153,20 @@ public class MenuLogic extends BaseLogic {
     
     /* ---------- chapter ---------- */
     public Chapter addChapter(Chapter chapter) {
-        menuService.addChapter(chapter);
+        Chapter old = menuService.getChapterByName(chapter.getName());
+        if (old!= null && old.getMenuId()==chapter.getMenuId() && !old.isDeleted()) {
+            throw new DataConflictException("该分类已存在");
+        }
+        long now = System.currentTimeMillis();
+        chapter.setUpdateTime(now);
+        if (old != null) {
+            chapter.setId(old.getId());
+            chapter.setCreatedTime(old.getCreatedTime());
+            menuService.updateChapter(chapter);
+        } else {
+            chapter.setCreatedTime(now);
+            menuService.addChapter(chapter);
+        }
         return menuService.getChapter(chapter.getId());
     }
     
@@ -116,10 +175,18 @@ public class MenuLogic extends BaseLogic {
     }
     
     public List<Chapter> getAllChapter() {
-        return menuService.getAllChapter();
+        List<Chapter> chapters = menuService.getAllChapter();
+        DataUtils.filterDeleted(chapters);
+        return chapters;
     }
     
     public Chapter updateChapter(Chapter chapter) {
+        Chapter old = menuService.getChapterByName(chapter.getName());
+        if (old!=null && old.getId()!=chapter.getId() && chapter.getMenuId()==old.getMenuId()
+                && !old.isDeleted()) {
+            throw new DataConflictException("该分类已存在");
+        }
+        chapter.setUpdateTime(System.currentTimeMillis());
         menuService.updateChapter(chapter);
         return menuService.getChapter(chapter.getId());
     }
@@ -129,11 +196,16 @@ public class MenuLogic extends BaseLogic {
     }
     
     public List<Chapter> listChapterByMenuId(int menuId) {
-        return menuService.listChapterByMenuId(menuId);
+        List<Chapter> chapters = menuService.listChapterByMenuId(menuId);
+        DataUtils.filterDeleted(chapters);
+        return chapters;
     }
     
     /* ---------- MenuPage ---------- */
     public MenuPage addMenuPage(MenuPage page) {
+        long now = System.currentTimeMillis();
+        page.setCreatedTime(now);
+        page.setUpdateTime(now);
         menuService.addMenuPage(page);
         return menuService.getMenuPage(page.getId());
     }
@@ -143,19 +215,41 @@ public class MenuLogic extends BaseLogic {
     }
     
     public List<MenuPage> listMenuPage(int chapterId) {
-        return menuService.listMenuPageByChapterId(chapterId);
+        List<MenuPage> pages = menuService.listMenuPageByChapterId(chapterId);
+        DataUtils.filterDeleted(pages);
+        return pages;
     }
     
     /* ---------- DishTag ---------- */
     public List<DishTag> listAllDisTag() {
-        return menuService.listAllDishTag();
+        List<DishTag> tags = menuService.listAllDishTag();
+        DataUtils.filterDeleted(tags);
+        return tags;
     }
     
     public DishTag addDishTag(DishTag tag) {
-        menuService.addDishTag(tag);
+        DishTag old = menuService.getDishTagByName(tag.getName());
+        if (old!= null && !old.isDeleted()) {
+            throw new DataConflictException("该标签已存在");
+        }
+        long now = System.currentTimeMillis();
+        tag.setUpdateTime(now);
+        if (old != null) {
+            tag.setId(old.getId());
+            tag.setCreatedTime(old.getCreatedTime());
+            menuService.updateDishTag(tag);
+        } else {
+            tag.setUpdateTime(now);
+            menuService.addDishTag(tag);
+        }
         return menuService.getDishTag(tag.getId());
     }
     public DishTag updateDishTag(DishTag tag) {
+        DishTag old = menuService.getDishTagByName(tag.getName());
+        if (old!= null && old.getId()!=tag.getId() && !old.isDeleted()) {
+            throw new DataConflictException("该标签已存在");
+        }
+        tag.setUpdateTime(System.currentTimeMillis());
         menuService.updateDishTag(tag);
         return menuService.getDishTag(tag.getId());
     }

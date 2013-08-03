@@ -10,7 +10,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.User;
-import com.cloudstone.emenu.exception.UserNameConflictedException;
+import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.util.DataUtils;
 
 /**
  * @author xuhongfeng
@@ -29,7 +30,7 @@ public class UserLogic extends BaseLogic {
      */
     public User login(String userName, String encryptedPassword) {
         User user = userService.getUserByName(userName);
-        if (user == null) {
+        if (user == null || user.isDeleted()) {
             return null;
         }
         
@@ -40,15 +41,31 @@ public class UserLogic extends BaseLogic {
         return user;
     }
     
-    public User add(User user) throws UserNameConflictedException {
-        if (userService.getUserByName(user.getName()) != null) {
-            throw new UserNameConflictedException();
+    public User add(User user) {
+        User oldUser = userService.getUserByName(user.getName());
+        if (oldUser != null && !oldUser.isDeleted()) {
+            throw new DataConflictException("用户名已存在");
         }
-        userService.add(user);
+        long now = System.currentTimeMillis();
+        user.setUpdateTime(now);
+        if (oldUser !=null) {
+            user.setId(oldUser.getId());
+            user.setCreatedTime(oldUser.getCreatedTime());
+            userService.update(user);
+        } else {
+            user.setCreatedTime(now);
+            userService.add(user);
+        }
         return userService.get(user.getId());
     }
     
     public User update(User user) {
+        User oldUser = userService.getUserByName(user.getName());
+        if (oldUser!=null && oldUser.getId()!=user.getId() && !oldUser.isDeleted()) {
+            throw new DataConflictException("用户名已存在");
+        }
+        long now = System.currentTimeMillis();
+        user.setUpdateTime(now);
         userService.update(user);
         return userService.get(user.getId());
     }
@@ -58,7 +75,9 @@ public class UserLogic extends BaseLogic {
     }
     
     public List<User> getAll() {
-        return userService.getAll();
+        List<User> users = userService.getAll();
+        DataUtils.filterDeleted(users);
+        return users;
     }
     
     public boolean modifyPassword(int userId, String password) {
@@ -71,6 +90,7 @@ public class UserLogic extends BaseLogic {
     
     public List<String> listUserNames() {
         List<User> users = getAll();
+        DataUtils.filterDeleted(users);
         List<String> names = new ArrayList<String>(users.size());
         for (User user:users) {
             names.add(user.getName());

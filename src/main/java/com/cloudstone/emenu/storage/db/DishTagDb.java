@@ -23,19 +23,25 @@ public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
         "热菜", "凉菜", "饮料"
     };
     
-    public static void initData() {
-        DishTagDb db = new DishTagDb();
-        int id=1;
-        for (String name: DEFAULT_DISH_TAGS) {
-            DishTag tag = new DishTag();
-            tag.setId(id++);
-            tag.setName(name);
-            try {
-                db.add(tag);
-            } catch (SQLiteException e) {
-                throw new RuntimeException(e);
+    @Override
+    protected void init() throws SQLiteException {
+        super.init();
+        try {
+            if (listAll().size() == 0) {
+                for (String name: DEFAULT_DISH_TAGS) {
+                    DishTag tag = new DishTag();
+                    tag.setName(name);
+                    add(tag);
+                }
             }
+        } catch (SQLiteException e) {
+            throw new RuntimeException(e);
         }
+    }
+    
+    @Override
+    public DishTag getDishTagByName(String name) throws SQLiteException {
+        return getByName(name);
     }
     
     @Override

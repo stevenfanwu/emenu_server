@@ -18,7 +18,7 @@ public class Order extends IEntity {
     }
     
     public Order(Order order) {
-        this();
+        super(order);
         setId(order.getId());
         setOriginPrice(order.getOriginPrice());
         setPrice(order.getPrice());

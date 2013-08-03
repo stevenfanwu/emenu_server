@@ -94,7 +94,6 @@ define(function (require, exports, module) {
         },
 
         onSubmit: function () {
-            this.hide();
         }
     });
     

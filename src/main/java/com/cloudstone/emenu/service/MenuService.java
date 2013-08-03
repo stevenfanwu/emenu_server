@@ -17,9 +17,10 @@ import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
-import com.cloudstone.emenu.exception.HttpStatusError;
+import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
+import com.cloudstone.emenu.util.DataUtils;
 
 /**
  * @author xuhongfeng
@@ -29,6 +30,15 @@ import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
 public class MenuService extends BaseService implements IMenuService {
 
     /* ---------- menu ---------- */
+    @Override
+    public Menu getMenuByName(String name) {
+        try {
+            return menuDb.getByName(name);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
     @Override
     public void addMenu(Menu menu) {
         try {
@@ -114,6 +124,15 @@ public class MenuService extends BaseService implements IMenuService {
     public List<Chapter> getAllChapter() {
         try {
             return chapterDb.getAllChapter();
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public Chapter getChapterByName(String name) {
+        try {
+            return chapterDb.getChapterByName(name);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
@@ -207,6 +226,15 @@ public class MenuService extends BaseService implements IMenuService {
     public Dish getDish(int id) {
         try {
             return dishDb.get(id);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public Dish getDishByName(String name) {
+        try {
+            return dishDb.getByName(name);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
@@ -308,10 +336,11 @@ public class MenuService extends BaseService implements IMenuService {
         try {
             MenuPage page = getMenuPage(menuPageId);
             if (page == null) {
-                throw new HttpStatusError(404);
+                throw new NotFoundException("");
             }
             Dish[] dishes = new Dish[page.getDishCount()];
             List<DishPage> relation = dishPageDb.getByMenuPageId(menuPageId);
+            DataUtils.filterDeleted(relation);
             for (DishPage r:relation) {
                 int dishId = r.getDishId();
                 int pos = r.getPos();
@@ -373,6 +402,15 @@ public class MenuService extends BaseService implements IMenuService {
     public void deleteDishTag(int id) {
         try {
             dishTagDb.deleteDishTag(id);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public DishTag getDishTagByName(String name) {
+        try {
+            return dishTagDb.getDishTagByName(name);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

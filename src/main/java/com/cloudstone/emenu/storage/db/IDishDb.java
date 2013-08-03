@@ -18,6 +18,7 @@ public interface IDishDb extends IDb {
     public void add(Dish dish) throws SQLiteException;
     public void update(Dish dish) throws SQLiteException;
     public Dish get(int dishId) throws SQLiteException;
+    public Dish getByName(String name) throws SQLiteException;
     public List<Dish> getAll() throws SQLiteException;
     public void delete(int dishId) throws SQLiteException;
     public List<IdName> getDishSuggestion() throws SQLiteException;

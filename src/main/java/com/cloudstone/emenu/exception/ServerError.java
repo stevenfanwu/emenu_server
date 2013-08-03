@@ -11,11 +11,7 @@ package com.cloudstone.emenu.exception;
 public class ServerError extends HttpStatusError {
     private static final long serialVersionUID = 8202952708899156300L;
 
-    public ServerError() {
-        super(500);
-    }
-
     public ServerError(Throwable cause) {
-        super(500, cause);
+        super(500, "", cause);
     }
 }

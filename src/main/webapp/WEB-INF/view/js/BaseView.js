@@ -7,6 +7,7 @@ define(function (require, exports, module) {
     var Backbone = require('./lib/backbone');
     var PageDataUtils = require('./util/PageDataUtils');
     var $ = require('./lib/jquery');
+    var handlebars = require('./lib/handlebars');
 
     var BaseView = Backbone.View.extend({
 
@@ -18,7 +19,6 @@ define(function (require, exports, module) {
         },
 
         template : function (data, tmpl) {
-            var handlebars = require('./lib/handlebars');
             tmpl = tmpl || this.tmpl;
             var template = handlebars.compile(tmpl.template);
             return template(data);

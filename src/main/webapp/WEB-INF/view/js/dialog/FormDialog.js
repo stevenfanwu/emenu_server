@@ -26,6 +26,12 @@ define(function (require, exports, module) {
             Dialog.prototype.render.apply(this, arguments);
             this.form.init(this.$(this.formEl)[0]);
         },
+
+        onClose: function () {
+            Dialog.prototype.onClose.apply(this, arguments);
+            this.form.trigger('cancel');
+        },
+        
         
         onConfirm: function () {
             Dialog.prototype.onConfirm.apply(this, arguments);

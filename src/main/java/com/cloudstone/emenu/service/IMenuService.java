@@ -23,6 +23,7 @@ public interface IMenuService {
     public void deleteMenu(int id);
     public List<Menu> getAllMenu();
     public Menu getMenu(int id);
+    public Menu getMenuByName(String name);
     
     public void addChapter(Chapter chapter);
     public void updateChapter(Chapter chapter);
@@ -30,10 +31,12 @@ public interface IMenuService {
     public List<Chapter> getAllChapter();
     public List<Chapter> listChapterByMenuId(int menuId);
     public Chapter getChapter(int id);
+    public Chapter getChapterByName(String name);
     
     public void addDish(Dish dish);
     public List<Dish> getAllDish();
     public Dish getDish(int id);
+    public Dish getDishByName(String name);
     public void deleteDish(int id);
     public void updateDish(Dish dish);
     public List<Dish> getDishByMenuPageId(int menuPageId);
@@ -54,4 +57,5 @@ public interface IMenuService {
     public void updateDishTag(DishTag tag);
     public void deleteDishTag(int id);
     public DishTag getDishTag(int id);
+    public DishTag getDishTagByName(String name);
 }

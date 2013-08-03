@@ -17,6 +17,7 @@ public class Bill extends IEntity {
     private int[] discountDishIds;
     private int payType;
     private String remarks;
+    
     public int getOrderId() {
         return orderId;
     }

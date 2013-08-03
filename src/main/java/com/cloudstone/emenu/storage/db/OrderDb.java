@@ -50,7 +50,8 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     private static final String TABLE_NAME = "`order`";
     
     private static enum Column {
-        ID("id"), ORIGIN_PRICE("originPrice"), PRICE("price"), TABLE_ID("tableId");
+        ID("id"), ORIGIN_PRICE("originPrice"), PRICE("price"), TABLE_ID("tableId"),
+        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {
@@ -67,8 +68,11 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         .append(Column.ORIGIN_PRICE, DataType.REAL, "NOT NULL")
         .append(Column.PRICE, DataType.REAL, "NOT NULL")
         .append(Column.TABLE_ID, DataType.INTEGER, "NOT NULL")
+        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 4).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 7).build();
     
     private static class OrderByder implements StatementBinder {
         private final Order order;
@@ -84,6 +88,9 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             stmt.bind(2, order.getOriginPrice());
             stmt.bind(3, order.getPrice());
             stmt.bind(4, order.getTableId());
+            stmt.bind(5, order.getCreatedTime());
+            stmt.bind(6, order.getUpdateTime());
+            stmt.bind(7, order.isDeleted() ? 1 : 0);
         }
     }
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
@@ -98,6 +105,9 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             order.setOriginPrice(stmt.columnDouble(1));
             order.setPrice(stmt.columnDouble(2));
             order.setTableId(stmt.columnInt(3));
+            order.setCreatedTime(stmt.columnLong(4));
+            order.setUpdateTime(stmt.columnLong(5));
+            order.setDeleted(stmt.columnInt(6) == 1);
             return order;
         }
     };

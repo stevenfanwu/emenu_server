@@ -4,8 +4,6 @@
  */
 package com.cloudstone.emenu.storage.db;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -13,17 +11,20 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
-import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.CreateIndexBuilder;
+import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
+import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.util.IdGenerator;
 
@@ -36,12 +37,11 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (%s)";
     
-    //TODO
     private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
     private static final Lock READ_LOCK = LOCK.readLock();
     private static final Lock WRITE_LOCK = LOCK.writeLock();
             
-    private File DB_FILE;
+    private SqliteDataSource dataSource;
     
     private IdGenerator idGenerator = new IdGenerator();
     
@@ -65,43 +65,44 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         return queryInt(sql, StatementBinder.NULL);
     }
     
+    public void delete(int id) throws SQLiteException {
+        String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE id=?";
+        executeSQL(sql, new IdStatementBinder(id));
+    }
+    
     /* ---------- protected ----------*/
     protected int genId() throws SQLiteException {
         return idGenerator.generateId(this);
     }
     
-    protected <T> T getByName(String name, RowMapper<T> rowMapper) throws SQLiteException {
+    protected <T extends BaseData> T getByName(String name, RowMapper<T> rowMapper) throws SQLiteException {
         String sql = new SelectSqlBuilder(getTableName()).appendWhereName().build();
-        return queryOne(sql, new NameStatementBinder(name), rowMapper);
+        List<T> list = query(sql, new NameStatementBinder(name), rowMapper);
+        T r = null;
+        for (int i=0; i<list.size(); i++) {
+            r = list.get(i);
+            if (!r.isDeleted()) {
+                break;
+            }
+        }
+        return r;
     }
     
     protected List<IdName> getIdNames() throws SQLiteException {
-        String sql = "SELECT id, name FROM " + getTableName();
+        String sql = "SELECT id, name, createdTime, updateTime, deleted FROM " + getTableName();
         return query(sql, StatementBinder.NULL, ID_NAME_ROW_MAPPER);
     }
     
-    protected void init() {
-        DB_FILE = new File(System.getProperty(Const.PARAM_DB_FILE));
-        if (!DB_FILE.exists()) {
-            try {
-                DB_FILE.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        try {
-            onCheckCreateTable();
-        } catch (Throwable e) {
-            LOG.error("", e);
-            throw new RuntimeException(e);
-        }
+    private volatile boolean inited = false;
+    protected void init() throws SQLiteException {
+        onCheckCreateTable();
     }
-    
     protected SQLiteConnection open() throws SQLiteException {
-        if (DB_FILE == null) {
+        if (!inited) {
+            inited = true;
             init();
         }
-        SQLiteConnection conn = new SQLiteConnection(DB_FILE);
+        SQLiteConnection conn = new SQLiteConnection(dataSource.getDbFile());
         conn.open();
         return conn;
     }
@@ -221,8 +222,21 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
             IdName o = new IdName();
             o.setId(stmt.columnInt(0));
             o.setName(stmt.columnString(1));
+            o.setCreatedTime(stmt.columnLong(2));
+            o.setUpdateTime(stmt.columnLong(3));
+            o.setDeleted(stmt.columnInt(4) == 1);
             return o;
         }
     
     };
+
+    public SqliteDataSource getDataSource() {
+        return dataSource;
+    }
+
+    @Autowired
+    public void setDataSource(SqliteDataSource dataSource) {
+        inited = false;
+        this.dataSource = dataSource;
+    }
 }

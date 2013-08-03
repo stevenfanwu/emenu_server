@@ -9,13 +9,21 @@ package com.cloudstone.emenu.data;
  *
  */
 public class IEntity extends BaseData {
-    private int Id;
+    private int id;
+    
+    public IEntity() {
+    }
+    
+    public IEntity(IEntity other) {
+        super(other);
+        id = other.id;
+    }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 }

@@ -65,7 +65,16 @@ define(function (require, exports, module) {
             validators: [{
                 type: TableTipValidator
             }]
-        }]
+        }],
+
+        
+        /* -------------------- Event Listener ----------------------- */
+        
+        onFailed: function (xhr) {
+            var msg = this.model.isNew() ? '新建' : '编辑';
+            msg = msg + '餐桌失败';
+            window.alert(msg);
+        }
     });
     
     return EditTableForm;

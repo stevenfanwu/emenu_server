@@ -34,6 +34,9 @@ public class BillDb extends SQLiteDb implements IBillDb {
     @Override
     public void add(Bill bill) throws SQLiteException {
         bill.setId(genId());
+        long now = System.currentTimeMillis();
+        bill.setCreatedTime(now);
+        bill.setUpdateTime(now);
         executeSQL(SQL_INSERT, new BillBinder(bill));
     }
 
@@ -63,7 +66,8 @@ public class BillDb extends SQLiteDb implements IBillDb {
     private static enum Column {
         ID("id"), ORDER_ID("orderId"), COST("cost"), DISCOUNT("discount"),
         TIP("tip"), INVOICE("invoice"), DISCOUNT_DISH_IDS("discountDishIds"),
-        PAY_TYPE("payType"), REMARKS("remarks");
+        PAY_TYPE("payType"), REMARKS("remarks"),
+        CREATED_TIME("createdTime"), UPDATE_TIME("update_time"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {
@@ -85,8 +89,11 @@ public class BillDb extends SQLiteDb implements IBillDb {
         .append(Column.DISCOUNT_DISH_IDS, DataType.TEXT, "NOT NULL")
         .append(Column.PAY_TYPE, DataType.INTEGER, "NOT NULL")
         .append(Column.REMARKS, DataType.TEXT, "NOT NULL")
+        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 11).build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     
     private static class BillBinder implements StatementBinder {
@@ -108,6 +115,9 @@ public class BillDb extends SQLiteDb implements IBillDb {
             stmt.bind(7, SqlUtils.idsToStr(bill.getDiscountDishIds()));
             stmt.bind(8, bill.getPayType());
             stmt.bind(9, bill.getRemarks());
+            stmt.bind(10, bill.getCreatedTime());
+            stmt.bind(11, bill.getUpdateTime());
+            stmt.bind(12, bill.isDeleted() ? 1 : 0);
         }
     }
     
@@ -125,6 +135,9 @@ public class BillDb extends SQLiteDb implements IBillDb {
             bill.setDiscountDishIds(SqlUtils.strToIds(stmt.columnString(6)));
             bill.setPayType(stmt.columnInt(7));
             bill.setRemarks(stmt.columnString(8));
+            bill.setCreatedTime(stmt.columnLong(9));
+            bill.setUpdateTime(stmt.columnLong(10));
+            bill.setDeleted(stmt.columnInt(11) == 1);
             
             return bill;
         }

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.User;
-import com.cloudstone.emenu.exception.UserNameConflictedException;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -49,8 +48,17 @@ public class UserApiController extends BaseApiController {
     }
 
     @RequestMapping(value="/api/users", method=RequestMethod.GET)
-    public @ResponseBody List<User> get() {
+    public @ResponseBody List<User> getAll() {
         return userLogic.getAll();
+    }
+    
+    @RequestMapping(value="/api/users/{id:[\\d]+}", method=RequestMethod.GET)
+    public @ResponseBody User get(@PathVariable(value="id") int userId,
+            HttpServletRequest req, HttpServletResponse response) {
+        if (getLoginUser(req).getId() != userId) {
+            sendSuccess(response, HttpServletResponse.SC_CREATED);
+        }
+        return userLogic.getUser(userId);
     }
     
     @RequestMapping(value="/api/users/{id:[\\d]+}", method=RequestMethod.DELETE)
@@ -75,15 +83,9 @@ public class UserApiController extends BaseApiController {
         //password is ignored by json mapper
         user.setPassword(JsonUtils.getString(body, "password"));
         
-        LOG.info("add user :" + JsonUtils.toJson(user));
-        try {
-            user = userLogic.add(user);
-            sendSuccess(response, HttpServletResponse.SC_CREATED);
-            return user;
-        } catch (UserNameConflictedException e) {
-            sendError(response, HttpServletResponse.SC_CONFLICT);
-            return null;
-        }
+        user = userLogic.add(user);
+        sendSuccess(response, HttpServletResponse.SC_CREATED);
+        return user;
     }
     
     @RequestMapping(value="/api/users/{id:[\\d]+}/password", method=RequestMethod.PUT)

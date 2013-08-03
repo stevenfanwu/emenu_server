@@ -16,9 +16,8 @@ public class IdName extends IEntity {
     }
     
     public IdName(IdName other) {
-        super();
+        super(other);
         this.name = other.name;
-        setId(other.getId());
     }
     
     public String getName() {

@@ -28,16 +28,19 @@ public class PayTypeDb extends IdNameDb<PayType> implements IPayTypeDb {
         return TABLE_NAME;
     }
     
-    public static void initData() {
-        PayTypeDb db = new PayTypeDb();
-        for (String name:DEFAULT_PAY_TYPE) {
-            PayType type = new PayType();
-            type.setName(name);
-            try {
-                db.add(type);
-            } catch (SQLiteException e) {
-                throw new RuntimeException(e);
+    @Override
+    protected void init() throws SQLiteException {
+        super.init();
+        try {
+            if (getAll().size() == 0) {
+                for (String name:DEFAULT_PAY_TYPE) {
+                    PayType type = new PayType();
+                    type.setName(name);
+                    add(type);
+                }
             }
+        } catch (SQLiteException e) {
+            throw new RuntimeException(e);
         }
     }
 

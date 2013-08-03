@@ -14,18 +14,13 @@ public class HttpStatusError extends RuntimeException {
 
     private final int statusCode;
 
-    public HttpStatusError(int statusCode) {
-        super();
-        this.statusCode = statusCode;
-    }
-
-    public HttpStatusError(int statusCode, String msg) {
-        super(msg);
+    public HttpStatusError(int statusCode, String msg, Throwable throwable) {
+        super(msg, throwable);
         this.statusCode = statusCode;
     }
     
-    public HttpStatusError(int statusCode, Throwable e) {
-        super(e);
+    public HttpStatusError(int statusCode, String msg) {
+        super(msg, null);
         this.statusCode = statusCode;
     }
 

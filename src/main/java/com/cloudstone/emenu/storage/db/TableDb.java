@@ -14,7 +14,6 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -40,7 +39,8 @@ public class TableDb extends SQLiteDb implements ITableDb {
     private static enum Column {
         ID("id"), NAME("name"), TYPE("type"),
         CAPACITY("capacity"), MIN_CHARGE("minCharge"), TIP_MODE("tipMode"),
-        TIP("tip"), STATUS("status"), ORDER_ID("orderId");
+        TIP("tip"), STATUS("status"), ORDER_ID("orderId"),
+        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {
@@ -63,18 +63,21 @@ public class TableDb extends SQLiteDb implements ITableDb {
             .append(Column.TIP.toString(), DataType.REAL, "NOT NULL")
             .append(Column.STATUS.toString(), DataType.INTEGER, "NOT NULL")
             .append(Column.ORDER_ID.toString(), DataType.INTEGER, "NOT NULL")
+            .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
             .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 12).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ID.toString()).build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
-    private static final String SQL_DELETE = new DeleteSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME.toString()).appendSetValue(Column.TYPE.toString())
         .appendSetValue(Column.CAPACITY.toString()).appendSetValue(Column.MIN_CHARGE.toString())
         .appendSetValue(Column.TIP_MODE.toString()).appendSetValue(Column.TIP.toString())
         .appendSetValue(Column.STATUS.toString()).appendSetValue(Column.ORDER_ID.toString())
+        .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
+        .appendSetValue(Column.DELETED)
         .appendWhereId()
         .build();
 
@@ -109,11 +112,6 @@ public class TableDb extends SQLiteDb implements ITableDb {
     }
     
     @Override
-    public void delete(int tableId) throws SQLiteException {
-        executeSQL(SQL_DELETE, new IdStatementBinder(tableId));
-    }
-    
-    @Override
     public Table update(Table table) throws SQLiteException {
         String sql = SQL_UPDATE;
         executeSQL(sql, new UpdateBinder(table));
@@ -139,6 +137,9 @@ public class TableDb extends SQLiteDb implements ITableDb {
             stmt.bind(7, table.getTip());
             stmt.bind(8, table.getStatus());
             stmt.bind(9, table.getOrderId());
+            stmt.bind(10, table.getCreatedTime());
+            stmt.bind(11, table.getUpdateTime());
+            stmt.bind(12, table.isDeleted() ? 1 : 0);
         }
     }
     
@@ -156,6 +157,9 @@ public class TableDb extends SQLiteDb implements ITableDb {
             table.setTip(stmt.columnDouble(6));
             table.setStatus(stmt.columnInt(7));
             table.setOrderId(stmt.columnInt(8));
+            table.setCreatedTime(stmt.columnLong(9));
+            table.setUpdateTime(stmt.columnLong(10));
+            table.setDeleted(stmt.columnInt(11) == 1);
             return table;
         }
     };
@@ -178,7 +182,10 @@ public class TableDb extends SQLiteDb implements ITableDb {
             stmt.bind(6, table.getTip());
             stmt.bind(7, table.getStatus());
             stmt.bind(8, table.getOrderId());
-            stmt.bind(9, table.getId());
+            stmt.bind(9, table.getCreatedTime());
+            stmt.bind(10, table.getUpdateTime());
+            stmt.bind(11, table.isDeleted() ? 1 : 0);
+            stmt.bind(12, table.getId());
         }
     }
 

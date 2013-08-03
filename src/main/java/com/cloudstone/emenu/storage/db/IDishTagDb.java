@@ -19,4 +19,5 @@ public interface IDishTagDb extends IDb {
     public void updateDishTag(DishTag tag) throws SQLiteException;
     public void deleteDishTag(int id) throws SQLiteException;
     public DishTag getDishTag(int id) throws SQLiteException;
+    public DishTag getDishTagByName(String name) throws SQLiteException;
 }

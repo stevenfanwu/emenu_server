@@ -15,7 +15,6 @@ import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -50,6 +49,11 @@ public class DishDb extends SQLiteDb implements IDishDb {
     }
     
     @Override
+    public Dish getByName(String name) throws SQLiteException {
+        return super.getByName(name, rowMapper);
+    }
+    
+    @Override
     public Dish get(int dishId) throws SQLiteException {
         IdStatementBinder binder = new IdStatementBinder(dishId);
         Dish dish = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
@@ -64,11 +68,6 @@ public class DishDb extends SQLiteDb implements IDishDb {
     @Override
     public void update(Dish dish) throws SQLiteException {
         executeSQL(SQL_UPDATE, new UpdateBinder(dish));
-    }
-    
-    @Override
-    public void delete(int dishId) throws SQLiteException {
-        executeSQL(SQL_DELETE, new IdStatementBinder(dishId));
     }
     
     @Override
@@ -95,6 +94,9 @@ public class DishDb extends SQLiteDb implements IDishDb {
             dish.setDesc(stmt.columnString(9));
             dish.setImageId(stmt.columnString(10));
             dish.setStatus(stmt.columnInt(11));
+            dish.setCreatedTime(stmt.columnLong(12));
+            dish.setUpdateTime(stmt.columnLong(13));
+            dish.setDeleted(stmt.columnInt(14) == 1);
             
             return dish;
         }
@@ -122,6 +124,9 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(10, dish.getDesc());
             stmt.bind(11, dish.getImageId());
             stmt.bind(12, dish.getStatus());
+            stmt.bind(13, dish.getCreatedTime());
+            stmt.bind(14, dish.getUpdateTime());
+            stmt.bind(15, dish.isDeleted() ? 1 : 0);
         }
     }
     
@@ -146,7 +151,10 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(9, dish.getDesc());
             stmt.bind(10, dish.getImageId());
             stmt.bind(11, dish.getStatus());
-            stmt.bind(12, dish.getId());
+            stmt.bind(12, dish.getCreatedTime());
+            stmt.bind(13, dish.getUpdateTime());
+            stmt.bind(14, dish.isDeleted() ? 1 : 0);
+            stmt.bind(15, dish.getId());
         }
     }
     
@@ -157,7 +165,8 @@ public class DishDb extends SQLiteDb implements IDishDb {
         ID("id"), NAME("name"), DISH_TAG("dishTag"), PRICE("price"),
         MEMBER_PRICE("memberPrice"), UNIT("unit"), SPICY("spicy"),
         SPECIAL_PRICE("specialPrice"), NON_INT("nonInt"), DESC("desc"),
-        IMAGE_ID("imageId"), STATUS("status");
+        IMAGE_ID("imageId"), STATUS("status"),
+        CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {
@@ -183,13 +192,14 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .append(Column.DESC, DataType.TEXT, "NOT NULL")
         .append(Column.IMAGE_ID, DataType.TEXT, "DEFAULT ''")
         .append(Column.STATUS, DataType.INTEGER, "DEFAULT ''")
+        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 12).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 15).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
-    private static final String SQL_DELETE = new DeleteSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME)
         .appendSetValue(Column.DISH_TAG)
@@ -202,6 +212,9 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .appendSetValue(Column.DESC)
         .appendSetValue(Column.IMAGE_ID)
         .appendSetValue(Column.STATUS)
+        .appendSetValue(Column.CREATED_TIME)
+        .appendSetValue(Column.UPDATE_TIME)
+        .appendSetValue(Column.DELETED)
         .appendWhereId()
         .build();
 }

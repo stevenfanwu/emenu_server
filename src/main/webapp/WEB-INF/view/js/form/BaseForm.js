@@ -22,7 +22,10 @@ define(function (require, exports, module) {
 
         itemConfig: [],
 
+        originData: {},
+
         init: function (el) {
+            this.originData = this.model.toJSON();
             this.setElement(el);
             this.parseItemConfig();
             this.reset();
@@ -32,6 +35,8 @@ define(function (require, exports, module) {
                     this.onSubmit(evt);
                 }
             }.bind(this));
+
+            this.on('cancel', this.onCancel, this);
         },
 
         parseItemConfig: function () {
@@ -74,13 +79,20 @@ define(function (require, exports, module) {
 
         validateForm: function () {
             var result = true;
+            var firstInvalidItem = null;
             this.items.forEach(function (item) {
                 if (!item.validate()) {
+                    if (!firstInvalidItem) {
+                        firstInvalidItem = item;
+                    }
                     result = false;
                 } else {
                     item.saveValueToModel(this.model);
                 }
             }, this);
+            if (firstInvalidItem) {
+                firstInvalidItem.focus();
+            }
             return result;
         },
 
@@ -137,6 +149,10 @@ define(function (require, exports, module) {
         onSubmit: function (evt) {
             evt.preventDefault();
             this.trySubmit();
+        },
+
+        onCancel: function (evt) {
+            this.model.set(this.originData);
         }
     });
 

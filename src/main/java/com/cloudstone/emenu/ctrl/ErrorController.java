@@ -4,16 +4,20 @@
  */
 package com.cloudstone.emenu.ctrl;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cloudstone.emenu.exception.DbNotFoundException;
 import com.cloudstone.emenu.exception.HttpStatusError;
+import com.cloudstone.emenu.util.JsonUtils;
 
 /**
  * @author xuhongfeng
@@ -28,7 +32,8 @@ public class ErrorController extends BaseController {
     public static final String ATTR_REQUEST_URI = "javax.servlet.error.request_uri";
 
     @RequestMapping("/error")
-    public String get(HttpServletRequest req, HttpServletResponse resp) {
+    public String get(HttpServletRequest req, HttpServletResponse resp,
+            ModelMap model) throws IOException {
         Throwable exception = (Throwable) req.getAttribute(ATTR_EXCEPTION);
         String requestUrl = (String) req.getAttribute(ATTR_REQUEST_URI);
         
@@ -42,7 +47,7 @@ public class ErrorController extends BaseController {
         }
         
         if (requestUrl.contains("/api/")) {
-            apiError(req, resp);
+            apiError(req, resp, model, exception);
             return null;
         }
         //TODO
@@ -59,7 +64,22 @@ public class ErrorController extends BaseController {
         return (Integer)req.getAttribute(ATTR_STATUS_CODE);
     }
     
-    private void apiError(HttpServletRequest req, HttpServletResponse resp) {
-        sendError(resp, getStatusCode(req));
+    private void apiError(HttpServletRequest req, HttpServletResponse resp,
+            ModelMap model, Throwable error) throws IOException {
+        if (error!=null && error instanceof HttpStatusError) {
+            HttpStatusError e = (HttpStatusError) error;
+            resp.setStatus(e.getStatusCode());
+            resp.setContentType("application/json; charset=UTF-8");
+            model.put("code", e.getStatusCode());
+            if (e.getStatusCode() == 500) {
+                model.put("message", "服务器错误");
+            } else {
+                model.put("message", e.getMessage());
+            }
+            resp.getWriter().write(JsonUtils.toJson(model));
+            resp.getWriter().flush();
+        } else {
+            sendError(resp, getStatusCode(req));
+        }
     }
 }

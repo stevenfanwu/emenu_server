@@ -20,4 +20,5 @@ public interface IMenuDb extends IDb {
     public void deleteMenu(int id) throws SQLiteException;
     public List<Menu> getAllMenu() throws SQLiteException;
     public Menu getMenu(int id) throws SQLiteException;
+    public Menu getByName(String name) throws SQLiteException;
 }

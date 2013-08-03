@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
-import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
+import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * 
@@ -35,13 +35,20 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     }
     
     //dish position in the MenuPage
-    private static final RelationDbColumn COL_POS = new RelationDbColumn("pos", DataType.INTEGER, true);
+    private static final RelationDbColumn COL_POS =
+            new RelationDbColumn("pos", DataType.INTEGER, true);
+    private static final RelationDbColumn COL_CREATED_TIME =
+            new RelationDbColumn("createdTime", DataType.INTEGER, false);
+    private static final RelationDbColumn COL_UPDATE_TIME =
+            new RelationDbColumn("updateTime", DataType.INTEGER, false);
+    private static final RelationDbColumn COL_DELETED =
+            new RelationDbColumn("deleted", DataType.INTEGER, false);
 
     /* ---------- protected ---------- */
     @Override
     protected RelationDbConfig onCreateConfig() {
         RelationDbColumn[] columns = new RelationDbColumn[] {
-                COL_POS
+                COL_POS, COL_CREATED_TIME, COL_UPDATE_TIME, COL_DELETED
         };
         return new RelationDbConfig(TABLE_NAME, columns);
     }
@@ -58,7 +65,11 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
             @Override
             protected void bindOthers(SQLiteStatement stmt)
                     throws SQLiteException {
+                long now = System.currentTimeMillis();
                 stmt.bind(3, pos);
+                stmt.bind(4, now);
+                stmt.bind(5, now);
+                stmt.bind(6, 0);
             }
         });
     }
@@ -86,12 +97,16 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     
     @Override
     public void delete(final int menuPageId, final int pos) throws SQLiteException {
-        String sql = new DeleteSqlBuilder(getTableName()).appendWhere(ID1).appendWhere(COL_POS.name).build();
+        String sql = new UpdateSqlBuilder(TABLE_NAME)
+            .appendSetValue(COL_DELETED)
+            .appendWhere(ID1).appendWhere(COL_POS).build();
         executeSQL(sql, new StatementBinder() {
             @Override
             public void onBind(SQLiteStatement stmt) throws SQLiteException {
-                stmt.bind(1, menuPageId);
-                stmt.bind(2, pos);
+                stmt.bind(1, 1);
+                stmt.bind(2, menuPageId);
+                stmt.bind(3, pos);
+                
             }
         });
     }
@@ -107,6 +122,9 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
         public DishPage map(SQLiteStatement stmt) throws SQLiteException {
             DishPage page = super.map(stmt);
             page.setPos(stmt.columnInt(2));
+            page.setCreatedTime(stmt.columnLong(3));
+            page.setUpdateTime(stmt.columnLong(4));
+            page.setDeleted(stmt.columnInt(5) == 1);
             return page;
         };
     };

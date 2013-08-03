@@ -13,7 +13,6 @@ import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.storage.db.RelationDb.Relation;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.CountSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -74,7 +73,7 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     }
     
     private void deleteById(String idName, int id) throws SQLiteException {
-        String sql = new DeleteSqlBuilder(config.tableName).appendWhere(idName).build();
+        String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE " + idName + "=?";
         executeSQL(sql, new IdStatementBinder(id));
     }
     

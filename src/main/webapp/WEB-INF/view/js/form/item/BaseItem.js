@@ -19,6 +19,10 @@ define(function (require, exports, module) {
             this.clearTip();
         },
 
+        focus: function () {
+            this.$(this.valueEl).focus();
+        },
+
         parseConfig: function (config) {
             //config validators
             this.name = config.name;

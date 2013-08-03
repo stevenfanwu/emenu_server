@@ -10,6 +10,7 @@
 
     <properties>
         <jdk.version>1.6</jdk.version>
+        <spring.version>3.2.3.RELEASE</spring.version>
         <sqlite4java.version>0.282</sqlite4java.version>
         <sqlite4java.platform>libsqlite4java-osx</sqlite4java.platform>
         <sqlite4java.lib.type>jnilib</sqlite4java.lib.type>
@@ -31,12 +32,17 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>3.2.2.RELEASE</version>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>3.2.2.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
@@ -94,6 +100,17 @@
             <version>4.2</version>
             <type>jar</type>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.4</version>
         </dependency>
 
         <!-- sqlite -->

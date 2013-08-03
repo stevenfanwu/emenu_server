@@ -12,7 +12,6 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.DeleteSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -45,7 +44,7 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
 
     @Override
     public void deleteMenuPage(int id) throws SQLiteException {
-        executeSQL(SQL_DELETE, new IdStatementBinder(id));
+        delete(id);
     }
 
     @Override
@@ -74,7 +73,8 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     /* --------- SQL ---------- */
     private static final String TABLE_NAME = "menuPage";
     private static enum Column {
-        ID("id"), CHAPTER_ID("pageId"), DISH_COUNT("dishCount");
+        ID("id"), CHAPTER_ID("pageId"), DISH_COUNT("dishCount"),
+        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {
@@ -86,7 +86,7 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
             return str;
         }
     }
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 3).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 6).build();
     
     private static final RowMapper<MenuPage> rowMapper = new RowMapper<MenuPage>() {
 
@@ -96,6 +96,9 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
             page.setId(stmt.columnInt(0));
             page.setChapterId(stmt.columnInt(1));
             page.setDishCount(stmt.columnInt(2));
+            page.setCreatedTime(stmt.columnLong(3));
+            page.setUpdateTime(stmt.columnLong(4));
+            page.setDeleted(stmt.columnInt(5) == 1);
             return page;
         }
     };
@@ -112,10 +115,16 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
             stmt.bind(1, page.getId());
             stmt.bind(2, page.getChapterId());
             stmt.bind(3, page.getDishCount());
+            stmt.bind(4, page.getCreatedTime());
+            stmt.bind(5, page.getUpdateTime());
+            stmt.bind(6, page.isDeleted() ? 1 : 0);
         }
     }
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.CHAPTER_ID).appendSetValue(Column.DISH_COUNT)
+        .appendSetValue(Column.CREATED_TIME)
+        .appendSetValue(Column.UPDATE_TIME)
+        .appendSetValue(Column.DELETED)
         .appendWhereId().build();
     private static class UpdateBinder implements StatementBinder {
         private final MenuPage page;
@@ -129,11 +138,12 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, page.getChapterId());
             stmt.bind(2, page.getDishCount());
-            stmt.bind(3, page.getId());
+            stmt.bind(3, page.getCreatedTime());
+            stmt.bind(4, page.getUpdateTime());
+            stmt.bind(5, page.isDeleted() ? 1 : 0);
+            stmt.bind(6, page.getId());
         }
     }
-    private static final String SQL_DELETE = new DeleteSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static class GetByChapterIdBinder implements StatementBinder {
         private final int chapterId;
@@ -157,5 +167,8 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
         .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
         .append(Column.CHAPTER_ID, DataType.INTEGER, "NOT NULL")
         .append(Column.DISH_COUNT, DataType.INTEGER, "NOT NULL")
+        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
 }

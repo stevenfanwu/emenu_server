@@ -64,14 +64,8 @@ define(function (require, exports, module) {
             } else {
                 this.hiddenItems = [];
             }
-        },
-
-        onFailed: function (xhr) {
-            if (xhr.status === 409) {
-                this.resetItems();
-                this.findItemByName('name').showError('该帐号已存在');
-            }
         }
+
     });
     
     return EditUserForm;
