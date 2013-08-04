@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Bill.BillArchive;
@@ -22,6 +23,7 @@ import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.service.IOrderService;
+import com.cloudstone.emenu.storage.db.util.DbTransactionHelper;
 import com.cloudstone.emenu.util.DataUtils;
 
 
@@ -60,6 +62,11 @@ public class OrderLogic extends BaseLogic {
     
     public void addOrder(Order order) {
         //TODO Transaction for zhuwei
+        try {
+            DbTransactionHelper.getInstance().beginTransaction();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        }
         if (orderService.getOrder(order.getId()) != null) {
             throw new DataConflictException("请勿重复下单");
         }
@@ -75,6 +82,11 @@ public class OrderLogic extends BaseLogic {
         
         table.setOrderId(order.getId());
         tableLogic.update(table);
+        try {
+            DbTransactionHelper.getInstance().endTransaction();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        }
     }
     
     public List<Dish> listDishes(int orderId) {
@@ -101,6 +113,11 @@ public class OrderLogic extends BaseLogic {
     
     public Bill payBill(Bill bill) {
         //TODO transaction for zhuwei
+        try {
+            DbTransactionHelper.getInstance().beginTransaction();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        }
         if (getBillByOrderId(bill.getOrderId()) != null) {
             throw new DataConflictException("请勿重复提交订单");
         }
@@ -121,7 +138,13 @@ public class OrderLogic extends BaseLogic {
         orderService.addBill(bill);
         table.setStatus(TableStatus.EMPTY);
         tableLogic.update(table);
-        return orderService.getBill(bill.getId());
+        Bill tmpbill = orderService.getBill(bill.getId());
+        try {
+            DbTransactionHelper.getInstance().endTransaction();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        }
+        return tmpbill;
     }
     
     public Bill getBillByOrderId(int orderId) {
