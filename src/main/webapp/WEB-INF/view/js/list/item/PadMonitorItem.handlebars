@@ -1,0 +1,9 @@
+<div>
+    <span class="label label-info pad-name">{{name}}</span>
+    <div class="progress">
+        <div class="bar bar-{{batteryStatus}}" style="width: {{batteryLevel}}%;"></div>
+    </div>
+    <div class="text-left text-smaller">电量:{{batteryLevel}}%</div>
+    <div class="text-left text-smaller">用户:{{#if user}}{{user.name}}{{else}}无{{/if}}</div>
+    <div class="alert alert-{{timeStatus}} text-smaller">{{timeText}}</div>
+</div>

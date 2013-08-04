@@ -13,4 +13,5 @@ import com.almworks.sqlite4java.SQLiteException;
 public interface IDb {
     public int getMaxId() throws SQLiteException;
     public String getTableName();
+    public void delete(int id) throws SQLiteException;
 }

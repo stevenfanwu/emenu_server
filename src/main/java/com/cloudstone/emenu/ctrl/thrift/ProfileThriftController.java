@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.thrift.TException;
 import org.apache.thrift.TProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +26,6 @@ import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 import cn.com.cloudstone.menu.server.thrift.api.UserType;
 import cn.com.cloudstone.menu.server.thrift.api.WrongUsernameOrPasswordException;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.util.ThriftUtils;
@@ -35,6 +36,7 @@ import com.cloudstone.emenu.util.ThriftUtils;
  */
 @Controller
 public class ProfileThriftController extends BaseThriftController {
+    private static final Logger LOG = LoggerFactory.getLogger(ProfileThriftController.class);
     
     @RequestMapping(value="/profileservice.thrift", method=RequestMethod.POST)
     public void post(HttpServletRequest request,
@@ -54,10 +56,13 @@ public class ProfileThriftController extends BaseThriftController {
         public Login loginUser(String username, String pwd, String imei)
                 throws WrongUsernameOrPasswordException,
                 IMEINotAllowedException, TException {
-            //TODO check imei
+            LOG.info("login, imei = " + imei);
             User user = userLogic.login(username, pwd);
             if (user == null) {
                 throw new WrongUsernameOrPasswordException();
+            }
+            if (!thriftLogic.isValidImei(imei)) {
+                throw new IMEINotAllowedException();
             }
             
             //build session
@@ -66,6 +71,7 @@ public class ProfileThriftController extends BaseThriftController {
             ThriftSession session = new ThriftSession();
             session.setActivateTime(System.currentTimeMillis());
             session.setImei(imei);
+            session.setUser(user);
             thriftSessionDb.put(sessionId, session);
             
             //build Login
@@ -76,11 +82,7 @@ public class ProfileThriftController extends BaseThriftController {
 
         @Override
         public boolean logout(String sessionId) throws TException {
-            try {
-                thriftSessionDb.remove(sessionId);
-            } catch (SQLiteException e) {
-                throw new TException(e);
-            }
+            thriftSessionDb.remove(sessionId);
             return true;
         }
 

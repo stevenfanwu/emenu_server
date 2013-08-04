@@ -1,5 +1,5 @@
-#set($mode="operate")
-#set($pageName="Monitor")
+#set($mode="admin")
+#set($pageName="Device")
 
 #macro (status_nav_item, $tab_name)
   <li class="tab-$tab_name">
@@ -8,7 +8,8 @@
 #end
 <ul class="nav nav-tabs">
     #@status_nav_item("pad")平板#end
+    <li class="pull-right li-right">
+    </li>
 </ul>
-
-<div class="monitor-wrap">
+<div class="device-wrap">
 </div>

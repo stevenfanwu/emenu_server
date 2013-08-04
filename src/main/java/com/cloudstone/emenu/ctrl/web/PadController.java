@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PadController extends BaseWebController {
     
-    @RequestMapping("/pad")
-    public String padManage(HttpServletRequest req, HttpServletResponse resp,
+    @RequestMapping("/device")
+    public String deviceManage(HttpServletRequest req, HttpServletResponse resp,
             ModelMap model) {
-        return sendView("pad", req, resp, model);
+        return sendView("device", req, resp, model);
     }
     
     @RequestMapping("/monitor")

@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
@@ -42,16 +43,27 @@ public class JsonDb extends SQLiteDb {
         return json == null ? null : JsonUtils.fromJson(json, clazz);
     }
     
-    public List<String> getAll() throws SQLiteException {
-        return query(SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
+    public List<String> getAll() {
+        try {
+            return query(SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
     
-    public void remove(String key) throws SQLiteException {
-        executeSQL(SQL_DELETE, new KeyBinder(key));
+    public void remove(String key) {
+        try {
+            executeSQL(SQL_DELETE, new KeyBinder(key));
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
         cache.remove(key);
     }
     
     private String innerGet(String key) throws SQLiteException {
+        if (key == null) {
+            return null;
+        }
         String value = cache.get(key);
         if (value == null) {
             value = queryString(SQL_SELECT, new KeyBinder(key));

@@ -43,8 +43,8 @@ public class PadThriftController extends BaseThriftController {
 
         @Override
         public boolean submitPadInfo(PadInfo info) throws TException {
-            LOG.info(info.toString());
-            return false;
+            thriftLogic.submitPadInfo(info);
+            return true;
         }
     }
     private IPadInfoService.Processor<Service> processor =
