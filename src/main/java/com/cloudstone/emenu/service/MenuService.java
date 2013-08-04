@@ -169,6 +169,15 @@ public class MenuService extends BaseService implements IMenuService {
             throw new ServerError(e);
         }
     }
+    
+    @Override
+    public List<Chapter> listChapter(int[] ids) {
+        try {
+            return chapterDb.listChapters(ids);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
 
     @Override
     public List<Chapter> listChapterByMenuId(int menuId) {
@@ -263,6 +272,15 @@ public class MenuService extends BaseService implements IMenuService {
         }
     }
     
+    @Override
+    public List<DishPage> listDishPage(int dishId) {
+        try {
+            return dishPageDb.getByDishId(dishId);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
     /* --------- MenuPage ---------- */
     @Override
     public void addMenuPage(MenuPage page) {
@@ -319,6 +337,15 @@ public class MenuService extends BaseService implements IMenuService {
             throw new ServerError(e);
         }
     }
+    
+    @Override
+    public List<MenuPage> listMenuPage(int[] ids) {
+        try {
+            return menuPageDb.listMenuPages(ids);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
 
     @Override
     public List<MenuPage> listMenuPageByChapterId(int chapterId) {
@@ -371,7 +398,7 @@ public class MenuService extends BaseService implements IMenuService {
             }
             for (int i=0; i<dishes.length; i++) {
                 Dish dish = dishes[i];
-                if (dish == null) {
+                if (dish == null || dish.isDeleted()) {
                     dish = Dish.getNullDish(i);
                 }
                 ret.add(dish);

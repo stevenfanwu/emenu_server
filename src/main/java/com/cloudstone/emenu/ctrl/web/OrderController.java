@@ -24,7 +24,7 @@ import com.cloudstone.emenu.data.Table;
 public class OrderController extends BaseWebController {
     
     @RequestMapping("/bill")
-    public String menuManage(HttpServletRequest req, HttpServletResponse resp,
+    public String payBill(HttpServletRequest req, HttpServletResponse resp,
             @RequestParam("tableId") int tableId, ModelMap model) {
         Table table = tableLogic.get(tableId);
         if (table == null) {

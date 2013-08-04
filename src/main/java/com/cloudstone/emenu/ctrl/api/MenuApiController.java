@@ -105,7 +105,7 @@ public class MenuApiController extends BaseApiController {
 
     @RequestMapping(value="/api/pages", method=RequestMethod.GET)
     public @ResponseBody List<MenuPage> getMenuPageByChapterId(@RequestParam("chapterId") int chapterId) {
-        return menuLogic.listMenuPage(chapterId);
+        return menuLogic.listMenuPageByChapterId(chapterId);
     }
 
     @RequestMapping(value="/api/chapters", method=RequestMethod.POST)

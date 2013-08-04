@@ -24,12 +24,7 @@ import cn.com.cloudstone.menu.server.thrift.api.ServiceType;
 import cn.com.cloudstone.menu.server.thrift.api.TableEmptyException;
 import cn.com.cloudstone.menu.server.thrift.api.TableInfo;
 import cn.com.cloudstone.menu.server.thrift.api.TableOccupiedException;
-import cn.com.cloudstone.menu.server.thrift.api.TableStatus;
 import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
-
-import com.cloudstone.emenu.constant.Const;
-import com.cloudstone.emenu.data.Table;
-import com.cloudstone.emenu.util.ThriftUtils;
 
 /**
  * @author xuhongfeng
@@ -61,18 +56,7 @@ public class WaiterThriftController extends BaseThriftController {
             LOG.info("occupyTable");
             authorize(sessionId);
             String tableName = tableId;
-            Table table = tableLogic.getByName(tableName);
-            TableInfo info = ThriftUtils.toTableInfo(table);
-            if (info == null) {
-                throw new TException("table not found");
-            }
-            if (info.getStatus() != TableStatus.Empty) {
-                throw new TableOccupiedException();
-            }
-            //TODO save customNumber
-            table.setStatus(Const.TableStatus.OCCUPIED);
-            tableLogic.update(table);
-            
+            thriftLogic.occupyTable(tableName);
             return true;
         }
 
@@ -82,8 +66,7 @@ public class WaiterThriftController extends BaseThriftController {
                 TException {
             LOG.info("queryTableInfos");
             authorize(sessionId);
-            List<Table> tables = tableLogic.getAll();
-            return ThriftUtils.toTableInfo(tables);
+            return thriftLogic.getAllTables();
         }
 
         @Override
@@ -91,6 +74,7 @@ public class WaiterThriftController extends BaseThriftController {
                 String newTableId) throws UserNotLoginException,
                 PermissionDenyExcpetion, TableOccupiedException, TException {
             LOG.info("changeTable");
+            //TODO
             return false;
         }
 
@@ -99,7 +83,7 @@ public class WaiterThriftController extends BaseThriftController {
                 String newTableId) throws UserNotLoginException,
                 PermissionDenyExcpetion, TableOccupiedException, TException {
             LOG.info("mergeTable");
-            // TODO Auto-generated method stub
+            //TODO
             return false;
         }
 
@@ -109,11 +93,7 @@ public class WaiterThriftController extends BaseThriftController {
                 TException {
             LOG.info("emptyTable");
             authorize(sessionId);
-            
-            Table table = tableLogic.getByName(tableName);
-            table.setOrderId(0);
-            table.setStatus(Const.TableStatus.EMPTY);
-            tableLogic.update(table);
+            thriftLogic.emptyTable(tableName);
             return true;
         }
 
@@ -122,6 +102,7 @@ public class WaiterThriftController extends BaseThriftController {
                 ServiceType type) throws UserNotLoginException,
                 TableEmptyException, TException {
             LOG.info("callService");
+            //TODO
             return false;
         }
     }

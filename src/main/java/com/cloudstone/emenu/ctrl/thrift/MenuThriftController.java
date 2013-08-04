@@ -5,7 +5,6 @@
 package com.cloudstone.emenu.ctrl.thrift;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,15 +53,7 @@ public class MenuThriftController extends BaseThriftController {
 
         @Override
         public List<String> getAllNotes() throws TException {
-            //TODO
-            List<String> notes = new ArrayList<String>();
-            notes.add("微辣");
-            notes.add("不放辣");
-            notes.add("清淡");
-            notes.add("少糖");
-            notes.add("不放葱");
-            notes.add("不放蒜");
-            return notes;
+            return thriftLogic.getAllNotes();
         }
     }
 }

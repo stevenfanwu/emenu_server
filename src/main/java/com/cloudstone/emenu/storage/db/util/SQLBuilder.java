@@ -53,4 +53,22 @@ public class SQLBuilder {
     public SQLBuilder appendWhereId() {
         return this.appendWhere("id");
     }
+    
+    public SQLBuilder appendWhereIdIn(Object idName, int[] ids) {
+        if (firstWhere) {
+            append(" WHERE ");
+        } else {
+            append(" AND ");
+        }
+        firstWhere = false;
+        append(idName);
+        append(" IN (");
+        append(SqlUtils.idsToStr(ids));
+        append(")");
+        return this;
+    }
+    
+    public SQLBuilder appendWhereIdIn(int[] ids) {
+        return appendWhereIdIn("id", ids);
+    }
 }

@@ -40,6 +40,12 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         GetByMenuIdBinder binder = new GetByMenuIdBinder(menuId);
         return query(SQL_SELECT_BY_MENU_ID, binder, rowMapper);
     }
+    
+    @Override
+    public List<Chapter> listChapters(int[] ids) throws SQLiteException {
+        String sql = new SelectSqlBuilder(TABLE_NAME).appendWhereIdIn(ids).build();
+        return query(sql, StatementBinder.NULL, rowMapper);
+    }
 
     @Override
     public void addChapter(Chapter chapter) throws SQLiteException {

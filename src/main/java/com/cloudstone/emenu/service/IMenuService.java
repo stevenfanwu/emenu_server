@@ -13,6 +13,7 @@ import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
+import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
 
 /**
  * @author xuhongfeng
@@ -31,6 +32,7 @@ public interface IMenuService {
     public void deleteChapter(int id);
     public List<Chapter> getAllChapter();
     public List<Chapter> listChapterByMenuId(int menuId);
+    public List<Chapter> listChapter(int[] ids);
     public Chapter getChapter(int id);
     public Chapter getChapterByName(String name);
     
@@ -44,6 +46,7 @@ public interface IMenuService {
     public List<IdName> getDishSuggestion();
     public void bindDish(int menuPageId, int dishId, int pos);
     public void unbindDish(int menuPageId, int dishId, int pos);
+    public List<DishPage> listDishPage(int dishId);
     
     public void addMenuPage(MenuPage page);
     public void updateMenuPage(MenuPage page);
@@ -51,6 +54,7 @@ public interface IMenuService {
     public List<MenuPage> getAllMenuPage();
     public List<MenuPage> listMenuPageByChapterId(int chapterId);
     public List<MenuPage> listMenuPageByMenuId(int menuId);
+    public List<MenuPage> listMenuPage(int[] ids);
     public MenuPage getMenuPage(int id);
     
     public List<DishTag> listAllDishTag();

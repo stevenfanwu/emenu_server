@@ -20,5 +20,6 @@ public interface IMenuPageDb extends IDb {
     public void deleteMenuPage(int id) throws SQLiteException;
     public List<MenuPage> getAllMenuPage() throws SQLiteException;
     public List<MenuPage> listMenuPages(int chapterId) throws SQLiteException;
+    public List<MenuPage> listMenuPages(int[] ids) throws SQLiteException;
     public MenuPage getMenuPage(int id) throws SQLiteException;
 }

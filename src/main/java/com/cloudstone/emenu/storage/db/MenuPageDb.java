@@ -57,6 +57,12 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
         GetByChapterIdBinder binder = new  GetByChapterIdBinder(chapterId);
         return query(SQL_SELECT_BY_CHAPTER_ID, binder, rowMapper);
     }
+    
+    @Override
+    public List<MenuPage> listMenuPages(int[] ids) throws SQLiteException {
+        String sql = new SelectSqlBuilder(TABLE_NAME).appendWhereIdIn(ids).build();
+        return query(sql, StatementBinder.NULL, rowMapper);
+    }
 
     @Override
     public MenuPage getMenuPage(int id) throws SQLiteException {

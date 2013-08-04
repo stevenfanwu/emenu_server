@@ -4,7 +4,9 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,9 @@ import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.service.IMenuService;
+import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
+import com.cloudstone.emenu.util.CollectionUtils;
+import com.cloudstone.emenu.util.CollectionUtils.Tester;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
 
@@ -70,6 +75,15 @@ public class MenuLogic extends BaseLogic {
         List<Menu> menus = menuService.getAllMenu();
         DataUtils.filterDeleted(menus);
         return menus;
+    }
+    
+    public Menu getCurrentMenu() {
+        //TODO
+        List<Menu> menus = getAllMenu();
+        if (menus.size() > 0) {
+            return menus.get(0);
+        }
+        return null;
     }
     
     public Menu updateMenu(Menu menu) {
@@ -184,6 +198,29 @@ public class MenuLogic extends BaseLogic {
         return menuService.getChapter(id);
     }
     
+    public List<Chapter> listChapters(final int menuId, int dishId) {
+        List<MenuPage> pages = listMenuPageByDishId(dishId);
+        Set<Integer> chapterIds = new HashSet<Integer>();
+        for (MenuPage p:pages) {
+            chapterIds.add(p.getChapterId());
+        }
+        List<Chapter> chapters = menuService.listChapter(CollectionUtils.toIntArray(chapterIds));
+        DataUtils.filterDeleted(chapters);
+        CollectionUtils.filter(chapters, new Tester<Chapter>() {
+            @Override
+            public boolean test(Chapter data) {
+                return data.getMenuId() == menuId;
+            }
+        });
+        return chapters;
+    }
+    
+    public List<DishPage> listDishPage(int dishId) {
+        List<DishPage> dishPages = menuService.listDishPage(dishId);
+        DataUtils.filterDeleted(dishPages);
+        return dishPages;
+    }
+    
     public List<Chapter> getAllChapter() {
         List<Chapter> chapters = menuService.getAllChapter();
         DataUtils.filterDeleted(chapters);
@@ -213,7 +250,18 @@ public class MenuLogic extends BaseLogic {
     
     /* ---------- MenuPage ---------- */
     
-    public List<MenuPage> listMenuPage(int chapterId) {
+    public List<MenuPage> listMenuPageByDishId(int dishId) {
+        List<DishPage> relations = listDishPage(dishId);
+        Set<Integer> pageIds = new HashSet<Integer>();
+        for (DishPage r:relations) {
+            pageIds.add(r.getMenuPageId());
+        }
+        List<MenuPage> pages = menuService.listMenuPage(CollectionUtils.toIntArray(pageIds));
+        DataUtils.filterDeleted(pages);
+        return pages;
+    }
+    
+    public List<MenuPage> listMenuPageByChapterId(int chapterId) {
         List<MenuPage> datas = menuService.listMenuPageByChapterId(chapterId);
         DataUtils.filterDeleted(datas);
         
@@ -233,7 +281,7 @@ public class MenuLogic extends BaseLogic {
     }
     
     public MenuPage addMenuPage(MenuPage page) {
-        List<MenuPage> pages = listMenuPage(page.getChapterId());
+        List<MenuPage> pages = listMenuPageByChapterId(page.getChapterId());
         for (int i=page.getOrdinal(); i<=pages.size(); i++) {
             MenuPage p = pages.get(i-1);
             p.setOrdinal(i+1);
@@ -251,7 +299,7 @@ public class MenuLogic extends BaseLogic {
         if (old==null || old.isDeleted()) {
             throw new BadRequestError();
         }
-        List<MenuPage> pages = listMenuPage(old.getChapterId());
+        List<MenuPage> pages = listMenuPageByChapterId(old.getChapterId());
         for (int i=old.getOrdinal()+1; i<=pages.size(); i++) {
             MenuPage p = pages.get(i-1);
             p.setOrdinal(p.getOrdinal()-1);
@@ -270,7 +318,7 @@ public class MenuLogic extends BaseLogic {
             throw new BadRequestError();
         }
         if (old.getOrdinal() != page.getOrdinal()) {
-            List<MenuPage> pages = listMenuPage(page.getChapterId());
+            List<MenuPage> pages = listMenuPageByChapterId(page.getChapterId());
             if (page.getOrdinal() < old.getOrdinal()) {
                 for (int i=page.getOrdinal(); i<=old.getOrdinal()-1; i++) {
                     MenuPage p = pages.get(i-1);

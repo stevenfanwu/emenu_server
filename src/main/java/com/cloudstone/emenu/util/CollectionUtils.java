@@ -90,7 +90,7 @@ public class CollectionUtils {
         return r;
     }
 
-    public static int[] toIntArray(List<Integer> list) {
+    public static int[] toIntArray(Collection<Integer> list) {
         return toPrimitive(list.toArray(new Integer[0]));
     }
 

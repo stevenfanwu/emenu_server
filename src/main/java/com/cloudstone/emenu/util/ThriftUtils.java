@@ -4,13 +4,9 @@
  */
 package com.cloudstone.emenu.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.com.cloudstone.menu.server.thrift.api.GoodState;
 import cn.com.cloudstone.menu.server.thrift.api.GoodsOrder;
 import cn.com.cloudstone.menu.server.thrift.api.PageLayoutType;
-import cn.com.cloudstone.menu.server.thrift.api.TableInfo;
 import cn.com.cloudstone.menu.server.thrift.api.TableStatus;
 import cn.com.cloudstone.menu.server.thrift.api.UserType;
 
@@ -30,24 +26,6 @@ public class ThriftUtils {
         } else {
             return UserType.Admin;
         }
-    }
-    
-    public static TableInfo toTableInfo(Table table) {
-        //TODO no duplicated table.name
-        if (table == null) {
-            return null;
-        }
-        return new TableInfo(table.getName(), 0, getTableStatus(table), table.getOrderId());
-    }
-    
-    public static List<TableInfo> toTableInfo(List<Table> tables) {
-        List<TableInfo> infos = new ArrayList<TableInfo>(tables.size());
-        for (Table t:tables) {
-            if (t != null) {
-                infos.add(toTableInfo(t));
-            }
-        }
-        return infos;
     }
     
     public static TableStatus getTableStatus(Table table) {

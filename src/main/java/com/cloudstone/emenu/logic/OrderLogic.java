@@ -59,22 +59,13 @@ public class OrderLogic extends BaseLogic {
     }
     
     public void addOrder(Order order) {
-        //TODO Transaction for zhuwei
         if (orderService.getOrder(order.getId()) != null) {
             throw new DataConflictException("请勿重复下单");
-        }
-        Table table = tableLogic.get(order.getTableId());
-        if (table == null) {
-            LOG.info("tableId = " + order.getTableId());
-            throw new BadRequestError();
         }
         long now = System.currentTimeMillis();
         order.setUpdateTime(now);
         order.setCreatedTime(now);
         orderService.addOrder(order);
-        
-        table.setOrderId(order.getId());
-        tableLogic.update(table);
     }
     
     public List<Dish> listDishes(int orderId) {
