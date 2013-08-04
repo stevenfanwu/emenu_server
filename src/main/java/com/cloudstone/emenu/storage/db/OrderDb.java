@@ -25,7 +25,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     @Override
     public void add(Order order) throws SQLiteException {
         order.setId(genId());
-        OrderByder binder = new OrderByder(order);
+        OrderBinder binder = new OrderBinder(order);
         executeSQL(SQL_INSERT, binder);
     }
     
@@ -51,6 +51,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     
     private static enum Column {
         ID("id"), ORIGIN_PRICE("originPrice"), PRICE("price"), TABLE_ID("tableId"),
+        CUSTOMER_NUMBER("customerNumber"),
         CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
         
         private final String str;
@@ -65,6 +66,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     }
     private static final String COL_DEF = new ColumnDefBuilder()
         .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
+        .append(Column.CUSTOMER_NUMBER, DataType.INTEGER, "NOT NULL")
         .append(Column.ORIGIN_PRICE, DataType.REAL, "NOT NULL")
         .append(Column.PRICE, DataType.REAL, "NOT NULL")
         .append(Column.TABLE_ID, DataType.INTEGER, "NOT NULL")
@@ -72,12 +74,12 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 7).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
     
-    private static class OrderByder implements StatementBinder {
+    private static class OrderBinder implements StatementBinder {
         private final Order order;
 
-        public OrderByder(Order order) {
+        public OrderBinder(Order order) {
             super();
             this.order = order;
         }
@@ -88,9 +90,10 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             stmt.bind(2, order.getOriginPrice());
             stmt.bind(3, order.getPrice());
             stmt.bind(4, order.getTableId());
-            stmt.bind(5, order.getCreatedTime());
-            stmt.bind(6, order.getUpdateTime());
-            stmt.bind(7, order.isDeleted() ? 1 : 0);
+            stmt.bind(5, order.getCustomerNumber());
+            stmt.bind(6, order.getCreatedTime());
+            stmt.bind(7, order.getUpdateTime());
+            stmt.bind(8, order.isDeleted() ? 1 : 0);
         }
     }
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
@@ -105,9 +108,10 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             order.setOriginPrice(stmt.columnDouble(1));
             order.setPrice(stmt.columnDouble(2));
             order.setTableId(stmt.columnInt(3));
-            order.setCreatedTime(stmt.columnLong(4));
-            order.setUpdateTime(stmt.columnLong(5));
-            order.setDeleted(stmt.columnInt(6) == 1);
+            order.setCustomerNumber(stmt.columnInt(4));
+            order.setCreatedTime(stmt.columnLong(5));
+            order.setUpdateTime(stmt.columnLong(6));
+            order.setDeleted(stmt.columnInt(7) == 1);
             return order;
         }
     };

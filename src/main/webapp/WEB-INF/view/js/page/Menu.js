@@ -10,7 +10,7 @@ define(function (require, exports, module) {
     var Menu = TabPage.extend({
         RouterType: MenuRouter,
 
-        tabEl: ['.tab-dish', '.tab-menu', '.tab-dishTag'],
+        tabEl: ['.tab-dish', '.tab-menu', '.tab-dishNote'],
 
         initEvents: function () {
             TabPage.prototype.initEvents.apply(this, arguments);
@@ -37,17 +37,17 @@ define(function (require, exports, module) {
                     menuView.trigger('createMenu');
                 }, this);
             }, this);
-            this.on('showDishTag', function () {
+            this.on('showDishNote', function () {
                 this.emptyPullRightTab();
-                this.activeTab('.tab-dishTag');
-                var DishTagList = require('../list/DishTagList');
-                var list = new DishTagList();
+                this.activeTab('.tab-dishNote');
+                var DishNoteList = require('../list/DishNoteList');
+                var list = new DishNoteList();
                 list.render();
                 this.$('.bottom-content').empty();
                 this.$('.bottom-content').append(list.el);
-                var tab = this.appendPullRight('添加菜品做法');
+                var tab = this.appendPullRight('添加菜品备注');
                 tab.on('click', function () {
-                    list.trigger('createDishTag');
+                    list.trigger('createDishNote');
                 }, this);
             }, this);
         }

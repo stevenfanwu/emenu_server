@@ -12,6 +12,7 @@ public class ThriftSession {
     private String sessionId;
     private User user;
     private long activateTime;
+    private String imei;
 
     public String getSessionId() {
         return sessionId;
@@ -35,5 +36,13 @@ public class ThriftSession {
 
     public void setActivateTime(long activateTime) {
         this.activateTime = activateTime;
+    }
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
+        this.imei = imei;
     }
 }

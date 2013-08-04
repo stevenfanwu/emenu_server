@@ -84,19 +84,18 @@ public class DishDb extends SQLiteDb implements IDishDb {
             
             dish.setId(stmt.columnInt(0));
             dish.setName(stmt.columnString(1));
-            dish.setDishTag(stmt.columnString(2));
-            dish.setPrice(stmt.columnDouble(3));
-            dish.setMemberPrice(stmt.columnDouble(4));
-            dish.setUnit(stmt.columnInt(5));
-            dish.setSpicy(stmt.columnInt(6));
-            dish.setSpecialPrice(SqlUtils.intToBoolean(stmt.columnInt(7)));
-            dish.setNonInt(SqlUtils.intToBoolean(stmt.columnInt(8)));
-            dish.setDesc(stmt.columnString(9));
-            dish.setImageId(stmt.columnString(10));
-            dish.setStatus(stmt.columnInt(11));
-            dish.setCreatedTime(stmt.columnLong(12));
-            dish.setUpdateTime(stmt.columnLong(13));
-            dish.setDeleted(stmt.columnInt(14) == 1);
+            dish.setPrice(stmt.columnDouble(2));
+            dish.setMemberPrice(stmt.columnDouble(3));
+            dish.setUnit(stmt.columnInt(4));
+            dish.setSpicy(stmt.columnInt(5));
+            dish.setSpecialPrice(SqlUtils.intToBoolean(stmt.columnInt(6)));
+            dish.setNonInt(SqlUtils.intToBoolean(stmt.columnInt(7)));
+            dish.setDesc(stmt.columnString(8));
+            dish.setImageId(stmt.columnString(9));
+            dish.setStatus(stmt.columnInt(10));
+            dish.setCreatedTime(stmt.columnLong(11));
+            dish.setUpdateTime(stmt.columnLong(12));
+            dish.setDeleted(stmt.columnInt(13) == 1);
             
             return dish;
         }
@@ -114,19 +113,18 @@ public class DishDb extends SQLiteDb implements IDishDb {
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, dish.getId());
             stmt.bind(2, dish.getName());
-            stmt.bind(3, dish.getDishTag());
-            stmt.bind(4, dish.getPrice());
-            stmt.bind(5, dish.getMemberPrice());
-            stmt.bind(6, dish.getUnit());
-            stmt.bind(7, dish.getSpicy());
-            stmt.bind(8, SqlUtils.booleanToInt(dish.isSpecialPrice()));
-            stmt.bind(9, SqlUtils.booleanToInt(dish.isNonInt()));
-            stmt.bind(10, dish.getDesc());
-            stmt.bind(11, dish.getImageId());
-            stmt.bind(12, dish.getStatus());
-            stmt.bind(13, dish.getCreatedTime());
-            stmt.bind(14, dish.getUpdateTime());
-            stmt.bind(15, dish.isDeleted() ? 1 : 0);
+            stmt.bind(3, dish.getPrice());
+            stmt.bind(4, dish.getMemberPrice());
+            stmt.bind(5, dish.getUnit());
+            stmt.bind(6, dish.getSpicy());
+            stmt.bind(7, SqlUtils.booleanToInt(dish.isSpecialPrice()));
+            stmt.bind(8, SqlUtils.booleanToInt(dish.isNonInt()));
+            stmt.bind(9, dish.getDesc());
+            stmt.bind(10, dish.getImageId());
+            stmt.bind(11, dish.getStatus());
+            stmt.bind(12, dish.getCreatedTime());
+            stmt.bind(13, dish.getUpdateTime());
+            stmt.bind(14, dish.isDeleted() ? 1 : 0);
         }
     }
     
@@ -141,20 +139,19 @@ public class DishDb extends SQLiteDb implements IDishDb {
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, dish.getName());
-            stmt.bind(2, dish.getDishTag());
-            stmt.bind(3, dish.getPrice());
-            stmt.bind(4, dish.getMemberPrice());
-            stmt.bind(5, dish.getUnit());
-            stmt.bind(6, dish.getSpicy());
-            stmt.bind(7, SqlUtils.booleanToInt(dish.isSpecialPrice()));
-            stmt.bind(8, SqlUtils.booleanToInt(dish.isNonInt()));
-            stmt.bind(9, dish.getDesc());
-            stmt.bind(10, dish.getImageId());
-            stmt.bind(11, dish.getStatus());
-            stmt.bind(12, dish.getCreatedTime());
-            stmt.bind(13, dish.getUpdateTime());
-            stmt.bind(14, dish.isDeleted() ? 1 : 0);
-            stmt.bind(15, dish.getId());
+            stmt.bind(2, dish.getPrice());
+            stmt.bind(3, dish.getMemberPrice());
+            stmt.bind(4, dish.getUnit());
+            stmt.bind(5, dish.getSpicy());
+            stmt.bind(6, SqlUtils.booleanToInt(dish.isSpecialPrice()));
+            stmt.bind(7, SqlUtils.booleanToInt(dish.isNonInt()));
+            stmt.bind(8, dish.getDesc());
+            stmt.bind(9, dish.getImageId());
+            stmt.bind(10, dish.getStatus());
+            stmt.bind(11, dish.getCreatedTime());
+            stmt.bind(12, dish.getUpdateTime());
+            stmt.bind(13, dish.isDeleted() ? 1 : 0);
+            stmt.bind(14, dish.getId());
         }
     }
     
@@ -162,7 +159,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final String TABLE_NAME = "dish";
     
     private static enum Column {
-        ID("id"), NAME("name"), DISH_TAG("dishTag"), PRICE("price"),
+        ID("id"), NAME("name"), PRICE("price"),
         MEMBER_PRICE("memberPrice"), UNIT("unit"), SPICY("spicy"),
         SPECIAL_PRICE("specialPrice"), NON_INT("nonInt"), DESC("desc"),
         IMAGE_ID("imageId"), STATUS("status"),
@@ -182,7 +179,6 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final String COL_DEF = new ColumnDefBuilder()
         .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
         .append(Column.NAME, DataType.TEXT, "NOT NULL")
-        .append(Column.DISH_TAG, DataType.TEXT, "NOT NULL")
         .append(Column.PRICE, DataType.REAL, "NOT NULL")
         .append(Column.MEMBER_PRICE, DataType.REAL, "NOT NULL")
         .append(Column.UNIT, DataType.INTEGER, "NOT NULL")
@@ -196,13 +192,12 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 15).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 14).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME)
-        .appendSetValue(Column.DISH_TAG)
         .appendSetValue(Column.PRICE)
         .appendSetValue(Column.MEMBER_PRICE)
         .appendSetValue(Column.UNIT)

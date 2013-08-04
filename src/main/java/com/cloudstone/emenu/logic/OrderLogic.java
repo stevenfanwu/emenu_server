@@ -67,19 +67,15 @@ public class OrderLogic extends BaseLogic {
         } catch (SQLiteException e) {
             e.printStackTrace();
         }
+
         if (orderService.getOrder(order.getId()) != null) {
             throw new DataConflictException("请勿重复下单");
-        }
-        Table table = tableLogic.get(order.getTableId());
-        if (table == null) {
-            LOG.info("tableId = " + order.getTableId());
-            throw new BadRequestError();
         }
         long now = System.currentTimeMillis();
         order.setUpdateTime(now);
         order.setCreatedTime(now);
         orderService.addOrder(order);
-        
+
         table.setOrderId(order.getId());
         tableLogic.update(table);
         try {

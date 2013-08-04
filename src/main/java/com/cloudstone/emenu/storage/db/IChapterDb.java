@@ -20,6 +20,7 @@ public interface IChapterDb extends IDb {
     public void deleteChapter(int id) throws SQLiteException;
     public List<Chapter> getAllChapter() throws SQLiteException;
     public List<Chapter> listChapters(int menuId) throws SQLiteException;
+    public List<Chapter> listChapters(int[] ids) throws SQLiteException;
     public Chapter getChapter(int id) throws SQLiteException;
     public Chapter getChapterByName(String name) throws SQLiteException;
 }

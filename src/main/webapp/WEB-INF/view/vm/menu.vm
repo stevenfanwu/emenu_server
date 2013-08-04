@@ -10,7 +10,7 @@
 <ul class="nav nav-tabs">
     #@menu_nav_item("dish")菜品#end
     #@menu_nav_item("menu")菜单#end
-    #@menu_nav_item("dishTag")菜品做法#end
+    #@menu_nav_item("dishNote")菜品备注#end
     <li class="pull-right li-right">
     </li>
 </ul>

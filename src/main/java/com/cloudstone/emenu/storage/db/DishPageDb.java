@@ -91,6 +91,12 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     }
 
     @Override
+    public List<DishPage> getByDishId(int dishId)
+            throws SQLiteException {
+        return listById2(dishId);
+    }
+
+    @Override
     public int countByDishId(int dishId) throws SQLiteException {
         return countId2(dishId);
     }

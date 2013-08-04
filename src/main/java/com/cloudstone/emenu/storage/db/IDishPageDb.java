@@ -17,6 +17,7 @@ public interface IDishPageDb extends IDb {
     public void deleteByDishId(int dishId) throws SQLiteException;
     public void deleteByMenuPageId(int menuPageId) throws SQLiteException;
     public List<DishPage> getByMenuPageId(int menuPageId) throws SQLiteException;
+    public List<DishPage> getByDishId(int dishId) throws SQLiteException;
     public int countByDishId(int dishId) throws SQLiteException;
     public void add(int menuPageId, int dishId, int pos) throws SQLiteException;
     public void delete(int menuPageId, int pos) throws SQLiteException;

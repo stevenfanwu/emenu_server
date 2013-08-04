@@ -20,14 +20,19 @@ import cn.com.cloudstone.menu.server.thrift.api.MenuPage;
 import cn.com.cloudstone.menu.server.thrift.api.Order;
 import cn.com.cloudstone.menu.server.thrift.api.TableEmptyException;
 import cn.com.cloudstone.menu.server.thrift.api.TableInfo;
+import cn.com.cloudstone.menu.server.thrift.api.TableOccupiedException;
+import cn.com.cloudstone.menu.server.thrift.api.TableStatus;
 import cn.com.cloudstone.menu.server.thrift.api.UnderMinChargeException;
 
-import com.cloudstone.emenu.constant.Const.TableStatus;
+import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishNote;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.storage.cache.ThriftCache;
 import com.cloudstone.emenu.util.CollectionUtils;
+import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
 import com.cloudstone.emenu.util.ThriftUtils;
 
@@ -43,15 +48,58 @@ public class ThriftLogic extends BaseLogic {
     private MenuLogic menuLogic;
     @Autowired
     private OrderLogic orderLogic;
+    @Autowired
+    private ThriftCache thriftCache;
 
-    public TableInfo getTableInfo(String tableId) {
-        String tableName = tableId;
+    public TableInfo getTableInfo(String tableName) throws TException {
         Table table = tableLogic.getByName(tableName);
-        return ThriftUtils.toTableInfo(table);
+        if (table == null) {
+            return null;
+        }
+        int customerNumber = 0;
+        int orderId = table.getId();
+        com.cloudstone.emenu.data.Order order = orderLogic.getOrder(orderId);
+        if (order != null) {
+            customerNumber = order.getCustomerNumber();
+        }
+        return new TableInfo(table.getName(), customerNumber,
+                ThriftUtils.getTableStatus(table),orderId);
+    }
+    
+    public List<TableInfo> getAllTables() throws TException {
+        List<Table> tables = tableLogic.getAll();
+        List<TableInfo> infos = new ArrayList<TableInfo>(tables.size());
+        for (Table t:tables) {
+            infos.add(getTableInfo(t.getName()));
+        }
+        return infos;
+    }
+    
+    public void occupyTable(String tableName) throws TException, TableOccupiedException {
+        TableInfo info = getTableInfo(tableName);
+        if (info == null) {
+            throw new TException("table not found");
+        }
+        if (info.getStatus() != TableStatus.Empty) {
+            throw new TableOccupiedException();
+        }
+        Table table = tableLogic.getByName(tableName);
+        table.setStatus(Const.TableStatus.OCCUPIED);
+        tableLogic.update(table);
+    }
+    
+    public void emptyTable(String tableName) throws TException {
+        Table table = tableLogic.getByName(tableName);
+        if (table == null) {
+            throw new TException("table not found, tableName = " + tableName);
+        }
+        table.setOrderId(0);
+        table.setStatus(Const.TableStatus.EMPTY);
+        tableLogic.update(table);
     }
     
     public Menu getCurrentMenu() {
-        com.cloudstone.emenu.data.Menu m = menuLogic.getAllMenu().get(0);
+        com.cloudstone.emenu.data.Menu m = menuLogic.getCurrentMenu();
         if (m == null) {
             return null;
         }
@@ -78,9 +126,8 @@ public class ThriftLogic extends BaseLogic {
                         goods.setShortName(dish.getName());
                         goods.setPrice(dish.getPrice());
                         goods.setIntroduction(dish.getDesc());
-                        goods.setCategory(dish.getDishTag());
-                        //TODO
-//                        goods.setOnSales(dish.getMemberPrice()!=0 && dish.getMemberPrice()<dish.getPrice());
+                        goods.setCategory(chapter.getName());
+                        goods.setOnSales(dish.isSpecialPrice());
                         goods.setSpicy(dish.getSpicy());
                         goods.setSoldout(false);//TODO
                         goods.setNumberDecimalPermited(dish.isNonInt());
@@ -101,15 +148,21 @@ public class ThriftLogic extends BaseLogic {
         return ret;
     }
     
+    public List<String> getAllNotes() throws TException {
+        List<DishNote> notes = menuLogic.listAllDishNote();
+        return DataUtils.pickNames(notes);
+    }
+    
     public void submitOrder(Order order) throws TableEmptyException, HasInvalidGoodsException,
         UnderMinChargeException, TException {
+        //TODO transaction for zhuwei
         String tableName = order.getTableId();
         
         double price = 0;
         for (GoodsOrder o:order.getGoods()) {
             price += o.getPrice()*o.getNumber();
         }
-        //TODO round
+        price = DataUtils.calMoney(price);
         order.setOriginalPrice(price);
         order.setPrice(price);
         
@@ -118,7 +171,7 @@ public class ThriftLogic extends BaseLogic {
         if (table == null) {
             throw new TException("table not found");
         }
-        if (table.getStatus() == TableStatus.EMPTY) {
+        if (table.getStatus() == Const.TableStatus.EMPTY) {
             throw new TableEmptyException();
         }
         if (order.getOriginalPrice() < table.getMinCharge()) {
@@ -130,7 +183,7 @@ public class ThriftLogic extends BaseLogic {
         for (GoodsOrder g:order.getGoods()) {
             int dishId = g.getId();
             Dish dish = menuLogic.getDish(dishId, false);
-            if (dish == null) {
+            if (dish == null || dish.isDeleted()) {
                 throw new HasInvalidGoodsException();
             }
             dishes.add(dish);
@@ -142,30 +195,51 @@ public class ThriftLogic extends BaseLogic {
         orderValue.setTableId(table.getId());
         orderLogic.addOrder(orderValue);
         
-        List<OrderDish> relations = new ArrayList<OrderDish>(dishes.size());
         for (int i=0; i<dishes.size(); i++) {
             Dish dish = dishes.get(i);
             GoodsOrder g = order.getGoods().get(i);
             
             OrderDish r = new OrderDish();
-            r.setDishId(dish.getId());
             r.setOrderId(orderValue.getId());
+            r.setDishId(dish.getId());
             r.setNumber(g.getNumber());
             r.setPrice(g.getPrice());
             if (g.getRemarks() != null) {
                 r.setRemarks(g.getRemarks().toArray(new String[0]));
             }
             r.setStatus(ThriftUtils.getOrderDishStatus(g));
-            
-            relations.add(r);
-        }
-        for (OrderDish r:relations) {
             orderLogic.addOrderDish(r);
         }
-        
-        //update table
         table.setOrderId(orderValue.getId());
         tableLogic.update(table);
+    }
+    
+    public Order getOrderByTable(String tableName) throws TableEmptyException, TException {
+        
+        // check table
+        Table table = tableLogic.getByName(tableName);
+        if (table == null) {
+            throw new TException("table not found, tableName = " + tableName);
+        }
+        if (table.getStatus() == Const.TableStatus.EMPTY) {
+            throw  new TableEmptyException();
+        }
+        
+        int orderId = table.getOrderId();
+        com.cloudstone.emenu.data.Order orderValue = orderLogic.getOrder(orderId);
+        if (orderValue == null) {
+            return null;
+        }
+        
+        Order order = new Order();
+        order.setOriginalPrice(orderValue.getOriginPrice());
+        order.setPrice(orderValue.getPrice());
+        order.setTableId(tableName);
+        
+        List<GoodsOrder> goods = listGoodsInOrder(orderId);
+        order.setGoods(goods);
+        
+        return order;
     }
     
     public List<GoodsOrder> listGoodsInOrder(int orderId) {
@@ -183,10 +257,10 @@ public class ThriftLogic extends BaseLogic {
             g.setRemarks(CollectionUtils.arrayToList(r.getRemarks()));
             g.setName(dish.getName());
             g.setShortName(dish.getName());
-            g.setCategory(dish.getDishTag());
+            g.setCategory(thriftCache.getCategory(g.getId()));
             g.setOrderid(orderId);
+            g.setOnSales(dish.isSpecialPrice());
             //TODO
-//            g.setOnSales(onSales)
 //            g.setGoodstate(goodstate);
             goods.add(g);
         }

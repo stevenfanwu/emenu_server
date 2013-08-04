@@ -23,7 +23,11 @@ define(function (require, exports, module) {
             } else if (status === 512) {
                 window.location = '/upgrading';
             } else {
-                error.apply(this, arguments);
+                if (error) {
+                    error.apply(this, arguments);
+                } else {
+                    window.alert('网络错误!');
+                }
             }
         };
         sync.call(this, method, model, jqueryOptions);

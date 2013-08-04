@@ -6,6 +6,7 @@ define(function (require, exports, module) {
 
     var BaseView = require('../BaseView');
     var MenuPageCollection = require('../collection/MenuPageCollection');
+    var MenuPageModel = require('../model/MenuPageModel');
     var $ = require('../lib/jquery');
 
     var MenuPage = BaseView.extend({
@@ -13,14 +14,24 @@ define(function (require, exports, module) {
 
         events: {
             'click .page-item': 'onPageClick',
-            'click .btn-go': 'onPageGo'
+            'click .btn-go': 'onPageGo',
+            'click .btn-edit-page': 'onEditPage',
+            'click .btn-delete-page': 'onDeletePage'
         },
 
-        collection: new MenuPageCollection(),
+        collection: null,
 
         currentIndex: 1,
 
+        getCurrentPageModel: function () {
+            return this.collection.at(this.currentIndex - 1);
+        },
+
         render: function () {
+            if (!this.collection) {
+                this.collection = new MenuPageCollection();
+            }
+            this.collection.reset();
             this.collection.parentId = this.options.parentId;
             this.collection.fetch({
                 success: function () {
@@ -116,8 +127,19 @@ define(function (require, exports, module) {
                 this.showPage(index);
             }
             evt.stopPropagation();
+        },
+
+        onEditPage: function (evt) {
+            evt.preventDefault();
+            this.trigger('editPage', this.getCurrentPageModel());
+            evt.stopPropagation();
+        },
+
+        onDeletePage: function (evt) {
+            evt.preventDefault();
+            this.trigger('deletePage', this.getCurrentPageModel());
+            evt.stopPropagation();
         }
-        
         
     });
     

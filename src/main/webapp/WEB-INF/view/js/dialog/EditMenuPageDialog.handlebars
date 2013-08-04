@@ -1,5 +1,17 @@
 <form class="form-edit-menu-page form-horizontal">
-    <div class="control-group input-dishCount">
+    <div class="control-group input-ordinal info">
+        <label class="control-label">位置:</label>
+        <div class="controls">
+            <select name="ordinal">
+                {{#each ordinals}}
+                    <option value="{{this}}">第{{this}}页</option>
+                {{/each}}
+            </select>
+            <span class="help-inline info">在分类页中的位置</span>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-dishCount info">
         <label class="control-label">菜单排版:</label>
         <div class="controls">
             <select name="dishCount">

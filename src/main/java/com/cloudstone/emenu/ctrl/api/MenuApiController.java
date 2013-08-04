@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishNote;
 import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
+import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -85,6 +87,16 @@ public class MenuApiController extends BaseApiController {
         return page;
     }
     
+    @RequestMapping(value="/api/pages/{id:[\\d]+}", method=RequestMethod.PUT)
+    public @ResponseBody MenuPage updateMenuPage(@PathVariable(value="id") int id,
+            @RequestBody String body, HttpServletResponse response) {
+        MenuPage page = JsonUtils.fromJson(body, MenuPage.class);
+        if (page.getId() != id) {
+            throw new BadRequestError();
+        }
+        return menuLogic.updateMenuPage(page);
+    }
+    
     @RequestMapping(value="/api/pages/{id:[\\d]+}", method=RequestMethod.DELETE)
     public void deleteMenuPage(@PathVariable(value="id") int id,
             HttpServletResponse response) {
@@ -93,7 +105,7 @@ public class MenuApiController extends BaseApiController {
 
     @RequestMapping(value="/api/pages", method=RequestMethod.GET)
     public @ResponseBody List<MenuPage> getMenuPageByChapterId(@RequestParam("chapterId") int chapterId) {
-        return menuLogic.listMenuPage(chapterId);
+        return menuLogic.listMenuPageByChapterId(chapterId);
     }
 
     @RequestMapping(value="/api/chapters", method=RequestMethod.POST)
@@ -160,12 +172,18 @@ public class MenuApiController extends BaseApiController {
             sendError(response, HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
+        if (dish.getMemberPrice() == 0) {
+            dish.setMemberPrice(dish.getPrice());
+        }
         return menuLogic.updateDish(dish);
     }
     
     @RequestMapping(value="/api/dishes", method=RequestMethod.POST)
     public @ResponseBody Dish addDish(@RequestBody String body, HttpServletResponse response) {
         Dish dish = JsonUtils.fromJson(body, Dish.class);
+        if (dish.getMemberPrice() == 0) {
+            dish.setMemberPrice(dish.getPrice());
+        }
         dish = menuLogic.addDish(dish);
         sendSuccess(response, HttpServletResponse.SC_CREATED);
         return dish;
@@ -173,7 +191,7 @@ public class MenuApiController extends BaseApiController {
     
     @RequestMapping(value="/api/dish/tags", method=RequestMethod.GET)
     public @ResponseBody List<DishTag> getAllDishTag() {
-        return menuLogic.listAllDisTag();
+        return menuLogic.listAllDishTag();
     }
     
     @RequestMapping(value="/api/dish/tags", method=RequestMethod.POST)
@@ -195,5 +213,31 @@ public class MenuApiController extends BaseApiController {
     public void deleteDishTag(@PathVariable(value="id") int id,
             HttpServletResponse response) {
         menuLogic.deleteDishTag(id);
+    }
+    
+    @RequestMapping(value="/api/dish/notes", method=RequestMethod.GET)
+    public @ResponseBody List<DishNote> getAllDishNote() {
+        return menuLogic.listAllDishNote();
+    }
+    
+    @RequestMapping(value="/api/dish/notes", method=RequestMethod.POST)
+    public @ResponseBody DishNote addDishNote(@RequestBody String body) {
+        DishNote note = JsonUtils.fromJson(body, DishNote.class);
+        note = menuLogic.addDishNote(note);
+        return note;
+    }
+    
+    @RequestMapping(value="/api/dish/notes/{id:[\\d]+}", method=RequestMethod.PUT)
+    public @ResponseBody DishNote updateDishNote(@RequestBody String body,
+            @PathVariable(value="id") int id) {
+        DishNote note = JsonUtils.fromJson(body, DishNote.class);
+        note = menuLogic.updateDishNote(note);
+        return note;
+    }
+    
+    @RequestMapping(value="/api/dish/notes/{id:[\\d]+}", method=RequestMethod.DELETE)
+    public void deleteDishNote(@PathVariable(value="id") int id,
+            HttpServletResponse response) {
+        menuLogic.deleteDishNote(id);
     }
 }

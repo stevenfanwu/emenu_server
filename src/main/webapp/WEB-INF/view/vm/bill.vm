@@ -17,7 +17,7 @@
             </div>
             <div class="row">
                 <span class="span1">开台时间:</span>
-                <span class="span2">$order.createdTime</span>
+                <span class="span2">$Utils.formatDate($order.createdTime)</span>
             </div>
             <div class="row">
                 <span class="span1">菜品总价:</span>

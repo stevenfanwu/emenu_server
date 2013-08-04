@@ -1,19 +1,17 @@
 /**
- * @(#)JsonDb.java, Aug 3, 2013. 
+ * @(#)JsonDb.java, Aug 4, 2013. 
  * 
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
+import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.util.JsonUtils;
 
@@ -21,26 +19,36 @@ import com.cloudstone.emenu.util.JsonUtils;
  * @author xuhongfeng
  *
  */
-@Repository
 public class JsonDb extends SQLiteDb {
-    private static final Logger LOG = LoggerFactory.getLogger(JsonDb.class);
+    private final String TABLE_NAME;
+    private final String SQL_REPLACE;
+    private final String SQL_SELECT;
+    private final String SQL_DELETE;
+    private final String SQL_SELECT_ALL;
     
-    private static final String TABLE_NAME = "json";
-    private static final Map<String, String> cache = new ConcurrentHashMap<String, String>();
+    private final Map<String, String> cache = new ConcurrentHashMap<String, String>();
 
-    @Override
-    public String getTableName() {
-        return TABLE_NAME;
-    }
-
-    @Override
-    protected void onCheckCreateTable() throws SQLiteException {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    public JsonDb(String tableName) {
+        super();
+        TABLE_NAME = tableName;
+        SQL_REPLACE = "REPLACE INTO " + TABLE_NAME + " VALUES(?, ?)";
+        SQL_SELECT = "SELECT value FROM " + TABLE_NAME + " WHERE key=?";
+        SQL_DELETE = "DELETE FROM " + TABLE_NAME + " WHERE key=?";
+        SQL_SELECT_ALL = "SELECT value FROM " + TABLE_NAME;
     }
     
     public <T> T get(String key, Class<T> clazz) throws SQLiteException {
         String json = innerGet(key);
         return json == null ? null : JsonUtils.fromJson(json, clazz);
+    }
+    
+    public List<String> getAll() throws SQLiteException {
+        return query(SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
+    }
+    
+    public void remove(String key) throws SQLiteException {
+        executeSQL(SQL_DELETE, new KeyBinder(key));
+        cache.remove(key);
     }
     
     private String innerGet(String key) throws SQLiteException {
@@ -62,10 +70,17 @@ public class JsonDb extends SQLiteDb {
         executeSQL(SQL_REPLACE, new ReplaceBinder(key, value));
         cache.put(key, value);
     }
-    
-    private static final String SQL_REPLACE = "REPLACE INTO " + TABLE_NAME + " VALUES(?, ?)";
-    private static final String SQL_SELECT = "SELECT value FROM " + TABLE_NAME + " WHERE key=?";
-    
+
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
+    }
+
+    @Override
+    protected void onCheckCreateTable() throws SQLiteException {
+        checkCreateTable(TABLE_NAME, COL_DEF);
+    }
+
     private class ReplaceBinder implements StatementBinder {
         private final String key;
         private final String value;
@@ -114,4 +129,12 @@ public class JsonDb extends SQLiteDb {
             return str;
         }
     }
+    
+    private RowMapper<String> rowMapper = new RowMapper<String>() {
+        
+        @Override
+        public String map(SQLiteStatement stmt) throws SQLiteException {
+            return stmt.columnString(0);
+        }
+    };
 }

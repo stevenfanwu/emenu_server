@@ -8,7 +8,16 @@ define(function (require, exports, module) {
     var BaseContent = require('./BaseContent');
 
     var Content = BaseContent.extend({
-        tmpl: require('./EditMenuPageDialog.handlebars')
+        tmpl: require('./EditMenuPageDialog.handlebars'),
+
+        getRenderData: function () {
+            var data = BaseContent.prototype.getRenderData.apply(this, arguments);
+            data.ordinals = this.dialog.options.menuPageCollection.map(function (item, index) {
+                return index + 1;
+            }, this);
+            data.ordinals.push(data.ordinals.length + 1);
+            return data;
+        }
 
     });
     
@@ -19,7 +28,24 @@ define(function (require, exports, module) {
 
         formEl: '.form-edit-menu-page',
 
-        FormType: require('../form/EditMenuPageForm')
+        FormType: require('../form/EditMenuPageForm'),
+
+        render: function () {
+            if (this.options.menuPageCollection.length === 0) {
+                this.options.menuPageCollection.fetch({
+                    success: function () {
+                        this.doRender();
+                    }.bind(this)
+                });
+            } else {
+                this.doRender();
+            }
+        },
+
+        doRender: function () {
+            EditDialog.prototype.render.apply(this, arguments);
+        }
+        
         
     });
     
