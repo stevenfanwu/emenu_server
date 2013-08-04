@@ -14,7 +14,9 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishNote;
 import com.cloudstone.emenu.data.DishTag;
+import com.cloudstone.emenu.data.IDishNoteDb;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
@@ -47,6 +49,8 @@ public class MenuService extends BaseService implements IMenuService {
     private IDishPageDb dishPageDb;
     @Autowired
     private IDishTagDb dishTagDb;
+    @Autowired
+    private IDishNoteDb dishNoteDb;
 
     /* ---------- menu ---------- */
     @Override
@@ -439,6 +443,62 @@ public class MenuService extends BaseService implements IMenuService {
     public DishTag getDishTag(int id) {
         try {
             return dishTagDb.getDishTag(id);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    /* ---------- DishNote ---------- */
+
+    @Override
+    public List<DishNote> listAllDishNote() {
+        try {
+            return dishNoteDb.listAll();
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public void addDishNote(DishNote note) {
+        try {
+            dishNoteDb.addDishNote(note);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public void updateDishNote(DishNote note) {
+        try {
+            dishNoteDb.updateDishNote(note);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public void deleteDishNote(int id) {
+        try {
+            dishNoteDb.deleteDishNote(id);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public DishNote getDishNoteByName(String name) {
+        try {
+            return dishNoteDb.getDishNoteByName(name);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+    
+    @Override
+    public DishNote getDishNote(int id) {
+        try {
+            return dishNoteDb.getDishNote(id);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

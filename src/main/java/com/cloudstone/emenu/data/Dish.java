@@ -11,7 +11,6 @@ import com.cloudstone.emenu.constant.Const;
  *
  */
 public class Dish extends IdName {
-    private String dishTag;
     private double price;
     private double memberPrice;
     private int unit;
@@ -30,7 +29,6 @@ public class Dish extends IdName {
 
     public Dish(Dish dish) {
         super(dish);
-        setDishTag(dish.getDishTag());
         setPrice(dish.getPrice());
         setMemberPrice(dish.getMemberPrice());
         setUnit(dish.getUnit());
@@ -54,15 +52,6 @@ public class Dish extends IdName {
         return dish;
     }
     
-    public String getDishTag() {
-        return dishTag;
-    }
-
-    public void setDishTag(String dishTag) {
-        this.dishTag = dishTag;
-    }
-
-
     public double getPrice() {
         return price;
     }

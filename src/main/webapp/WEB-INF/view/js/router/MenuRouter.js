@@ -11,7 +11,7 @@ define(function (require, exports, module) {
             '': 'showDish',
             'dish': 'showDish',
             'menu': 'showMenu',
-            'dishTag': 'showDishTag'
+            'dishNote': 'showDishNote'
         },
 
         showDish: function () {
@@ -22,8 +22,8 @@ define(function (require, exports, module) {
             this.page.trigger('showMenu');
         },
 
-        showDishTag: function () {
-            this.page.trigger('showDishTag');
+        showDishNote: function () {
+            this.page.trigger('showDishNote');
         }
     });
 

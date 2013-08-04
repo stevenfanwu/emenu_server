@@ -27,11 +27,6 @@ define(function (require, exports, module) {
                 errorMessage: '菜品名称不能为空'
             }]
         }, {
-            name: 'dishTag',
-            type: AjaxSelect,
-            el: '.input-dishTag',
-            CollectionType: require('../collection/DishTagCollection')
-        }, {
             name: 'price',
             type: Text,
             el: '.input-price',
@@ -52,9 +47,6 @@ define(function (require, exports, module) {
             type: Text,
             el: '.input-memberPrice',
             validators: [{
-                type: Required,
-                errorMessage: '价格不能为空'
-            }, {
                 type: Number,
                 errorMessage: '请输入数字'
             }, {
@@ -82,11 +74,7 @@ define(function (require, exports, module) {
         }, {
             name: 'desc',
             type: Textarea,
-            el: '.input-desc',
-            validators: [{
-                type: Required,
-                errorMessage: '请输入菜品描述'
-            }]
+            el: '.input-desc'
         }, {
             name: 'uriData',
             type: Image,

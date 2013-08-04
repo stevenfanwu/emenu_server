@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishNote;
 import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
-import com.cloudstone.emenu.service.MenuService;
+import com.cloudstone.emenu.service.IMenuService;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
 
@@ -28,7 +29,7 @@ import com.cloudstone.emenu.util.StringUtils;
 @Component
 public class MenuLogic extends BaseLogic {
     @Autowired
-    private MenuService menuService;
+    private IMenuService menuService;
     
     @Autowired
     private ImageLogic imageLogic;
@@ -289,7 +290,7 @@ public class MenuLogic extends BaseLogic {
     }
     
     /* ---------- DishTag ---------- */
-    public List<DishTag> listAllDisTag() {
+    public List<DishTag> listAllDishTag() {
         List<DishTag> tags = menuService.listAllDishTag();
         DataUtils.filterDeleted(tags);
         return tags;
@@ -323,5 +324,42 @@ public class MenuLogic extends BaseLogic {
     }
     public void deleteDishTag(int id) {
         menuService.deleteDishTag(id);
+    }
+    
+    /* ---------- DishNote ---------- */
+    public List<DishNote> listAllDishNote() {
+        List<DishNote> notes = menuService.listAllDishNote();
+        DataUtils.filterDeleted(notes);
+        return notes;
+    }
+    
+    public DishNote addDishNote(DishNote note) {
+        DishNote old = menuService.getDishNoteByName(note.getName());
+        if (old!= null && !old.isDeleted()) {
+            throw new DataConflictException("该菜品备注已存在");
+        }
+        long now = System.currentTimeMillis();
+        note.setUpdateTime(now);
+        if (old != null) {
+            note.setId(old.getId());
+            note.setCreatedTime(old.getCreatedTime());
+            menuService.updateDishNote(note);
+        } else {
+            note.setUpdateTime(now);
+            menuService.addDishNote(note);
+        }
+        return menuService.getDishNote(note.getId());
+    }
+    public DishNote updateDishNote(DishNote note) {
+        DishNote old = menuService.getDishNoteByName(note.getName());
+        if (old!= null && old.getId()!=note.getId() && !old.isDeleted()) {
+            throw new DataConflictException("该菜品备注已存在");
+        }
+        note.setUpdateTime(System.currentTimeMillis());
+        menuService.updateDishNote(note);
+        return menuService.getDishNote(note.getId());
+    }
+    public void deleteDishNote(int id) {
+        menuService.deleteDishNote(id);
     }
 }

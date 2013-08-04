@@ -78,7 +78,7 @@ public class ThriftLogic extends BaseLogic {
                         goods.setShortName(dish.getName());
                         goods.setPrice(dish.getPrice());
                         goods.setIntroduction(dish.getDesc());
-                        goods.setCategory(dish.getDishTag());
+                        goods.setCategory(chapter.getName());
                         //TODO
 //                        goods.setOnSales(dish.getMemberPrice()!=0 && dish.getMemberPrice()<dish.getPrice());
                         goods.setSpicy(dish.getSpicy());
@@ -183,7 +183,8 @@ public class ThriftLogic extends BaseLogic {
             g.setRemarks(CollectionUtils.arrayToList(r.getRemarks()));
             g.setName(dish.getName());
             g.setShortName(dish.getName());
-            g.setCategory(dish.getDishTag());
+            //TODO
+//            g.setCategory(dish.getDishTag());
             g.setOrderid(orderId);
             //TODO
 //            g.setOnSales(onSales)

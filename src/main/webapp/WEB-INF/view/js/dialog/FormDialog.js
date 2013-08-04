@@ -33,8 +33,8 @@ define(function (require, exports, module) {
         },
         
         
-        onConfirm: function () {
-            Dialog.prototype.onConfirm.apply(this, arguments);
+        onSubmit: function () {
+            Dialog.prototype.onSubmit.apply(this, arguments);
             this.form.trySubmit();
         }
         
