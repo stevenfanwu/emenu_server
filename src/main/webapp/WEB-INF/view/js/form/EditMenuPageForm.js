@@ -14,6 +14,10 @@ define(function (require, exports, module) {
             name: 'dishCount',
             type: Select,
             el: '.input-dishCount'
+        }, {
+            name: 'ordinal',
+            type: Select,
+            el: '.input-ordinal'
         }]
         
     });

@@ -53,6 +53,7 @@ define(function (require, exports, module) {
             if (this.ContentType) {
                 var Content = this.ContentType;
                 var contentView = new Content();
+                contentView.dialog = this;
                 contentView.render();
                 this.$('.modal-body').append(contentView.el);
             }

@@ -209,14 +209,34 @@ public class MenuLogic extends BaseLogic {
         return chapters;
     }
     
-    public List<MenuPage> listMenuPageByChapterId(int chapterId) {
+    /* ---------- MenuPage ---------- */
+    
+    public List<MenuPage> listMenuPage(int chapterId) {
         List<MenuPage> datas = menuService.listMenuPageByChapterId(chapterId);
         DataUtils.filterDeleted(datas);
+        
+        for (int i=1; i<=datas.size(); i++) {
+            MenuPage p = datas.get(i-1);
+            if (p.getOrdinal() != i) {
+                p.setOrdinal(i);
+                innnerUpdateMenuPage(p);
+            }
+        }
         return datas;
     }
     
-    /* ---------- MenuPage ---------- */
+    private void innnerUpdateMenuPage(MenuPage p) {
+        p.setUpdateTime(System.currentTimeMillis());
+        menuService.updateMenuPage(p);
+    }
+    
     public MenuPage addMenuPage(MenuPage page) {
+        List<MenuPage> pages = listMenuPage(page.getChapterId());
+        for (int i=page.getOrdinal(); i<=pages.size(); i++) {
+            MenuPage p = pages.get(i-1);
+            p.setOrdinal(i+1);
+            innnerUpdateMenuPage(p);
+        }
         long now = System.currentTimeMillis();
         page.setCreatedTime(now);
         page.setUpdateTime(now);
@@ -228,11 +248,6 @@ public class MenuLogic extends BaseLogic {
         menuService.deleteMenuPage(id);
     }
     
-    public List<MenuPage> listMenuPage(int chapterId) {
-        List<MenuPage> pages = menuService.listMenuPageByChapterId(chapterId);
-        DataUtils.filterDeleted(pages);
-        return pages;
-    }
     
     /* ---------- DishTag ---------- */
     public List<DishTag> listAllDisTag() {

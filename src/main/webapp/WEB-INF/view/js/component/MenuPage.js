@@ -16,11 +16,15 @@ define(function (require, exports, module) {
             'click .btn-go': 'onPageGo'
         },
 
-        collection: new MenuPageCollection(),
+        collection: null,
 
         currentIndex: 1,
 
         render: function () {
+            if (!this.collection) {
+                this.collection = new MenuPageCollection();
+            }
+            this.collection.reset();
             this.collection.parentId = this.options.parentId;
             this.collection.fetch({
                 success: function () {

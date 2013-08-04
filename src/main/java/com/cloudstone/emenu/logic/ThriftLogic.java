@@ -66,7 +66,7 @@ public class ThriftLogic extends BaseLogic {
         List<Chapter> chapters = menuLogic.listChapterByMenuId(menuId);
         for (Chapter chapter:chapters) {
             List<com.cloudstone.emenu.data.MenuPage> pages =
-                    menuLogic.listMenuPageByChapterId(chapter.getId());
+                    menuLogic.listMenuPage(chapter.getId());
             for (com.cloudstone.emenu.data.MenuPage page:pages) {
                 List<Dish> dishes = menuLogic.getDishByMenuPageId(page.getId());
                 List<Goods> goodsList = new ArrayList<Goods>();

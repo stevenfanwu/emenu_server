@@ -6,6 +6,7 @@ define(function (require, exports, module) {
 
     var AccordionItem = require('./AccordionItem');
     var MenuPage = require('../../component/MenuPage');
+    var MenuPageCollection = require('../../collection/MenuPageCollection');
 
     var ChapterItem = AccordionItem.extend({
 
@@ -17,12 +18,15 @@ define(function (require, exports, module) {
 
         tmpl: require('./ChapterItem.handlebars'),
 
+        menuPageCollection: new MenuPageCollection(),
+
         renderPage: function (options) {
             options = options || {};
             if (!this.menuPage || options.reset) {
                 delete options.reset;
                 options.parentId = this.model.get('id');
                 this.menuPage = new MenuPage(options);
+                this.menuPage.collection = this.menuPageCollection;
                 this.menuPage.render();
                 this.$('.page-wrap').html(this.menuPage.el);
             }
@@ -48,8 +52,10 @@ define(function (require, exports, module) {
             var MenuPageModel = require('../../model/MenuPageModel');
             var pageModel = new MenuPageModel({});
             pageModel.set('chapterId', this.model.get('id'));
+            this.menuPageCollection.parentId = this.model.get('id');
             var dialog = new Dialog({
-                model: pageModel
+                model: pageModel,
+                menuPageCollection: this.menuPageCollection
             });
             dialog.model.on('saved', function () {
                 var options = {

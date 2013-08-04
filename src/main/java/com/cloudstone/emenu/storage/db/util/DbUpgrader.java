@@ -5,7 +5,6 @@
 package com.cloudstone.emenu.storage.db.util;
 
 import java.io.File;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.ServerConfig;
-import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.ConfigLogic;
 import com.cloudstone.emenu.storage.db.IUserDb;
 
@@ -78,14 +76,5 @@ public class DbUpgrader {
     }
     
     private void onUpgrade(int oldVersion, int newVersion) throws Exception {
-        if (oldVersion==1 && newVersion==2) {
-            List<User> users = userDb.getAll();
-            for (User user:users) {
-                LOG.info("user = " + user.getName());
-                synchronized (this) {
-                    Thread.sleep(5000L);
-                }
-            }
-        }
     }
 }
