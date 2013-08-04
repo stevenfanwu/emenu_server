@@ -74,8 +74,12 @@ public class JsonDb extends SQLiteDb {
         return value;
     }
     
-    public <T> void set(String key, T value) throws SQLiteException {
-        innerSet(key, JsonUtils.toJson(value));
+    public <T> void set(String key, T value) {
+        try {
+            innerSet(key, JsonUtils.toJson(value));
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
     
     private void innerSet(String key, String value) throws SQLiteException {

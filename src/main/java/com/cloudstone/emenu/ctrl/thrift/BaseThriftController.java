@@ -57,12 +57,8 @@ public abstract class BaseThriftController extends BaseController {
             thriftSessionDb.remove(sessionId);
             throw new UserNotLoginException();
         }
-        if (now - session.getActivateTime() > UnitUtils.HOUR) {
-            session.setActivateTime(now);
-            thriftSessionDb.put(sessionId, session);
-        } else {
-            session.setActivateTime(now);
-        }
+        session.setActivateTime(now);
+        thriftSessionDb.put(sessionId, session);
         return session;
     }
     

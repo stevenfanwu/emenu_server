@@ -44,21 +44,7 @@ public class ThriftSessionDb extends JsonDb {
     }
     
     public void put(String sessionId, ThriftSession session) {
-        try {
-            super.set(sessionId, session);
-            new Thread() {
-                @Override
-                public void run() {
-                    for (ThriftSession session:getAllSession()) {
-                        if (System.currentTimeMillis() - session.getActivateTime() > EXPIRE_TIME) {
-                            remove(session.getSessionId());
-                        }
-                    }
-                }
-            }.start();
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        super.set(sessionId, session);
     }
     
     public List<ThriftSession> getAllSession() {
@@ -73,6 +59,11 @@ public class ThriftSessionDb extends JsonDb {
     
     public ThriftSession getLatest(String imei) {
         List<ThriftSession> list = getAllSession();
+        for (ThriftSession s:list) {
+            if (System.currentTimeMillis() - s.getActivateTime() > EXPIRE_TIME) {
+                remove(s.getSessionId());
+            }
+        }
         Collections.sort(list, CMP);
         for (ThriftSession s:list) {
             if (s.getImei().equals(imei)) {
