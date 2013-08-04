@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.logic.DeviceLogic;
 import com.cloudstone.emenu.logic.MenuLogic;
 import com.cloudstone.emenu.logic.OrderLogic;
 import com.cloudstone.emenu.logic.TableLogic;
@@ -44,6 +45,8 @@ public class BaseController {
     protected MenuLogic menuLogic;
     @Autowired
     protected OrderLogic orderLogic;
+    @Autowired
+    protected DeviceLogic deviceLogic;
     
     @Autowired
     protected OrderWraper orderWraper;

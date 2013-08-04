@@ -10,4 +10,5 @@ package com.cloudstone.emenu.constant;
  */
 public class JsonKeyConst {
     public static final String DB_VERSION = "db_version";
+    public static final String PAD_NUM = "pad_num";
 }

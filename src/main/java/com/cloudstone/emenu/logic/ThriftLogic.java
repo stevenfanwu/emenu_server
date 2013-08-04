@@ -266,4 +266,12 @@ public class ThriftLogic extends BaseLogic {
         }
         return goods;
     }
+    
+    public void onPadChanged() {
+        thriftCache.onPadChanged();
+    }
+    
+    public boolean isValidImei(String imei) {
+        return thriftCache.isValidImei(imei);
+    }
 }

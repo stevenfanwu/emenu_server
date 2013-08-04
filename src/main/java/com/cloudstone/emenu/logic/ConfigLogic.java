@@ -22,6 +22,11 @@ public class ConfigLogic extends BaseLogic {
     @Autowired
     private ConfigDb configDb;
     
+    public int getPadNumber() {
+        //TODO
+        return 2;
+    }
+    
     public int getDbVersion() {
         try {
             Integer v = configDb.get(JsonKeyConst.DB_VERSION, Integer.class);

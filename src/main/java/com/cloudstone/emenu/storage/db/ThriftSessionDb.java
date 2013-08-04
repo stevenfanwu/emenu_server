@@ -22,7 +22,7 @@ import com.cloudstone.emenu.util.UnitUtils;
 public class ThriftSessionDb extends JsonDb {
     private static final String TABLE_NAME = "thriftSession";
     
-    private static final long EXPIRE_TIME = 30 * UnitUtils.DAY;
+    public static final long EXPIRE_TIME = 30 * UnitUtils.DAY;
 
     public ThriftSessionDb() {
         super(TABLE_NAME);

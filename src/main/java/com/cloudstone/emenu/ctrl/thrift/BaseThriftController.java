@@ -48,10 +48,15 @@ public abstract class BaseThriftController extends BaseController {
     
     protected ThriftSession authorize(String sessionId) throws UserNotLoginException {
         ThriftSession session = thriftSessionDb.get(sessionId);
+        long now = System.currentTimeMillis();
         if (session == null) {
             throw new UserNotLoginException();
         }
-        long now = System.currentTimeMillis();
+        if (now - session.getActivateTime() > ThriftSessionDb.EXPIRE_TIME
+                || !thriftLogic.isValidImei(session.getImei())) {
+            thriftSessionDb.remove(sessionId);
+            throw new UserNotLoginException();
+        }
         if (now - session.getActivateTime() > UnitUtils.HOUR) {
             session.setActivateTime(now);
             thriftSessionDb.put(sessionId, session);
