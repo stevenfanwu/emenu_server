@@ -46,7 +46,7 @@ public class TableApiController extends BaseApiController {
             sendError(response, HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
-        return tableLogic.update(table);
+        return tableLogic.update(table, null);
     }
     
     @RequestMapping(value="/api/tables/{id:[\\d]+}", method=RequestMethod.DELETE)

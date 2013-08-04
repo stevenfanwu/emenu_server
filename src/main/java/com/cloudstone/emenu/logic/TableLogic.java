@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.service.TableService;
+import com.cloudstone.emenu.storage.db.util.DbTransactionHelper;
 import com.cloudstone.emenu.util.DataUtils;
 
 /**
@@ -33,7 +34,7 @@ public class TableLogic extends BaseLogic {
         if (oldTable != null) {
             table.setId(oldTable.getId());
             table.setCreatedTime(oldTable.getCreatedTime());
-            tableService.update(oldTable);
+            tableService.update(oldTable, null);
         } else {
             table.setCreatedTime(now);
             tableService.add(table);
@@ -48,13 +49,13 @@ public class TableLogic extends BaseLogic {
     }
 
     
-    public Table update(Table table) {
+    public Table update(Table table, DbTransactionHelper trans) {
         Table other = tableService.getByName(table.getName());
         if (other!=null && other.getId()!=table.getId() && !other.isDeleted()) {
             throw new DataConflictException("该餐桌已存在");
         }
         table.setUpdateTime(System.currentTimeMillis());
-        tableService.update(table);
+        tableService.update(table, trans);
         return tableService.get(table.getId());
     }
     

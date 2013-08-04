@@ -24,7 +24,7 @@ public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
     };
     
     @Override
-    protected void init() throws SQLiteException {
+    public void init() throws SQLiteException {
         super.init();
         try {
             if (listAll().size() == 0) {

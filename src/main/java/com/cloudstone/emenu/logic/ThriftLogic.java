@@ -85,7 +85,7 @@ public class ThriftLogic extends BaseLogic {
         }
         Table table = tableLogic.getByName(tableName);
         table.setStatus(Const.TableStatus.OCCUPIED);
-        tableLogic.update(table);
+        tableLogic.update(table, null);
     }
     
     public void emptyTable(String tableName) throws TException {
@@ -95,7 +95,7 @@ public class ThriftLogic extends BaseLogic {
         }
         table.setOrderId(0);
         table.setStatus(Const.TableStatus.EMPTY);
-        tableLogic.update(table);
+        tableLogic.update(table, null);
     }
     
     public Menu getCurrentMenu() {
@@ -211,7 +211,7 @@ public class ThriftLogic extends BaseLogic {
             orderLogic.addOrderDish(r);
         }
         table.setOrderId(orderValue.getId());
-        tableLogic.update(table);
+        tableLogic.update(table, null);
     }
     
     public Order getOrderByTable(String tableName) throws TableEmptyException, TException {

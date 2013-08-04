@@ -11,6 +11,7 @@ import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.PayType;
+import com.cloudstone.emenu.storage.db.util.DbTransactionHelper;
 
 /**
  * @author xuhongfeng
@@ -25,8 +26,9 @@ public interface IOrderService {
     
     public List<PayType> listPayTypes();
     
-    public void addBill(Bill bill);
+    public void addBill(Bill bill, DbTransactionHelper trans);
     public List<Bill> listBills();
     public Bill getBill(int id);
     public Bill getBillByOrderId(int orderId);
+
 }

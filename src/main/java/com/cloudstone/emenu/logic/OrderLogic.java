@@ -94,11 +94,6 @@ public class OrderLogic extends BaseLogic {
     
     public Bill payBill(Bill bill) {
         //TODO transaction for zhuwei
-        try {
-            DbTransactionHelper.getInstance().beginTransaction();
-        } catch (SQLiteException e) {
-            LOG.debug(e.getMessage());
-        }
         if (getBillByOrderId(bill.getOrderId()) != null) {
             throw new DataConflictException("请勿重复提交订单");
         }
@@ -116,15 +111,15 @@ public class OrderLogic extends BaseLogic {
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        orderService.addBill(bill);
+        //Start transaction
+        DbTransactionHelper trans = new DbTransactionHelper();
+        trans.beginTrans();
+        orderService.addBill(bill,trans);
         table.setStatus(TableStatus.EMPTY);
-        tableLogic.update(table);
+        tableLogic.update(table,trans);
         Bill tmpbill = orderService.getBill(bill.getId());
-        try {
-            DbTransactionHelper.getInstance().endTransaction();
-        } catch (SQLiteException e) {
-            LOG.debug(e.getMessage());
-        }
+        trans.commitTrans();
+        //End transaction
         return tmpbill;
     }
     

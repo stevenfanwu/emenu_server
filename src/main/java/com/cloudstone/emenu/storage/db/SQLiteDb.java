@@ -94,19 +94,13 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     private volatile boolean inited = false;
-    protected void init() throws SQLiteException {
-        onCheckCreateTable();
-    }
-    protected SQLiteConnection open() throws SQLiteException {
-        if (!inited) {
+    public void init() throws SQLiteException {
+        if(!inited) {
             inited = true;
-            init();
+            onCheckCreateTable();
         }
-        SQLiteConnection conn = new SQLiteConnection(dataSource.getDbFile());
-        conn.open();
-        return conn;
     }
-    
+
     protected void checkCreateTable(String tableName, String columnDef) throws SQLiteException {
         String sql = String.format(SQL_CREATE, tableName, columnDef);
 //        LOG.info("create table sql: " + sql);
@@ -120,7 +114,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     protected void executeSQL(String sql, StatementBinder binder) throws SQLiteException {
-        SQLiteConnection conn = open();
+        SQLiteConnection conn = dataSource.open(this);
         SQLiteStatement stmt = conn.prepare(sql);
         WRITE_LOCK.lock();
         try {
@@ -155,7 +149,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
         protected R exec(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
-            SQLiteConnection conn = open();
+            SQLiteConnection conn = dataSource.open(SQLiteDb.this);
             SQLiteStatement stmt = conn.prepare(sql);
             try {
                 binder.onBind(stmt);
@@ -258,4 +252,5 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         inited = false;
         this.dataSource = dataSource;
     }
+
 }

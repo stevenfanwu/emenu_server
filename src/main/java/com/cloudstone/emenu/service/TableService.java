@@ -13,6 +13,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.ITableDb;
+import com.cloudstone.emenu.storage.db.util.DbTransactionHelper;
 
 /**
  * @author xuhongfeng
@@ -43,9 +44,9 @@ public class TableService extends BaseService implements ITableService {
 
     
     @Override
-    public void update(Table table) {
+    public void update(Table table, DbTransactionHelper trans) {
         try {
-            tableDb.update(table);
+            tableDb.update(table, trans);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

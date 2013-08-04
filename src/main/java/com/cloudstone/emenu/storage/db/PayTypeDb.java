@@ -29,7 +29,7 @@ public class PayTypeDb extends IdNameDb<PayType> implements IPayTypeDb {
     }
     
     @Override
-    protected void init() throws SQLiteException {
+    public void init() throws SQLiteException {
         super.init();
         try {
             if (getAll().size() == 0) {
