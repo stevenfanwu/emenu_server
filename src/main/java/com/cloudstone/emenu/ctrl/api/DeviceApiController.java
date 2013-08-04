@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Pad;
+import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.exception.BadRequestError;
+import com.cloudstone.emenu.logic.ThriftLogic;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -25,6 +28,8 @@ import com.cloudstone.emenu.util.JsonUtils;
  */
 @Controller
 public class DeviceApiController extends BaseApiController {
+    @Autowired
+    private ThriftLogic thriftLogic;
 
     @RequestMapping(value="/api/pads/{id:[\\d]+}", method=RequestMethod.GET)
     public @ResponseBody Pad getPad(@PathVariable("id") int id) {
@@ -53,6 +58,14 @@ public class DeviceApiController extends BaseApiController {
     
     @RequestMapping(value="/api/pads", method=RequestMethod.GET)
     public @ResponseBody List<Pad> listAllPad() {
-        return deviceLogic.listAllPad();
+        List<Pad> pads = deviceLogic.listAllPad();
+        for (Pad pad:pads) {
+            ThriftSession session = thriftLogic.getLatestSession(pad.getImei());
+            if (session!=null && session.getUser() != null) {
+                session.setUser(userLogic.getUser(session.getUser().getId()));
+            }
+            pad.setSession(session);
+        }
+        return pads;
     }
 }

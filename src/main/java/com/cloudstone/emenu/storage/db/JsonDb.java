@@ -43,8 +43,12 @@ public class JsonDb extends SQLiteDb {
         return json == null ? null : JsonUtils.fromJson(json, clazz);
     }
     
-    public List<String> getAll() throws SQLiteException {
-        return query(SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
+    public List<String> getAll() {
+        try {
+            return query(SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
     
     public void remove(String key) {

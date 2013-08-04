@@ -101,4 +101,14 @@ public class DeviceLogic extends BaseLogic {
         deviceService.deletePad(id);
         thriftLogic.onPadChanged();
     }
+    
+    public Pad getPad(String imei) {
+        List<Pad> pads = listAllPad();
+        for (Pad pad:pads) {
+            if (pad.getImei().equals(imei)) {
+                return pad;
+            }
+        }
+        return null;
+    }
 }

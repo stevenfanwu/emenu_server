@@ -18,6 +18,7 @@ import cn.com.cloudstone.menu.server.thrift.api.Img;
 import cn.com.cloudstone.menu.server.thrift.api.Menu;
 import cn.com.cloudstone.menu.server.thrift.api.MenuPage;
 import cn.com.cloudstone.menu.server.thrift.api.Order;
+import cn.com.cloudstone.menu.server.thrift.api.PadInfo;
 import cn.com.cloudstone.menu.server.thrift.api.TableEmptyException;
 import cn.com.cloudstone.menu.server.thrift.api.TableInfo;
 import cn.com.cloudstone.menu.server.thrift.api.TableOccupiedException;
@@ -29,8 +30,12 @@ import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.DishNote;
 import com.cloudstone.emenu.data.OrderDish;
+import com.cloudstone.emenu.data.Pad;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.data.ThriftSession;
+import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.storage.cache.ThriftCache;
+import com.cloudstone.emenu.storage.db.ThriftSessionDb;
 import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
@@ -49,7 +54,11 @@ public class ThriftLogic extends BaseLogic {
     @Autowired
     private OrderLogic orderLogic;
     @Autowired
+    private DeviceLogic deviceLogic;
+    @Autowired
     private ThriftCache thriftCache;
+    @Autowired
+    private ThriftSessionDb thriftSessionDb;
 
     public TableInfo getTableInfo(String tableName) throws TException {
         Table table = tableLogic.getByName(tableName);
@@ -273,5 +282,24 @@ public class ThriftLogic extends BaseLogic {
     
     public boolean isValidImei(String imei) {
         return thriftCache.isValidImei(imei);
+    }
+    
+    public User getLatestUser(String imei) {
+        ThriftSession s = thriftSessionDb.getLatest(imei);
+        if (s != null) {
+            return s.getUser();
+        }
+        return null;
+    }
+    
+    public ThriftSession getLatestSession(String imei) {
+        return thriftSessionDb.getLatest(imei);
+    }
+    
+    public void submitPadInfo(PadInfo info) {
+        String imei = info.getIMEI();
+        Pad pad = deviceLogic.getPad(imei);
+        pad.setBatteryLevel(info.getBatteryLevel());
+        deviceLogic.updatePad(pad);
     }
 }

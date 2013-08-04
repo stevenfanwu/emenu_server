@@ -107,8 +107,8 @@ public class PadDb extends SQLiteDb implements IPadDb {
             pad.setImei(stmt.columnString(2));
             pad.setDesc(stmt.columnString(3));
             pad.setBatteryLevel(stmt.columnInt(4));
-            pad.setCreatedTime(stmt.columnInt(5));
-            pad.setUpdateTime(stmt.columnInt(6));
+            pad.setCreatedTime(stmt.columnLong(5));
+            pad.setUpdateTime(stmt.columnLong(6));
             pad.setDeleted(stmt.columnInt(7) == 1);
             return pad;
         }

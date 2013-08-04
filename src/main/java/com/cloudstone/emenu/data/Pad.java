@@ -12,6 +12,9 @@ public class Pad extends IdName {
     private String desc;
     private String imei;
     private int batteryLevel;
+    
+    private ThriftSession session;
+    
     public String getDesc() {
         return desc;
     }
@@ -30,6 +33,10 @@ public class Pad extends IdName {
     public void setBatteryLevel(int batteryLevel) {
         this.batteryLevel = batteryLevel;
     }
-    
-    
+    public ThriftSession getSession() {
+        return session;
+    }
+    public void setSession(ThriftSession session) {
+        this.session = session;
+    }
 }

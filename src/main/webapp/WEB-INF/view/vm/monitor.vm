@@ -1,2 +1,14 @@
 #set($mode="operate")
 #set($pageName="Monitor")
+
+#macro (status_nav_item, $tab_name)
+  <li class="tab-$tab_name">
+    <a href="#$tab_name" class="link-$tab_name">$!bodyContent</a>
+  </li>
+#end
+<ul class="nav nav-tabs">
+    #@status_nav_item("pad")平板#end
+</ul>
+
+<div class="monitor-wrap">
+</div>
