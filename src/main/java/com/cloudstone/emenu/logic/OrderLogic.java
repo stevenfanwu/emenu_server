@@ -61,13 +61,6 @@ public class OrderLogic extends BaseLogic {
     }
     
     public void addOrder(Order order) {
-        //TODO Transaction for zhuwei
-        try {
-            DbTransactionHelper.getInstance().beginTransaction();
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-        }
-
         if (orderService.getOrder(order.getId()) != null) {
             throw new DataConflictException("请勿重复下单");
         }
@@ -75,14 +68,6 @@ public class OrderLogic extends BaseLogic {
         order.setUpdateTime(now);
         order.setCreatedTime(now);
         orderService.addOrder(order);
-
-        table.setOrderId(order.getId());
-        tableLogic.update(table);
-        try {
-            DbTransactionHelper.getInstance().endTransaction();
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-        }
     }
     
     public List<Dish> listDishes(int orderId) {
@@ -112,7 +97,7 @@ public class OrderLogic extends BaseLogic {
         try {
             DbTransactionHelper.getInstance().beginTransaction();
         } catch (SQLiteException e) {
-            e.printStackTrace();
+            LOG.debug(e.getMessage());
         }
         if (getBillByOrderId(bill.getOrderId()) != null) {
             throw new DataConflictException("请勿重复提交订单");
@@ -138,7 +123,7 @@ public class OrderLogic extends BaseLogic {
         try {
             DbTransactionHelper.getInstance().endTransaction();
         } catch (SQLiteException e) {
-            e.printStackTrace();
+            LOG.debug(e.getMessage());
         }
         return tmpbill;
     }
