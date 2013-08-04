@@ -11,7 +11,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.constant.JsonKeyConst;
 import com.cloudstone.emenu.constant.ServerConfig;
 import com.cloudstone.emenu.exception.ServerError;
-import com.cloudstone.emenu.storage.db.JsonDb;
+import com.cloudstone.emenu.storage.db.ConfigDb;
 
 /**
  * @author xuhongfeng
@@ -20,11 +20,11 @@ import com.cloudstone.emenu.storage.db.JsonDb;
 @Component
 public class ConfigLogic extends BaseLogic {
     @Autowired
-    private JsonDb jsonDb;
+    private ConfigDb configDb;
     
     public int getDbVersion() {
         try {
-            Integer v = jsonDb.get(JsonKeyConst.DB_VERSION, Integer.class);
+            Integer v = configDb.get(JsonKeyConst.DB_VERSION, Integer.class);
             if (v == null) {
                 return 1;
             }
@@ -35,7 +35,7 @@ public class ConfigLogic extends BaseLogic {
     }
     
     public void setDbVersion(int version) throws SQLiteException {
-        jsonDb.set(JsonKeyConst.DB_VERSION, version);
+        configDb.set(JsonKeyConst.DB_VERSION, version);
     }
     
     public boolean needUpgradeDb() {

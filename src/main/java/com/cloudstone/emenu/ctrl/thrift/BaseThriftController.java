@@ -7,8 +7,6 @@ package com.cloudstone.emenu.ctrl.thrift;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +27,8 @@ import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 import com.cloudstone.emenu.ctrl.BaseController;
 import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.logic.ThriftLogic;
+import com.cloudstone.emenu.storage.db.ThriftSessionDb;
+import com.cloudstone.emenu.util.UnitUtils;
 
 /**
  * @author xuhongfeng
@@ -43,20 +43,22 @@ public abstract class BaseThriftController extends BaseController {
     @Autowired
     protected ThriftLogic thriftLogic;
     
-    //TODO 持久化
-    //TODO session expired
-    protected static final Map<String, ThriftSession> sessionMap = new HashMap<String, ThriftSession>();
+    @Autowired
+    protected ThriftSessionDb thriftSessionDb;
     
     protected ThriftSession authorize(String sessionId) throws UserNotLoginException {
-        //TODO
-//        if (!sessionMap.containsKey(sessionId)) {
-//            throw new UserNotLoginException();
-//        }
-//        ThriftSession session = sessionMap.get(sessionId);
-//        session.setActivateTime(System.currentTimeMillis());
-//        return session;
-        
-        return null;
+        ThriftSession session = thriftSessionDb.get(sessionId);
+        if (session == null) {
+            throw new UserNotLoginException();
+        }
+        long now = System.currentTimeMillis();
+        if (now - session.getActivateTime() > UnitUtils.HOUR) {
+            session.setActivateTime(now);
+            thriftSessionDb.put(sessionId, session);
+        } else {
+            session.setActivateTime(now);
+        }
+        return session;
     }
     
     protected void process(HttpServletRequest request, HttpServletResponse response)

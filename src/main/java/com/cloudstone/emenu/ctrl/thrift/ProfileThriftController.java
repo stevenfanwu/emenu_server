@@ -24,6 +24,7 @@ import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 import cn.com.cloudstone.menu.server.thrift.api.UserType;
 import cn.com.cloudstone.menu.server.thrift.api.WrongUsernameOrPasswordException;
 
+import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.util.ThriftUtils;
@@ -64,7 +65,8 @@ public class ProfileThriftController extends BaseThriftController {
             String sessionId = String.valueOf(ran);
             ThriftSession session = new ThriftSession();
             session.setActivateTime(System.currentTimeMillis());
-            sessionMap.put(sessionId, session);
+            session.setImei(imei);
+            thriftSessionDb.put(sessionId, session);
             
             //build Login
             UserType type = ThriftUtils.getUserType(user);
@@ -74,7 +76,12 @@ public class ProfileThriftController extends BaseThriftController {
 
         @Override
         public boolean logout(String sessionId) throws TException {
-            return sessionMap.remove(sessionId) != null;
+            try {
+                thriftSessionDb.remove(sessionId);
+            } catch (SQLiteException e) {
+                throw new TException(e);
+            }
+            return true;
         }
 
         @Override
