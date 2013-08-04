@@ -22,6 +22,7 @@ import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
+import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -83,6 +84,16 @@ public class MenuApiController extends BaseApiController {
         page = menuLogic.addMenuPage(page);
         sendSuccess(resp, HttpServletResponse.SC_CREATED);
         return page;
+    }
+    
+    @RequestMapping(value="/api/pages/{id:[\\d]+}", method=RequestMethod.PUT)
+    public @ResponseBody MenuPage updateMenuPage(@PathVariable(value="id") int id,
+            @RequestBody String body, HttpServletResponse response) {
+        MenuPage page = JsonUtils.fromJson(body, MenuPage.class);
+        if (page.getId() != id) {
+            throw new BadRequestError();
+        }
+        return menuLogic.updateMenuPage(page);
     }
     
     @RequestMapping(value="/api/pages/{id:[\\d]+}", method=RequestMethod.DELETE)

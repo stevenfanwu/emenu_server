@@ -15,6 +15,7 @@ import com.cloudstone.emenu.data.DishTag;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
+import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.service.MenuService;
 import com.cloudstone.emenu.util.DataUtils;
@@ -245,9 +246,47 @@ public class MenuLogic extends BaseLogic {
     }
     
     public void deleteMenuPage(int id) {
+        MenuPage old = getMenuPage(id);
+        if (old==null || old.isDeleted()) {
+            throw new BadRequestError();
+        }
+        List<MenuPage> pages = listMenuPage(old.getChapterId());
+        for (int i=old.getOrdinal()+1; i<=pages.size(); i++) {
+            MenuPage p = pages.get(i-1);
+            p.setOrdinal(p.getOrdinal()-1);
+            innnerUpdateMenuPage(p);
+        }
         menuService.deleteMenuPage(id);
     }
     
+    public MenuPage getMenuPage(int id) {
+        return menuService.getMenuPage(id);
+    }
+    
+    public MenuPage updateMenuPage(MenuPage page) {
+        MenuPage old = getMenuPage(page.getId());
+        if (old == null) {
+            throw new BadRequestError();
+        }
+        if (old.getOrdinal() != page.getOrdinal()) {
+            List<MenuPage> pages = listMenuPage(page.getChapterId());
+            if (page.getOrdinal() < old.getOrdinal()) {
+                for (int i=page.getOrdinal(); i<=old.getOrdinal()-1; i++) {
+                    MenuPage p = pages.get(i-1);
+                    p.setOrdinal(p.getOrdinal()+1);
+                    innnerUpdateMenuPage(p);
+                }
+            } else {
+                for (int i=old.getOrdinal()+1; i<=page.getOrdinal(); i++) {
+                    MenuPage p = pages.get(i-1);
+                    p.setOrdinal(p.getOrdinal()-1);
+                    innnerUpdateMenuPage(p);
+                }
+            }
+        }
+        innnerUpdateMenuPage(page);
+        return menuService.getMenuPage(page.getId());
+    }
     
     /* ---------- DishTag ---------- */
     public List<DishTag> listAllDisTag() {
