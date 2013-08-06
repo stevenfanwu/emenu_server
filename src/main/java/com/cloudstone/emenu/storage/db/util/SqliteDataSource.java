@@ -26,8 +26,6 @@ public class SqliteDataSource {
 
     private File dbFile;
 
-    private DbTransactionHelper dbTrans;
-
     public File getDbFile() {
         if (dbFile == null) {
             String dbPath = System.getProperty(Const.PARAM_DB_FILE);
@@ -51,22 +49,19 @@ public class SqliteDataSource {
         this.dbFile = dbFile;
     }
 
-    public SQLiteConnection openTrans(SQLiteDb db) throws SQLiteException {
-        db.init();
-        SQLiteConnection conn = dbTrans.getTransConn(getDbFile());
-        return conn;
+    public DbTransaction openTrans() {
+        return new DbTransaction(getDbFile());
     }
 
-    public SQLiteConnection open(SQLiteDb db) throws SQLiteException {
-        if (dbTrans != null && dbTrans.getIsTrans())
-            return openTrans(db);
+    public SQLiteConnection open(SQLiteDb db, DbTransaction trans) throws SQLiteException {
         db.init();
-        SQLiteConnection conn = new SQLiteConnection(getDbFile());
+        SQLiteConnection conn;
+        if (trans != null && trans.getIsTrans())
+            conn = trans.getTransConn(getDbFile());
+        else
+            conn = new SQLiteConnection(getDbFile());
         conn.open();
         return conn;
     }
 
-    public void setDbTrans(DbTransactionHelper trans) {
-        this.dbTrans = trans;
-    }
 }

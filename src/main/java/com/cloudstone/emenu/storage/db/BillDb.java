@@ -14,7 +14,7 @@ import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Bill.BillArchive;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.DbTransactionHelper;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -36,13 +36,12 @@ public class BillDb extends SQLiteDb implements IBillDb {
     }
 
     @Override
-    public void add(Bill bill, DbTransactionHelper trans) throws SQLiteException {
+    public void add(Bill bill, DbTransaction trans) throws SQLiteException {
         bill.setId(genId());
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        this.getDataSource().setDbTrans(trans);
-        executeSQL(SQL_INSERT, new BillBinder(bill));
+        executeSQL(SQL_INSERT, new BillBinder(bill), trans);
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.CreateIndexBuilder;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -67,7 +68,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     public void delete(int id) throws SQLiteException {
         String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE id=?";
-        executeSQL(sql, new IdStatementBinder(id));
+        executeSQL(sql, new IdStatementBinder(id), null);
     }
     
     /* ---------- protected ----------*/
@@ -104,17 +105,17 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     protected void checkCreateTable(String tableName, String columnDef) throws SQLiteException {
         String sql = String.format(SQL_CREATE, tableName, columnDef);
 //        LOG.info("create table sql: " + sql);
-        executeSQL(sql, StatementBinder.NULL);
+        executeSQL(sql, StatementBinder.NULL, null);
     }
     
     protected void checkCreateIndex(String indexName, String tableName, Object... columns) throws SQLiteException {
         CreateIndexBuilder createIndexBuilder = new CreateIndexBuilder(indexName,
                 tableName, columns);
-        executeSQL(createIndexBuilder.build(), StatementBinder.NULL);
+        executeSQL(createIndexBuilder.build(), StatementBinder.NULL, null);
     }
     
-    protected void executeSQL(String sql, StatementBinder binder) throws SQLiteException {
-        SQLiteConnection conn = dataSource.open(this);
+    protected void executeSQL(String sql, StatementBinder binder, DbTransaction trans) throws SQLiteException {
+        SQLiteConnection conn = dataSource.open(this, trans);
         SQLiteStatement stmt = conn.prepare(sql);
         WRITE_LOCK.lock();
         try {
@@ -149,7 +150,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
         protected R exec(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
-            SQLiteConnection conn = dataSource.open(SQLiteDb.this);
+            SQLiteConnection conn = dataSource.open(SQLiteDb.this, null);
             SQLiteStatement stmt = conn.prepare(sql);
             try {
                 binder.onBind(stmt);

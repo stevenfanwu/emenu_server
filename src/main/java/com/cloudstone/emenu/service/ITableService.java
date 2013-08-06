@@ -7,7 +7,7 @@ package com.cloudstone.emenu.service;
 import java.util.List;
 
 import com.cloudstone.emenu.data.Table;
-import com.cloudstone.emenu.storage.db.util.DbTransactionHelper;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 
 /**
  * @author xuhongfeng
@@ -20,5 +20,5 @@ public interface ITableService {
     public Table getByName(String name);
     public List<Table> getAll();
     public void delete(int tableId);
-    public void update(Table table, DbTransactionHelper trans);
+    public void update(Table table, DbTransaction trans);
 }

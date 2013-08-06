@@ -34,12 +34,12 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     @Override
     public void addMenuPage(MenuPage page) throws SQLiteException {
         page.setId(genId());
-        executeSQL(SQL_INSERT, new MenuPageBinder(page));
+        executeSQL(SQL_INSERT, new MenuPageBinder(page), null);
     }
 
     @Override
     public void updateMenuPage(MenuPage page) throws SQLiteException {
-        executeSQL(SQL_UPDATE, new UpdateBinder(page));
+        executeSQL(SQL_UPDATE, new UpdateBinder(page), null);
     }
 
     @Override
