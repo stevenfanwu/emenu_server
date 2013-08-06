@@ -43,6 +43,9 @@ define(function (require, exports, module) {
         },
 
         initItem: function (model, item) {
+            item.on('refreshList', function () {
+                this.refresh();
+            }, this);
         },
 
         resetContent: function () {
@@ -62,6 +65,7 @@ define(function (require, exports, module) {
         doRender: function () {
             BaseView.prototype.render.apply(this, arguments);
             this.items = [];
+            this.preProcessCollection(this.collection);
             this.collection.forEach(function (model) {
                 if (this.filterModel(model)) {
                     this.appendModel(model);
@@ -80,6 +84,9 @@ define(function (require, exports, module) {
                 return;
             }
             this.doRender();
+        },
+
+        preProcessCollection: function (collection) {
         }
         
     });

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Table;
@@ -31,6 +32,11 @@ public class TableApiController extends BaseApiController {
         table = tableLogic.add(table);
         sendSuccess(resp, HttpServletResponse.SC_CREATED);
         return table;
+    }
+
+    @RequestMapping(value="/api/tables/occupied", method=RequestMethod.GET)
+    public @ResponseBody List<Table> getOccupied() {
+        return tableLogic.getOccupied();
     }
 
     @RequestMapping(value="/api/tables", method=RequestMethod.GET)
@@ -53,5 +59,12 @@ public class TableApiController extends BaseApiController {
     public void delete(@PathVariable(value="id") int tableId,
             HttpServletResponse response) {
         tableLogic.delete(tableId);
+    }
+    
+    @RequestMapping(value="/api/tables/change", method=RequestMethod.PUT)
+    public void changeTable(@RequestParam("fromId") int fromId,
+            @RequestParam("toId") int toId
+            ,HttpServletResponse response) {
+        tableLogic.changeTable(fromId, toId);
     }
 }

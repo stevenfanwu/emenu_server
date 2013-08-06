@@ -65,8 +65,9 @@ define(function (require, exports, module) {
 
         onSubmit: function () {
             Dialog.prototype.onSubmit.apply(this, arguments);
+            this.hide();
         }
-        
+
 
     });
     

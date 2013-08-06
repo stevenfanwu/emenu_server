@@ -43,6 +43,9 @@ define(function (require, exports, module) {
         },
 
         doRender: function () {
+            if (!this.model.get('ordinal')) {
+                this.model.set('ordinal', this.options.menuPageCollection.length + 1);
+            }
             EditDialog.prototype.render.apply(this, arguments);
         }
         

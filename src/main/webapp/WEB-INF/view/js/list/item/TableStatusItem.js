@@ -5,16 +5,19 @@ define(function (require, exports, module) {
     "use strict";
 
     var BaseItem = require('./BaseItem');
+    var ChangeTableDialog = require('../../dialog/ChangeTableDialog');
+    var TableUtils = require('../../util/TableUtils');
 
     var TableStatusItem = BaseItem.extend({
         tmpl: require('./TableStatusItem.handlebars'),
 
         tagName: 'li',
 
-        className: 'span2 thumbnail table-status-item-wrap',
+        className: 'span2 thumbnail table-thumbnail',
 
         events: {
-            'click .btn-bill': 'onBill'
+            'click .btn-bill': 'onBill',
+            'click .btn-change': 'onChange'
         },
 
         getRenderData: function () {
@@ -30,7 +33,28 @@ define(function (require, exports, module) {
             if (this.model.get('status') === 0) {
                 evt.preventDefault();
             }
+        },
+
+        onChange: function (evt) {
+            evt.preventDefault();
+            var dialog = new ChangeTableDialog();
+            dialog.show();
+            dialog.on('submit', function (tableModel) {
+                TableUtils.changeTable({
+                    data: {
+                        fromId: this.model.get('id'),
+                        toId: tableModel.get('id')
+                    },
+
+                    success: function () {
+                        dialog.hide();
+                        this.trigger('refreshList');
+                    }.bind(this)
+                }, this);
+            }, this);
+            evt.stopPropagation();
         }
+        
         
     });
     

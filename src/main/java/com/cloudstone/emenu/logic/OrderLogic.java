@@ -118,4 +118,7 @@ public class OrderLogic extends BaseLogic {
     public Bill getBillByOrderId(int orderId) {
         return orderService.getBillByOrderId(orderId);
     }
+    
+    public void changeTable(Table from, Table to) {
+    }
 }
