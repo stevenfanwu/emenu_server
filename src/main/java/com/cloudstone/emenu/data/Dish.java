@@ -20,6 +20,8 @@ public class Dish extends IdName {
     private String desc;
     private String imageId;
     private int status = Const.DishStatus.STATUS_INIT;
+    private String pinyinfull;
+    private String pinyinsimple;
     
     private String uriData;
     
@@ -130,5 +132,21 @@ public class Dish extends IdName {
 
     public void setUriData(String uriData) {
         this.uriData = uriData;
+    }
+
+    public String getPinyinFull() {
+        return pinyinfull;
+    }
+
+    public void setPinyinFull(String pinyinFull) {
+        this.pinyinfull = pinyinFull;
+    }
+
+    public String getPinyinSimple() {
+        return pinyinsimple;
+    }
+
+    public void setPinyinSimple(String pinyinSimple) {
+        this.pinyinsimple = pinyinSimple;
     }
 }
