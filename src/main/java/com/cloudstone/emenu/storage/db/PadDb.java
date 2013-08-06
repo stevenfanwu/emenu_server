@@ -45,12 +45,12 @@ public class PadDb extends SQLiteDb implements IPadDb {
     @Override
     public void add(Pad pad) throws SQLiteException {
         pad.setId(genId());
-        executeSQL(SQL_INSERT, new PadBinder(pad));
+        executeSQL(SQL_INSERT, new PadBinder(pad), null);
     }
 
     @Override
     public void update(Pad pad) throws SQLiteException {
-        executeSQL(SQL_UPDATE, new UpdateBinder(pad));
+        executeSQL(SQL_UPDATE, new UpdateBinder(pad), null);
     }
 
     @Override

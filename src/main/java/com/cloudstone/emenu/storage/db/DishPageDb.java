@@ -114,7 +114,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
                 stmt.bind(3, pos);
                 
             }
-        });
+        }, null);
     }
     
     /* ---------- Inner Class ---------- */

@@ -50,12 +50,12 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     @Override
     public void addChapter(Chapter chapter) throws SQLiteException {
         chapter.setId(genId());
-        executeSQL(SQL_INSERT, new ChapterBinder(chapter));
+        executeSQL(SQL_INSERT, new ChapterBinder(chapter), null);
     }
 
     @Override
     public void updateChapter(Chapter chapter) throws SQLiteException {
-        executeSQL(SQL_UPDATE, new UpdateBinder(chapter));
+        executeSQL(SQL_UPDATE, new UpdateBinder(chapter), null);
     }
 
     @Override
