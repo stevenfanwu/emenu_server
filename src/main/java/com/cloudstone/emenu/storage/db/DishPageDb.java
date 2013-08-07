@@ -106,7 +106,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
         String sql = new UpdateSqlBuilder(TABLE_NAME)
             .appendSetValue(COL_DELETED)
             .appendWhere(ID1).appendWhere(COL_POS).build();
-        executeSQL(sql, new StatementBinder() {
+        executeSQL(null, sql, new StatementBinder() {
             @Override
             public void onBind(SQLiteStatement stmt) throws SQLiteException {
                 stmt.bind(1, 1);
@@ -114,7 +114,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
                 stmt.bind(3, pos);
                 
             }
-        }, null);
+        });
     }
     
     /* ---------- Inner Class ---------- */

@@ -19,6 +19,6 @@ public interface ITableDb extends IDb {
     public Table get(int id) throws SQLiteException;
     public Table getByTableName(String tableName) throws SQLiteException;
     public List<Table> getAll() throws SQLiteException;
-    public Table update(Table table, DbTransaction trans) throws SQLiteException;
+    public Table update(DbTransaction trans, Table table) throws SQLiteException;
     public void delete(int tableId) throws SQLiteException;
 }

@@ -45,9 +45,6 @@ public class OrderLogic extends BaseLogic {
     @Autowired
     private IOrderService orderService;
     
-    @Autowired
-    private SqliteDataSource dataSource;
-    
     public List<OrderDish> listOrderDish(int orderId) {
         List<OrderDish> datas = orderService.listOrderDish(orderId);
         DataUtils.filterDeleted(datas);
@@ -117,15 +114,14 @@ public class OrderLogic extends BaseLogic {
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
         //Start transaction
-        DbTransaction trans = dataSource.openTrans();
-        trans.beginTrans();
+        DbTransaction trans = openTrans();
+        trans.begin();
         orderService.addBill(bill, trans);
         table.setStatus(TableStatus.EMPTY);
-        tableLogic.update(table, trans);
-        Bill tmpbill = orderService.getBill(bill.getId());
-        trans.commitTrans();
+        tableLogic.update(trans, table);
+        trans.commit();
         //End transaction
-        return tmpbill;
+        return orderService.getBill(bill.getId());
     }
     
     public Bill getBillByOrderId(int orderId) {

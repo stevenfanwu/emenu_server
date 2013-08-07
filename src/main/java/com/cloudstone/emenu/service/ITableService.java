@@ -20,5 +20,5 @@ public interface ITableService {
     public Table getByName(String name);
     public List<Table> getAll();
     public void delete(int tableId);
-    public void update(Table table, DbTransaction trans);
+    public void update(DbTransaction trans, Table table);
 }

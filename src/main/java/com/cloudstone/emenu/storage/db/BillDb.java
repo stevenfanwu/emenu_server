@@ -36,12 +36,12 @@ public class BillDb extends SQLiteDb implements IBillDb {
     }
 
     @Override
-    public void add(Bill bill, DbTransaction trans) throws SQLiteException {
+    public void add(DbTransaction trans, Bill bill) throws SQLiteException {
         bill.setId(genId());
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        executeSQL(SQL_INSERT, new BillBinder(bill), trans);
+        executeSQL(null, SQL_INSERT, new BillBinder(bill));
     }
 
     @Override

@@ -50,17 +50,17 @@ public class SqliteDataSource {
     }
 
     public DbTransaction openTrans() {
-        return new DbTransaction(getDbFile());
+        return new DbTransaction(new SQLiteConnection(getDbFile()));
     }
 
-    public SQLiteConnection open(SQLiteDb db, DbTransaction trans) throws SQLiteException {
-        db.init();
+    public SQLiteConnection open(DbTransaction trans) throws SQLiteException {
         SQLiteConnection conn;
-        if (trans != null && trans.getIsTrans())
+        if (trans != null && trans.isBegin())
             conn = trans.getTransConn(getDbFile());
         else
             conn = new SQLiteConnection(getDbFile());
-        conn.open();
+        if(!conn.isOpen())
+            conn.open();
         return conn;
     }
 

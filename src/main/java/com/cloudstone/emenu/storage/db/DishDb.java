@@ -45,7 +45,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     public void add(Dish dish) throws SQLiteException {
         dish.setId(genId());
         DishBinder binder = new DishBinder(dish);
-        executeSQL(SQL_INSERT, binder, null);
+        executeSQL(null, SQL_INSERT, binder);
     }
     
     @Override
@@ -67,7 +67,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     
     @Override
     public void update(Dish dish) throws SQLiteException {
-        executeSQL(SQL_UPDATE, new UpdateBinder(dish), null);
+        executeSQL(null, SQL_UPDATE, new UpdateBinder(dish));
     }
     
     @Override

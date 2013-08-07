@@ -86,7 +86,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
     public Table add(Table table) throws SQLiteException {
         table.setId(genId());
         TableBinder binder = new TableBinder(table);
-        executeSQL(SQL_INSERT, binder, null);
+        executeSQL(null, SQL_INSERT, binder);
         return get(table.getId());
     }
     
@@ -113,9 +113,9 @@ public class TableDb extends SQLiteDb implements ITableDb {
     }
     
     @Override
-    public Table update(Table table, DbTransaction trans) throws SQLiteException {
+    public Table update(DbTransaction trans, Table table) throws SQLiteException {
         String sql = SQL_UPDATE;
-        executeSQL(sql, new UpdateBinder(table), trans);
+        executeSQL(null, sql, new UpdateBinder(table));
         return get(table.getId());
     }
     

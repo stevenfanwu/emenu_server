@@ -30,11 +30,11 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
     
     protected void add(T data) throws SQLiteException {
         data.setId(genId());
-        executeSQL(SQL_INSERT, new IdNameBinder(data), null);
+        executeSQL(null, SQL_INSERT, new IdNameBinder(data));
     }
     
     protected void update(T data) throws SQLiteException {
-        executeSQL(SQL_UPDATE, new UpdateBinder(data), null);
+        executeSQL(null, SQL_UPDATE, new UpdateBinder(data));
     }
     
     protected List<T> getAll() throws SQLiteException {

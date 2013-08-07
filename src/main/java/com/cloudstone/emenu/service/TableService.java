@@ -44,9 +44,9 @@ public class TableService extends BaseService implements ITableService {
 
     
     @Override
-    public void update(Table table, DbTransaction trans) {
+    public void update(DbTransaction trans, Table table) {
         try {
-            tableDb.update(table, trans);
+            tableDb.update(trans, table);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

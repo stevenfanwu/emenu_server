@@ -15,7 +15,7 @@ import com.cloudstone.emenu.storage.db.util.DbTransaction;
  *
  */
 public interface IBillDb {
-    public void add(Bill bill, DbTransaction trans) throws SQLiteException;
+    public void add(DbTransaction trans, Bill bill) throws SQLiteException;
     public List<Bill> listBills() throws SQLiteException;
     public Bill get(int id) throws SQLiteException;
     public Bill getByOrderId(int orderId) throws SQLiteException;

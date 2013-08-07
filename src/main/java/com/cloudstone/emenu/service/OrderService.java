@@ -118,7 +118,7 @@ public class OrderService extends BaseService implements IOrderService {
     @Override
     public void addBill(Bill bill, DbTransaction trans) {
         try {
-            billDb.add(bill, trans);
+            billDb.add(trans, bill);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

@@ -68,7 +68,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     public void delete(int id) throws SQLiteException {
         String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE id=?";
-        executeSQL(sql, new IdStatementBinder(id), null);
+        executeSQL(null, sql, new IdStatementBinder(id));
     }
     
     /* ---------- protected ----------*/
@@ -95,7 +95,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     private volatile boolean inited = false;
-    public void init() throws SQLiteException {
+    protected void init() throws SQLiteException {
         if(!inited) {
             inited = true;
             onCheckCreateTable();
@@ -105,17 +105,18 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     protected void checkCreateTable(String tableName, String columnDef) throws SQLiteException {
         String sql = String.format(SQL_CREATE, tableName, columnDef);
 //        LOG.info("create table sql: " + sql);
-        executeSQL(sql, StatementBinder.NULL, null);
+        executeSQL(null, sql, StatementBinder.NULL);
     }
     
     protected void checkCreateIndex(String indexName, String tableName, Object... columns) throws SQLiteException {
         CreateIndexBuilder createIndexBuilder = new CreateIndexBuilder(indexName,
                 tableName, columns);
-        executeSQL(createIndexBuilder.build(), StatementBinder.NULL, null);
+        executeSQL(null, createIndexBuilder.build(), StatementBinder.NULL);
     }
     
-    protected void executeSQL(String sql, StatementBinder binder, DbTransaction trans) throws SQLiteException {
-        SQLiteConnection conn = dataSource.open(this, trans);
+    protected void executeSQL(DbTransaction trans, String sql, StatementBinder binder) throws SQLiteException {
+        init();
+        SQLiteConnection conn = dataSource.open(trans);
         SQLiteStatement stmt = conn.prepare(sql);
         WRITE_LOCK.lock();
         try {
@@ -150,7 +151,8 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
         protected R exec(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
-            SQLiteConnection conn = dataSource.open(SQLiteDb.this, null);
+            SQLiteDb.this.init();
+            SQLiteConnection conn = dataSource.open(null);
             SQLiteStatement stmt = conn.prepare(sql);
             try {
                 binder.onBind(stmt);

@@ -103,14 +103,14 @@ public class UserDb extends SQLiteDb implements IUserDb {
     @Override
     public User update(User user) throws SQLiteException {
         String sql = SQL_UPDATE;
-        executeSQL(sql, new UpdateBinder(user), null);
+        executeSQL(null, sql, new UpdateBinder(user));
         return get(user.getId());
     }
     
     @Override
     public boolean modifyPassword(int userId, String password)
             throws SQLiteException {
-        executeSQL(SQL_MODIFY_PASSWORD, new ModifyPasswordBinder(userId, password), null);
+        executeSQL(null, SQL_MODIFY_PASSWORD, new ModifyPasswordBinder(userId, password));
         return true;
     }
     
@@ -130,7 +130,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     public User add(User user) throws SQLiteException {
         user.setId(genId());
         UserBinder binder = new UserBinder(user);
-        executeSQL(SQL_INSERT, binder, null);
+        executeSQL(null, SQL_INSERT, binder);
         return get(user.getId());
     }
     

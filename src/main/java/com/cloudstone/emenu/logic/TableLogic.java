@@ -39,13 +39,16 @@ public class TableLogic extends BaseLogic {
         }
         
         //TODO transaction for zhuwei
+        DbTransaction trans = openTrans();
+        trans.begin();
         to.setStatus(from.getStatus());
         to.setOrderId(from.getOrderId());
         from.setStatus(TableStatus.EMPTY);
         from.setOrderId(0);
         
-        update(from, null);
-        update(to, null);
+        update(trans, from);
+        update(trans, to);
+        trans.commit();
     }
     
     public Table add(Table table) {
@@ -57,9 +60,7 @@ public class TableLogic extends BaseLogic {
         table.setUpdateTime(now);
         if (oldTable != null) {
             table.setId(oldTable.getId());
-            tableService.update(table, null);
-            table.setCreatedTime(oldTable.getCreatedTime());
-            tableService.update(oldTable, null);
+            tableService.update(null, table);
         } else {
             table.setCreatedTime(now);
             tableService.add(table);
@@ -85,13 +86,13 @@ public class TableLogic extends BaseLogic {
     }
 
     
-    public Table update(Table table, DbTransaction trans) {
+    public Table update(DbTransaction trans, Table table) {
         Table other = tableService.getByName(table.getName());
         if (other!=null && other.getId()!=table.getId() && !other.isDeleted()) {
             throw new DataConflictException("该餐桌已存在");
         }
         table.setUpdateTime(System.currentTimeMillis());
-        tableService.update(table, trans);
+        tableService.update(trans, table);
         return tableService.get(table.getId());
     }
     
