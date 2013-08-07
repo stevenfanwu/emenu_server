@@ -94,7 +94,14 @@ define(function (require, exports, module) {
         onSuccess: function (evt) {
             window.alert('结账成功');
             window.location = '/home';
+        },
+
+        onSubmit: function (evt) {
+            if (window.confirm('确定结账?')) {
+                BaseForm.prototype.onSubmit.apply(this, arguments);
+            }
         }
+        
     });
     
     return BillForm;

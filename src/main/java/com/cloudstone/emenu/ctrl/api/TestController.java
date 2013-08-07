@@ -33,4 +33,10 @@ public class TestController extends BaseApiController {
         User user = userLogic.getUser(1);
         return JsonUtils.toJson(user);
     }
+    
+    @RequestMapping(value="/test", method=RequestMethod.GET)
+    public String print() {
+        return "test";
+    }
+    
 }

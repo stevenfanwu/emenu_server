@@ -69,6 +69,8 @@
         <property name="loginUrl" value="login" />
         <property name="escapePatterns">
             <list>
+                <value>/test</value>
+                <value>/api/test</value>
                 <value>/upgrading</value>
                 <value>/login</value>
                 <value>/api/login</value>
