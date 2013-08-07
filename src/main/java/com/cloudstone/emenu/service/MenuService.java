@@ -29,6 +29,7 @@ import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
 import com.cloudstone.emenu.storage.db.IDishTagDb;
 import com.cloudstone.emenu.storage.db.IMenuDb;
 import com.cloudstone.emenu.storage.db.IMenuPageDb;
+import com.cloudstone.emenu.util.CnToPinyinUtils;
 import com.cloudstone.emenu.util.DataUtils;
 
 /**
@@ -220,6 +221,7 @@ public class MenuService extends BaseService implements IMenuService {
     @Override
     public void addDish(Dish dish) {
         try {
+            dish.setPinyin(CnToPinyinUtils.cn2Spell(dish.getName()));
             dishDb.add(dish);
         } catch (SQLiteException e) {
             throw new ServerError(e);
