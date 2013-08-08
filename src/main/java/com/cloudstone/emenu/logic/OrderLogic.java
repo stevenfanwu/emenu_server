@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Bill.BillArchive;
@@ -21,7 +22,10 @@ import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.service.IOrderService;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
+import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
 import com.cloudstone.emenu.util.DataUtils;
 
 
@@ -109,9 +113,14 @@ public class OrderLogic extends BaseLogic {
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        orderService.addBill(bill);
+        //Start transaction
+        DbTransaction trans = openTrans();
+        trans.begin();
+        orderService.addBill(bill, trans);
         table.setStatus(TableStatus.EMPTY);
-        tableLogic.update(table);
+        tableLogic.update(trans, table);
+        trans.commit();
+        //End transaction
         return orderService.getBill(bill.getId());
     }
     

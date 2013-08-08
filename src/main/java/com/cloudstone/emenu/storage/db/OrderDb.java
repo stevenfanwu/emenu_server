@@ -26,7 +26,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     public void add(Order order) throws SQLiteException {
         order.setId(genId());
         OrderBinder binder = new OrderBinder(order);
-        executeSQL(SQL_INSERT, binder);
+        executeSQL(null, SQL_INSERT, binder);
     }
     
     @Override

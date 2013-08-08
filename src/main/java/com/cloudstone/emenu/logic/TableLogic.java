@@ -14,6 +14,7 @@ import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.service.TableService;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.CollectionUtils.Tester;
 import com.cloudstone.emenu.util.DataUtils;
@@ -38,13 +39,16 @@ public class TableLogic extends BaseLogic {
         }
         
         //TODO transaction for zhuwei
+        DbTransaction trans = openTrans();
+        trans.begin();
         to.setStatus(from.getStatus());
         to.setOrderId(from.getOrderId());
         from.setStatus(TableStatus.EMPTY);
         from.setOrderId(0);
         
-        update(from);
-        update(to);
+        update(trans, from);
+        update(trans, to);
+        trans.commit();
     }
     
     public Table add(Table table) {
@@ -56,7 +60,7 @@ public class TableLogic extends BaseLogic {
         table.setUpdateTime(now);
         if (oldTable != null) {
             table.setId(oldTable.getId());
-            tableService.update(table);
+            tableService.update(null, table);
         } else {
             table.setCreatedTime(now);
             tableService.add(table);
@@ -82,13 +86,13 @@ public class TableLogic extends BaseLogic {
     }
 
     
-    public Table update(Table table) {
+    public Table update(DbTransaction trans, Table table) {
         Table other = tableService.getByName(table.getName());
         if (other!=null && other.getId()!=table.getId() && !other.isDeleted()) {
             throw new DataConflictException("该餐桌已存在");
         }
         table.setUpdateTime(System.currentTimeMillis());
-        tableService.update(table);
+        tableService.update(trans, table);
         return tableService.get(table.getId());
     }
     

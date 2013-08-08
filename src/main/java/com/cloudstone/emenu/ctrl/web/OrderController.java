@@ -34,7 +34,7 @@ public class OrderController extends BaseWebController {
         Order order = orderLogic.getOrder(table.getOrderId());
         if (order == null) {
             table.setStatus(TableStatus.EMPTY);
-            tableLogic.update(table);
+            tableLogic.update(null, table);
             sendError(resp, HttpServletResponse.SC_PRECONDITION_FAILED);
             return null;
         }

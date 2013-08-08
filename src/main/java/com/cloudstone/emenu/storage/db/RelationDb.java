@@ -61,7 +61,7 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     protected void add(InsertBinder binder) throws SQLiteException {
         int columnCount = 2 + config.columns.length;
         String sql = new InsertSqlBuilder(config.tableName, columnCount, true).build();
-        executeSQL(sql, binder);
+        executeSQL(null, sql, binder);
     }
     
     protected void deleteById2(int id2) throws SQLiteException {
@@ -74,7 +74,7 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     
     private void deleteById(String idName, int id) throws SQLiteException {
         String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE " + idName + "=?";
-        executeSQL(sql, new IdStatementBinder(id));
+        executeSQL(null, sql, new IdStatementBinder(id));
     }
     
     protected List<T> listById1(int id1) throws SQLiteException {

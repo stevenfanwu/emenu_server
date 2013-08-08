@@ -14,6 +14,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -85,7 +86,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
     public Table add(Table table) throws SQLiteException {
         table.setId(genId());
         TableBinder binder = new TableBinder(table);
-        executeSQL(SQL_INSERT, binder);
+        executeSQL(null, SQL_INSERT, binder);
         return get(table.getId());
     }
     
@@ -112,9 +113,9 @@ public class TableDb extends SQLiteDb implements ITableDb {
     }
     
     @Override
-    public Table update(Table table) throws SQLiteException {
+    public Table update(DbTransaction trans, Table table) throws SQLiteException {
         String sql = SQL_UPDATE;
-        executeSQL(sql, new UpdateBinder(table));
+        executeSQL(null, sql, new UpdateBinder(table));
         return get(table.getId());
     }
     
