@@ -163,7 +163,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final String TABLE_NAME = "dish";
     
     private static enum Column {
-        ID("id"), NAME("name"), PINYINFULL("pinyin"),
+        ID("id"), NAME("name"), PINYIN("pinyin"),
         PRICE("price"), MEMBER_PRICE("memberPrice"), UNIT("unit"), SPICY("spicy"),
         SPECIAL_PRICE("specialPrice"), NON_INT("nonInt"), DESC("desc"),
         IMAGE_ID("imageId"), STATUS("status"),
@@ -183,7 +183,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final String COL_DEF = new ColumnDefBuilder()
         .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
         .append(Column.NAME, DataType.TEXT, "NOT NULL")
-        .append(Column.PINYINFULL, DataType.TEXT, "NOT NULL")
+        .append(Column.PINYIN, DataType.TEXT, "NOT NULL")
         .append(Column.PRICE, DataType.REAL, "NOT NULL")
         .append(Column.MEMBER_PRICE, DataType.REAL, "NOT NULL")
         .append(Column.UNIT, DataType.INTEGER, "NOT NULL")
@@ -203,7 +203,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME)
-        .appendSetValue(Column.PINYINFULL)
+        .appendSetValue(Column.PINYIN)
         .appendSetValue(Column.PRICE)
         .appendSetValue(Column.MEMBER_PRICE)
         .appendSetValue(Column.UNIT)
