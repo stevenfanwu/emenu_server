@@ -53,14 +53,9 @@ public class SqliteDataSource {
         return new DbTransaction(new SQLiteConnection(getDbFile()));
     }
 
-    public SQLiteConnection open(DbTransaction trans) throws SQLiteException {
-        SQLiteConnection conn;
-        if (trans != null && trans.isBegin())
-            conn = trans.getTransConn(getDbFile());
-        else
-            conn = new SQLiteConnection(getDbFile());
-        if(!conn.isOpen())
-            conn.open();
+    public SQLiteConnection open() throws SQLiteException {
+        SQLiteConnection conn = new SQLiteConnection(getDbFile());
+        conn.open();
         return conn;
     }
 

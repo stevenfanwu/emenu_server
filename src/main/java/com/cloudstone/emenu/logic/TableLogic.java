@@ -37,15 +37,14 @@ public class TableLogic extends BaseLogic {
         if (to == null || to.getStatus() != TableStatus.EMPTY) {
             throw new BadRequestError();
         }
-        
-        //TODO transaction for zhuwei
+
         DbTransaction trans = openTrans();
         trans.begin();
         to.setStatus(from.getStatus());
         to.setOrderId(from.getOrderId());
         from.setStatus(TableStatus.EMPTY);
         from.setOrderId(0);
-        
+
         update(trans, from);
         update(trans, to);
         trans.commit();

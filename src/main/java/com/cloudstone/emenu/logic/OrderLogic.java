@@ -116,7 +116,7 @@ public class OrderLogic extends BaseLogic {
         //Start transaction
         DbTransaction trans = openTrans();
         trans.begin();
-        orderService.addBill(bill, trans);
+        orderService.addBill(trans, bill);
         table.setStatus(TableStatus.EMPTY);
         tableLogic.update(trans, table);
         trans.commit();

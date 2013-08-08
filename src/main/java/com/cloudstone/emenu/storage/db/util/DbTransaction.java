@@ -19,6 +19,13 @@ public class DbTransaction {
 
     public DbTransaction(SQLiteConnection conn) {
         this.conn = conn;
+    }
+
+    public SQLiteConnection getTransConn() {
+        return conn;
+    }
+
+    public void begin() {
         if (!this.conn.isOpen()) {
             try {
                 this.conn.open();
@@ -26,17 +33,6 @@ public class DbTransaction {
                 throw new ServerError(e);
             }
         }
-    }
-
-    SQLiteConnection getTransConn(File dbFile) {
-        if (conn == null)
-            conn = new SQLiteConnection(dbFile);
-        return conn;
-    }
-
-    public void begin() {
-        if (conn == null)
-            throw new NullPointerException();
         try {
             conn.exec("BEGIN");
             isBegin = true;
@@ -46,8 +42,6 @@ public class DbTransaction {
     }
 
     public void commit() {
-        if (conn == null)
-            throw new NullPointerException();
         try {
             conn.exec("COMMIT");
             isBegin = false;

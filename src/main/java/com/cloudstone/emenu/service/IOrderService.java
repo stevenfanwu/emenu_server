@@ -26,7 +26,7 @@ public interface IOrderService {
     
     public List<PayType> listPayTypes();
     
-    public void addBill(Bill bill, DbTransaction trans);
+    public void addBill(DbTransaction trans, Bill bill);
     public List<Bill> listBills();
     public Bill getBill(int id);
     public Bill getBillByOrderId(int orderId);

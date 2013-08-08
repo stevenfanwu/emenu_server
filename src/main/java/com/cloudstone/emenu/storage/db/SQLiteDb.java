@@ -115,8 +115,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     protected void executeSQL(DbTransaction trans, String sql, StatementBinder binder) throws SQLiteException {
-        init();
-        SQLiteConnection conn = dataSource.open(trans);
+        SQLiteConnection conn = getConnection(trans);
         SQLiteStatement stmt = conn.prepare(sql);
         WRITE_LOCK.lock();
         try {
@@ -151,8 +150,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
         protected R exec(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
-            SQLiteDb.this.init();
-            SQLiteConnection conn = dataSource.open(null);
+            SQLiteConnection conn = getConnection(null);
             SQLiteStatement stmt = conn.prepare(sql);
             try {
                 binder.onBind(stmt);
@@ -256,4 +254,11 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         this.dataSource = dataSource;
     }
 
+    private SQLiteConnection getConnection(DbTransaction trans) throws SQLiteException{
+        init();
+        if(trans != null && trans.isBegin())
+            return trans.getTransConn();
+        else
+            return dataSource.open();
+    }
 }
