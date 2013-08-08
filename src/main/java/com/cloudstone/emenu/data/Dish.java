@@ -20,9 +20,8 @@ public class Dish extends IdName {
     private String desc;
     private String imageId;
     private int status = Const.DishStatus.STATUS_INIT;
-    private String pinyinfull;
-    private String pinyinsimple;
-    
+    private String pinyin;
+
     private String uriData;
     
     public Dish() {
@@ -31,6 +30,7 @@ public class Dish extends IdName {
 
     public Dish(Dish dish) {
         super(dish);
+        setPinyin(dish.getPinyin());
         setPrice(dish.getPrice());
         setMemberPrice(dish.getMemberPrice());
         setUnit(dish.getUnit());
@@ -53,7 +53,7 @@ public class Dish extends IdName {
         dish.setId(0-pos);
         return dish;
     }
-    
+
     public double getPrice() {
         return price;
     }
@@ -134,19 +134,11 @@ public class Dish extends IdName {
         this.uriData = uriData;
     }
 
-    public String getPinyinFull() {
-        return pinyinfull;
+    public String getPinyin() {
+        return pinyin;
     }
 
-    public void setPinyinFull(String pinyinFull) {
-        this.pinyinfull = pinyinFull;
-    }
-
-    public String getPinyinSimple() {
-        return pinyinsimple;
-    }
-
-    public void setPinyinSimple(String pinyinSimple) {
-        this.pinyinsimple = pinyinSimple;
+    public void setPinyin(String pinyin) {
+        this.pinyin = pinyin;
     }
 }
