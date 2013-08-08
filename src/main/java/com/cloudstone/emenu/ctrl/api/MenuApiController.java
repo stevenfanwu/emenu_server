@@ -189,6 +189,23 @@ public class MenuApiController extends BaseApiController {
         return dish;
     }
     
+    @RequestMapping(value="/api/dishes/soldout/{id:[\\id]+}", method=RequestMethod.PUT)
+    public @ResponseBody Dish soldoutDish(@PathVariable(value="id") int dishId,
+            @RequestBody String body, HttpServletResponse response) {
+        Dish dish = JsonUtils.fromJson(body, Dish.class);
+        if (dish.getId() != dishId) {
+            sendError(response, HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
+        return menuLogic.updateDishSoldout(dishId, dish.isSoldout());
+    }
+
+    @RequestMapping(value="/api/dishes/soldoutall", method=RequestMethod.PUT)
+    public void soldoutAllDishes() {
+        menuLogic.updateDishesSoldout();
+        return;
+    }
+
     @RequestMapping(value="/api/dish/tags", method=RequestMethod.GET)
     public @ResponseBody List<DishTag> getAllDishTag() {
         return menuLogic.listAllDishTag();
