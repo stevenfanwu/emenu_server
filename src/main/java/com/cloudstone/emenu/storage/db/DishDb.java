@@ -85,20 +85,19 @@ public class DishDb extends SQLiteDb implements IDishDb {
             
             dish.setId(stmt.columnInt(0));
             dish.setName(stmt.columnString(1));
-            dish.setPinyinFull(CnToPinyinUtils.cn2Spell(stmt.columnString(1)));
-            //dish.setPinyinSimple(CnToPinyinUtils.cn2FirstSpell(stmt.columnString(1)));
-            dish.setPrice(stmt.columnDouble(2));
-            dish.setMemberPrice(stmt.columnDouble(3));
-            dish.setUnit(stmt.columnInt(4));
-            dish.setSpicy(stmt.columnInt(5));
-            dish.setSpecialPrice(SqlUtils.intToBoolean(stmt.columnInt(6)));
-            dish.setNonInt(SqlUtils.intToBoolean(stmt.columnInt(7)));
-            dish.setDesc(stmt.columnString(8));
-            dish.setImageId(stmt.columnString(9));
-            dish.setStatus(stmt.columnInt(10));
-            dish.setCreatedTime(stmt.columnLong(11));
-            dish.setUpdateTime(stmt.columnLong(12));
-            dish.setDeleted(stmt.columnInt(13) == 1);
+            dish.setPinyin(stmt.columnString(2));
+            dish.setPrice(stmt.columnDouble(3));
+            dish.setMemberPrice(stmt.columnDouble(4));
+            dish.setUnit(stmt.columnInt(5));
+            dish.setSpicy(stmt.columnInt(6));
+            dish.setSpecialPrice(SqlUtils.intToBoolean(stmt.columnInt(7)));
+            dish.setNonInt(SqlUtils.intToBoolean(stmt.columnInt(8)));
+            dish.setDesc(stmt.columnString(9));
+            dish.setImageId(stmt.columnString(10));
+            dish.setStatus(stmt.columnInt(11));
+            dish.setCreatedTime(stmt.columnLong(12));
+            dish.setUpdateTime(stmt.columnLong(13));
+            dish.setDeleted(stmt.columnInt(14) == 1);
             
             return dish;
         }
@@ -116,19 +115,19 @@ public class DishDb extends SQLiteDb implements IDishDb {
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, dish.getId());
             stmt.bind(2, dish.getName());
-            stmt.bind(3, dish.getPinyinFull());
-            stmt.bind(5, dish.getPrice());
-            stmt.bind(6, dish.getMemberPrice());
-            stmt.bind(7, dish.getUnit());
-            stmt.bind(8, dish.getSpicy());
-            stmt.bind(9, SqlUtils.booleanToInt(dish.isSpecialPrice()));
-            stmt.bind(10, SqlUtils.booleanToInt(dish.isNonInt()));
-            stmt.bind(11, dish.getDesc());
-            stmt.bind(12, dish.getImageId());
-            stmt.bind(13, dish.getStatus());
-            stmt.bind(14, dish.getCreatedTime());
-            stmt.bind(15, dish.getUpdateTime());
-            stmt.bind(16, dish.isDeleted() ? 1 : 0);
+            stmt.bind(3, dish.getPinyin());
+            stmt.bind(4, dish.getPrice());
+            stmt.bind(5, dish.getMemberPrice());
+            stmt.bind(6, dish.getUnit());
+            stmt.bind(7, dish.getSpicy());
+            stmt.bind(8, SqlUtils.booleanToInt(dish.isSpecialPrice()));
+            stmt.bind(9, SqlUtils.booleanToInt(dish.isNonInt()));
+            stmt.bind(10, dish.getDesc());
+            stmt.bind(11, dish.getImageId());
+            stmt.bind(12, dish.getStatus());
+            stmt.bind(13, dish.getCreatedTime());
+            stmt.bind(14, dish.getUpdateTime());
+            stmt.bind(15, dish.isDeleted() ? 1 : 0);
         }
     }
     
@@ -143,20 +142,20 @@ public class DishDb extends SQLiteDb implements IDishDb {
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, dish.getName());
-            stmt.bind(2, dish.getPinyinFull());
-            stmt.bind(4, dish.getPrice());
-            stmt.bind(5, dish.getMemberPrice());
-            stmt.bind(6, dish.getUnit());
-            stmt.bind(7, dish.getSpicy());
-            stmt.bind(8, SqlUtils.booleanToInt(dish.isSpecialPrice()));
-            stmt.bind(9, SqlUtils.booleanToInt(dish.isNonInt()));
-            stmt.bind(10, dish.getDesc());
-            stmt.bind(11, dish.getImageId());
-            stmt.bind(12, dish.getStatus());
-            stmt.bind(13, dish.getCreatedTime());
-            stmt.bind(14, dish.getUpdateTime());
-            stmt.bind(15, dish.isDeleted() ? 1 : 0);
-            stmt.bind(16, dish.getId());
+            stmt.bind(2, dish.getPinyin());
+            stmt.bind(3, dish.getPrice());
+            stmt.bind(4, dish.getMemberPrice());
+            stmt.bind(5, dish.getUnit());
+            stmt.bind(6, dish.getSpicy());
+            stmt.bind(7, SqlUtils.booleanToInt(dish.isSpecialPrice()));
+            stmt.bind(8, SqlUtils.booleanToInt(dish.isNonInt()));
+            stmt.bind(9, dish.getDesc());
+            stmt.bind(10, dish.getImageId());
+            stmt.bind(11, dish.getStatus());
+            stmt.bind(12, dish.getCreatedTime());
+            stmt.bind(13, dish.getUpdateTime());
+            stmt.bind(14, dish.isDeleted() ? 1 : 0);
+            stmt.bind(15, dish.getId());
         }
     }
     
@@ -164,7 +163,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     private static final String TABLE_NAME = "dish";
     
     private static enum Column {
-        ID("id"), NAME("name"), PINYINFULL("pinyinfull"),
+        ID("id"), NAME("name"), PINYINFULL("pinyin"),
         PRICE("price"), MEMBER_PRICE("memberPrice"), UNIT("unit"), SPICY("spicy"),
         SPECIAL_PRICE("specialPrice"), NON_INT("nonInt"), DESC("desc"),
         IMAGE_ID("imageId"), STATUS("status"),
