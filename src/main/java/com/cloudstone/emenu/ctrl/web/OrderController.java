@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.util.PrinterUtils;
 
 /**
  * @author xuhongfeng
@@ -39,6 +40,7 @@ public class OrderController extends BaseWebController {
             return null;
         }
         model.put("order", orderWraper.wrap(order));
+        model.put("printers", PrinterUtils.listPrinters());
         return sendView("bill", req, resp, model);
     }
 

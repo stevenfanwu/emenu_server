@@ -48,10 +48,6 @@
                 </div>
                 <div class="help-inline error"></div>
             </div>
-            <div class="row">
-                <div class="span1 item-label">打印小票:</div>
-                <input class="span2 item-control" type="checkbox" checked/>
-            </div>
             <div class="input-payType control-group">
                 <div class="row controls">
                     <div class="span1">结账方式:</div>
@@ -65,6 +61,27 @@
                     <div class="span1">备注:</div><input class="span2" type="text" name="remarks"/>
                 </div>
                 <div class="help-inline error"></div>
+            </div>
+            #if ($printers.size() == 0)
+                <div class="alert alert-error">
+                    找不到打印机
+                </div>
+            #else
+                <div class="input-printer control-group">
+                    <div class="row controls">
+                        <div class="span1">打印机:</div>
+                        <select class="span2 item-control">
+                            #foreach($printer in $printers)
+                                <option>$printer</option>
+                            #end
+                        </select>
+                    </div>
+                    <div class="help-inline error"></div>
+                </div>
+            #end
+            <div class="row">
+                <div class="span1 item-label">打印小票:</div>
+                <input class="span2 item-control" type="checkbox" checked/>
             </div>
         </div>
         <div class="span8 well">
