@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.UserSession;
 import com.cloudstone.emenu.logic.UserLogic;
@@ -32,8 +33,6 @@ public class AuthHelper {
     @Autowired
     private UserLogic userLogic;
     
-    //TODO
-    private static final long SPAN_TIME = 30*UnitUtils.MINUTE;
 
     public boolean isLogin(HttpServletRequest req,
             HttpServletResponse resp) {
@@ -72,7 +71,7 @@ public class AuthHelper {
             //check active time
             long now = System.currentTimeMillis();
             Long activeTime = (Long) req.getSession().getAttribute(SESSION_ACTIVE_TIME);
-            if (activeTime==null || (now-activeTime) > SPAN_TIME) {
+            if (activeTime==null || (now-activeTime) > getSpanTime(req)) {
                 return false;
             }
             req.getSession().setAttribute(SESSION_ACTIVE_TIME, now);
@@ -105,5 +104,15 @@ public class AuthHelper {
         RequestUtils.addCookie(resp, COOKIE_USER_ID, String.valueOf(userId));
         
         req.getSession().setAttribute(SESSION_ACTIVE_TIME, System.currentTimeMillis());
+    }
+    
+    private static final long SPAN_WEB = 30*UnitUtils.MINUTE;
+    private static final long SPAN_CLOUD_HAND = UnitUtils.DAY;
+    private long getSpanTime(HttpServletRequest req) {
+        String userAgent = RequestUtils.getUserAgent(req);
+        if (Const.UserAgent.CLOUD_HAND.equals(userAgent)) {
+            return SPAN_CLOUD_HAND;
+        }
+        return SPAN_WEB;
     }
 }

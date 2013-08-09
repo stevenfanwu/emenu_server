@@ -46,4 +46,8 @@ public class RequestUtils {
         cookie.setMaxAge(0);
         resp.addCookie(cookie);
     }
+    
+    public static String getUserAgent(HttpServletRequest req) {
+        return req.getHeader("User-Agent");
+    }
 }
