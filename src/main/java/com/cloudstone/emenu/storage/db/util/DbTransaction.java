@@ -55,9 +55,28 @@ public class DbTransaction {
             isBegin = false;
         } catch (SQLiteException e) {
             throw new ServerError(e);
+        } finally {
+            conn.dispose();
         }
     }
 
+    public void rollBack() {
+        if (!this.conn.isOpen()) {
+            throw new ServerError("conn is not open");
+        }
+        if (!isBegin) {
+            throw new ServerError("trans is not begin");
+        }
+        try {
+            conn.exec("ROLLBACK");
+            isBegin = false;
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        } finally {
+            conn.dispose();
+        }
+    }
+    
     public boolean isBegin() {
         return isBegin;
     }

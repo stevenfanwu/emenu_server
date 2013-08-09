@@ -115,7 +115,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
     @Override
     public Table update(DbTransaction trans, Table table) throws SQLiteException {
         String sql = SQL_UPDATE;
-        executeSQL(null, sql, new UpdateBinder(table));
+        executeSQL(trans, sql, new UpdateBinder(table));
         return get(table.getId());
     }
     

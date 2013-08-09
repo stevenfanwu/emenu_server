@@ -41,7 +41,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        executeSQL(null, SQL_INSERT, new BillBinder(bill));
+        executeSQL(trans, SQL_INSERT, new BillBinder(bill));
     }
 
     @Override

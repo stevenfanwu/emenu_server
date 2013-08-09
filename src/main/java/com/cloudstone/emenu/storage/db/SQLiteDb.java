@@ -124,7 +124,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
             stmt.stepThrough();
         } finally {
             stmt.dispose();
-            conn.dispose();
+            //conn.dispose();
             WRITE_LOCK.unlock();
         }
     }
