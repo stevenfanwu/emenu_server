@@ -22,18 +22,20 @@ public class DbTransaction {
     }
 
     public SQLiteConnection getTransConn() {
+        if (!isBegin)
+            throw new ServerError("trans is not begin");
         return conn;
     }
 
     public void begin() {
-        if (!this.conn.isOpen()) {
-            try {
-                this.conn.open();
-            } catch (SQLiteException e) {
-                throw new ServerError(e);
-            }
+        if (this.conn.isOpen()) {
+            throw new ServerError("conn is already open");
+        }
+        if (isBegin) {
+            throw new ServerError("trans is already begin");
         }
         try {
+            this.conn.open();
             conn.exec("BEGIN");
             isBegin = true;
         } catch (SQLiteException e) {
@@ -42,6 +44,12 @@ public class DbTransaction {
     }
 
     public void commit() {
+        if (!this.conn.isOpen()) {
+            throw new ServerError("conn is not open");
+        }
+        if (!isBegin) {
+            throw new ServerError("trans is not begin");
+        }
         try {
             conn.exec("COMMIT");
             isBegin = false;

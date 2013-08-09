@@ -18,6 +18,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.data.IdName;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.CreateIndexBuilder;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
@@ -254,9 +255,9 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         this.dataSource = dataSource;
     }
 
-    private SQLiteConnection getConnection(DbTransaction trans) throws SQLiteException{
+    private SQLiteConnection getConnection(DbTransaction trans) throws SQLiteException {
         init();
-        if(trans != null && trans.isBegin())
+        if (trans != null)
             return trans.getTransConn();
         else
             return dataSource.open();
