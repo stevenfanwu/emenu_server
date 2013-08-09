@@ -19,6 +19,8 @@ import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.util.JsonUtils;
+import com.cloudstone.emenu.util.PrinterUtils;
+import com.cloudstone.emenu.util.StringUtils;
 
 /**
  * @author xuhongfeng
@@ -44,7 +46,9 @@ public class OrderApiController extends BaseApiController {
     @RequestMapping(value="/api/bills", method=RequestMethod.POST)
     public @ResponseBody Bill payBill(@RequestBody String body, HttpServletResponse response) {
         Bill bill = JsonUtils.fromJson(body, Bill.class);
+        if (!StringUtils.isBlank(bill.getPrinter())) {
+            PrinterUtils.print(bill.getPrinter(), bill);
+        }
         return orderLogic.payBill(bill);
     }
-
 }

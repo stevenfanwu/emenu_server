@@ -22,6 +22,15 @@ public class Bill extends IEntity {
     private String remarks;
     private BillArchive archive;
     
+    //temp
+    private String printer;
+    
+    public String getPrinter() {
+        return printer;
+    }
+    public void setPrinter(String printer) {
+        this.printer = printer;
+    }
     public BillArchive getArchive() {
         return archive;
     }

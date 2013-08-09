@@ -11,6 +11,7 @@ define(function (require, exports, module) {
     var LessThan = require('./validator/LessThan');
     var Text = require('./item/Text');
     var AjaxSelect = require('./item/AjaxSelect');
+    var Select = require('./item/Select');
     var CheckBox = require('./item/CheckBox');
     var BillOrders = require('./item/BillOrders');
 
@@ -87,6 +88,10 @@ define(function (require, exports, module) {
         }, {
             name: 'discountDishIds',
             type: BillOrders
+        }, {
+            name: 'printer',
+            type: Select,
+            el: '.input-printer'
         }],
 
         /* -------------------- Event Listener ----------------------- */
