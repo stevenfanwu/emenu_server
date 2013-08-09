@@ -188,21 +188,21 @@ public class MenuApiController extends BaseApiController {
         sendSuccess(response, HttpServletResponse.SC_CREATED);
         return dish;
     }
-    
-    @RequestMapping(value="/api/dishes/soldout/{id:[\\id]+}", method=RequestMethod.PUT)
-    public @ResponseBody Dish soldoutDish(@PathVariable(value="id") int dishId,
-            @RequestBody String body, HttpServletResponse response) {
-        Dish dish = JsonUtils.fromJson(body, Dish.class);
-        if (dish.getId() != dishId) {
-            sendError(response, HttpServletResponse.SC_BAD_REQUEST);
-            return null;
-        }
-        return menuLogic.updateDishSoldout(dishId, dish.isSoldout());
+
+    @RequestMapping(value = "/api/dishes/{id:[\\id]+}/soldout", method = RequestMethod.PUT)
+    public @ResponseBody Dish soldoutDish(@PathVariable(value = "id") int dishId) {
+        return menuLogic.updateDishSoldout(dishId, true);
     }
 
-    @RequestMapping(value="/api/dishes/soldoutall", method=RequestMethod.PUT)
-    public void soldoutAllDishes() {
+    @RequestMapping(value = "/api/dishes/{id:[\\id]+}/unsoldout", method = RequestMethod.PUT)
+    public @ResponseBody Dish unsoldoutDish(@PathVariable(value = "id") int dishId) {
+        return menuLogic.updateDishSoldout(dishId, false);
+    }
+
+    @RequestMapping(value = "/api/dishes/soldout", method = RequestMethod.PUT)
+    public void soldoutAllDishes(HttpServletResponse response) {
         menuLogic.updateDishesSoldout();
+        sendSuccess(response, HttpServletResponse.SC_OK);
         return;
     }
 
