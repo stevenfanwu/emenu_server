@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Bill;
+import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.service.IOrderService;
@@ -39,23 +40,38 @@ public class TestController extends BaseApiController {
     private SqliteDataSource dataSource;
 
     @RequestMapping(value = "/api/test", method = RequestMethod.GET)
-    public @ResponseBody
-    String test(HttpServletRequest req) {
+    public @ResponseBody String test(HttpServletRequest req) {
         User user = userLogic.getUser(1);
         return JsonUtils.toJson(user);
     }
-    
-    @RequestMapping(value="/test", method=RequestMethod.GET)
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String print() throws Exception {
         String p = PrinterUtils.listPrinters()[0];
         PrinterUtils.print(p, "");
         return "test";
     }
-    
 
-    @RequestMapping(value = "/api/testdb", method = RequestMethod.GET)
-    public @ResponseBody
-    Bill testPayBill(HttpServletRequest req) {
+    @RequestMapping(value = "/api/testdish", method = RequestMethod.GET)
+    public @ResponseBody Dish testDish(HttpServletRequest req) {
+        Dish dish = new Dish();
+        dish.setCreatedTime(199999);
+        dish.setUpdateTime(122333333);
+        dish.setId(2);
+        dish.setName("ahehe");
+        dish.setPrice(10d);
+        dish.setUnit(1);
+        dish.setSpicy(0);
+        dish.setDesc("adada");
+        dish.setImageId("12");
+        dish.setSoldout(false);
+        menuLogic.addDish(dish);
+        Dish dish2 = menuLogic.updateDishSoldout(1, true);
+        return dish2;
+    }
+
+    @RequestMapping(value = "/api/testtrans", method = RequestMethod.GET)
+    public @ResponseBody Bill testTrans(HttpServletRequest req) {
         Bill bill = new Bill();
         bill.setCost(10.0d);
         long now = System.currentTimeMillis();
@@ -63,7 +79,9 @@ public class TestController extends BaseApiController {
         bill.setUpdateTime(now);
         bill.setId(123);
         bill.setOrderId(231);
-        bill.setDiscountDishIds(new int[]{1,3,5});
+        bill.setDiscountDishIds(new int[] {
+                1, 3, 5
+        });
         bill.setDiscount(3);
         bill.setPayType(0);
         bill.setDeleted(false);
@@ -74,21 +92,8 @@ public class TestController extends BaseApiController {
         DbTransaction trans = dataSource.openTrans();
         trans.begin();
         orderService.addBill(trans, bill);
-        Bill bill2 = new Bill();
-        bill2.setCost(10.0d);
-        now = System.currentTimeMillis();
-        bill2.setCreatedTime(now);
-        bill2.setUpdateTime(now);
-        bill2.setId(123);
-        bill2.setOrderId(231);
-        bill2.setDiscountDishIds(new int[]{1,3,5});
-        bill2.setDiscount(3);
-        bill2.setPayType(0);
-        bill2.setDeleted(false);
-        bill2.setInvoice(false);
-        orderService.addBill(trans, bill2);
-        
         trans.commit();
+        trans.close();
         return new Bill();
     }
 }
