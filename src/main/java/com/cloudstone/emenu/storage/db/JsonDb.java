@@ -53,7 +53,7 @@ public class JsonDb extends SQLiteDb {
     
     public void remove(String key) {
         try {
-            executeSQL(SQL_DELETE, new KeyBinder(key));
+            executeSQL(null, SQL_DELETE, new KeyBinder(key));
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
@@ -83,7 +83,7 @@ public class JsonDb extends SQLiteDb {
     }
     
     private void innerSet(String key, String value) throws SQLiteException {
-        executeSQL(SQL_REPLACE, new ReplaceBinder(key, value));
+        executeSQL(null, SQL_REPLACE, new ReplaceBinder(key, value));
         cache.put(key, value);
     }
 

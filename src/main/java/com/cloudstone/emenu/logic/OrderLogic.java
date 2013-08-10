@@ -22,6 +22,7 @@ import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.service.IOrderService;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
 
 
@@ -109,9 +110,14 @@ public class OrderLogic extends BaseLogic {
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        orderService.addBill(bill);
+        //Start transaction
+        DbTransaction trans = openTrans();
+        trans.begin();
+        orderService.addBill(trans, bill);
         table.setStatus(TableStatus.EMPTY);
-        tableLogic.update(table);
+        tableLogic.update(trans, table);
+        trans.commit();
+        //End transaction
         return orderService.getBill(bill.getId());
     }
     

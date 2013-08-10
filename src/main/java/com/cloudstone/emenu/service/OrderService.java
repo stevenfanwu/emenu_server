@@ -21,6 +21,7 @@ import com.cloudstone.emenu.storage.db.IBillDb;
 import com.cloudstone.emenu.storage.db.IOrderDb;
 import com.cloudstone.emenu.storage.db.IOrderDishDb;
 import com.cloudstone.emenu.storage.db.IPayTypeDb;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
 
 /**
@@ -115,9 +116,9 @@ public class OrderService extends BaseService implements IOrderService {
     }
 
     @Override
-    public void addBill(Bill bill) {
+    public void addBill(DbTransaction trans, Bill bill) {
         try {
-            billDb.add(bill);
+            billDb.add(trans, bill);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
