@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.util.JsonUtils;
+import com.cloudstone.emenu.util.PrinterUtils;
 
 /**
  * 
@@ -35,7 +36,9 @@ public class TestController extends BaseApiController {
     }
     
     @RequestMapping(value="/test", method=RequestMethod.GET)
-    public String print() {
+    public String print() throws Exception {
+        String p = PrinterUtils.listPrinters()[0];
+        PrinterUtils.print(p, "");
         return "test";
     }
     

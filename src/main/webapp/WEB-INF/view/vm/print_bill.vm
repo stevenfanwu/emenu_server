@@ -1,0 +1,14 @@
+订单号: $bill.id
+日期:  $Utils.formatDate($bill.createdTime)
+收银员: $user.realName
+
+-----------------------------
+菜品\t金额
+#foreach($dish in $dishes)
+$dish.name\t$dish.price
+#end
+
+-----------------------------
+
+
+

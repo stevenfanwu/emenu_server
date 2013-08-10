@@ -87,6 +87,7 @@ public class Bill extends IEntity {
     }
     
     public static class BillArchive {
+        //TODO OrderVO
         private Order order;
         private Table table;
         private List<Dish> dishes;
