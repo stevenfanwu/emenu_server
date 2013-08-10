@@ -98,6 +98,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     protected void init() throws SQLiteException {
         if(!inited) {
             inited = true;
+            LOG.info("init ===================== " + getClass().getSimpleName());
             onCheckCreateTable();
         }
     }
@@ -123,7 +124,9 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
             stmt.stepThrough();
         } finally {
             stmt.dispose();
-            //conn.dispose();
+            if (trans == null) {
+                conn.dispose();
+            }
             WRITE_LOCK.unlock();
         }
     }
@@ -255,7 +258,9 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
 
     private SQLiteConnection getConnection(DbTransaction trans) throws SQLiteException {
-        init();
+        if (!inited) {
+            init();
+        }
         if (trans != null)
             return trans.getTransConn();
         else

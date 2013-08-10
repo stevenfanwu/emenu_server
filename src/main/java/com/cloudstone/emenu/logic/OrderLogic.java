@@ -13,17 +13,23 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.Bill.BillArchive;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.exception.PreconditionFailedException;
 import com.cloudstone.emenu.service.IOrderService;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
+import com.cloudstone.emenu.util.PrinterUtils;
+import com.cloudstone.emenu.util.StringUtils;
+import com.cloudstone.emenu.util.VelocityRender;
+import com.cloudstone.emenu.wrap.OrderWraper;
 
 
 /**
@@ -40,7 +46,13 @@ public class OrderLogic extends BaseLogic {
     private MenuLogic menuLogic;
     
     @Autowired
+    protected OrderWraper orderWraper;
+    
+    @Autowired
     private IOrderService orderService;
+    
+    @Autowired
+    private VelocityRender velocityRender;
     
     public List<OrderDish> listOrderDish(int orderId) {
         List<OrderDish> datas = orderService.listOrderDish(orderId);
@@ -91,8 +103,8 @@ public class OrderLogic extends BaseLogic {
         return datas;
     }
     
-    public Bill payBill(Bill bill) {
-        //TODO transaction for zhuwei
+    public Bill payBill(Bill bill, User user) {
+        
         if (getBillByOrderId(bill.getOrderId()) != null) {
             throw new DataConflictException("请勿重复提交订单");
         }
@@ -104,20 +116,32 @@ public class OrderLogic extends BaseLogic {
         if (table == null || table.getStatus() != TableStatus.OCCUPIED) {
             throw new BadRequestError();
         }
-        List<Dish> dishes = listDishes(order.getId());
-        BillArchive archive = BillArchive.build(order, table, dishes);
-        bill.setArchive(archive);
+        OrderVO orderVO = orderWraper.wrap(order);
+        bill.setOrder(orderVO);
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
         //Start transaction
         DbTransaction trans = openTrans();
         trans.begin();
-        orderService.addBill(trans, bill);
-        table.setStatus(TableStatus.EMPTY);
-        tableLogic.update(trans, table);
-        trans.commit();
-        //End transaction
+        try {
+            orderService.addBill(trans, bill);
+            table.setStatus(TableStatus.EMPTY);
+            tableLogic.update(trans, table);
+            
+            if (!StringUtils.isBlank(bill.getPrinter())) {
+                try {
+                    PrinterUtils.print(bill.getPrinter(), velocityRender.renderBill(bill, user));
+                } catch (Exception e) {
+                    throw new PreconditionFailedException("打印失败", e);
+                }
+            }
+            
+            trans.commit();
+            //End transaction
+        } finally {
+            trans.close();
+        }
         return orderService.getBill(bill.getId());
     }
     

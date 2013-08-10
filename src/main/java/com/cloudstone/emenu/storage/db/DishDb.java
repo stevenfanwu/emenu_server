@@ -200,7 +200,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .append(Column.SOLDOUT, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 15).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 16).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();

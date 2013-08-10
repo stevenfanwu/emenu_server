@@ -53,9 +53,11 @@ public class DbTransaction {
             isBegin = false;
         } catch (SQLiteException e) {
             throw new ServerError(e);
-        } finally {
-            conn.dispose();
         }
+    }
+    
+    public void close() {
+        conn.dispose();
     }
 
     public void rollBack() {

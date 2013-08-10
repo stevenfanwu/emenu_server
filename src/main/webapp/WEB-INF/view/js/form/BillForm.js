@@ -94,6 +94,15 @@ define(function (require, exports, module) {
             el: '.input-printer'
         }],
 
+        getFormData: function () {
+            var data = BaseForm.prototype.getFormData.apply(this, arguments);
+            if (!this.$('.cb-printer').is(':checked')) {
+                data.printer = "";
+            }
+            return data;
+        },
+        
+
         /* -------------------- Event Listener ----------------------- */
         
         onSuccess: function (evt) {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.Bill.BillArchive;
+import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -70,7 +70,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
     private static enum Column {
         ID("id"), ORDER_ID("orderId"), COST("cost"), DISCOUNT("discount"),
         TIP("tip"), INVOICE("invoice"), DISCOUNT_DISH_IDS("discountDishIds"),
-        PAY_TYPE("payType"), REMARKS("remarks"), ARCHIVE("archive"),
+        PAY_TYPE("payType"), REMARKS("remarks"), ORDER("`order`"),
         CREATED_TIME("createdTime"), UPDATE_TIME("update_time"), DELETED("deleted");
         
         private final String str;
@@ -93,7 +93,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
         .append(Column.DISCOUNT_DISH_IDS, DataType.TEXT, "NOT NULL")
         .append(Column.PAY_TYPE, DataType.INTEGER, "NOT NULL")
         .append(Column.REMARKS, DataType.TEXT, "NOT NULL")
-        .append(Column.ARCHIVE, DataType.TEXT, "NOT NULL")
+        .append(Column.ORDER, DataType.TEXT, "NOT NULL")
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
@@ -112,8 +112,8 @@ public class BillDb extends SQLiteDb implements IBillDb {
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             String archive = "";
-            if (bill.getArchive() != null) {
-                archive = JsonUtils.toJson(bill.getArchive());
+            if (bill.getOrder() != null) {
+                archive = JsonUtils.toJson(bill.getOrder());
             }
             stmt.bind(1, bill.getId());
             stmt.bind(2, bill.getOrderId());
@@ -147,8 +147,8 @@ public class BillDb extends SQLiteDb implements IBillDb {
             bill.setRemarks(stmt.columnString(8));
             String archive = stmt.columnString(9);
             if (!StringUtils.isBlank(archive)) {
-                BillArchive a = JsonUtils.fromJson(archive, BillArchive.class);
-                bill.setArchive(a);
+                OrderVO order = JsonUtils.fromJson(archive, OrderVO.class);
+                bill.setOrder(order);
             }
             bill.setCreatedTime(stmt.columnLong(10));
             bill.setUpdateTime(stmt.columnLong(11));

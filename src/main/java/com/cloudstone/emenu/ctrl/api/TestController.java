@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.Bill.BillArchive;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.service.IOrderService;
@@ -67,7 +66,6 @@ public class TestController extends BaseApiController {
         bill.setDiscountDishIds(new int[]{1,3,5});
         bill.setDiscount(3);
         bill.setPayType(0);
-        bill.setArchive(new BillArchive());
         bill.setDeleted(false);
         bill.setInvoice(false);
         bill.setRemarks("sa");
@@ -86,7 +84,6 @@ public class TestController extends BaseApiController {
         bill2.setDiscountDishIds(new int[]{1,3,5});
         bill2.setDiscount(3);
         bill2.setPayType(0);
-        bill2.setArchive(new BillArchive());
         bill2.setDeleted(false);
         bill2.setInvoice(false);
         orderService.addBill(trans, bill2);

@@ -78,11 +78,11 @@
                     </div>
                     <div class="help-inline error"></div>
                 </div>
+                <div class="row">
+                    <div class="span1 item-label">打印小票:</div>
+                    <input class="span2 item-control cb-printer" type="checkbox" checked/>
+                </div>
             #end
-            <div class="row">
-                <div class="span1 item-label">打印小票:</div>
-                <input class="span2 item-control" type="checkbox" checked/>
-            </div>
         </div>
         <div class="span8 well">
             <table class="table table-striped table-hover table-dish">

@@ -14,7 +14,8 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.web.velocitytool.Utils;
 
 /**
  * @author xuhongfeng
@@ -24,12 +25,20 @@ import com.cloudstone.emenu.data.Dish;
 public class VelocityRender {
     @Autowired
     private VelocityConfigurer velocityConfigurer;
+    @Autowired
+    private Utils utils;
     
-    public String renderBill(Bill bill) {
+    public String renderBill(Bill bill, User user) {
         VelocityEngine engine = velocityConfigurer.getVelocityEngine();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("bill", bill);
-        model.put("dishes", new Dish[0]);
+        model.put("dishes", bill.getOrder().getDishes());
+        model.put("Utils", utils);
+        String userName = user.getRealName();
+        if (userName == null) {
+            userName = "";
+        }
+        model.put("userName", userName);
         return VelocityEngineUtils.
                 mergeTemplateIntoString(engine, "print_bill.vm", "UTF-8", model);
     }

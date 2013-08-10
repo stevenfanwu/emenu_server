@@ -97,6 +97,7 @@ define(function (require, exports, module) {
         },
 
         doSubmit: function () {
+            this.model.set(this.getFormData());
             this.model.save({}, {
                 success: function (model, response, options) {
                     this.onSuccess(response);

@@ -1,14 +1,19 @@
 订单号: $bill.id
 日期:  $Utils.formatDate($bill.createdTime)
-收银员: $user.realName
+收银员: $userName
 
 -----------------------------
-菜品\t金额
+菜品	数量*单价	金额
 #foreach($dish in $dishes)
-$dish.name\t$dish.price
+$dish.name	$dish.number*$dish.price	$dish.totalCost
 #end
 
 -----------------------------
+
+总价: $bill.cost
+
+
+
 
 
 

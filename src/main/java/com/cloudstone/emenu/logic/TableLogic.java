@@ -40,14 +40,18 @@ public class TableLogic extends BaseLogic {
 
         DbTransaction trans = openTrans();
         trans.begin();
-        to.setStatus(from.getStatus());
-        to.setOrderId(from.getOrderId());
-        from.setStatus(TableStatus.EMPTY);
-        from.setOrderId(0);
-
-        update(trans, from);
-        update(trans, to);
-        trans.commit();
+        try {
+            to.setStatus(from.getStatus());
+            to.setOrderId(from.getOrderId());
+            from.setStatus(TableStatus.EMPTY);
+            from.setOrderId(0);
+    
+            update(trans, from);
+            update(trans, to);
+            trans.commit();
+        } finally {
+            trans.close();
+        }
     }
     
     public Table add(Table table) {
