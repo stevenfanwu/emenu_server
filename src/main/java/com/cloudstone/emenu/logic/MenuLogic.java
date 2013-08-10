@@ -20,6 +20,7 @@ import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.exception.DbNotFoundException;
 import com.cloudstone.emenu.service.IMenuService;
 import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
 import com.cloudstone.emenu.util.CollectionUtils;
@@ -174,7 +175,26 @@ public class MenuLogic extends BaseLogic {
         }
         return dish;
     }
-    
+
+    public Dish updateDishSoldout(int id, boolean soldout) {
+        Dish dish = menuService.getDish(id);
+        if (dish == null || dish.isDeleted()) {
+            throw new DbNotFoundException("没有这个菜或者这个菜已经被删除了");
+        }
+        dish.setSoldout(soldout);
+        menuService.updateDish(dish);
+        return getDish(dish.getId(), true);
+    }
+
+    public void updateDishesSoldout() {
+        List<Dish> dishes = menuService.getAllDish();
+        DataUtils.filterDeleted(dishes);
+        for (Dish dish : dishes) {
+            dish.setSoldout(true);
+            menuService.updateDish(dish);
+        }
+    }
+
     /* ---------- chapter ---------- */
     public Chapter addChapter(Chapter chapter) {
         Chapter old = menuService.getChapterByName(chapter.getName());

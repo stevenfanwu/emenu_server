@@ -22,7 +22,6 @@ import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.SqlUtils;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
-import com.cloudstone.emenu.util.CnToPinyinUtils;
 
 /**
  * @author xuhongfeng
@@ -98,7 +97,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             dish.setCreatedTime(stmt.columnLong(12));
             dish.setUpdateTime(stmt.columnLong(13));
             dish.setDeleted(stmt.columnInt(14) == 1);
-            
+            dish.setSoldout(stmt.columnInt(15) == 1);
             return dish;
         }
     };
@@ -128,6 +127,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(13, dish.getCreatedTime());
             stmt.bind(14, dish.getUpdateTime());
             stmt.bind(15, dish.isDeleted() ? 1 : 0);
+            stmt.bind(16, dish.isSoldout() ? 1 : 0);
         }
     }
     
@@ -155,7 +155,8 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(12, dish.getCreatedTime());
             stmt.bind(13, dish.getUpdateTime());
             stmt.bind(14, dish.isDeleted() ? 1 : 0);
-            stmt.bind(15, dish.getId());
+            stmt.bind(15, dish.isSoldout() ? 1 : 0);
+            stmt.bind(16, dish.getId());
         }
     }
     
@@ -167,7 +168,8 @@ public class DishDb extends SQLiteDb implements IDishDb {
         PRICE("price"), MEMBER_PRICE("memberPrice"), UNIT("unit"), SPICY("spicy"),
         SPECIAL_PRICE("specialPrice"), NON_INT("nonInt"), DESC("desc"),
         IMAGE_ID("imageId"), STATUS("status"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"), DELETED("deleted"),
+        SOLDOUT("soldout");
         
         private final String str;
         private Column(String str) {
@@ -196,6 +198,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+        .append(Column.SOLDOUT, DataType.INTEGER, "NOT NULL")
         .build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 15).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
@@ -216,6 +219,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .appendSetValue(Column.CREATED_TIME)
         .appendSetValue(Column.UPDATE_TIME)
         .appendSetValue(Column.DELETED)
+        .appendSetValue(Column.SOLDOUT)
         .appendWhereId()
         .build();
 }

@@ -21,6 +21,7 @@ public class Dish extends IdName {
     private String imageId;
     private int status = Const.DishStatus.STATUS_INIT;
     private String pinyin;
+    private boolean soldout = false;
 
     private String uriData;
     
@@ -41,6 +42,7 @@ public class Dish extends IdName {
         setImageId(dish.getImageId());
         setStatus(dish.getStatus());
         setUriData(dish.getUriData());
+        setSoldout(dish.isSoldout());
     }
 
     /**
@@ -140,5 +142,13 @@ public class Dish extends IdName {
 
     public void setPinyin(String pinyin) {
         this.pinyin = pinyin;
+    }
+
+    public boolean isSoldout() {
+        return soldout;
+    }
+
+    public void setSoldout(boolean soldout) {
+        this.soldout = soldout;
     }
 }
