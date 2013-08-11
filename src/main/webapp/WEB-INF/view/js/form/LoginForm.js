@@ -31,15 +31,14 @@ define(function (require, exports, module) {
 
         doSubmit: function () {
             this.ajaxSubmit({
-                url: '/api/login'
+                url: '/api/login',
+                statusCode: {
+                    401: function () {
+                        this.resetItems();
+                        this.findItemByName('password').showError('用户名或密码错误');
+                    }.bind(this)
+                }
             });
-        },
-
-        onFailed: function (xhr) {
-            if (xhr.status === 401) {
-                this.resetItems();
-                this.findItemByName('password').showError('用户名或密码错误');
-            }
         },
 
         onSuccess: function () {

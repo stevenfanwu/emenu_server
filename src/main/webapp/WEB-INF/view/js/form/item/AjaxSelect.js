@@ -29,7 +29,7 @@ define(function (require, exports, module) {
 
         getValue: function () {
             if (this.wrapId) {
-                var name = Select.prototype.getValue.apply(this, arguments);
+                var name = this.getLabel();
                 var id = null;
                 this.collection.toJSON().some(function (item) {
                     if (item.name === name) {
@@ -40,6 +40,10 @@ define(function (require, exports, module) {
                 }, this);
                 return id;
             }
+            return this.getLabel();
+        },
+
+        getLabel: function () {
             return Select.prototype.getValue.apply(this, arguments);
         },
 

@@ -17,9 +17,17 @@ define(function (require, exports, module) {
         var error = options.error;
         options.error = function (xhr) {
             var status = xhr.status;
+            if (options.statusCode && options.statusCode[String(status)]) {
+                options.statusCode[String(status)].call(this);
+                return;
+            }
             if (status === 500 || status === 412 || status === 409) {
-                var resp = JSON.parse(xhr.responseText);
-                window.alert(resp.message);
+                if (status === 500 && !xhr.responseText) {
+                    window.alert("服务器错误");
+                } else {
+                    var resp = JSON.parse(xhr.responseText);
+                    window.alert(resp.message);
+                }
             } else if (status === 401) {
                 window.alert('长时间未操作，请重新登陆');
                 window.location = '/login';

@@ -7,9 +7,7 @@
         <a class="brand" href="/home">CloudMenu</a>
         <ul class="nav">
             #@mode_tab("operate")运营模式#end
-            #if ($loginUser.type > 0)
-                #@mode_tab("admin")管理模式#end
-            #end
+            #@mode_tab("admin")管理模式#end
         </ul>
         <span class="pull-right wrap-logout">
             欢迎你 $loginUser.name,

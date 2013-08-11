@@ -111,7 +111,8 @@ define(function (require, exports, module) {
         },
 
         onSubmit: function (evt) {
-            if (window.confirm('确定结账?')) {
+            var payType = this.findItemByName('payType').getLabel();
+            if (window.confirm('是否' + payType + '结账?')) {
                 BaseForm.prototype.onSubmit.apply(this, arguments);
             }
         }

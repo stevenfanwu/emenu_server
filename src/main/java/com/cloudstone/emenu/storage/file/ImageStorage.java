@@ -6,8 +6,6 @@ package com.cloudstone.emenu.storage.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.cloudstone.emenu.exception.HttpStatusError;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.util.ImageUtils;
 import com.cloudstone.emenu.util.MD5Utils;
 
@@ -28,8 +27,6 @@ import com.cloudstone.emenu.util.MD5Utils;
 @Repository
 public class ImageStorage extends FileStorage {
     private static final Logger LOG = LoggerFactory.getLogger(ImageStorage.class);
-    
-    private static final Pattern PATTERN_URI_DATA = Pattern.compile("data:image/(\\w+);base64,(.*)");
     
     public File getImageDir() {
         File root = getCloudstoneDataDir();
@@ -42,10 +39,15 @@ public class ImageStorage extends FileStorage {
     
     
     public String saveImage(String uriData) throws IOException {
-        Matcher m = PATTERN_URI_DATA.matcher(uriData);
-        m.matches();
-        String extension = m.group(1);
-        String base64 = m.group(2);
+        String prefix = uriData.substring(0, 25);
+        if (!prefix.startsWith("data:image/")) {
+            throw new ServerError("uriData not match");
+        }
+        int end = prefix.indexOf(";base64,");
+        String extension = prefix.substring(11, end);
+        LOG.info("extension = " + extension);
+        LOG.info("ttt = " + prefix.substring(end, end+8));
+        String base64 = uriData.substring(end + 8, uriData.length());
         byte[] bytes = Base64.decodeBase64(base64);
         return saveImage(bytes, extension);
     }

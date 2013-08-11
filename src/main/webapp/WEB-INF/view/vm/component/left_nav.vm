@@ -18,6 +18,8 @@
         ## #@nav_item("Member")会员管理#end
         #@nav_item("Printer")打印管理#end
         #@nav_item("Device")设备管理#end ##TODO
+        #if($loginUser.type > 0)
         #@nav_item("Statistics")统计报表#end
+        #end
     #end
 </ul>
