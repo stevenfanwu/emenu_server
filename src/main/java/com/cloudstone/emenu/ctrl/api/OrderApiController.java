@@ -42,12 +42,12 @@ public class OrderApiController extends BaseApiController {
     
     @RequestMapping(value="/api/ordersbytime", method=RequestMethod.GET)
     public @ResponseBody List<OrderVO> getOrdersByTime(@RequestParam("time") long time, HttpServletResponse response) {
-        List<Order> orders  =orderLogic.getOrdersByTime(time);
+        List<Order> orders = orderLogic.getOrdersByTime(time);
         if (orders == null || 0 == orders.size()) {
             sendError(response, HttpServletResponse.SC_NOT_FOUND);
         }
         List<OrderVO> orderVos = new ArrayList<OrderVO>();
-        for(Order order : orders) {
+        for (Order order : orders) {
             orderVos.add(orderWraper.wrap(order));
         }
         return orderVos;
