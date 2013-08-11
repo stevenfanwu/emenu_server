@@ -19,6 +19,11 @@ define(function (require, exports, module) {
             this.list.on('select', function (tableModel) {
                 this.dialog.trigger('submit', tableModel);
             }, this);
+        },
+
+        destroy: function () {
+            BaseContent.prototype.destroy();
+            this.list.destroy();
         }
         
     });
@@ -30,6 +35,7 @@ define(function (require, exports, module) {
         header: '选择餐桌',
 
         confirmLabel: null
+
     });
     
     return ChangeTableDialog;

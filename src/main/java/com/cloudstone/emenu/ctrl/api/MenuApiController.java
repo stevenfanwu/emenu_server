@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +34,7 @@ import com.cloudstone.emenu.util.JsonUtils;
  */
 @Controller
 public class MenuApiController extends BaseApiController {
+    private static final Logger LOG = LoggerFactory.getLogger(MenuApiController.class);
 
     @RequestMapping(value="/api/menus", method=RequestMethod.POST)
     public @ResponseBody Menu addMenu(@RequestBody String body, HttpServletResponse resp) {
@@ -65,6 +68,7 @@ public class MenuApiController extends BaseApiController {
 
     @RequestMapping(value="/api/menus", method=RequestMethod.GET)
     public @ResponseBody List<Menu> listMenu() {
+        LOG.info("============================");
         return menuLogic.getAllMenu();
     }
     

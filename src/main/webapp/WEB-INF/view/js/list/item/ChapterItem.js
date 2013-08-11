@@ -18,7 +18,12 @@ define(function (require, exports, module) {
 
         tmpl: require('./ChapterItem.handlebars'),
 
-        menuPageCollection: new MenuPageCollection(),
+        menuPageCollection: null,
+
+        initialize: function () {
+            AccordionItem.prototype.initialize.apply(this, arguments);
+            this.menuPageCollection = new MenuPageCollection();
+        },
 
         renderPage: function (options) {
             options = options || {};

@@ -46,8 +46,11 @@ public class TableLogic extends BaseLogic {
             from.setStatus(TableStatus.EMPTY);
             from.setOrderId(0);
     
-            update(trans, from);
-            update(trans, to);
+            long now = System.currentTimeMillis();
+            from.setUpdateTime(now);
+            tableService.update(trans, from);
+            to.setUpdateTime(now);
+            tableService.update(trans, to);
             trans.commit();
         } finally {
             trans.close();

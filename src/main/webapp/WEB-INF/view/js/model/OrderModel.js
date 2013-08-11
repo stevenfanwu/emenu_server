@@ -13,11 +13,12 @@ define(function (require, exports, module) {
 
         tableModel: new TableModel(),
 
-        dishCollection: new DishCollection(),
+        dishCollection: null,
 
         initialize: function () {
             BaseModel.prototype.initialize.apply(this, arguments);
             this.tableModel.set(this.get('table'));
+            this.dishCollection = new DishCollection();
             this.dishCollection.reset(this.get('dishes'));
         }
         

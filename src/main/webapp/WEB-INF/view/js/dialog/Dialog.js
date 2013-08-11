@@ -18,6 +18,8 @@ define(function (require, exports, module) {
 
         ContentType: null,
 
+        contentView: null,
+
         cancelLael: '取消',
 
         confirmLabel: '确定',
@@ -52,10 +54,10 @@ define(function (require, exports, module) {
         
             if (this.ContentType) {
                 var Content = this.ContentType;
-                var contentView = new Content();
-                contentView.dialog = this;
-                contentView.render();
-                this.$('.modal-body').append(contentView.el);
+                this.contentView = new Content();
+                this.contentView.dialog = this;
+                this.contentView.render();
+                this.$('.modal-body').append(this.contentView.el);
             }
         },
 
@@ -76,11 +78,21 @@ define(function (require, exports, module) {
 
         hide: function () {
             this.$el.modal('hide');
+            this.destroy();
         },
 
         getHeader: function () {
             return null;
         },
+
+        destroy: function () {
+            BaseView.prototype.destroy.apply(this, arguments);
+            if (this.contentView) {
+                this.contentView.destroy();
+            }
+            this.off('submit');
+        },
+        
 
         /* -------------------- Event Listener ----------------------- */
         

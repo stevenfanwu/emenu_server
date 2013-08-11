@@ -52,6 +52,13 @@ define(function (require, exports, module) {
             return PageDataUtils.getData('loginUser');
         },
 
+        destroy: function () {
+            if (this.$el) {
+                this.undelegateEvents();
+            }
+            this.off();
+        },
+
         /* -------------------- Event Listener ----------------------- */
         
         onMouseEnter: function (evt) {

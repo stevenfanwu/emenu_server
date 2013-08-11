@@ -34,10 +34,17 @@ define(function (require, exports, module) {
 
             this.collection.reset(tables);
 
-            this.collection.on('select', function (tableModel) {
+        },
+
+        initItem: function (model, item) {
+            BaseList.prototype.initItem.apply(this, arguments);
+        
+            item.on('select', function (tableModel) {
                 this.trigger('select', tableModel);
             }, this);
         }
+        
+
     });
     
     return ChangeTableList;

@@ -203,7 +203,7 @@ public class MenuLogic extends BaseLogic {
         }
         long now = System.currentTimeMillis();
         chapter.setUpdateTime(now);
-        if (old != null) {
+        if (old != null && old.getMenuId()==chapter.getMenuId()) {
             chapter.setId(old.getId());
             chapter.setCreatedTime(old.getCreatedTime());
             menuService.updateChapter(chapter);

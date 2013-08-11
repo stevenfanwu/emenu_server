@@ -6,8 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +37,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (%s)";
     
-    private static final ReentrantReadWriteLock LOCK = new ReentrantReadWriteLock();
-    private static final Lock READ_LOCK = LOCK.readLock();
-    private static final Lock WRITE_LOCK = LOCK.writeLock();
+    private static final ReentrantLock LOCK = new ReentrantLock();
             
     private SqliteDataSource dataSource;
     
@@ -98,7 +95,6 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     protected void init() throws SQLiteException {
         if(!inited) {
             inited = true;
-            LOG.info("init ===================== " + getClass().getSimpleName());
             onCheckCreateTable();
         }
     }
@@ -118,7 +114,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     protected void executeSQL(DbTransaction trans, String sql, StatementBinder binder) throws SQLiteException {
         SQLiteConnection conn = getConnection(trans);
         SQLiteStatement stmt = conn.prepare(sql);
-        WRITE_LOCK.lock();
+        LOCK.lock();
         try {
             binder.onBind(stmt);
             stmt.stepThrough();
@@ -127,7 +123,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
             if (trans == null) {
                 conn.dispose();
             }
-            WRITE_LOCK.unlock();
+            LOCK.unlock();
         }
     }
     
@@ -157,11 +153,11 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
             SQLiteStatement stmt = conn.prepare(sql);
             try {
                 binder.onBind(stmt);
-                READ_LOCK.lock();
+                LOCK.lock();
                 try {
                     return parseData(stmt, rowMapper);
                 } finally {
-                    READ_LOCK.unlock();
+                    LOCK.unlock();
                 }
             } finally {
                 stmt.dispose();

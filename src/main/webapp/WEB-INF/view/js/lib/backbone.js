@@ -22,6 +22,8 @@ define(function (require, exports, module) {
                 window.location = '/login';
             } else if (status === 512) {
                 window.location = '/upgrading';
+            } else if (status === 0) {
+                window.alert("网络错误, 状态码=0");
             } else {
                 if (error) {
                     error.apply(this, arguments);

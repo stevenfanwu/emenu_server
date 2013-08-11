@@ -48,9 +48,20 @@ define(function (require, exports, module) {
             }, this);
         },
 
+        destroy: function () {
+            BaseView.prototype.destroy.apply(this, arguments);
+            this.resetContent();
+        },
+
         resetContent: function () {
+            this.collection.forEach(function (model) {
+                model.off();
+            }, this);
             this.collection.reset();
             this.fetched = false;
+            this.items.forEach(function (item) {
+                item.destroy();
+            }, this);
             BaseView.prototype.resetContent.apply(this, arguments);
         },
 

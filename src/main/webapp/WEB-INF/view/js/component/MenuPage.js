@@ -58,12 +58,16 @@ define(function (require, exports, module) {
                 this.currentIndex = index;
             }
             BaseView.prototype.render.apply(this, arguments);
-            var List = require('../list/DishThumbnailList');
-            this.list = new List({
-                parentId: this.collection.at(this.currentIndex - 1).get('id')
-            });
-            this.list.render();
-            this.$('.page-content').html(this.list.el);
+            if (this.collection.length >= this.currentIndex) {
+                var List = require('../list/DishThumbnailList');
+                this.list = new List({
+                    parentId: this.collection.at(this.currentIndex - 1).get('id')
+                });
+                this.list.render();
+                this.$('.page-content').html(this.list.el);
+            } else {
+                this.$('.page-content').empty();
+            }
         },
 
         getRenderData: function () {

@@ -25,7 +25,6 @@ define(function (require, exports, module) {
             data.empty = data.status === 0;
             return data;
         },
-
         
         /* -------------------- Event Listener ----------------------- */
         
