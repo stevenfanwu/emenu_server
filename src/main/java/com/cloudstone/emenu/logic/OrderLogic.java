@@ -23,6 +23,7 @@ import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.service.IOrderService;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
@@ -157,9 +158,13 @@ public class OrderLogic extends BaseLogic {
     }
     
     public List<Order> getOrdersByTime(long time) {
+        if(time <= 0)
+            throw new BadRequestError();
         long currentDay = (long)(time / 1000 / 60 / 60 / 24);
         long startTime = currentDay * 24 * 60 * 60 * 1000;
         long endTime = startTime + 24 * 60 * 60 * 1000;
+        if(startTime > endTime)
+            throw new ServerError("起始时间大于截至时间");
         return orderService.getOrdersByTime(startTime, endTime);
     }
 }
