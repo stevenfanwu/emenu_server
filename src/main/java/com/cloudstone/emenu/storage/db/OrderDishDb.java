@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.OrderDish;
+import com.cloudstone.emenu.exception.ServerError;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
+import com.cloudstone.emenu.storage.db.util.StatementBinder;
+import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 import com.cloudstone.emenu.util.CollectionUtils;
 
 /**
@@ -35,8 +39,8 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             new RelationDbColumn("deleted", DataType.INTEGER, false);
     
     @Override
-    public void add(final OrderDish data) throws SQLiteException {
-        add(new InsertBinder(data.getOrderId(), data.getDishId()) {
+    public void add(DbTransaction trans, final OrderDish data) throws SQLiteException {
+        add(trans, new InsertBinder(data.getOrderId(), data.getDishId()) {
             @Override
             protected void bindOthers(SQLiteStatement stmt)
                     throws SQLiteException {
@@ -50,6 +54,15 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
                 stmt.bind(9, 0);
             }
         });
+    }
+    
+    @Override
+    public void update(DbTransaction trans, OrderDish data) {
+        try {
+            executeSQL(trans, SQL_UPDATE, new UpdateBinder(data));
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
     
     @Override
@@ -97,4 +110,36 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             return data;
         }
     };
+    
+    private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
+        .appendSetValue(COL_NUMBER)
+        .appendSetValue(COL_PRICE)
+        .appendSetValue(COL_STATUS)
+        .appendSetValue(COL_CREATED_TIME)
+        .appendSetValue(COL_UPDATE_TIME)
+        .appendSetValue(COL_DELETED)
+        .appendWhere(ID1)
+        .appendWhere(ID2)
+        .build();
+    
+    private static class UpdateBinder implements StatementBinder {
+        private final OrderDish data;
+
+        public UpdateBinder(OrderDish data) {
+            super();
+            this.data = data;
+        }
+
+        @Override
+        public void onBind(SQLiteStatement stmt) throws SQLiteException {
+            stmt.bind(1, data.getNumber());
+            stmt.bind(2, data.getPrice());
+            stmt.bind(3, data.getStatus());
+            stmt.bind(4, data.getCreatedTime());
+            stmt.bind(5, data.getUpdateTime());
+            stmt.bind(6, data.isDeleted() ? 1 : 0);
+            stmt.bind(7, data.getId1());
+            stmt.bind(8, data.getId2());
+        }
+    }
 }

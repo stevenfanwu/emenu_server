@@ -61,7 +61,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     /* ---------- public ---------- */
     @Override
     public void add(int menuPageId, int dishId, final int pos) throws SQLiteException {
-        add(new InsertBinder(menuPageId, dishId) {
+        add(null, new InsertBinder(menuPageId, dishId) {
             @Override
             protected void bindOthers(SQLiteStatement stmt)
                     throws SQLiteException {

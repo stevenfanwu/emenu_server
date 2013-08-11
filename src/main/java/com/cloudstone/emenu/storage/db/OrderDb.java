@@ -26,10 +26,10 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 @Repository
 public class OrderDb extends SQLiteDb implements IOrderDb {
     @Override
-    public void add(Order order) throws SQLiteException {
+    public void add(DbTransaction trans, Order order) throws SQLiteException {
         order.setId(genId());
         OrderBinder binder = new OrderBinder(order);
-        executeSQL(null, SQL_INSERT, binder);
+        executeSQL(trans, SQL_INSERT, binder);
     }
     
     @Override

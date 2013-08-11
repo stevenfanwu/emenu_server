@@ -54,31 +54,34 @@ public class OrderLogic extends BaseLogic {
     @Autowired
     private VelocityRender velocityRender;
     
-    public List<OrderDish> listOrderDish(int orderId) {
-        List<OrderDish> datas = orderService.listOrderDish(orderId);
-        DataUtils.filterDeleted(datas);
-        return datas;
-    }
-    
-    public void addOrderDish(OrderDish orderDish) {
+    public void addOrderDish(DbTransaction trans, OrderDish orderDish) {
         long now = System.currentTimeMillis();
         orderDish.setCreatedTime(now);
         orderDish.setUpdateTime(now);
-        orderService.addOrderDish(orderDish);
+        orderService.addOrderDish(trans, orderDish);
+    }
+    
+    public void updateOrderDish(DbTransaction trans, OrderDish orderDish) {
+        orderDish.setUpdateTime(System.currentTimeMillis());
+        orderService.updateOrderDish(trans, orderDish);
     }
     
     public Order getOrder(int orderId) {
         return orderService.getOrder(orderId);
     }
     
-    public void addOrder(Order order) {
-        if (orderService.getOrder(order.getId()) != null) {
-            throw new DataConflictException("请勿重复下单");
-        }
+    public void updateOrder(DbTransaction trans, Order order) {
+        //TODO check order
+        order.setUpdateTime(System.currentTimeMillis());
+        orderService.updateOrder(trans, order);
+    }
+    
+    public void addOrder(DbTransaction trans, Order order) {
+        //TODO Check Order
         long now = System.currentTimeMillis();
         order.setUpdateTime(now);
         order.setCreatedTime(now);
-        orderService.addOrder(order);
+        orderService.addOrder(trans, order);
     }
     
     public List<Dish> listDishes(int orderId) {

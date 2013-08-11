@@ -36,6 +36,7 @@ import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.storage.cache.ThriftCache;
 import com.cloudstone.emenu.storage.db.ThriftSessionDb;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
@@ -164,7 +165,6 @@ public class ThriftLogic extends BaseLogic {
     
     public void submitOrder(Order order) throws TableEmptyException, HasInvalidGoodsException,
         UnderMinChargeException, TException {
-        //TODO transaction for zhuwei
         String tableName = order.getTableId();
         
         double price = 0;
@@ -202,14 +202,24 @@ public class ThriftLogic extends BaseLogic {
         orderValue.setOriginPrice(order.getOriginalPrice());
         orderValue.setPrice(order.getPrice());
         orderValue.setTableId(table.getId());
-        orderLogic.addOrder(orderValue);
         
+        //merge order if necessary
+        com.cloudstone.emenu.data.Order oldOrder = null;
+        if (table.getOrderId() != 0) {
+            oldOrder = orderLogic.getOrder(table.getOrderId());
+        }
+        if (oldOrder != null) {
+            oldOrder.setOriginPrice(orderValue.getOriginPrice() + oldOrder.getOriginPrice());
+            oldOrder.setPrice(orderValue.getPrice() + oldOrder.getPrice());
+            orderValue = oldOrder;
+        }
+        
+        List<OrderDish> relations = new ArrayList<OrderDish>();
         for (int i=0; i<dishes.size(); i++) {
             Dish dish = dishes.get(i);
             GoodsOrder g = order.getGoods().get(i);
             
             OrderDish r = new OrderDish();
-            r.setOrderId(orderValue.getId());
             r.setDishId(dish.getId());
             r.setNumber(g.getNumber());
             r.setPrice(g.getPrice());
@@ -217,10 +227,52 @@ public class ThriftLogic extends BaseLogic {
                 r.setRemarks(g.getRemarks().toArray(new String[0]));
             }
             r.setStatus(ThriftUtils.getOrderDishStatus(g));
-            orderLogic.addOrderDish(r);
+            relations.add(r);
+        }
+        List<OrderDish> needUpdate = new ArrayList<OrderDish>();
+        List<OrderDish> needInsert = new ArrayList<OrderDish>();
+        if (oldOrder != null) {
+            List<OrderDish> oldRelations = orderLogic.listOrderDishes(oldOrder.getId());
+            for (OrderDish oldR:oldRelations) {
+                OrderDish found = null;
+                for (OrderDish r : relations) {
+                    if (r.getDishId() == oldR.getDishId()) {
+                        found = r;
+                        break;
+                    }
+                }
+                if (found != null) {
+                    oldR.setNumber(oldR.getNumber() + found.getNumber());
+                    if (found.getRemarks()!=null && found.getRemarks().length>0) {
+                        oldR.setRemarks(found.getRemarks());
+                    }
+                    needUpdate.add(oldR);
+                    relations.remove(found);
+                }
+            }
+        }
+        for (OrderDish r:relations) {
+            needInsert.add(r);
+        }
+        
+        DbTransaction trans = openTrans();
+        trans.begin();
+        if (oldOrder != null) {
+            orderLogic.updateOrder(trans, oldOrder);
+            orderValue = oldOrder;
+            for (OrderDish r:needUpdate) {
+                orderLogic.updateOrderDish(trans, r);
+            }
+        } else {
+            orderLogic.addOrder(trans, orderValue);
+        }
+        for (OrderDish r:needInsert) {
+            r.setOrderId(orderValue.getId());
+            orderLogic.addOrderDish(trans, r);
         }
         table.setOrderId(orderValue.getId());
-        tableLogic.update(null, table);
+        tableLogic.update(trans, table);
+        trans.commit();
     }
     
     public Order getOrderByTable(String tableName) throws TableEmptyException, TException {
@@ -253,7 +305,7 @@ public class ThriftLogic extends BaseLogic {
     
     public List<GoodsOrder> listGoodsInOrder(int orderId) {
         List<GoodsOrder> goods = new ArrayList<GoodsOrder>();
-        List<OrderDish> relations = orderLogic.listOrderDish(orderId);
+        List<OrderDish> relations = orderLogic.listOrderDishes(orderId);
         for (OrderDish r:relations) {
             Dish dish = menuLogic.getDish(r.getDishId(), false);
             if (dish == null) {

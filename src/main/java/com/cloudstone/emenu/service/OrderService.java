@@ -61,21 +61,26 @@ public class OrderService extends BaseService implements IOrderService {
     }
 
     @Override
-    public void addOrder(Order order) {
+    public void addOrder(DbTransaction trans, Order order) {
         try {
-            orderDb.add(order);
+            orderDb.add(trans, order);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
     
     @Override
-    public void addOrderDish(OrderDish orderDish) {
+    public void addOrderDish(DbTransaction trans, OrderDish orderDish) {
         try {
-            orderDishDb.add(orderDish);
+            orderDishDb.add(trans, orderDish);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
+    }
+    
+    @Override
+    public void updateOrderDish(DbTransaction trans, OrderDish orderDish) {
+        orderDishDb.update(trans, orderDish);
     }
     
     @Override

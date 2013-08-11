@@ -18,9 +18,10 @@ import com.cloudstone.emenu.storage.db.util.DbTransaction;
  *
  */
 public interface IOrderService {
-    public void addOrder(Order order);
+    public void addOrder(DbTransaction trans, Order order);
     public Order getOrder(int orderId);
-    public void addOrderDish(OrderDish orderDish);
+    public void addOrderDish(DbTransaction trans, OrderDish orderDish);
+    public void updateOrderDish(DbTransaction trans, OrderDish orderDish);
     public void updateOrder(DbTransaction trans, Order order);
     public List<Dish> listDishes(int orderId);
     public List<OrderDish> listOrderDish(int orderId);

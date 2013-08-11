@@ -13,6 +13,7 @@ import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.storage.db.RelationDb.Relation;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.CountSqlBuilder;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -56,10 +57,10 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     protected abstract RelationRowMapper<T> onCreateRowMapper();
     
     /* ---------- protected ---------- */
-    protected void add(InsertBinder binder) throws SQLiteException {
+    protected void add(DbTransaction trans, InsertBinder binder) throws SQLiteException {
         int columnCount = 2 + config.columns.length;
         String sql = new InsertSqlBuilder(config.tableName, columnCount, true).build();
-        executeSQL(null, sql, binder);
+        executeSQL(trans, sql, binder);
     }
     
     protected void deleteById2(int id2) throws SQLiteException {
