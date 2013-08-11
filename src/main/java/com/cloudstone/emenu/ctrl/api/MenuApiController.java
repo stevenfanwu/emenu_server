@@ -68,7 +68,6 @@ public class MenuApiController extends BaseApiController {
 
     @RequestMapping(value="/api/menus", method=RequestMethod.GET)
     public @ResponseBody List<Menu> listMenu() {
-        LOG.info("============================");
         return menuLogic.getAllMenu();
     }
     

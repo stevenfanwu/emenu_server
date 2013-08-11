@@ -138,7 +138,7 @@ public class ThriftLogic extends BaseLogic {
                         goods.setCategory(chapter.getName());
                         goods.setOnSales(dish.isSpecialPrice());
                         goods.setSpicy(dish.getSpicy());
-                        goods.setSoldout(false);//TODO
+                        goods.setSoldout(dish.isSoldout());
                         goods.setNumberDecimalPermited(dish.isNonInt());
                         if (!StringUtils.isBlank(dish.getImageId())) {
                             List<Img> imgs = new ArrayList<Img>();
