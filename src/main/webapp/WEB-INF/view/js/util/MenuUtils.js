@@ -41,6 +41,36 @@ define(function (require, exports, module) {
             }).done(function (dish) {
                 options.success.call(this, dish);
             });
+        },
+
+        soldoutDish: function (options) {
+            var url = '/api/dishes/' + options.id + '/soldout';
+            $.ajax({
+                url: url,
+                type: 'PUT'
+            }).error(function () {
+                options.error.apply(this, arguments);
+            });
+        },
+
+        unsoldoutDish: function (options) {
+            var url = '/api/dishes/' + options.id + '/unsoldout';
+            $.ajax({
+                url: url,
+                type: 'PUT'
+            }).error(function () {
+                options.error.apply(this, arguments);
+            });
+        },
+
+        unsoldoutAllDish: function (options) {
+            var url = '/api/dishes/unsoldout';
+            $.ajax({
+                url: url,
+                type: 'PUT'
+            }).done(function () {
+                options.success.apply(this, arguments);
+            });
         }
     });
 

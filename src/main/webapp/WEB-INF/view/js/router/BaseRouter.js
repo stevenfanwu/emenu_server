@@ -13,7 +13,15 @@ define(function (require, exports, module) {
             this.page = options.page;
         },
 
-        page: null
+        routes: {
+            "": "renderPage"
+        },
+
+        page: null,
+
+        renderPage: function () {
+            this.page.render();
+        }
         
     });
 

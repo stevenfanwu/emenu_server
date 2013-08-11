@@ -186,11 +186,11 @@ public class MenuLogic extends BaseLogic {
         return getDish(dish.getId(), true);
     }
 
-    public void updateDishesSoldout() {
+    public void updateDishesSoldout(boolean soldout) {
         List<Dish> dishes = menuService.getAllDish();
         DataUtils.filterDeleted(dishes);
         for (Dish dish : dishes) {
-            dish.setSoldout(true);
+            dish.setSoldout(soldout);
             menuService.updateDish(dish);
         }
     }

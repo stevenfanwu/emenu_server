@@ -13,11 +13,22 @@ define(function (require, exports, module) {
 
         baseUrl: null,
 
+        page: null,
+
+        //TODO move to parent
+        hasQuery: false,
+
         url: function () {
+            var  url = this.baseUrl;
             if (this.parentId) {
-                return this.baseUrl + "?" + this.parentKey + "=" + this.parentId;
+                url = url + (this.hasQuery ? "&" : "?") + this.parentKey + "=" + this.parentId;
+                this.hasQuery = true;
             }
-            return this.baseUrl;
+            //TODO move to parent
+            if (this.page) {
+                url = url + (this.hasQuery ? "&" : "?") + "page=" + this.page;
+            }
+            return url;
         }
         
     });

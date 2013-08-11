@@ -4,6 +4,7 @@
 <script type="text/javascript" src="/static//vendor/underscore.js"></script>
 <script type="text/javascript" src="/static/vendor/bootstrap.js"></script>
 <script type="text/javascript" src="/static/vendor/bootstrap-fileupload.js"></script>
+<script type="text/javascript" src="/static/vendor/bootstrap-switch.js"></script>
 <script type="text/javascript" src="/static/vendor/backbone.js"></script>
 <script type="text/javascript" src="/static//vendor/less.js"></script>
 <script type="text/javascript" src="/static/vendor/handlebars.js"></script>

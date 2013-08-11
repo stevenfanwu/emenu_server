@@ -192,19 +192,26 @@ public class MenuApiController extends BaseApiController {
         return dish;
     }
 
-    @RequestMapping(value = "/api/dishes/{id:[\\id]+}/soldout", method = RequestMethod.PUT)
+    @RequestMapping(value = "/api/dishes/{id:[\\d]+}/soldout", method = RequestMethod.PUT)
     public @ResponseBody Dish soldoutDish(@PathVariable(value = "id") int dishId) {
         return menuLogic.updateDishSoldout(dishId, true);
     }
 
-    @RequestMapping(value = "/api/dishes/{id:[\\id]+}/unsoldout", method = RequestMethod.PUT)
+    @RequestMapping(value = "/api/dishes/{id:[\\d]+}/unsoldout", method = RequestMethod.PUT)
     public @ResponseBody Dish unsoldoutDish(@PathVariable(value = "id") int dishId) {
         return menuLogic.updateDishSoldout(dishId, false);
     }
 
+    @RequestMapping(value = "/api/dishes/unsoldout", method = RequestMethod.PUT)
+    public void unsoldoutAllDishes(HttpServletResponse response) {
+        menuLogic.updateDishesSoldout(false);
+        sendSuccess(response, HttpServletResponse.SC_OK);
+        return;
+    }
+
     @RequestMapping(value = "/api/dishes/soldout", method = RequestMethod.PUT)
     public void soldoutAllDishes(HttpServletResponse response) {
-        menuLogic.updateDishesSoldout();
+        menuLogic.updateDishesSoldout(true);
         sendSuccess(response, HttpServletResponse.SC_OK);
         return;
     }

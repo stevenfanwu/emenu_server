@@ -1,3 +1,13 @@
 #set($mode="operate")
 #set($pageName="Soldout")
 
+<div>
+    <button class="btn-unsoldout-all btn-primary pull-right">清空沽清</button>
+    <div class="custom-search-query pull-right wrap-search-query">
+        <input type="text" class="search-query" placeholder="查询菜品">
+            <button><i class="icon-search"></i></button>
+        </input>
+    </div>
+<div>
+<div class="dish-list-wrap">
+</div>
