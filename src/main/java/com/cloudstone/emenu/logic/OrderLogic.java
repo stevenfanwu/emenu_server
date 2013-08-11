@@ -155,4 +155,11 @@ public class OrderLogic extends BaseLogic {
     
     public void changeTable(Table from, Table to) {
     }
+    
+    public List<Order> getOrdersByTime(long time) {
+        long currentDay = (long)(time / 1000 / 60 / 60 / 24);
+        long startTime = currentDay * 24 * 60 * 60 * 1000;
+        long endTime = startTime + 24 * 60 * 60 * 1000;
+        return orderService.getOrdersByTime(startTime, endTime);
+    }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Bill;
+import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 
 /**
@@ -19,4 +20,6 @@ public interface IBillDb {
     public List<Bill> listBills() throws SQLiteException;
     public Bill get(int id) throws SQLiteException;
     public Bill getByOrderId(int orderId) throws SQLiteException;
+    public List<Order> getOrdersByTime(long startTime, long endTime) throws SQLiteException;
+
 }
