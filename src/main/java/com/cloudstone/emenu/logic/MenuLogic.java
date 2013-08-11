@@ -21,6 +21,7 @@ import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.DbNotFoundException;
+import com.cloudstone.emenu.exception.PreconditionFailedException;
 import com.cloudstone.emenu.service.IMenuService;
 import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
 import com.cloudstone.emenu.util.CollectionUtils;
@@ -61,6 +62,13 @@ public class MenuLogic extends BaseLogic {
     }
     
     public void bindDish(int menuPageId, int dishId, int pos) {
+        MenuPage page = getMenuPage(menuPageId);
+        if (page == null) {
+            throw new PreconditionFailedException("该菜单页不存在");
+        }
+        if (isDishInChapter(dishId, page.getChapterId())) {
+            throw new PreconditionFailedException("当前菜单分类已经添加过该菜品");
+        }
         menuService.bindDish(menuPageId, dishId, pos);
     }
     
@@ -233,6 +241,19 @@ public class MenuLogic extends BaseLogic {
             }
         });
         return chapters;
+    }
+    
+    public boolean isDishInChapter(int dishId, int chapterId) {
+        List<MenuPage> pages = listMenuPageByChapterId(chapterId);
+        List<MenuPage> relations = listMenuPageByDishId(dishId);
+        for (MenuPage p:pages) {
+            for (MenuPage r:relations) {
+                if (p.getId() == r.getId()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     public List<DishPage> listDishPage(int dishId) {

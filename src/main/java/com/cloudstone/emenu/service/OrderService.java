@@ -141,4 +141,9 @@ public class OrderService extends BaseService implements IOrderService {
             throw new ServerError(e);
         }
     }
+    
+    @Override
+    public void updateOrder(DbTransaction trans, Order order) {
+        orderDb.update(trans, order);
+    }
 }

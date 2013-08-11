@@ -50,8 +50,8 @@ public class Const {
     }
     
     public static class DishUnit {
-        public static final int JIN = 0; // 斤
-        public static final int FEN = 1; // 份
+        public static final int FEN = 0; // 份
+        public static final int JIN = 1; // 斤
     }
     
     public static class DishStatus {

@@ -23,19 +23,23 @@ define(function (require, exports, module) {
         getRenderData: function () {
             var data = BaseItem.prototype.getRenderData.apply(this, arguments);
             data.empty = data.status === 0;
+            data.hasOrder = !data.empty && data.orderId > 0;
             return data;
         },
         
         /* -------------------- Event Listener ----------------------- */
         
         onBill: function (evt) {
-            if (this.model.get('status') === 0) {
+            if (this.model.get('status') === 0 || this.model.get('orderId') === 0) {
                 evt.preventDefault();
             }
         },
 
         onChange: function (evt) {
             evt.preventDefault();
+            if (this.model.get('status') === 0) {
+                return;
+            }
             var dialog = new ChangeTableDialog();
             dialog.show();
             dialog.on('submit', function (tableModel) {

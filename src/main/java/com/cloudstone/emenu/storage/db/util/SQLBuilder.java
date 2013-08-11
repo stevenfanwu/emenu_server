@@ -35,6 +35,18 @@ public class SQLBuilder {
     }
     
     private boolean firstWhere = true;
+    
+    public SQLBuilder appendNotDeleted() {
+        if (firstWhere) {
+            append(" where ");
+        } else {
+            append("AND ");
+        }
+        firstWhere = false;
+        append("deleted=0");
+        return this;
+    }
+    
     public SQLBuilder appendWhere(Object whereColumn) {
         if (firstWhere) {
             append(" where ");

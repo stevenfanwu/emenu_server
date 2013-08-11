@@ -12,9 +12,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.exception.PreconditionFailedException;
 import com.cloudstone.emenu.util.PrinterUtils;
 
 /**
@@ -34,10 +34,7 @@ public class OrderController extends BaseWebController {
         }
         Order order = orderLogic.getOrder(table.getOrderId());
         if (order == null) {
-            table.setStatus(TableStatus.EMPTY);
-            tableLogic.update(null, table);
-            sendError(resp, HttpServletResponse.SC_PRECONDITION_FAILED);
-            return null;
+            throw new PreconditionFailedException("该餐桌未下单");
         }
         model.put("order", orderWraper.wrap(order));
         model.put("printers", PrinterUtils.listPrinters());

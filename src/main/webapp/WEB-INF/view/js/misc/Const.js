@@ -89,11 +89,11 @@ define(function (require, exports, module) {
     exports.DishUnit = new Const({
         JIN: {
             value: 0,
-            label: '斤'
+            label: '份'
         },
         FEN: {
             value: 1,
-            label: '份'
+            label: '斤'
         }
     });
 

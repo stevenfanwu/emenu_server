@@ -18,7 +18,6 @@ import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.BaseStorage;
-import com.cloudstone.emenu.storage.db.util.CreateIndexBuilder;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
@@ -105,13 +104,8 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         executeSQL(null, sql, StatementBinder.NULL);
     }
     
-    protected void checkCreateIndex(String indexName, String tableName, Object... columns) throws SQLiteException {
-        CreateIndexBuilder createIndexBuilder = new CreateIndexBuilder(indexName,
-                tableName, columns);
-        executeSQL(null, createIndexBuilder.build(), StatementBinder.NULL);
-    }
-    
     protected void executeSQL(DbTransaction trans, String sql, StatementBinder binder) throws SQLiteException {
+        LOG.info(sql);
         SQLiteConnection conn = getConnection(trans);
         SQLiteStatement stmt = conn.prepare(sql);
         LOCK.lock();

@@ -127,6 +127,7 @@ public class OrderLogic extends BaseLogic {
         try {
             orderService.addBill(trans, bill);
             table.setStatus(TableStatus.EMPTY);
+            table.setOrderId(0);
             tableLogic.update(trans, table);
             
             if (!StringUtils.isBlank(bill.getPrinter())) {

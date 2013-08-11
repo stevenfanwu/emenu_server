@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.constant.Const.TableStatus;
+import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.service.OrderService;
 import com.cloudstone.emenu.service.TableService;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.CollectionUtils;
@@ -27,6 +29,11 @@ import com.cloudstone.emenu.util.DataUtils;
 public class TableLogic extends BaseLogic {
     @Autowired
     private TableService tableService;
+    @Autowired
+    private OrderService orderService;
+    
+    @Autowired
+    private OrderLogic orderLogic;
     
     public void changeTable(int fromId, int toId) {
         Table from = get(fromId);
@@ -36,6 +43,13 @@ public class TableLogic extends BaseLogic {
         Table to = get(toId);
         if (to == null || to.getStatus() != TableStatus.EMPTY) {
             throw new BadRequestError();
+        }
+        Order order = null;
+        if (from.getOrderId() != 0) {
+            order = orderLogic.getOrder(from.getOrderId());
+            if (order == null) {
+                throw new BadRequestError();
+            }
         }
 
         DbTransaction trans = openTrans();
@@ -51,6 +65,11 @@ public class TableLogic extends BaseLogic {
             tableService.update(trans, from);
             to.setUpdateTime(now);
             tableService.update(trans, to);
+            
+            if (order != null) {
+                order.setTableId(to.getId());
+                orderService.updateOrder(trans, order);
+            }
             trans.commit();
         } finally {
             trans.close();

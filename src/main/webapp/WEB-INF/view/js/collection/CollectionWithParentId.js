@@ -15,18 +15,17 @@ define(function (require, exports, module) {
 
         page: null,
 
-        //TODO move to parent
-        hasQuery: false,
-
         url: function () {
+            var hasQuery = false;
             var  url = this.baseUrl;
             if (this.parentId) {
-                url = url + (this.hasQuery ? "&" : "?") + this.parentKey + "=" + this.parentId;
-                this.hasQuery = true;
+                url = url + (hasQuery ? "&" : "?") + this.parentKey + "=" + this.parentId;
+                hasQuery = true;
             }
             //TODO move to parent
             if (this.page) {
-                url = url + (this.hasQuery ? "&" : "?") + "page=" + this.page;
+                url = url + (hasQuery ? "&" : "?") + "page=" + this.page;
+                hasQuery = true;
             }
             return url;
         }

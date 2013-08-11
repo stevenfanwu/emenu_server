@@ -49,10 +49,16 @@ public class ErrorController extends BaseController {
         if (requestUrl.contains("/api/")) {
             apiError(req, resp, model, exception);
             return null;
+        } else {
+            if (exception != null) {
+                model.put("message", exception.getMessage());
+                if (exception instanceof HttpStatusError) {
+                    HttpStatusError error = (HttpStatusError) exception;
+                    resp.setStatus(error.getStatusCode());
+                }
+            }
+            return "error";
         }
-        //TODO
-        
-        return "";
     }
     
     private int getStatusCode(HttpServletRequest req) {

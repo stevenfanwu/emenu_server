@@ -47,8 +47,6 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
         columnDefBuilder.appendPrimaryKey(primaryKeys.toArray(new String[0]));
         checkCreateTable(config.tableName, columnDefBuilder.build());
         
-        //create index
-        checkCreateIndex("index_" + config.tableName, config.tableName, ID2, ID1);
     }
     
     private RelationDbConfig config = onCreateConfig();
@@ -99,7 +97,8 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     }
     
     private int countId(String idName, int id) throws SQLiteException {
-        String sql = new CountSqlBuilder(config.tableName).appendWhere(idName).build();
+        String sql = new CountSqlBuilder(config.tableName).appendWhere(idName)
+                .appendNotDeleted().build();
         return queryInt(sql, new IdStatementBinder(id));
     }
     
@@ -126,6 +125,11 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
             this.name = name;
             this.type = type;
             this.isPrimaryKey = isPrimaryKey;
+        }
+        
+        @Override
+        public String toString() {
+            return name;
         }
     }
     

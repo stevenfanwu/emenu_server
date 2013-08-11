@@ -28,7 +28,9 @@ define(function (require, exports, module) {
         
         onSelect: function (evt) {
             evt.preventDefault();
-            this.trigger('select', this.model);
+            if (this.model.get('status') === 0) {
+                this.trigger('select', this.model);
+            }
             evt.stopPropagation();
         }
         

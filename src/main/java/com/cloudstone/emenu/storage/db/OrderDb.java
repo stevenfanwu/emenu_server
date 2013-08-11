@@ -9,12 +9,15 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Order;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
+import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * @author xuhongfeng
@@ -33,6 +36,15 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     public Order get(int id) throws SQLiteException {
         IdStatementBinder binder = new IdStatementBinder(id);
         return queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+    }
+    
+    @Override
+    public void update(DbTransaction trans, Order order) {
+        try {
+            executeSQL(trans, SQL_UPDATE, new UpdateBinder(order));
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
 
     /* ---------- Override ---------- */
@@ -66,10 +78,10 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     }
     private static final String COL_DEF = new ColumnDefBuilder()
         .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
-        .append(Column.CUSTOMER_NUMBER, DataType.INTEGER, "NOT NULL")
         .append(Column.ORIGIN_PRICE, DataType.REAL, "NOT NULL")
         .append(Column.PRICE, DataType.REAL, "NOT NULL")
         .append(Column.TABLE_ID, DataType.INTEGER, "NOT NULL")
+        .append(Column.CUSTOMER_NUMBER, DataType.INTEGER, "NOT NULL")
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
@@ -96,6 +108,28 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             stmt.bind(8, order.isDeleted() ? 1 : 0);
         }
     }
+    
+    private static class UpdateBinder implements StatementBinder {
+        private final Order order;
+
+        public UpdateBinder(Order order) {
+            super();
+            this.order = order;
+        }
+
+        @Override
+        public void onBind(SQLiteStatement stmt) throws SQLiteException {
+            stmt.bind(1, order.getOriginPrice());
+            stmt.bind(2, order.getPrice());
+            stmt.bind(3, order.getTableId());
+            stmt.bind(4, order.getCustomerNumber());
+            stmt.bind(5, order.getCreatedTime());
+            stmt.bind(6, order.getUpdateTime());
+            stmt.bind(7, order.isDeleted() ? 1 : 0);
+            stmt.bind(8, order.getId());
+        }
+    }
+    
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
     
@@ -115,4 +149,13 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             return order;
         }
     };
+    private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
+        .appendSetValue(Column.ORIGIN_PRICE)
+        .appendSetValue(Column.PRICE)
+        .appendSetValue(Column.TABLE_ID)
+        .appendSetValue(Column.CUSTOMER_NUMBER)
+        .appendSetValue(Column.CREATED_TIME)
+        .appendSetValue(Column.UPDATE_TIME)
+        .appendSetValue(Column.DELETED)
+        .appendWhereId().build();
 }

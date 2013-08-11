@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Order;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 
 /**
  * @author xuhongfeng
@@ -13,5 +14,6 @@ import com.cloudstone.emenu.data.Order;
  */
 public interface IOrderDb {
     public void add(Order order) throws SQLiteException;
+    public void update(DbTransaction trans, Order order);
     public Order get(int id) throws SQLiteException;
 }
