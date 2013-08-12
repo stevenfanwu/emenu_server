@@ -5,6 +5,7 @@
 package com.cloudstone.emenu.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,4 +152,17 @@ public class OrderService extends BaseService implements IOrderService {
     public void updateOrder(DbTransaction trans, Order order) {
         orderDb.update(trans, order);
     }
+
+    @Override
+    public List<Order> getOrdersByTime(long startTime, long endTime) {
+        List<Order> orders = null;
+        try {
+             orders = orderDb.getOrdersByTime(startTime, endTime);
+             orders.addAll(billDb.getOrdersByTime(startTime, endTime));
+             return orders;
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
 }

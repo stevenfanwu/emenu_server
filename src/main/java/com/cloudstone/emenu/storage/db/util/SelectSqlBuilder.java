@@ -27,4 +27,9 @@ public class SelectSqlBuilder extends SQLBuilder {
         super.appendWhere(whereColumn);
         return this;
     }
+
+    public SelectSqlBuilder append(Object s) {
+        super.append(s);
+        return this;
+    }
 }
