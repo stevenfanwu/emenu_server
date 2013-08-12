@@ -1,6 +1,8 @@
 
 package com.cloudstone.emenu.storage.db;
 
+import org.springframework.stereotype.Repository;
+
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.DailyStat;
@@ -13,17 +15,23 @@ import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
+@Repository
 public class StatDb extends SQLiteDb implements IStatDb {
+
     private static final String TABLE_NAME = "stat";
 
     @Override
-    public DailyStat get(long time) throws SQLiteException {
+    public DailyStat get(long time) {
         NameStatementBinder binder = new NameStatementBinder("" + time);
-        return queryOne(SQL_SELECT_BY_TIME, binder, rowMapper);
+        try {
+            return queryOne(SQL_SELECT_BY_TIME, binder, rowMapper);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
 
     @Override
-    public void update(DailyStat stat) throws SQLiteException {
+    public void update(DailyStat stat) {
         try {
             executeSQL(null, SQL_UPDATE, new UpdateBinder(stat));
         } catch (SQLiteException e) {
@@ -32,10 +40,14 @@ public class StatDb extends SQLiteDb implements IStatDb {
     }
 
     @Override
-    public void add(DailyStat stat) throws SQLiteException {
-        stat.setId(genId());
-        StatBinder binder = new StatBinder(stat);
-        executeSQL(null, SQL_INSERT, binder);
+    public void add(DailyStat stat) {
+        try {
+            stat.setId(genId());
+            StatBinder binder = new StatBinder(stat);
+            executeSQL(null, SQL_INSERT, binder);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
 
     @Override
@@ -77,7 +89,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.DELETED, DataType.INTEGER, "NOT NULL").build();
 
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
 
     private static class StatBinder implements StatementBinder {
         private final DailyStat stat;
