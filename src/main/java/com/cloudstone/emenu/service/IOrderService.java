@@ -33,6 +33,6 @@ public interface IOrderService {
     public Bill getBill(int id);
     public Bill getBillByOrderId(int orderId);
 
-    public List<Order> getOrdersByTime(long startTime, long endTime);
+    public List<Order> getDailyOrders(long startTime, long endTime);
 
 }

@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -156,15 +157,19 @@ public class OrderLogic extends BaseLogic {
     
     public void changeTable(Table from, Table to) {
     }
-    
-    public List<Order> getOrdersByTime(long time) {
-        if(time <= 0)
+
+    public List<Order> getDailyOrders(long time) {
+        if (time <= 0)
             throw new BadRequestError();
-        long currentDay = (long)(time / 1000 / 60 / 60 / 24);
+        long offset = Calendar.getInstance().getTimeZone().getRawOffset();
+        time += offset;
+        long currentDay = (long) (time / 1000 / 60 / 60 / 24);
         long startTime = currentDay * 24 * 60 * 60 * 1000;
         long endTime = startTime + 24 * 60 * 60 * 1000;
-        if(startTime > endTime)
+
+        if (startTime > endTime)
             throw new ServerError("起始时间大于截至时间");
-        return orderService.getOrdersByTime(startTime, endTime);
+        return orderService.getDailyOrders(startTime, endTime);
     }
+
 }

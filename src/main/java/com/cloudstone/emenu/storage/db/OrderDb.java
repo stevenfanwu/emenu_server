@@ -169,6 +169,6 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         .appendWhereId().build();
 
     private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
-        .append(" where createdTime>? ")
-        .append(" And createdTime<?").build();
+        .append(" WHERE createdTime>? ")
+        .append(" AND createdTime<?").build();
 }

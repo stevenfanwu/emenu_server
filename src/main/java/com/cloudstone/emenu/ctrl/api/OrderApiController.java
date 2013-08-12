@@ -40,17 +40,13 @@ public class OrderApiController extends BaseApiController {
         return orderWraper.wrap(order);
     }
     
-    @RequestMapping(value="/api/ordersbytime", method=RequestMethod.GET)
-    public @ResponseBody List<OrderVO> getOrdersByTime(@RequestParam("time") long time, HttpServletResponse response) {
-        List<Order> orders = orderLogic.getOrdersByTime(time);
+    @RequestMapping(value="/api/orders/daily", method=RequestMethod.GET)
+    public @ResponseBody List<OrderVO> getDailyOrders(@RequestParam("time") long time, HttpServletResponse response) {
+        List<Order> orders = orderLogic.getDailyOrders(time);
         if (orders == null || 0 == orders.size()) {
-            sendError(response, HttpServletResponse.SC_NOT_FOUND);
+            return new ArrayList<OrderVO>();
         }
-        List<OrderVO> orderVos = new ArrayList<OrderVO>();
-        for (Order order : orders) {
-            orderVos.add(orderWraper.wrap(order));
-        }
-        return orderVos;
+        return orderWraper.wrap(orders);
     }
 
     @RequestMapping(value="/api/pay-types", method=RequestMethod.GET)
