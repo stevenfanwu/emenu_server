@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
-import com.cloudstone.emenu.util.PrinterUtils;
 
 /**
  * @author xuhongfeng
@@ -37,7 +36,7 @@ public class OrderController extends BaseWebController {
             throw new PreconditionFailedException("该餐桌未下单");
         }
         model.put("order", orderWraper.wrap(order));
-        model.put("printers", PrinterUtils.listPrinters());
+        model.put("printers", printerLogic.listPrinters());
         return sendView("bill", req, resp, model);
     }
 

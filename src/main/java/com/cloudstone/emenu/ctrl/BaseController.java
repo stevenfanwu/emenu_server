@@ -23,6 +23,7 @@ import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.DeviceLogic;
 import com.cloudstone.emenu.logic.MenuLogic;
 import com.cloudstone.emenu.logic.OrderLogic;
+import com.cloudstone.emenu.logic.PrinterLogic;
 import com.cloudstone.emenu.logic.TableLogic;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.util.AuthHelper;
@@ -47,6 +48,8 @@ public class BaseController {
     protected OrderLogic orderLogic;
     @Autowired
     protected DeviceLogic deviceLogic;
+    @Autowired
+    protected PrinterLogic printerLogic;
     
     @Autowired
     protected OrderWraper orderWraper;

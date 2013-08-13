@@ -26,7 +26,6 @@ import com.cloudstone.emenu.exception.PreconditionFailedException;
 import com.cloudstone.emenu.service.IOrderService;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
-import com.cloudstone.emenu.util.PrinterUtils;
 import com.cloudstone.emenu.util.StringUtils;
 import com.cloudstone.emenu.util.VelocityRender;
 import com.cloudstone.emenu.wrap.OrderWraper;
@@ -44,6 +43,8 @@ public class OrderLogic extends BaseLogic {
     private TableLogic tableLogic;
     @Autowired
     private MenuLogic menuLogic;
+    @Autowired
+    private PrinterLogic printerLogic;
     
     @Autowired
     protected OrderWraper orderWraper;
@@ -135,7 +136,7 @@ public class OrderLogic extends BaseLogic {
             
             if (!StringUtils.isBlank(bill.getPrinter())) {
                 try {
-                    PrinterUtils.print(bill.getPrinter(), velocityRender.renderBill(bill, user));
+                    printerLogic.print(bill.getPrinter(), velocityRender.renderBill(bill, user));
                 } catch (Exception e) {
                     throw new PreconditionFailedException("打印失败", e);
                 }
