@@ -5,8 +5,6 @@
 package com.cloudstone.emenu.service;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -161,8 +159,6 @@ public class OrderService extends BaseService implements IOrderService {
         List<Order> orders = null;
         try {
              orders = orderDb.getOrdersByTime(startTime, endTime);
-             if(orders == null)
-                 orders = new ArrayList<Order>();
              orders.addAll(billDb.getOrdersByTime(startTime, endTime));
              DataUtils.filterDeleted(orders);
              return sortByTime(orders);
@@ -174,9 +170,7 @@ public class OrderService extends BaseService implements IOrderService {
     private static final Comparator<Order> ORDER_COMPARATOR = new Comparator<Order>() {
 
         @Override
-        public int compare(Order o1, Order o2) {
-            Order order1 = o1;
-            Order order2 = o2;
+        public int compare(Order order1, Order order2) {
             if (order1.getCreatedTime() > order2.getCreatedTime())
                 return -1;
             else if (order1.getCreatedTime() == order2.getCreatedTime())
