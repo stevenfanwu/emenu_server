@@ -5,6 +5,10 @@
 package com.cloudstone.emenu.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,5 +154,41 @@ public class OrderService extends BaseService implements IOrderService {
     @Override
     public void updateOrder(DbTransaction trans, Order order) {
         orderDb.update(trans, order);
+    }
+
+    @Override
+    public List<Order> getDailyOrders(long startTime, long endTime) {
+        List<Order> orders = null;
+        try {
+             orders = orderDb.getOrdersByTime(startTime, endTime);
+             if(orders == null)
+                 orders = new ArrayList<Order>();
+             orders.addAll(billDb.getOrdersByTime(startTime, endTime));
+             DataUtils.filterDeleted(orders);
+             return sortByTime(orders);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    private static final Comparator<Order> ORDER_COMPARATOR = new Comparator<Order>() {
+
+        @Override
+        public int compare(Order o1, Order o2) {
+            Order order1 = o1;
+            Order order2 = o2;
+            if (order1.getCreatedTime() > order2.getCreatedTime())
+                return -1;
+            else if (order1.getCreatedTime() == order2.getCreatedTime())
+                return 0;
+            else
+                return 1;
+        }
+
+    };
+
+    private List<Order> sortByTime(List<Order> orders) {
+        Collections.sort(orders, ORDER_COMPARATOR);
+        return orders;
     }
 }

@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Bill;
+import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
@@ -21,6 +23,7 @@ import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.SqlUtils;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
+import com.cloudstone.emenu.storage.db.util.TimeStatementBinder;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -53,6 +56,17 @@ public class BillDb extends SQLiteDb implements IBillDb {
     public Bill get(int id) throws SQLiteException {
         IdStatementBinder binder = new IdStatementBinder(id);
         return queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+    }
+
+    @Override
+    public List<Order> getOrdersByTime(long startTime, long endTime) throws SQLiteException {
+        TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
+        List<Bill> bills =  query(SQL_SELECT_BY_TIME, binder, rowMapper);
+        List<Order> orders = new ArrayList<Order>();
+        for(Bill bill : bills) {
+            orders.add(bill.getOrder());
+        }
+        return orders;
     }
 
     @Override
@@ -161,6 +175,9 @@ public class BillDb extends SQLiteDb implements IBillDb {
         .appendWhereId().build();
     private static final String SQL_SELECT_BY_ORDER_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ORDER_ID).build();
+    private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
+        .append(" WHERE createdTime>? ").append(" AND createdTime<?").build();
+
     private static class OrderIdBinder implements StatementBinder {
         private final int orderId;
 

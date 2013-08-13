@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,10 +24,12 @@ import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.service.IOrderService;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
+import com.cloudstone.emenu.util.UnitUtils;
 import com.cloudstone.emenu.util.VelocityRender;
 import com.cloudstone.emenu.wrap.OrderWraper;
 
@@ -156,4 +159,17 @@ public class OrderLogic extends BaseLogic {
     
     public void changeTable(Table from, Table to) {
     }
+
+    public List<Order> getDailyOrders(long time) {
+        if (time <= 0)
+            throw new BadRequestError();
+        //long offset = Calendar.getInstance().getTimeZone().getRawOffset();
+        //time += offset;
+        long currentDay = (long) (time / UnitUtils.DAY);
+        long startTime = currentDay * UnitUtils.DAY;
+        long endTime = startTime + UnitUtils.DAY;
+
+        return orderService.getDailyOrders(startTime, endTime);
+    }
+
 }
