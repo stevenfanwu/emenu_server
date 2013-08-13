@@ -1,3 +1,18 @@
 #set($mode="admin")
 #set($pageName="Printer")
 
+#macro (printer_nav_item, $tab_name)
+  <li class="tab-$tab_name">
+    <a href="#$tab_name" class="link-$tab_name">$!bodyContent</a>
+  </li>
+#end
+
+<ul class="nav nav-tabs">
+    #@printer_nav_item("components")页眉页脚#end
+    #@printer_nav_item("templates")打印模板#end
+    #@printer_nav_item("printers")打印机#end
+    <li class="pull-right li-right">
+    </li>
+</ul>
+<div class="bottom-content">
+</div>

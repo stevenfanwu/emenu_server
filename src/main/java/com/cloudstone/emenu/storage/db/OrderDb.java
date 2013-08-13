@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -17,6 +19,7 @@ import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
+import com.cloudstone.emenu.storage.db.util.TimeStatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
@@ -45,6 +48,12 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
+    }
+
+    @Override
+    public List<Order> getOrdersByTime(long startTime, long endTime) throws SQLiteException {
+        TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
+        return query(SQL_SELECT_BY_TIME, binder, rowMapper);
     }
 
     /* ---------- Override ---------- */
@@ -158,4 +167,8 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         .appendSetValue(Column.UPDATE_TIME)
         .appendSetValue(Column.DELETED)
         .appendWhereId().build();
+
+    private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
+        .append(" WHERE createdTime>? ")
+        .append(" AND createdTime<?").build();
 }

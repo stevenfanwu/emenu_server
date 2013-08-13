@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.List;
+
 import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
@@ -16,4 +18,5 @@ public interface IOrderDb {
     public void add(DbTransaction trans, Order order) throws SQLiteException;
     public void update(DbTransaction trans, Order order);
     public Order get(int id) throws SQLiteException;
+    public List<Order> getOrdersByTime(long startTime, long endTime) throws SQLiteException;
 }
