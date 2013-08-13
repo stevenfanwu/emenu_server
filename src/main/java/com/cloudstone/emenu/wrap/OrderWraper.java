@@ -38,9 +38,7 @@ public class OrderWraper extends BaseWraper {
     public List<OrderVO> wrap(List<Order> orders) {
         List<OrderVO> orderVOs = new ArrayList<OrderVO>();
         for (Order order : orders) {
-            LOG.info(JsonUtils.toJson(order));
             Table table = tableLogic.get(order.getTableId());
-            LOG.info(JsonUtils.toJson(table));
             List<OrderDish> relations = orderLogic.listOrderDishes(order.getId());
             List<Dish> dishes = orderLogic.listDishes(order.getId());
             orderVOs.add(OrderVO.create(order, table, relations, dishes));

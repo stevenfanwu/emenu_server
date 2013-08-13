@@ -161,6 +161,8 @@ public class OrderService extends BaseService implements IOrderService {
         List<Order> orders = null;
         try {
              orders = orderDb.getOrdersByTime(startTime, endTime);
+             if(orders == null)
+                 orders = new ArrayList<Order>();
              orders.addAll(billDb.getOrdersByTime(startTime, endTime));
              DataUtils.filterDeleted(orders);
              return sortByTime(orders);
@@ -169,7 +171,7 @@ public class OrderService extends BaseService implements IOrderService {
         }
     }
 
-    private class OrderComparator implements Comparator<Order> {
+    private static final Comparator<Order> ORDER_COMPARATOR = new Comparator<Order>() {
 
         @Override
         public int compare(Order o1, Order o2) {
@@ -183,10 +185,10 @@ public class OrderService extends BaseService implements IOrderService {
                 return 1;
         }
 
-    }
+    };
 
     private List<Order> sortByTime(List<Order> orders) {
-        Collections.sort(orders, new OrderComparator());
+        Collections.sort(orders, ORDER_COMPARATOR);
         return orders;
     }
 }

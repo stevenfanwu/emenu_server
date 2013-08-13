@@ -30,6 +30,7 @@ import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.PrinterUtils;
 import com.cloudstone.emenu.util.StringUtils;
+import com.cloudstone.emenu.util.UnitUtils;
 import com.cloudstone.emenu.util.VelocityRender;
 import com.cloudstone.emenu.wrap.OrderWraper;
 
@@ -161,14 +162,12 @@ public class OrderLogic extends BaseLogic {
     public List<Order> getDailyOrders(long time) {
         if (time <= 0)
             throw new BadRequestError();
-        long offset = Calendar.getInstance().getTimeZone().getRawOffset();
-        time += offset;
-        long currentDay = (long) (time / 1000 / 60 / 60 / 24);
-        long startTime = currentDay * 24 * 60 * 60 * 1000;
-        long endTime = startTime + 24 * 60 * 60 * 1000;
+        //long offset = Calendar.getInstance().getTimeZone().getRawOffset();
+        //time += offset;
+        long currentDay = (long) (time / UnitUtils.DAY);
+        long startTime = currentDay * UnitUtils.DAY;
+        long endTime = startTime + UnitUtils.DAY;
 
-        if (startTime > endTime)
-            throw new ServerError("起始时间大于截至时间");
         return orderService.getDailyOrders(startTime, endTime);
     }
 

@@ -43,9 +43,6 @@ public class OrderApiController extends BaseApiController {
     @RequestMapping(value="/api/orders/daily", method=RequestMethod.GET)
     public @ResponseBody List<OrderVO> getDailyOrders(@RequestParam("time") long time, HttpServletResponse response) {
         List<Order> orders = orderLogic.getDailyOrders(time);
-        if (orders == null || 0 == orders.size()) {
-            return new ArrayList<OrderVO>();
-        }
         return orderWraper.wrap(orders);
     }
 
