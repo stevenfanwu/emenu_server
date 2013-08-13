@@ -1,6 +1,8 @@
 
 package com.cloudstone.emenu.storage.db;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -8,6 +10,7 @@ import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.DailyStat;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
+import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -19,6 +22,8 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 public class StatDb extends SQLiteDb implements IStatDb {
 
     private static final String TABLE_NAME = "stat";
+
+    private static final Logger LOG = LoggerFactory.getLogger(StatDb.class);
 
     @Override
     public DailyStat get(long time) {
@@ -139,7 +144,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
             .build();
 
     private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
-            .appendWhereName().build();
+            .appendWhereTime().build();
 
     private static final RowMapper<DailyStat> rowMapper = new RowMapper<DailyStat>() {
 
@@ -160,10 +165,15 @@ public class StatDb extends SQLiteDb implements IStatDb {
     };
 
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-            .appendSetValue(Column.TIME).appendSetValue(Column.INCOME)
-            .appendSetValue(Column.CUSTOMER_COUNT).appendSetValue(Column.TABLE_COUNT)
-            .appendSetValue(Column.TABLE_RATE).appendSetValue(Column.CREATED_TIME)
-            .appendSetValue(Column.UPDATE_TIME).appendSetValue(Column.DELETED).appendWhereId()
+            .appendSetValue(Column.TIME)
+            .appendSetValue(Column.INCOME)
+            .appendSetValue(Column.CUSTOMER_COUNT)
+            .appendSetValue(Column.TABLE_COUNT)
+            .appendSetValue(Column.TABLE_RATE)
+            .appendSetValue(Column.CREATED_TIME)
+            .appendSetValue(Column.UPDATE_TIME)
+            .appendSetValue(Column.DELETED)
+            .appendWhereId()
             .build();
 
 }

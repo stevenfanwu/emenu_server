@@ -9,10 +9,10 @@ package com.cloudstone.emenu.data;
  *
  */
 public class DailyStat extends BaseData {
-    private static int id;
+    private int id;
     
     //当天 精度为天
-    private static long time;
+    private long time;
     
     //当天总收入
     private double income;
@@ -26,20 +26,20 @@ public class DailyStat extends BaseData {
     //翻桌率
     private double tableRate;
 
-    public static int getId() {
+    public int getId() {
         return id;
     }
 
-    public static void setId(int id) {
-        DailyStat.id = id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public static long getTime() {
+    public long getTime() {
         return time;
     }
 
-    public static void setTime(long time) {
-        DailyStat.time = time;
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public double getIncome() {

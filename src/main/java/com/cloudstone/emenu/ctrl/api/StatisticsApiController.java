@@ -17,7 +17,7 @@ public class StatisticsApiController extends BaseApiController {
     private StatisticsLogic statisticsLogic;
 
     @RequestMapping(value="/api/stat", method=RequestMethod.GET)
-    public @ResponseBody DailyStat getChapterByMenuId(@RequestParam("time") long time) {
-        return statisticsLogic.getStatByTime(time);
+    public @ResponseBody DailyStat getDailyStat(@RequestParam("time") long time) {
+        return statisticsLogic.getDailyStat(time);
     }
 }
