@@ -20,6 +20,6 @@ public interface IBillDb {
     public List<Bill> listBills() throws SQLiteException;
     public Bill get(int id) throws SQLiteException;
     public Bill getByOrderId(int orderId) throws SQLiteException;
-    public List<Order> getOrdersByTime(long startTime, long endTime) throws SQLiteException;
+    public List<Bill> getBillsByTime(long startTime, long endTime) throws SQLiteException;
 
 }

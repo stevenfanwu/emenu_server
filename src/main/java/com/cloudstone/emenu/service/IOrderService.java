@@ -34,5 +34,6 @@ public interface IOrderService {
     public Bill getBillByOrderId(int orderId);
 
     public List<Order> getDailyOrders(long startTime, long endTime);
+    public List<Bill> getDailyBills(long startTime, long endTime);
 
 }

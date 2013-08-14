@@ -159,9 +159,24 @@ public class OrderService extends BaseService implements IOrderService {
         List<Order> orders = null;
         try {
              orders = orderDb.getOrdersByTime(startTime, endTime);
-             orders.addAll(billDb.getOrdersByTime(startTime, endTime));
+             List<Bill> bills = billDb.getBillsByTime(startTime, endTime);
+             for(Bill bill : bills) {
+                 orders.add(bill.getOrder());
+             }
              DataUtils.filterDeleted(orders);
              return sortByTime(orders);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public List<Bill> getDailyBills(long startTime, long endTime) {
+        List<Bill> bills = new ArrayList<Bill>();
+        try {
+             bills.addAll(billDb.getBillsByTime(startTime, endTime));
+             DataUtils.filterDeleted(bills);
+             return bills;
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }

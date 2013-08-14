@@ -66,6 +66,10 @@ public class SQLBuilder {
         return this.appendWhere("id");
     }
     
+    public SQLBuilder appendWhereTime() {
+        return this.appendWhere("time");
+    }
+    
     public SQLBuilder appendWhereIdIn(Object idName, int[] ids) {
         if (firstWhere) {
             append(" WHERE ");

@@ -172,4 +172,12 @@ public class OrderLogic extends BaseLogic {
         return orderService.getDailyOrders(startTime, endTime);
     }
 
+    public List<Bill> getDailyBills(long time) {
+        if (time <= 0)
+            throw new BadRequestError();
+        long currentDay = (long) (time / UnitUtils.DAY);
+        long startTime = currentDay * UnitUtils.DAY;
+        long endTime = startTime + UnitUtils.DAY;
+        return orderService.getDailyBills(startTime, endTime);
+    }
 }

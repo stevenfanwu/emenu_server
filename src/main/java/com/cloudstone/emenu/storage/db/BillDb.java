@@ -59,14 +59,9 @@ public class BillDb extends SQLiteDb implements IBillDb {
     }
 
     @Override
-    public List<Order> getOrdersByTime(long startTime, long endTime) throws SQLiteException {
+    public List<Bill> getBillsByTime(long startTime, long endTime) throws SQLiteException {
         TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
-        List<Bill> bills =  query(SQL_SELECT_BY_TIME, binder, rowMapper);
-        List<Order> orders = new ArrayList<Order>();
-        for(Bill bill : bills) {
-            orders.add(bill.getOrder());
-        }
-        return orders;
+        return query(SQL_SELECT_BY_TIME, binder, rowMapper);
     }
 
     @Override
