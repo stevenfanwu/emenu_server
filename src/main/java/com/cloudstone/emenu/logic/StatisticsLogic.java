@@ -30,15 +30,16 @@ public class StatisticsLogic extends BaseLogic {
             throw new BadRequestError();
         // long offset = Calendar.getInstance().getTimeZone().getRawOffset();
 
-        long requestDay = (long) (time / UnitUtils.DAY);
+        long requestDay = UnitUtils.getDayByMillis(time);
 
         DailyStat dailyStat = null;
-        long currentDay = System.currentTimeMillis();
+        long currentDay = UnitUtils.getDayByMillis(System.currentTimeMillis());
         if (requestDay == currentDay) {
             dailyStat = computeDailyStat(time);
             DailyStat oldStat = statDb.get(requestDay);
             if (oldStat != null) {
                 dailyStat.setUpdateTime(System.currentTimeMillis());
+                dailyStat.setId(oldStat.getId());
                 statDb.update(dailyStat);
             } else {
                 dailyStat.setCreatedTime(System.currentTimeMillis());
@@ -83,8 +84,6 @@ public class StatisticsLogic extends BaseLogic {
         double rate = 0;
         if (0 != totalTables) {
             rate = (double) bills.size() / (double) totalTables;
-        } else {
-            // throw new ServerError("Total tables is zero");
         }
         dailyStat.setTableRate(rate);
         return dailyStat;

@@ -160,6 +160,7 @@ public class OrderService extends BaseService implements IOrderService {
         try {
              orders = orderDb.getOrdersByTime(startTime, endTime);
              List<Bill> bills = billDb.getBillsByTime(startTime, endTime);
+             DataUtils.filterDeleted(bills);
              for(Bill bill : bills) {
                  orders.add(bill.getOrder());
              }

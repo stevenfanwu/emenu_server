@@ -89,4 +89,8 @@ public class UnitUtils {
         }
     }
 
+    public static long getDayByMillis(long millis) {
+        return millis / (long) DAY;
+    }
+
 }
