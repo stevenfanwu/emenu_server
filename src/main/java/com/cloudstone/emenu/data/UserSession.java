@@ -14,7 +14,7 @@ import com.cloudstone.emenu.util.NumberUtils;
  *
  */
 public class UserSession {
-    private static final String SPLIT = "::";
+    private static final String SPLIT = ",";
     private int userId;
     
     private long createdTime;

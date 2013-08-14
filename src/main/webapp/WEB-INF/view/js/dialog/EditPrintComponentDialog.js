@@ -14,7 +14,9 @@ define(function (require, exports, module) {
     var EditPrintComponentDialog = EditDialog.extend({
         headerSuffix: '页眉页脚',
 
-        ContentType: Content
+        ContentType: Content,
+
+        FormType: require('../form/EditPrintComponentForm')
     });
     
     return EditPrintComponentDialog;

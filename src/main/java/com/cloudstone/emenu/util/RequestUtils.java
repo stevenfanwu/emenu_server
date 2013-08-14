@@ -23,6 +23,7 @@ public class RequestUtils {
         if (!CollectionUtils.isEmpty(cookies)) {
             for (Cookie c:cookies) {
                 if (c.getName().equals(name)) {
+                    LOG.info("get Cookie : " + c);
                     return c.getValue();
                 }
             }
