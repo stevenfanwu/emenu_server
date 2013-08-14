@@ -9,7 +9,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.PrintComponent;
+import com.cloudstone.emenu.exception.NotFoundException;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.IPrintComponentDb;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.PrinterUtils;
@@ -39,5 +42,26 @@ public class PrinterLogic extends BaseLogic {
     public PrintComponent addComponent(PrintComponent data) {
         printComponentDb.add(data);
         return printComponentDb.get(data.getId());
+    }
+    
+    public PrintComponent updateComponent(PrintComponent data) {
+        PrintComponent old = printComponentDb.get(data.getId());
+        if (old==null || old.isDeleted()) {
+            throw new NotFoundException("该页眉页脚不存在");
+        }
+        printComponentDb.update(data);
+        return printComponentDb.get(data.getId());
+    }
+    
+    public void deleteComponent(int id) {
+        PrintComponent old = printComponentDb.get(id);
+        if (old==null || old.isDeleted()) {
+            throw new NotFoundException("该页眉页脚不存在");
+        }
+        try {
+            printComponentDb.delete(id);
+        } catch (SQLiteException e) {
+            throw new ServerError(e);
+        }
     }
 }

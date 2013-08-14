@@ -6,7 +6,10 @@ package com.cloudstone.emenu.ctrl.api;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,5 +34,17 @@ public class PrinterApiController extends BaseApiController {
     public @ResponseBody PrintComponent addComponent(@RequestBody String body) {
         PrintComponent data = JsonUtils.fromJson(body, PrintComponent.class);
         return printerLogic.addComponent(data);
+    }
+    
+    @RequestMapping(value="/api/printers/components/{id:[\\d]+}", method=RequestMethod.PUT)
+    public @ResponseBody PrintComponent updateComponent(@RequestBody String body) {
+        PrintComponent data = JsonUtils.fromJson(body, PrintComponent.class);
+        return printerLogic.updateComponent(data);
+    }
+    
+    @RequestMapping(value="/api/printers/components/{id:[\\d]+}", method=RequestMethod.DELETE)
+    public void deleteComponent(@PathVariable(value="id") int id,
+            HttpServletResponse response) {
+        printerLogic.deleteComponent(id);
     }
 }

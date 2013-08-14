@@ -23,10 +23,31 @@ define(function (require, exports, module) {
             }, this);
         },
 
+        initItem: function (model, item) {
+            BaseTable.prototype.initItem.apply(this, arguments);
+
+            item.on('edit', function () {
+                this.showDialog(model);
+            }, this);
+
+            item.on('delete', function () {
+                if (window.confirm('确定删除"' + model.get('name') + '"?')) {
+                    model.destroy({
+                        success: function () {
+                            this.refresh();
+                        }.bind(this)
+                    });
+                }
+            }, this);
+        },
+
         showDialog: function (model) {
             var dialog = new Dialog({
                 model: model
             });
+            dialog.model.on('saved', function () {
+                this.refresh();
+            }, this);
             dialog.show();
         }
         
