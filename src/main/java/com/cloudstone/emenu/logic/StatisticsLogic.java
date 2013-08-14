@@ -76,6 +76,8 @@ public class StatisticsLogic extends BaseLogic {
         // CUSTOMERCOUNT
         int customers = 0;
         for (Bill bill : bills) {
+            if(bill.getOrder() == null)
+                throw new ServerError("bill.getOrder is null!");
             customers += bill.getOrder().getCustomerNumber();
         }
         dailyStat.setCustomerCount(customers);

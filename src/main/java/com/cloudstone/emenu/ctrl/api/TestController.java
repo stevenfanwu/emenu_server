@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.Order;
+import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.service.IOrderService;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
@@ -57,7 +60,7 @@ public class TestController extends BaseApiController {
         Dish dish = new Dish();
         dish.setCreatedTime(199999);
         dish.setUpdateTime(122333333);
-        dish.setId(2);
+        dish.setId(1);
         dish.setName("ahehe");
         dish.setPrice(10d);
         dish.setUnit(1);
@@ -70,30 +73,57 @@ public class TestController extends BaseApiController {
         return dish2;
     }
 
+    @RequestMapping(value = "/api/testorder", method = RequestMethod.GET)
+    public @ResponseBody OrderVO testOrder(HttpServletRequest req) {
+        Order order = new Order();
+        order.setCreatedTime(System.currentTimeMillis());
+        order.setUpdateTime(System.currentTimeMillis());
+        order.setPrice(152.2d);
+        order.setOriginPrice(152.2d);
+        order.setId(1);
+        order.setDeleted(false);
+        order.setTableId(1);
+        orderLogic.addOrder(null, order);
+        
+        Table table = new Table();
+        table.setCapacity(2);
+        table.setId(1);
+        table.setMinCharge(100.0d);
+        table.setName("aa");
+        table.setOrderId(1);
+        table.setStatus(0);
+        table.setTip(10.0d);
+        tableLogic.add(table);
+        
+        return orderWraper.wrap(orderLogic.getOrder(1));
+    }
+    
+    
     @RequestMapping(value = "/api/testtrans", method = RequestMethod.GET)
     public @ResponseBody Bill testTrans(HttpServletRequest req) {
         Bill bill = new Bill();
-        bill.setCost(10.0d);
+        bill.setCost(152.2d);
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        bill.setId(123);
-        bill.setOrderId(231);
+        bill.setId(2);
+        bill.setOrderId(1);
         bill.setDiscountDishIds(new int[] {
-                1, 3, 5
+                1, 2
         });
-        bill.setDiscount(3);
+        bill.setDiscount(2);
         bill.setPayType(0);
         bill.setDeleted(false);
         bill.setInvoice(false);
         bill.setRemarks("sa");
-        bill.setTip(1d);
+        bill.setTip(1.8d);
+        bill.setOrder(orderWraper.wrap(orderLogic.getOrder(1)));
         // Start transaction
         DbTransaction trans = dataSource.openTrans();
         trans.begin();
         orderService.addBill(trans, bill);
         trans.commit();
         trans.close();
-        return new Bill();
+        return orderService.getBill(2);
     }
 }

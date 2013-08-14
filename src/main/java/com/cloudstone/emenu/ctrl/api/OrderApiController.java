@@ -4,8 +4,6 @@
  */
 package com.cloudstone.emenu.ctrl.api;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +30,7 @@ import com.cloudstone.emenu.util.JsonUtils;
 public class OrderApiController extends BaseApiController {
     
     @RequestMapping(value="/api/orders", method=RequestMethod.GET)
-    public @ResponseBody OrderVO getOrder(int orderId, HttpServletResponse response) {
+    public @ResponseBody OrderVO getOrder(@RequestParam("id") int orderId, HttpServletResponse response) {
         Order order  =orderLogic.getOrder(orderId);
         if (order == null) {
             sendError(response, HttpServletResponse.SC_NOT_FOUND);
