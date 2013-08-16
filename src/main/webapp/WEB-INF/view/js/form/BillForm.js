@@ -80,7 +80,10 @@ define(function (require, exports, module) {
             type: AjaxSelect,
             el: '.input-payType',
             wrapId: true,
-            CollectionType: require('../collection/PayTypeCollection')
+            CollectionType: require('../collection/PayTypeCollection'),
+            validators: [{
+                type: Required
+            }]
         }, {
             name: 'remarks',
             type: Text,

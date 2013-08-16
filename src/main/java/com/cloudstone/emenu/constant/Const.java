@@ -70,4 +70,9 @@ public class Const {
     public static class UserAgent {
         public static final String CLOUD_HAND = "CloudHand";
     }
+    
+    public static class CutType {
+        public static final int PER_ORDER = 0;
+        public static final int PER_DISH = 1;
+    }
 }

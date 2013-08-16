@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.PrintComponent;
+import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -46,5 +47,28 @@ public class PrinterApiController extends BaseApiController {
     public void deleteComponent(@PathVariable(value="id") int id,
             HttpServletResponse response) {
         printerLogic.deleteComponent(id);
+    }
+
+    @RequestMapping(value="/api/printers/templates", method=RequestMethod.GET)
+    public @ResponseBody List<PrintTemplate> listTemplates() {
+        return printerLogic.listTemplate();
+    }
+    
+    @RequestMapping(value="/api/printers/templates", method=RequestMethod.POST)
+    public @ResponseBody PrintTemplate addTemplate(@RequestBody String body) {
+        PrintTemplate data = JsonUtils.fromJson(body, PrintTemplate.class);
+        return printerLogic.addTemplate(data);
+    }
+    
+    @RequestMapping(value="/api/printers/templates/{id:[\\d]+}", method=RequestMethod.PUT)
+    public @ResponseBody PrintTemplate updateTemplate(@RequestBody String body) {
+        PrintTemplate data = JsonUtils.fromJson(body, PrintTemplate.class);
+        return printerLogic.updateTemplate(data);
+    }
+    
+    @RequestMapping(value="/api/printers/templates/{id:[\\d]+}", method=RequestMethod.DELETE)
+    public void deleteTemplate(@PathVariable(value="id") int id,
+            HttpServletResponse response) {
+        printerLogic.deleteTemplate(id);
     }
 }

@@ -23,6 +23,22 @@ define(function (require, exports, module) {
             this.$(this.valueEl).focus();
         },
 
+        hasValidator: function (validatorType) {
+            return this.findValidator(validatorType) !== null;
+        },
+
+        findValidator: function (validatorType) {
+            var r = null;
+            this.validators.some(function (validator) {
+                if (validator instanceof validatorType) {
+                    r = validator;
+                    return true;
+                }
+                return false;
+            });
+            return r;
+        },
+
         parseConfig: function (config) {
             //config validators
             this.name = config.name;

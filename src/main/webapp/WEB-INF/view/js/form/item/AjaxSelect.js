@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     "use strict";
 
     var Select = require('./Select');
+    var Required = require('../validator/Required');
 
     var AjaxSelect = Select.extend({
         optionList: [],
@@ -25,9 +26,10 @@ define(function (require, exports, module) {
             this.wrapId = config.wrapId === true;
         },
 
-        initValue: null,
-
         getValue: function () {
+            if (!this.hasValidator(Required) && this.$('select')[0].selectedIndex === 0) {
+                return null;
+            }
             if (this.wrapId) {
                 var name = this.getLabel();
                 var id = null;
@@ -48,6 +50,9 @@ define(function (require, exports, module) {
         },
 
         setValue: function (value) {
+            if (value === null) {
+                return;
+            }
             if (this.wrapId) {
                 var id = value;
                 var name = null;
@@ -58,14 +63,27 @@ define(function (require, exports, module) {
                     }
                     return false;
                 }, this);
-                this.initValue = name;
-            } else {
-                this.initValue = value;
+                value = name;
             }
+            Select.prototype.setValue.call(this, value);
+        },
+
+        getOptions: function () {
+            var data = this.collection.toJSON();
+            if (!this.hasValidator(Required)) {
+                if (this.wrapId) {
+                    data.unshift({
+                        name: '无',
+                        id: 0
+                    });
+                } else {
+                    data.unshift('无');
+                }
+            }
+            return data;
         },
         
         init: function () {
-            Select.prototype.init.apply(this, arguments);
             if (!this.fetched) {
                 if (!this.collection) {
                     var Collection = this.CollectionType;
@@ -74,10 +92,8 @@ define(function (require, exports, module) {
                 this.collection.fetch({
                     success: function () {
                         this.fetched = true;
-                        this.$(this.valueEl).html(this.template(this.collection.toJSON()));
-                        if (this.initValue) {
-                            Select.prototype.setValue.call(this, this.initValue);
-                        }
+                        this.$(this.valueEl).html(this.template(this.getOptions()));
+                        Select.prototype.init.apply(this, arguments);
                     }.bind(this)
                 });
             }

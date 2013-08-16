@@ -31,6 +31,15 @@ define(function (require, exports, module) {
             this.on('showTemplates', function () {
                 this.emptyPullRightTab();
                 this.activeTab('.tab-templates');
+                var PrintTemplateList = require('../list/PrintTemplateList');
+                var list = new PrintTemplateList();
+                list.render();
+                this.$('.bottom-content').empty();
+                this.$('.bottom-content').append(list.el);
+                var tab = this.appendPullRight('添加模板');
+                tab.on('click', function () {
+                    list.trigger('createTemplate');
+                }, this);
             }, this);
 
             this.on('showPrinters', function () {
