@@ -15,6 +15,8 @@ define(function (require, exports, module) {
 
         valueEl: 'input',
 
+        value: null,
+
         reset: function () {
             this.clearTip();
         },

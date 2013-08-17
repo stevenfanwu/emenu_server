@@ -45,6 +45,11 @@ define(function (require, exports, module) {
             this.on('showPrinters', function () {
                 this.emptyPullRightTab();
                 this.activeTab('.tab-printers');
+                var PrinterConfigList = require('../list/PrinterConfigList');
+                var list = new PrinterConfigList();
+                list.render();
+                this.$('.bottom-content').empty();
+                this.$('.bottom-content').append(list.el);
             }, this);
         }
     });

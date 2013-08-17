@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Component;
 import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.PrintComponent;
 import com.cloudstone.emenu.data.PrintTemplate;
+import com.cloudstone.emenu.data.PrinterConfig;
 import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.IPrintComponentDb;
 import com.cloudstone.emenu.storage.db.IPrintTemplateDb;
+import com.cloudstone.emenu.storage.db.IPrinterConfigDb;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.PrinterUtils;
 
@@ -29,6 +32,8 @@ public class PrinterLogic extends BaseLogic {
     private IPrintComponentDb printComponentDb;
     @Autowired
     private IPrintTemplateDb printTemplateDb;
+    @Autowired
+    private IPrinterConfigDb printerConfigDb;
     
     public String[] listPrinters() {
         return PrinterUtils.listPrinters();
@@ -107,9 +112,33 @@ public class PrinterLogic extends BaseLogic {
     public void deleteTemplate(int id) {
         try {
             printTemplateDb.delete(id);
-            //TODO update printConfig
+            printerConfigDb.removeTemplate(id);
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
+    }
+    
+    public PrinterConfig getPrinterConfig(String name) {
+        PrinterConfig config = printerConfigDb.getConfig(name);
+        if (config == null) {
+            config = new PrinterConfig();
+            config.setName(name);
+            printerConfigDb.update(config);
+        }
+        return config;
+    }
+    
+    public PrinterConfig updatePrinterConfig(PrinterConfig config) {
+        printerConfigDb.update(config);
+        return printerConfigDb.getConfig(config.getName());
+    }
+    
+    public List<PrinterConfig> listPrinterConfig() {
+        String[] printers = listPrinters();
+        List<PrinterConfig> configs = new ArrayList<PrinterConfig>();
+        for (String name:printers) {
+            configs.add(getPrinterConfig(name));
+        }
+        return configs;
     }
 }

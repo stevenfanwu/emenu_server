@@ -9,7 +9,7 @@ define(function (require, exports, module) {
     var CheckBox = BaseItem.extend({
 
         setValue: function (value) {
-            this.$('input').prop('checked', true);
+            this.$('input').prop('checked', value);
         },
         
         getValue: function () {

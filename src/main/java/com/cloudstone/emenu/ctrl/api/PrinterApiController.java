@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.data.PrintComponent;
 import com.cloudstone.emenu.data.PrintTemplate;
+import com.cloudstone.emenu.data.PrinterConfig;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -70,5 +71,17 @@ public class PrinterApiController extends BaseApiController {
     public void deleteTemplate(@PathVariable(value="id") int id,
             HttpServletResponse response) {
         printerLogic.deleteTemplate(id);
+    }
+    
+
+    @RequestMapping(value="/api/printers/configs", method=RequestMethod.GET)
+    public @ResponseBody List<PrinterConfig> listConfigs() {
+        return printerLogic.listPrinterConfig();
+    }
+    
+    @RequestMapping(value="/api/printers/configs/{id:[\\d]+}", method=RequestMethod.PUT)
+    public @ResponseBody PrinterConfig updateConfig(@RequestBody String body) {
+        PrinterConfig data = JsonUtils.fromJson(body, PrinterConfig.class);
+        return printerLogic.updatePrinterConfig(data);
     }
 }

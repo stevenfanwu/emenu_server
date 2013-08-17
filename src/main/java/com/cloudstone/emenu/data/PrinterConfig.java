@@ -4,38 +4,58 @@
  */
 package com.cloudstone.emenu.data;
 
+import com.cloudstone.emenu.constant.EmptyConst;
+
 /**
  * @author xuhongfeng
  *
  */
-public class PrinterConfig extends BaseData {
-    private String printer;
-    private int type;
-    private int status;
-    private int templateId;
+public class PrinterConfig {
+    private int id = -1;
+    private String name;
+    private boolean whenOrdered;
+    private int[] orderedTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
+    private boolean whenBill;
+    private int[] billTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
     
-    public String getPrinter() {
-        return printer;
+    public boolean isWhenOrdered() {
+        return whenOrdered;
     }
-    public void setPrinter(String printer) {
-        this.printer = printer;
+    public void setWhenOrdered(boolean whenOrdered) {
+        this.whenOrdered = whenOrdered;
     }
-    public int getType() {
-        return type;
+    public int[] getOrderedTemplateIds() {
+        return orderedTemplateIds;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setOrderedTemplateIds(int[] orderedTemplateIds) {
+        this.orderedTemplateIds = orderedTemplateIds;
     }
-    public int getStatus() {
-        return status;
+    public boolean isWhenBill() {
+        return whenBill;
     }
-    public void setStatus(int status) {
-        this.status = status;
+    public void setWhenBill(boolean whenBill) {
+        this.whenBill = whenBill;
     }
-    public int getTemplateId() {
-        return templateId;
+    public int[] getBillTemplateIds() {
+        return billTemplateIds;
     }
-    public void setTemplateId(int templateId) {
-        this.templateId = templateId;
+    public void setBillTemplateIds(int[] billTemplateIds) {
+        this.billTemplateIds = billTemplateIds;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+        this.id = name.hashCode();
+    }
+    public int getId() {
+        if (id == -1) {
+            id = name.hashCode();
+        }
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 }
