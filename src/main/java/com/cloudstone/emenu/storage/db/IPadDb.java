@@ -6,7 +6,6 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Pad;
 
 /**
@@ -15,8 +14,8 @@ import com.cloudstone.emenu.data.Pad;
  */
 public interface IPadDb extends IDb {
 
-    public Pad get(int id) throws SQLiteException;
-    public List<Pad> listAll() throws SQLiteException;
-    public void add(Pad pad) throws SQLiteException;
-    public void update(Pad pad) throws SQLiteException;
+    public Pad get(int id) ;
+    public List<Pad> listAll() ;
+    public void add(Pad pad) ;
+    public void update(Pad pad) ;
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Pad;
 import com.cloudstone.emenu.exception.DataConflictException;
-import com.cloudstone.emenu.service.IDeviceService;
+import com.cloudstone.emenu.storage.db.IPadDb;
 import com.cloudstone.emenu.util.DataUtils;
 
 /**
@@ -21,24 +21,24 @@ import com.cloudstone.emenu.util.DataUtils;
 @Component
 public class DeviceLogic extends BaseLogic {
     @Autowired
-    private IDeviceService deviceService;
+    private IPadDb padDb;
     @Autowired
     private ConfigLogic configLogic;
     @Autowired
     private ThriftLogic thriftLogic;
 
     public Pad getPad(int id) {
-        return deviceService.getPad(id);
+        return padDb.get(id);
     }
     
     public List<Pad> listAllPad() {
-        List<Pad> pads = deviceService.listAllPad();
+        List<Pad> pads = padDb.listAll();
         DataUtils.filterDeleted(pads);
         return pads;
     }
     
     public Pad addPad(Pad pad) {
-        List<Pad> pads = deviceService.listAllPad();
+        List<Pad> pads = padDb.listAll();
         Pad sameImei = null;
         Pad sameName = null;
         int count = 0;
@@ -67,17 +67,17 @@ public class DeviceLogic extends BaseLogic {
         pad.setUpdateTime(now);
         if (old != null) {
             pad.setId(old.getId());
-            deviceService.updatePad(pad);
+            padDb.update(pad);
         } else {
             pad.setCreatedTime(now);
-            deviceService.addPad(pad);
+            padDb.add(pad);
         }
         thriftLogic.onPadChanged();
         return getPad(pad.getId());
     }
     
     public Pad updatePad(Pad pad) {
-        List<Pad> pads = deviceService.listAllPad();
+        List<Pad> pads = padDb.listAll();
         for (Pad p:pads) {
             if (p.getName().equals(pad.getName())) {
                 if (!p.isDeleted() && p.getId()!=pad.getId()) {
@@ -92,13 +92,13 @@ public class DeviceLogic extends BaseLogic {
         }
         long now = System.currentTimeMillis();
         pad.setUpdateTime(now);
-        deviceService.updatePad(pad);
+        padDb.update(pad);
         thriftLogic.onPadChanged();
         return getPad(pad.getId());
     }
     
     public void deletePad(int id) {
-        deviceService.deletePad(id);
+        padDb.delete(id);
         thriftLogic.onPadChanged();
     }
     

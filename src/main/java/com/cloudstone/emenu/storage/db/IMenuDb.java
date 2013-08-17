@@ -6,7 +6,6 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Menu;
 
 /**
@@ -15,10 +14,10 @@ import com.cloudstone.emenu.data.Menu;
  */
 public interface IMenuDb extends IDb {
 
-    public void addMenu(Menu menu) throws SQLiteException;
-    public void updateMenu(Menu menu) throws SQLiteException;
-    public void deleteMenu(int id) throws SQLiteException;
-    public List<Menu> getAllMenu() throws SQLiteException;
-    public Menu getMenu(int id) throws SQLiteException;
-    public Menu getByName(String name) throws SQLiteException;
+    public void addMenu(Menu menu) ;
+    public void updateMenu(Menu menu) ;
+    public void deleteMenu(int id) ;
+    public List<Menu> getAllMenu() ;
+    public Menu getMenu(int id) ;
+    public Menu getByName(String name) ;
 }

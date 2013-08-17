@@ -33,28 +33,28 @@ public class PadDb extends SQLiteDb implements IPadDb {
     }
 
     @Override
-    public Pad get(int id) throws SQLiteException {
+    public Pad get(int id) {
         return queryOne(SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
     }
 
     @Override
-    public List<Pad> listAll() throws SQLiteException {
+    public List<Pad> listAll() {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public void add(Pad pad) throws SQLiteException {
+    public void add(Pad pad) {
         pad.setId(genId());
         executeSQL(null, SQL_INSERT, new PadBinder(pad));
     }
 
     @Override
-    public void update(Pad pad) throws SQLiteException {
+    public void update(Pad pad) {
         executeSQL(null, SQL_UPDATE, new UpdateBinder(pad));
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
     

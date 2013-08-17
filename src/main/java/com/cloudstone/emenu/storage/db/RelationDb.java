@@ -30,7 +30,7 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
 
     /* ---------- init ---------- */
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         //create table
         ColumnDefBuilder columnDefBuilder = new ColumnDefBuilder().append(ID1, DataType.INTEGER, "NOT NULL")
                 .append(ID2, DataType.INTEGER, "NOT NULL");
@@ -57,47 +57,47 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     protected abstract RelationRowMapper<T> onCreateRowMapper();
     
     /* ---------- protected ---------- */
-    protected void add(DbTransaction trans, InsertBinder binder) throws SQLiteException {
+    protected void add(DbTransaction trans, InsertBinder binder) {
         int columnCount = 2 + config.columns.length;
         String sql = new InsertSqlBuilder(config.tableName, columnCount, true).build();
         executeSQL(trans, sql, binder);
     }
     
-    protected void deleteById2(int id2) throws SQLiteException {
+    protected void deleteById2(int id2) {
         deleteById(ID2, id2);
     }
     
-    protected void deleteById1(int id1) throws SQLiteException {
+    protected void deleteById1(int id1) {
         deleteById(ID1, id1);
     }
     
-    private void deleteById(String idName, int id) throws SQLiteException {
+    private void deleteById(String idName, int id) {
         String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE " + idName + "=?";
         executeSQL(null, sql, new IdStatementBinder(id));
     }
     
-    protected List<T> listById1(int id1) throws SQLiteException {
+    protected List<T> listById1(int id1) {
         return listById(ID1, id1);
     }
     
-    protected List<T> listById2(int id2) throws SQLiteException {
+    protected List<T> listById2(int id2) {
         return listById(ID2, id2);
     }
     
-    private List<T> listById(String idName, int id) throws SQLiteException {
+    private List<T> listById(String idName, int id) {
         String sql = new SelectSqlBuilder(config.tableName).appendWhere(idName).build();
         return query(sql, new IdStatementBinder(id), rowMapper);
     }
     
-    protected int countId1(int id1) throws SQLiteException {
+    protected int countId1(int id1) {
         return countId(ID1, id1);
     }
     
-    protected int countId2(int id2) throws SQLiteException {
+    protected int countId2(int id2) {
         return countId(ID2, id2);
     }
     
-    private int countId(String idName, int id) throws SQLiteException {
+    private int countId(String idName, int id) {
         String sql = new CountSqlBuilder(config.tableName).appendWhere(idName)
                 .appendNotDeleted().build();
         return queryInt(sql, new IdStatementBinder(id));

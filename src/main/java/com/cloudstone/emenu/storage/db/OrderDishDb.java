@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.OrderDish;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
@@ -39,7 +38,7 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             new RelationDbColumn("deleted", DataType.INTEGER, false);
     
     @Override
-    public void add(DbTransaction trans, final OrderDish data) throws SQLiteException {
+    public void add(DbTransaction trans, final OrderDish data) {
         add(trans, new InsertBinder(data.getOrderId(), data.getDishId()) {
             @Override
             protected void bindOthers(SQLiteStatement stmt)
@@ -58,15 +57,11 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
     
     @Override
     public void update(DbTransaction trans, OrderDish data) {
-        try {
-            executeSQL(trans, SQL_UPDATE, new UpdateBinder(data));
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        executeSQL(trans, SQL_UPDATE, new UpdateBinder(data));
     }
     
     @Override
-    public List<OrderDish> listOrderDish(int orderId) throws SQLiteException {
+    public List<OrderDish> listOrderDish(int orderId) {
         return listById1(orderId);
     }
 

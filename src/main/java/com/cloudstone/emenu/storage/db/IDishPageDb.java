@@ -6,7 +6,6 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.storage.db.RelationDb.Relation;
 
 /**
@@ -14,13 +13,13 @@ import com.cloudstone.emenu.storage.db.RelationDb.Relation;
  *
  */
 public interface IDishPageDb extends IDb {
-    public void deleteByDishId(int dishId) throws SQLiteException;
-    public void deleteByMenuPageId(int menuPageId) throws SQLiteException;
-    public List<DishPage> getByMenuPageId(int menuPageId) throws SQLiteException;
-    public List<DishPage> getByDishId(int dishId) throws SQLiteException;
-    public int countByDishId(int dishId) throws SQLiteException;
-    public void add(int menuPageId, int dishId, int pos) throws SQLiteException;
-    public void delete(int menuPageId, int pos) throws SQLiteException;
+    public void deleteByDishId(int dishId) ;
+    public void deleteByMenuPageId(int menuPageId) ;
+    public List<DishPage> getByMenuPageId(int menuPageId) ;
+    public List<DishPage> getByDishId(int dishId) ;
+    public int countByDishId(int dishId) ;
+    public void add(int menuPageId, int dishId, int pos) ;
+    public void delete(int menuPageId, int pos) ;
     
     public static class DishPage extends Relation {
         private int pos;

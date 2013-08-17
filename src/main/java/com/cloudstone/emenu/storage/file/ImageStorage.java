@@ -38,7 +38,7 @@ public class ImageStorage extends FileStorage {
     }
     
     
-    public String saveImage(String uriData) throws IOException {
+    public String saveImage(String uriData) {
         String prefix = uriData.substring(0, 25);
         if (!prefix.startsWith("data:image/")) {
             throw new ServerError("uriData not match");
@@ -52,16 +52,25 @@ public class ImageStorage extends FileStorage {
         return saveImage(bytes, extension);
     }
     
-    public String saveImage(byte[] bytes, String extension) throws IOException {
+    public String saveImage(byte[] bytes, String extension) {
         String imageId = MD5Utils.md5(bytes);
         imageId = imageId + "." + extension;
         File file = new File(getImageDir(), imageId);
-        FileUtils.writeByteArrayToFile(file, bytes);
+        try {
+            FileUtils.writeByteArrayToFile(file, bytes);
+        } catch (IOException e) {
+            throw new ServerError(e);
+        }
         return imageId;
     }
     
-    public String getUriData(String imageId) throws IOException {
-        byte[] bytes = getImage(imageId);
+    public String getUriData(String imageId) {
+        byte[] bytes;
+        try {
+            bytes = getImage(imageId);
+        } catch (IOException e) {
+            throw new ServerError(e);
+        }
         return ImageUtils.toUriData(bytes, imageId);
     }
     

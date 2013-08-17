@@ -60,7 +60,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
 
     /* ---------- public ---------- */
     @Override
-    public void add(int menuPageId, int dishId, final int pos) throws SQLiteException {
+    public void add(int menuPageId, int dishId, final int pos) {
         add(null, new InsertBinder(menuPageId, dishId) {
             @Override
             protected void bindOthers(SQLiteStatement stmt)
@@ -75,34 +75,34 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     }
 
     @Override
-    public void deleteByDishId(int dishId) throws SQLiteException {
+    public void deleteByDishId(int dishId) {
         deleteById2(dishId);
     }
 
     @Override
-    public void deleteByMenuPageId(int menuPageId) throws SQLiteException {
+    public void deleteByMenuPageId(int menuPageId) {
         deleteById1(menuPageId);
     }
 
     @Override
     public List<DishPage> getByMenuPageId(int menuPageId)
-            throws SQLiteException {
+            {
         return listById1(menuPageId);
     }
 
     @Override
     public List<DishPage> getByDishId(int dishId)
-            throws SQLiteException {
+            {
         return listById2(dishId);
     }
 
     @Override
-    public int countByDishId(int dishId) throws SQLiteException {
+    public int countByDishId(int dishId) {
         return countId2(dishId);
     }
     
     @Override
-    public void delete(final int menuPageId, final int pos) throws SQLiteException {
+    public void delete(final int menuPageId, final int pos) {
         String sql = new UpdateSqlBuilder(TABLE_NAME)
             .appendSetValue(COL_DELETED)
             .appendWhere(ID1).appendWhere(COL_POS).build();

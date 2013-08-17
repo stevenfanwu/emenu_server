@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.DailyStat;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
@@ -27,31 +26,19 @@ public class StatDb extends SQLiteDb implements IStatDb {
     @Override
     public DailyStat get(long time) {
         NameStatementBinder binder = new NameStatementBinder("" + time);
-        try {
-            return queryOne(SQL_SELECT_BY_TIME, binder, rowMapper);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        return queryOne(SQL_SELECT_BY_TIME, binder, rowMapper);
     }
 
     @Override
     public void update(DailyStat stat) {
-        try {
-            executeSQL(null, SQL_UPDATE, new UpdateBinder(stat));
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        executeSQL(null, SQL_UPDATE, new UpdateBinder(stat));
     }
 
     @Override
     public void add(DailyStat stat) {
-        try {
-            stat.setId(genId());
-            StatBinder binder = new StatBinder(stat);
-            executeSQL(null, SQL_INSERT, binder);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        stat.setId(genId());
+        StatBinder binder = new StatBinder(stat);
+        executeSQL(null, SQL_INSERT, binder);
     }
 
     @Override
@@ -60,7 +47,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
 

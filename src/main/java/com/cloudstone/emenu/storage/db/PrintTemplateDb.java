@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.PrintTemplate;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
@@ -29,16 +28,12 @@ public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
     
     @Override
     public void removeComponent(int componentId) {
-        try {
-            String sql = "UPDATE " + TABLE_NAME
-                    + " SET headerId=0 WHERE headerId=" + componentId;
-            executeSQL(null, sql, StatementBinder.NULL);
-            sql = "UPDATE " + TABLE_NAME
-                    + " SET footerId=0 WHERE footerId=" + componentId;
-            executeSQL(null, sql, StatementBinder.NULL);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        String sql = "UPDATE " + TABLE_NAME
+                + " SET headerId=0 WHERE headerId=" + componentId;
+        executeSQL(null, sql, StatementBinder.NULL);
+        sql = "UPDATE " + TABLE_NAME
+                + " SET footerId=0 WHERE footerId=" + componentId;
+        executeSQL(null, sql, StatementBinder.NULL);
     }
 
     @Override
@@ -48,45 +43,28 @@ public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
 
     @Override
     public void add(PrintTemplate data) {
-        try {
-            data.setId(genId());
-            executeSQL(null, SQL_INSERT, new PrintTemplateBinder(data));
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
-        
+        data.setId(genId());
+        executeSQL(null, SQL_INSERT, new PrintTemplateBinder(data));
     }
 
     @Override
     public void update(PrintTemplate template) {
-        try {
-            executeSQL(null, SQL_UPDATE, new UpdateBinder(template));
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        executeSQL(null, SQL_UPDATE, new UpdateBinder(template));
     }
 
     @Override
     public PrintTemplate get(int id) {
-        try {
-            return queryOne(SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        return queryOne(SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
     
     @Override
     public List<PrintTemplate> listAll() {
-        try {
-            return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     /* ---------- SQL ---------- */

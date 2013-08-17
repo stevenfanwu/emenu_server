@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.DishTag;
 
 /**
@@ -24,48 +23,44 @@ public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
     };
     
     @Override
-    protected void init() throws SQLiteException {
+    protected void init() {
         super.init();
-        try {
-            if (listAll().size() == 0) {
-                for (String name: DEFAULT_DISH_TAGS) {
-                    DishTag tag = new DishTag();
-                    tag.setName(name);
-                    add(tag);
-                }
+        if (listAll().size() == 0) {
+            for (String name: DEFAULT_DISH_TAGS) {
+                DishTag tag = new DishTag();
+                tag.setName(name);
+                add(tag);
             }
-        } catch (SQLiteException e) {
-            throw new RuntimeException(e);
         }
     }
     
     @Override
-    public DishTag getDishTagByName(String name) throws SQLiteException {
+    public DishTag getDishTagByName(String name) {
         return getByName(name);
     }
     
     @Override
-    public DishTag getDishTag(int id) throws SQLiteException {
+    public DishTag getDishTag(int id) {
         return get(id);
     }
 
     @Override
-    public List<DishTag> listAll() throws SQLiteException {
+    public List<DishTag> listAll() {
         return getAll();
     }
 
     @Override
-    public void addDishTag(DishTag tag) throws SQLiteException {
+    public void addDishTag(DishTag tag) {
         add(tag);
     }
 
     @Override
-    public void updateDishTag(DishTag tag) throws SQLiteException {
+    public void updateDishTag(DishTag tag) {
         update(tag);
     }
 
     @Override
-    public void deleteDishTag(int id) throws SQLiteException {
+    public void deleteDishTag(int id) {
         delete(id);
     }
     

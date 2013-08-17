@@ -81,12 +81,12 @@ public class UserDb extends SQLiteDb implements IUserDb {
         .appendSetValue(Column.PASSWORD.toString()).appendWhereId().build();
     
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
     
     @Override
-    public User getByName(String userName) throws SQLiteException {
+    public User getByName(String userName) {
         User user = super.getByName(userName, rowMapper);
         if (user==null && userName.equals("admin") && getAll().size()==0) {
             //create a default admin user
@@ -101,7 +101,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     }
     
     @Override
-    public User update(User user) throws SQLiteException {
+    public User update(User user) {
         String sql = SQL_UPDATE;
         executeSQL(null, sql, new UpdateBinder(user));
         return get(user.getId());
@@ -109,25 +109,25 @@ public class UserDb extends SQLiteDb implements IUserDb {
     
     @Override
     public boolean modifyPassword(int userId, String password)
-            throws SQLiteException {
+            {
         executeSQL(null, SQL_MODIFY_PASSWORD, new ModifyPasswordBinder(userId, password));
         return true;
     }
     
     @Override
-    public User get(int userId) throws SQLiteException {
+    public User get(int userId) {
         IdStatementBinder binder = new IdStatementBinder(userId);
         User user = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return user;
     }
     
     @Override
-    public List<User> getAll() throws SQLiteException {
+    public List<User> getAll() {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public User add(User user) throws SQLiteException {
+    public User add(User user) {
         user.setId(genId());
         UserBinder binder = new UserBinder(user);
         executeSQL(null, SQL_INSERT, binder);

@@ -14,8 +14,7 @@ import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
-import com.cloudstone.emenu.service.OrderService;
-import com.cloudstone.emenu.service.TableService;
+import com.cloudstone.emenu.storage.db.ITableDb;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.CollectionUtils.Tester;
@@ -27,10 +26,9 @@ import com.cloudstone.emenu.util.DataUtils;
  */
 @Component
 public class TableLogic extends BaseLogic {
+    
     @Autowired
-    private TableService tableService;
-    @Autowired
-    private OrderService orderService;
+    private ITableDb tableDb;
     
     @Autowired
     private OrderLogic orderLogic;
@@ -62,13 +60,13 @@ public class TableLogic extends BaseLogic {
     
             long now = System.currentTimeMillis();
             from.setUpdateTime(now);
-            tableService.update(trans, from);
+            tableDb.update(trans, from);
             to.setUpdateTime(now);
-            tableService.update(trans, to);
+            tableDb.update(trans, to);
             
             if (order != null) {
                 order.setTableId(to.getId());
-                orderService.updateOrder(trans, order);
+                orderLogic.updateOrder(trans, order);
             }
             trans.commit();
         } finally {
@@ -85,16 +83,16 @@ public class TableLogic extends BaseLogic {
         table.setUpdateTime(now);
         if (oldTable != null) {
             table.setId(oldTable.getId());
-            tableService.update(null, table);
+            tableDb.update(null, table);
         } else {
             table.setCreatedTime(now);
-            tableService.add(table);
+            tableDb.add(table);
         }
-        return tableService.get(table.getId());
+        return tableDb.get(table.getId());
     }
     
     public List<Table> getAll() {
-        List<Table> tables = tableService.getAll();
+        List<Table> tables = tableDb.getAll();
         DataUtils.filterDeleted(tables);
         return tables;
     }
@@ -112,24 +110,24 @@ public class TableLogic extends BaseLogic {
 
     
     public Table update(DbTransaction trans, Table table) {
-        Table other = tableService.getByName(table.getName());
+        Table other = tableDb.getByTableName(table.getName());
         if (other!=null && other.getId()!=table.getId() && !other.isDeleted()) {
             throw new DataConflictException("该餐桌已存在");
         }
         table.setUpdateTime(System.currentTimeMillis());
-        tableService.update(trans, table);
-        return tableService.get(table.getId());
+        tableDb.update(trans, table);
+        return tableDb.get(table.getId());
     }
     
     public void delete(int tableId) {
-        tableService.delete(tableId);
+        tableDb.delete(tableId);
     }
     
     public Table get(int tableId) {
-        return tableService.get(tableId);
+        return tableDb.get(tableId);
     }
     
     public Table getByName(String name) {
-        return tableService.getByName(name);
+        return tableDb.getByTableName(name);
     }
 }

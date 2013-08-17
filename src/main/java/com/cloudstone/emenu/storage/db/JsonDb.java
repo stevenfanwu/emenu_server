@@ -44,19 +44,11 @@ public class JsonDb extends SQLiteDb {
     }
     
     public List<String> getAll() {
-        try {
-            return query(SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        return query(SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
     }
     
     public void remove(String key) {
-        try {
-            executeSQL(null, SQL_DELETE, new KeyBinder(key));
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        executeSQL(null, SQL_DELETE, new KeyBinder(key));
         cache.remove(key);
     }
     
@@ -93,7 +85,7 @@ public class JsonDb extends SQLiteDb {
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
 

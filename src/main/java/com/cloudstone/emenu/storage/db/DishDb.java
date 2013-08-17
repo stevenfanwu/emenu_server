@@ -37,41 +37,41 @@ public class DishDb extends SQLiteDb implements IDishDb {
     }
     
     @Override
-    public List<IdName> getDishSuggestion() throws SQLiteException {
+    public List<IdName> getDishSuggestion() {
         return getIdNames();
     }
     
     @Override
-    public void add(Dish dish) throws SQLiteException {
+    public void add(Dish dish) {
         dish.setId(genId());
         DishBinder binder = new DishBinder(dish);
         executeSQL(null, SQL_INSERT, binder);
     }
     
     @Override
-    public Dish getByName(String name) throws SQLiteException {
+    public Dish getByName(String name) {
         return super.getByName(name, rowMapper);
     }
     
     @Override
-    public Dish get(int dishId) throws SQLiteException {
+    public Dish get(int dishId) {
         IdStatementBinder binder = new IdStatementBinder(dishId);
         Dish dish = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return dish;
     }
     
     @Override
-    public List<Dish> getAll() throws SQLiteException {
+    public List<Dish> getAll() {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
     @Override
-    public void update(Dish dish) throws SQLiteException {
+    public void update(Dish dish) {
         executeSQL(null, SQL_UPDATE, new UpdateBinder(dish));
     }
     
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
     

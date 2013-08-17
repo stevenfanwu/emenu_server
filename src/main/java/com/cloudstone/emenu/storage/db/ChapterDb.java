@@ -31,52 +31,52 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     }
     
     @Override
-    public Chapter getChapterByName(String name) throws SQLiteException {
+    public Chapter getChapterByName(String name) {
         return getByName(name, rowMapper);
     }
     
     @Override
-    public List<Chapter> listChapters(int menuId) throws SQLiteException {
+    public List<Chapter> listChapters(int menuId) {
         GetByMenuIdBinder binder = new GetByMenuIdBinder(menuId);
         return query(SQL_SELECT_BY_MENU_ID, binder, rowMapper);
     }
     
     @Override
-    public List<Chapter> listChapters(int[] ids) throws SQLiteException {
+    public List<Chapter> listChapters(int[] ids) {
         String sql = new SelectSqlBuilder(TABLE_NAME).appendWhereIdIn(ids).build();
         return query(sql, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public void addChapter(Chapter chapter) throws SQLiteException {
+    public void addChapter(Chapter chapter) {
         chapter.setId(genId());
         executeSQL(null, SQL_INSERT, new ChapterBinder(chapter));
     }
 
     @Override
-    public void updateChapter(Chapter chapter) throws SQLiteException {
+    public void updateChapter(Chapter chapter) {
         executeSQL(null, SQL_UPDATE, new UpdateBinder(chapter));
     }
 
     @Override
-    public void deleteChapter(int id) throws SQLiteException {
+    public void deleteChapter(int id) {
         delete(id);
     }
 
     @Override
-    public List<Chapter> getAllChapter() throws SQLiteException {
+    public List<Chapter> getAllChapter() {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public Chapter getChapter(int id) throws SQLiteException {
+    public Chapter getChapter(int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
         Chapter chapter = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return chapter;
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
     

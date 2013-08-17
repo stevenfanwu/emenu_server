@@ -4,6 +4,9 @@
  */
 package com.cloudstone.emenu.logic;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,7 +26,10 @@ import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
-import com.cloudstone.emenu.service.IOrderService;
+import com.cloudstone.emenu.storage.db.IBillDb;
+import com.cloudstone.emenu.storage.db.IOrderDb;
+import com.cloudstone.emenu.storage.db.IOrderDishDb;
+import com.cloudstone.emenu.storage.db.IPayTypeDb;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.UnitUtils;
@@ -39,6 +45,15 @@ public class OrderLogic extends BaseLogic {
     private static final Logger LOG = LoggerFactory.getLogger(OrderLogic.class);
     
     @Autowired
+    private IBillDb billDb;
+    @Autowired
+    private IOrderDb orderDb;
+    @Autowired
+    private IOrderDishDb orderDishDb;
+    @Autowired
+    private IPayTypeDb payTypeDb;
+    
+    @Autowired
     private TableLogic tableLogic;
     @Autowired
     private MenuLogic menuLogic;
@@ -48,29 +63,26 @@ public class OrderLogic extends BaseLogic {
     @Autowired
     protected OrderWraper orderWraper;
     
-    @Autowired
-    private IOrderService orderService;
-    
     public void addOrderDish(DbTransaction trans, OrderDish orderDish) {
         long now = System.currentTimeMillis();
         orderDish.setCreatedTime(now);
         orderDish.setUpdateTime(now);
-        orderService.addOrderDish(trans, orderDish);
+        orderDishDb.add(trans, orderDish);
     }
     
     public void updateOrderDish(DbTransaction trans, OrderDish orderDish) {
         orderDish.setUpdateTime(System.currentTimeMillis());
-        orderService.updateOrderDish(trans, orderDish);
+        orderDishDb.update(trans, orderDish);
     }
     
     public Order getOrder(int orderId) {
-        return orderService.getOrder(orderId);
+        return orderDb.get(orderId);
     }
     
     public void updateOrder(DbTransaction trans, Order order) {
         //TODO check order
         order.setUpdateTime(System.currentTimeMillis());
-        orderService.updateOrder(trans, order);
+        orderDb.update(trans, order);
     }
     
     public void addOrder(DbTransaction trans, Order order) {
@@ -78,27 +90,37 @@ public class OrderLogic extends BaseLogic {
         long now = System.currentTimeMillis();
         order.setUpdateTime(now);
         order.setCreatedTime(now);
-        orderService.addOrder(trans, order);
+        orderDb.add(trans, order);
     }
     
     public List<Dish> listDishes(int orderId) {
-        return orderService.listDishes(orderId);
+        List<OrderDish> relations = orderDishDb.listOrderDish(orderId);
+        DataUtils.filterDeleted(relations);
+        List<Dish> dishes = new ArrayList<Dish>();
+        for (OrderDish r:relations) {
+            int dishId = r.getDishId();
+            Dish dish = menuLogic.getDish(dishId);
+            if (dish != null) {
+                dishes.add(dish);
+            }
+        }
+        return dishes;
     }
     
     public List<OrderDish> listOrderDishes(int orderId) {
-        List<OrderDish> datas = orderService.listOrderDish(orderId);
+        List<OrderDish> datas = orderDishDb.listOrderDish(orderId);
         DataUtils.filterDeleted(datas);
         return datas;
     }
     
     public List<PayType> listPayTypes() {
-        List<PayType> datas = orderService.listPayTypes();
+        List<PayType> datas = payTypeDb.getAllPayType();
         DataUtils.filterDeleted(datas);
         return datas;
     }
     
     public List<Bill> listBills() {
-        List<Bill> datas = orderService.listBills();
+        List<Bill> datas = billDb.listBills();
         DataUtils.filterDeleted(datas);
         return datas;
     }
@@ -125,7 +147,7 @@ public class OrderLogic extends BaseLogic {
         DbTransaction trans = openTrans();
         trans.begin();
         try {
-            orderService.addBill(trans, bill);
+            billDb.add(trans, bill);
             table.setStatus(TableStatus.EMPTY);
             table.setOrderId(0);
             tableLogic.update(trans, table);
@@ -141,11 +163,11 @@ public class OrderLogic extends BaseLogic {
         } finally {
             trans.close();
         }
-        return orderService.getBill(bill.getId());
+        return billDb.get(bill.getId());
     }
     
     public Bill getBillByOrderId(int orderId) {
-        return orderService.getBillByOrderId(orderId);
+        return billDb.getByOrderId(orderId);
     }
     
     public void changeTable(Table from, Table to) {
@@ -160,7 +182,15 @@ public class OrderLogic extends BaseLogic {
         long startTime = currentDay * UnitUtils.DAY;
         long endTime = startTime + UnitUtils.DAY;
 
-        return orderService.getDailyOrders(startTime, endTime);
+        List<Order> orders = orderDb.getOrdersByTime(startTime, endTime);
+        List<Bill> bills = billDb.getBillsByTime(startTime, endTime);
+        DataUtils.filterDeleted(bills);
+        for(Bill bill : bills) {
+            orders.add(bill.getOrder());
+        }
+        DataUtils.filterDeleted(orders);
+        Collections.sort(orders, ORDER_COMPARATOR);
+        return orders;
     }
 
     public List<Bill> getDailyBills(long time) {
@@ -169,6 +199,22 @@ public class OrderLogic extends BaseLogic {
         long currentDay = (long) (time / UnitUtils.DAY);
         long startTime = currentDay * UnitUtils.DAY;
         long endTime = startTime + UnitUtils.DAY;
-        return orderService.getDailyBills(startTime, endTime);
+        List<Bill> bills = billDb.getBillsByTime(startTime, endTime);
+        DataUtils.filterDeleted(bills);
+        return bills;
     }
+
+    private static final Comparator<Order> ORDER_COMPARATOR = new Comparator<Order>() {
+
+        @Override
+        public int compare(Order order1, Order order2) {
+            if (order1.getCreatedTime() > order2.getCreatedTime())
+                return -1;
+            else if (order1.getCreatedTime() == order2.getCreatedTime())
+                return 0;
+            else
+                return 1;
+        }
+
+    };
 }

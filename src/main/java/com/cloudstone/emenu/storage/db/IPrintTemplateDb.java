@@ -6,7 +6,6 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.PrintTemplate;
 
 /**
@@ -19,6 +18,6 @@ public interface IPrintTemplateDb {
     public void update(PrintTemplate template);
     public PrintTemplate get(int id);
     public List<PrintTemplate> listAll();
-    public void delete(int id) throws SQLiteException;
+    public void delete(int id) ;
     public void removeComponent(int componentId);
 }

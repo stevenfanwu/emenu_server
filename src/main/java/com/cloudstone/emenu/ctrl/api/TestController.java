@@ -20,7 +20,7 @@ import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.logic.UserLogic;
-import com.cloudstone.emenu.service.IOrderService;
+import com.cloudstone.emenu.storage.db.IBillDb;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
 import com.cloudstone.emenu.util.JsonUtils;
@@ -37,7 +37,7 @@ public class TestController extends BaseApiController {
     private UserLogic userLogic;
 
     @Autowired
-    private IOrderService orderService;
+    private IBillDb billDb;
 
     @Autowired
     private SqliteDataSource dataSource;
@@ -121,9 +121,9 @@ public class TestController extends BaseApiController {
         // Start transaction
         DbTransaction trans = dataSource.openTrans();
         trans.begin();
-        orderService.addBill(trans, bill);
+        billDb.add(trans, bill);
         trans.commit();
         trans.close();
-        return orderService.getBill(2);
+        return billDb.get(2);
     }
 }

@@ -4,7 +4,6 @@
  */
 package com.cloudstone.emenu.util;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.storage.db.IDb;
 
 /**
@@ -14,7 +13,7 @@ import com.cloudstone.emenu.storage.db.IDb;
 public class IdGenerator {
     
     private int lastId = -1;
-    public synchronized int generateId(IDb db) throws SQLiteException {
+    public synchronized int generateId(IDb db) {
         if (lastId == -1) {
             lastId = db.getMaxId();
         }

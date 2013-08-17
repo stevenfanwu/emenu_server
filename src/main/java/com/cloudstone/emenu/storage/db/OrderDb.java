@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Order;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -29,29 +28,25 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 @Repository
 public class OrderDb extends SQLiteDb implements IOrderDb {
     @Override
-    public void add(DbTransaction trans, Order order) throws SQLiteException {
+    public void add(DbTransaction trans, Order order) {
         order.setId(genId());
         OrderBinder binder = new OrderBinder(order);
         executeSQL(trans, SQL_INSERT, binder);
     }
     
     @Override
-    public Order get(int id) throws SQLiteException {
+    public Order get(int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
         return queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
     }
     
     @Override
     public void update(DbTransaction trans, Order order) {
-        try {
-            executeSQL(trans, SQL_UPDATE, new UpdateBinder(order));
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        executeSQL(trans, SQL_UPDATE, new UpdateBinder(order));
     }
 
     @Override
-    public List<Order> getOrdersByTime(long startTime, long endTime) throws SQLiteException {
+    public List<Order> getOrdersByTime(long startTime, long endTime) {
         TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
         return query(SQL_SELECT_BY_TIME, binder, rowMapper);
     }
@@ -63,7 +58,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
 

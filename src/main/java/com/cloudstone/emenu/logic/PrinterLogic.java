@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.PrintComponent;
@@ -22,7 +21,6 @@ import com.cloudstone.emenu.data.PrinterConfig;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.exception.NotFoundException;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.IPrintComponentDb;
 import com.cloudstone.emenu.storage.db.IPrintTemplateDb;
 import com.cloudstone.emenu.storage.db.IPrinterConfigDb;
@@ -143,11 +141,7 @@ public class PrinterLogic extends BaseLogic {
         if (old==null || old.isDeleted()) {
             throw new NotFoundException("该页眉页脚不存在");
         }
-        try {
-            printComponentDb.delete(id);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        printComponentDb.delete(id);
         printTemplateDb.removeComponent(id);
     }
     
@@ -182,12 +176,8 @@ public class PrinterLogic extends BaseLogic {
     }
     
     public void deleteTemplate(int id) {
-        try {
-            printTemplateDb.delete(id);
-            printerConfigDb.removeTemplate(id);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        printTemplateDb.delete(id);
+        printerConfigDb.removeTemplate(id);
     }
     
     public PrinterConfig getPrinterConfig(String name) {

@@ -6,7 +6,6 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.IdName;
 
@@ -15,11 +14,11 @@ import com.cloudstone.emenu.data.IdName;
  *
  */
 public interface IDishDb extends IDb {
-    public void add(Dish dish) throws SQLiteException;
-    public void update(Dish dish) throws SQLiteException;
-    public Dish get(int dishId) throws SQLiteException;
-    public Dish getByName(String name) throws SQLiteException;
-    public List<Dish> getAll() throws SQLiteException;
-    public void delete(int dishId) throws SQLiteException;
-    public List<IdName> getDishSuggestion() throws SQLiteException;
+    public void add(Dish dish) ;
+    public void update(Dish dish) ;
+    public Dish get(int dishId) ;
+    public Dish getByName(String name) ;
+    public List<Dish> getAll() ;
+    public void delete(int dishId) ;
+    public List<IdName> getDishSuggestion() ;
 }

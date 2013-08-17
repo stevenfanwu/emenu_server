@@ -83,7 +83,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
         .build();
 
     @Override
-    public Table add(Table table) throws SQLiteException {
+    public Table add(Table table) {
         table.setId(genId());
         TableBinder binder = new TableBinder(table);
         executeSQL(null, SQL_INSERT, binder);
@@ -91,29 +91,29 @@ public class TableDb extends SQLiteDb implements ITableDb {
     }
     
     @Override
-    public Table get(int id) throws SQLiteException {
+    public Table get(int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
         Table table = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return table;
     }
     
     @Override
-    public Table getByTableName(String name) throws SQLiteException {
+    public Table getByTableName(String name) {
         return getByName(name, rowMapper);
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
     
     @Override
-    public List<Table> getAll() throws SQLiteException {
+    public List<Table> getAll() {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
     @Override
-    public Table update(DbTransaction trans, Table table) throws SQLiteException {
+    public Table update(DbTransaction trans, Table table) {
         String sql = SQL_UPDATE;
         executeSQL(trans, sql, new UpdateBinder(table));
         return get(table.getId());

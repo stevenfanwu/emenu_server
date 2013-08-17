@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.PrintComponent;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
@@ -35,43 +34,27 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
     
     @Override
     public List<PrintComponent> listAll() {
-        try {
-            return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
     public void add(PrintComponent data) {
-        try {
-            data.setId(genId());
-            executeSQL(null, SQL_INSERT, new PrintComponentBinder(data));
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        data.setId(genId());
+        executeSQL(null, SQL_INSERT, new PrintComponentBinder(data));
     }
 
     @Override
     public void update(PrintComponent data) {
-        try {
-            executeSQL(null, SQL_UPDATE, new UpdateBinder(data));
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        executeSQL(null, SQL_UPDATE, new UpdateBinder(data));
     }
 
     @Override
     public PrintComponent get(int id) {
-        try {
-            return queryOne(SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+        return queryOne(SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
 

@@ -6,7 +6,6 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.User;
 
 /**
@@ -15,11 +14,10 @@ import com.cloudstone.emenu.data.User;
  */
 public interface IUserDb extends IDb {
 
-    public User getByName(String userName) throws SQLiteException;
-    public User get(int userId) throws SQLiteException;
-    public List<User> getAll() throws SQLiteException;
-    public User add(User user) throws SQLiteException;
-    public User update(User user) throws SQLiteException;
-    public void delete(int userId) throws SQLiteException;
-    public boolean modifyPassword(int userId, String password) throws SQLiteException;
+    public User getByName(String userName) ;
+    public User get(int userId) ;
+    public List<User> getAll() ;
+    public User add(User user) ;
+    public User update(User user) ;
+    public boolean modifyPassword(int userId, String password) ;
 }

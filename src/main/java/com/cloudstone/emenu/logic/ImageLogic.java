@@ -7,7 +7,7 @@ package com.cloudstone.emenu.logic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.cloudstone.emenu.service.ImageService;
+import com.cloudstone.emenu.storage.file.ImageStorage;
 
 /**
  * @author xuhongfeng
@@ -16,13 +16,13 @@ import com.cloudstone.emenu.service.ImageService;
 @Component
 public class ImageLogic extends BaseLogic {
     @Autowired
-    private ImageService imageService;
+    private ImageStorage imageStorage;
     
     public String saveDishImage(String uriData) {
-        return imageService.saveDishImage(uriData);
+        return imageStorage.saveImage(uriData);
     }
     
     public String getDishUriData(String imageId) {
-        return imageService.getDishUriData(imageId);
+        return imageStorage.getUriData(imageId);
     }
 }

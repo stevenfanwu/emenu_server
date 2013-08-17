@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.exception.DataConflictException;
-import com.cloudstone.emenu.service.UserService;
+import com.cloudstone.emenu.storage.db.IUserDb;
 import com.cloudstone.emenu.util.DataUtils;
 
 /**
@@ -22,7 +22,7 @@ import com.cloudstone.emenu.util.DataUtils;
 @Component
 public class UserLogic extends BaseLogic {
     @Autowired
-    private UserService userService;
+    private IUserDb userDb;
     
     /**
      * 
@@ -33,7 +33,7 @@ public class UserLogic extends BaseLogic {
      * @return
      */
     public User login(String userName, String encryptedPassword) {
-        User user = userService.getUserByName(userName);
+        User user = userDb.getByName(userName);
         if (user == null || user.isDeleted()) {
             return null;
         }
@@ -46,7 +46,7 @@ public class UserLogic extends BaseLogic {
     }
     
     public User add(User user) {
-        User oldUser = userService.getUserByName(user.getName());
+        User oldUser = userDb.getByName(user.getName());
         if (oldUser != null && !oldUser.isDeleted()) {
             throw new DataConflictException("用户名已存在");
         }
@@ -55,41 +55,41 @@ public class UserLogic extends BaseLogic {
         if (oldUser !=null) {
             user.setId(oldUser.getId());
             user.setCreatedTime(oldUser.getCreatedTime());
-            userService.update(user);
+            userDb.update(user);
         } else {
             user.setCreatedTime(now);
-            userService.add(user);
+            userDb.add(user);
         }
-        return userService.get(user.getId());
+        return userDb.get(user.getId());
     }
     
     public User update(User user) {
-        User oldUser = userService.getUserByName(user.getName());
+        User oldUser = userDb.getByName(user.getName());
         if (oldUser!=null && oldUser.getId()!=user.getId() && !oldUser.isDeleted()) {
             throw new DataConflictException("用户名已存在");
         }
         long now = System.currentTimeMillis();
         user.setUpdateTime(now);
-        userService.update(user);
-        return userService.get(user.getId());
+        userDb.update(user);
+        return userDb.get(user.getId());
     }
     
     public User getUser(int userId) {
-        return userService.get(userId);
+        return userDb.get(userId);
     }
     
     public List<User> getAll() {
-        List<User> users = userService.getAll();
+        List<User> users = userDb.getAll();
         DataUtils.filterDeleted(users);
         return users;
     }
     
     public boolean modifyPassword(int userId, String password) {
-        return userService.modifyPassword(userId, password);
+        return userDb.modifyPassword(userId, password);
     }
     
     public void delete(int userId) {
-        userService.delete(userId);
+        userDb.delete(userId);
     }
     
     public List<String> listUserNames() {

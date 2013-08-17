@@ -18,6 +18,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.data.IdName;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -56,22 +57,22 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     @Override
-    public int getMaxId() throws SQLiteException {
+    public int getMaxId() {
         String sql = "SELECT MAX(id) FROM " + getTableName();
         return queryInt(sql, StatementBinder.NULL);
     }
     
-    public void delete(int id) throws SQLiteException {
+    public void delete(int id) {
         String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE id=?";
         executeSQL(null, sql, new IdStatementBinder(id));
     }
     
     /* ---------- protected ----------*/
-    protected int genId() throws SQLiteException {
+    protected int genId() {
         return idGenerator.generateId(this);
     }
     
-    protected <T extends BaseData> T getByName(String name, RowMapper<T> rowMapper) throws SQLiteException {
+    protected <T extends BaseData> T getByName(String name, RowMapper<T> rowMapper) {
         String sql = new SelectSqlBuilder(getTableName()).appendWhereName().build();
         List<T> list = query(sql, new NameStatementBinder(name), rowMapper);
         T r = null;
@@ -84,79 +85,86 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         return r;
     }
     
-    protected List<IdName> getIdNames() throws SQLiteException {
+    protected List<IdName> getIdNames() {
         String sql = "SELECT id, name, createdTime, updateTime, deleted FROM " + getTableName();
         return query(sql, StatementBinder.NULL, ID_NAME_ROW_MAPPER);
     }
     
     private volatile boolean inited = false;
     @PostConstruct
-    protected void init() throws SQLiteException {
+    protected void init() {
         if(!inited) {
             inited = true;
             try {
                 onCheckCreateTable();
-            } catch (SQLiteException e) {
+            } catch (Throwable e) {
                 inited = false;
-                throw e;
             }
         }
     }
 
-    protected void checkCreateTable(String tableName, String columnDef) throws SQLiteException {
+    protected void checkCreateTable(String tableName, String columnDef) {
         String sql = String.format(SQL_CREATE, tableName, columnDef);
 //        LOG.info("create table sql: " + sql);
         executeSQL(null, sql, StatementBinder.NULL);
     }
     
-    protected void executeSQL(DbTransaction trans, String sql, StatementBinder binder) throws SQLiteException {
+    protected void executeSQL(DbTransaction trans, String sql, StatementBinder binder) {
         LOG.info(sql);
         synchronized (SQLiteDb.class) {
-            SQLiteConnection conn = getConnection(trans);
-            SQLiteStatement stmt = conn.prepare(sql);
             try {
-                binder.onBind(stmt);
-                stmt.stepThrough();
-            } finally {
-                stmt.dispose();
-                if (trans == null) {
-                    conn.dispose();
+                SQLiteConnection conn = getConnection(trans);
+                SQLiteStatement stmt = conn.prepare(sql);
+                try {
+                    binder.onBind(stmt);
+                    stmt.stepThrough();
+                } finally {
+                    stmt.dispose();
+                    if (trans == null) {
+                        conn.dispose();
+                    }
                 }
+            } catch (SQLiteException e) {
+                throw new ServerError(e);
             }
         }
     }
     
-    protected String queryString(String sql, StatementBinder binder) throws SQLiteException {
+    protected String queryString(String sql, StatementBinder binder) {
         return new QueryStringGetter().exec(sql, binder);
     }
     
-    protected int queryInt(String sql, StatementBinder binder) throws SQLiteException {
+    protected int queryInt(String sql, StatementBinder binder) {
         return new QueryIntGetter().exec(sql, binder);
     }
     
-    protected <T> T queryOne(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
+    protected <T> T queryOne(String sql, StatementBinder binder, RowMapper<T> rowMapper) {
         return new QueryObjectGetter<T>() {}.exec(sql, binder, rowMapper);
     }
     
-    protected <T> List<T> query(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
+    protected <T> List<T> query(String sql, StatementBinder binder, RowMapper<T> rowMapper) {
         return new QueryListGetter<T>().exec(sql, binder, rowMapper);
     }
     
     /* ---------- abstract ----------*/
-    protected abstract void onCheckCreateTable() throws SQLiteException;
+    protected abstract void onCheckCreateTable() ;
     
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
-        protected R exec(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
+        protected R exec(String sql, StatementBinder binder, RowMapper<T> rowMapper) {
             synchronized (SQLiteDb.class) {
-                SQLiteConnection conn = getConnection(null);
-                SQLiteStatement stmt = conn.prepare(sql);
                 try {
-                    binder.onBind(stmt);
-                    return parseData(stmt, rowMapper);
-                } finally {
-                    stmt.dispose();
-                    conn.dispose();
+                    SQLiteConnection conn = getConnection(null);
+                    SQLiteStatement stmt = conn.prepare(sql);
+                    try {
+                        binder.onBind(stmt);
+                        return parseData(stmt, rowMapper);
+                    } finally {
+                        stmt.dispose();
+                        conn.dispose();
+                    }
+                } catch (SQLiteException e) {
+                    throw new ServerError(e);
                 }
             }
         }
@@ -167,7 +175,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     private abstract class QueryObjectGetter<T> extends BaseQueryGetter<T, T> {
         @Override
         public T exec(String sql, StatementBinder binder,
-                RowMapper<T> rowMapper) throws SQLiteException {
+                RowMapper<T> rowMapper) {
             return super.exec(sql, binder, rowMapper);
         }
         
@@ -195,7 +203,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     private class QueryStringGetter extends QueryObjectGetter<String> {
-        public String exec(String sql, StatementBinder binder) throws SQLiteException {
+        public String exec(String sql, StatementBinder binder) {
             return super.exec(sql, binder, null);
         }
         @Override
@@ -210,7 +218,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     private class QueryIntGetter extends QueryObjectGetter<Integer> {
-        public Integer exec(String sql, StatementBinder binder) throws SQLiteException {
+        public Integer exec(String sql, StatementBinder binder) {
             return super.exec(sql, binder, null);
         }
         @Override

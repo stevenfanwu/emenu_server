@@ -6,7 +6,6 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.PayType;
 
 /**
@@ -14,6 +13,6 @@ import com.cloudstone.emenu.data.PayType;
  *
  */
 public interface IPayTypeDb {
-    public List<PayType> getAllPayType() throws SQLiteException;
-    public void addPayType(PayType payType) throws SQLiteException;
+    public List<PayType> getAllPayType() ;
+    public void addPayType(PayType payType) ;
 }

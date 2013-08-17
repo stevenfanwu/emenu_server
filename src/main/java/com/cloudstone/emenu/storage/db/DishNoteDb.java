@@ -2,14 +2,13 @@
  * @(#)DishNoteDb.java, Aug 4, 2013. 
  * 
  */
-package com.cloudstone.emenu.data;
+package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.almworks.sqlite4java.SQLiteException;
-import com.cloudstone.emenu.storage.db.IdNameDb;
+import com.cloudstone.emenu.data.DishNote;
 
 /**
  * @author xuhongfeng
@@ -24,48 +23,44 @@ public class DishNoteDb extends IdNameDb<DishNote> implements IDishNoteDb {
     };
     
     @Override
-    protected void init() throws SQLiteException {
+    protected void init() {
         super.init();
-        try {
-            if (listAll().size() == 0) {
-                for (String name: DEFAULT_DISH_NOTES) {
-                    DishNote note = new DishNote();
-                    note.setName(name);
-                    add(note);
-                }
+        if (listAll().size() == 0) {
+            for (String name: DEFAULT_DISH_NOTES) {
+                DishNote note = new DishNote();
+                note.setName(name);
+                add(note);
             }
-        } catch (SQLiteException e) {
-            throw new RuntimeException(e);
         }
     }
     
     @Override
-    public DishNote getDishNoteByName(String name) throws SQLiteException {
+    public DishNote getDishNoteByName(String name) {
         return getByName(name);
     }
     
     @Override
-    public DishNote getDishNote(int id) throws SQLiteException {
+    public DishNote getDishNote(int id) {
         return get(id);
     }
 
     @Override
-    public List<DishNote> listAll() throws SQLiteException {
+    public List<DishNote> listAll() {
         return getAll();
     }
 
     @Override
-    public void addDishNote(DishNote note) throws SQLiteException {
+    public void addDishNote(DishNote note) {
         add(note);
     }
 
     @Override
-    public void updateDishNote(DishNote note) throws SQLiteException {
+    public void updateDishNote(DishNote note) {
         update(note);
     }
 
     @Override
-    public void deleteDishNote(int id) throws SQLiteException {
+    public void deleteDishNote(int id) {
         delete(id);
     }
     

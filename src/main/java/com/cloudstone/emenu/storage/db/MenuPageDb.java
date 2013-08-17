@@ -32,47 +32,47 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     }
 
     @Override
-    public void addMenuPage(MenuPage page) throws SQLiteException {
+    public void addMenuPage(MenuPage page) {
         page.setId(genId());
         executeSQL(null, SQL_INSERT, new MenuPageBinder(page));
     }
 
     @Override
-    public void updateMenuPage(MenuPage page) throws SQLiteException {
+    public void updateMenuPage(MenuPage page) {
         executeSQL(null, SQL_UPDATE, new UpdateBinder(page));
     }
 
     @Override
-    public void deleteMenuPage(int id) throws SQLiteException {
+    public void deleteMenuPage(int id) {
         delete(id);
     }
 
     @Override
-    public List<MenuPage> getAllMenuPage() throws SQLiteException {
+    public List<MenuPage> getAllMenuPage() {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public List<MenuPage> listMenuPages(int chapterId) throws SQLiteException {
+    public List<MenuPage> listMenuPages(int chapterId) {
         GetByChapterIdBinder binder = new  GetByChapterIdBinder(chapterId);
         return query(SQL_SELECT_BY_CHAPTER_ID, binder, rowMapper);
     }
     
     @Override
-    public List<MenuPage> listMenuPages(int[] ids) throws SQLiteException {
+    public List<MenuPage> listMenuPages(int[] ids) {
         String sql = new SelectSqlBuilder(TABLE_NAME).appendWhereIdIn(ids).build();
         return query(sql, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public MenuPage getMenuPage(int id) throws SQLiteException {
+    public MenuPage getMenuPage(int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
         MenuPage page = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return page;
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
 

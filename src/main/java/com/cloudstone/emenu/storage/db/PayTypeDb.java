@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.PayType;
 
 /**
@@ -29,18 +28,14 @@ public class PayTypeDb extends IdNameDb<PayType> implements IPayTypeDb {
     }
     
     @Override
-    protected void init() throws SQLiteException {
+    protected void init() {
         super.init();
-        try {
-            if (getAll().size() == 0) {
-                for (String name:DEFAULT_PAY_TYPE) {
-                    PayType type = new PayType();
-                    type.setName(name);
-                    add(type);
-                }
+        if (getAll().size() == 0) {
+            for (String name:DEFAULT_PAY_TYPE) {
+                PayType type = new PayType();
+                type.setName(name);
+                add(type);
             }
-        } catch (SQLiteException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -50,12 +45,12 @@ public class PayTypeDb extends IdNameDb<PayType> implements IPayTypeDb {
     }
 
     @Override
-    public List<PayType> getAllPayType() throws SQLiteException {
+    public List<PayType> getAllPayType() {
         return getAll();
     }
 
     @Override
-    public void addPayType(PayType payType) throws SQLiteException {
+    public void addPayType(PayType payType) {
         add(payType);
     }
 

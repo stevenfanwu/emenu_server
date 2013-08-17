@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Menu;
 
 /**
@@ -25,27 +24,27 @@ public class MenuDb extends IdNameDb<Menu> implements IMenuDb {
     }
 
     @Override
-    public void addMenu(Menu menu) throws SQLiteException {
+    public void addMenu(Menu menu) {
         add(menu);
     }
 
     @Override
-    public void updateMenu(Menu menu) throws SQLiteException {
+    public void updateMenu(Menu menu) {
         update(menu);
     }
 
     @Override
-    public void deleteMenu(int id) throws SQLiteException {
+    public void deleteMenu(int id) {
         delete(id);
     }
 
     @Override
-    public List<Menu> getAllMenu() throws SQLiteException {
+    public List<Menu> getAllMenu() {
         return getAll();
     }
 
     @Override
-    public Menu getMenu(int id) throws SQLiteException {
+    public Menu getMenu(int id) {
         return get(id);
     }
     

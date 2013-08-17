@@ -24,30 +24,30 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable() {
         checkCreateTable(getTableName(), COL_DEF);
     }
     
-    protected void add(T data) throws SQLiteException {
+    protected void add(T data) {
         data.setId(genId());
         executeSQL(null, SQL_INSERT, new IdNameBinder(data));
     }
     
-    protected void update(T data) throws SQLiteException {
+    protected void update(T data) {
         executeSQL(null, SQL_UPDATE, new UpdateBinder(data));
     }
     
-    protected List<T> getAll() throws SQLiteException {
+    protected List<T> getAll() {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
-    protected T get(int id) throws SQLiteException {
+    protected T get(int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
         T data = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
         return data;
     }
     
-    public T getByName(String name) throws SQLiteException {
+    public T getByName(String name) {
         return super.getByName(name, rowMapper);
     }
     

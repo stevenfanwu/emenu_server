@@ -32,12 +32,12 @@ import com.cloudstone.emenu.util.JsonUtils;
 public class BillDb extends SQLiteDb implements IBillDb {
     
     @Override
-    public Bill getByOrderId(int orderId) throws SQLiteException {
+    public Bill getByOrderId(int orderId) {
         return queryOne(SQL_SELECT_BY_ORDER_ID, new OrderIdBinder(orderId), rowMapper);
     }
 
     @Override
-    public void add(DbTransaction trans, Bill bill) throws SQLiteException {
+    public void add(DbTransaction trans, Bill bill) {
         bill.setId(genId());
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
@@ -46,18 +46,18 @@ public class BillDb extends SQLiteDb implements IBillDb {
     }
 
     @Override
-    public List<Bill> listBills() throws SQLiteException {
+    public List<Bill> listBills() {
         return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
     @Override
-    public Bill get(int id) throws SQLiteException {
+    public Bill get(int id)  {
         IdStatementBinder binder = new IdStatementBinder(id);
         return queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
     }
 
     @Override
-    public List<Bill> getBillsByTime(long startTime, long endTime) throws SQLiteException {
+    public List<Bill> getBillsByTime(long startTime, long endTime)  {
         TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
         return query(SQL_SELECT_BY_TIME, binder, rowMapper);
     }
@@ -68,7 +68,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
     }
 
     @Override
-    protected void onCheckCreateTable() throws SQLiteException {
+    protected void onCheckCreateTable()  {
         checkCreateTable(TABLE_NAME, COL_DEF);
     }
 

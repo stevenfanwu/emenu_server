@@ -4,14 +4,13 @@
  */
 package com.cloudstone.emenu.storage.db;
 
-import com.almworks.sqlite4java.SQLiteException;
 
 /**
  * @author xuhongfeng
  *
  */
 public interface IDb {
-    public int getMaxId() throws SQLiteException;
+    public int getMaxId() ;
     public String getTableName();
-    public void delete(int id) throws SQLiteException;
+    public void delete(int id) ;
 }
