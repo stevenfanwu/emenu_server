@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,24 +31,27 @@ import com.cloudstone.emenu.util.JsonUtils;
 @Controller
 public class OrderApiController extends BaseApiController {
     
-    @RequestMapping(value="/api/orders", method=RequestMethod.GET)
-    public @ResponseBody OrderVO getOrder(@RequestParam("id") int orderId,
+    @RequestMapping(value="/api/orders/{id:[\\d]+}", method=RequestMethod.GET)
+    public @ResponseBody OrderVO getOrder(@PathVariable(value="id") int orderId,
             HttpServletRequest request,
             HttpServletResponse response) {
         EmenuContext context = newContext(request);
-        Order order  =orderLogic.getOrder(context, orderId);
+        Order order = orderLogic.getOrder(context, orderId);
         if (order == null) {
             sendError(response, HttpServletResponse.SC_NOT_FOUND);
         }
         return orderWraper.wrap(context, order);
     }
     
-    @RequestMapping(value="/api/orders/daily", method=RequestMethod.GET)
+    @RequestMapping(value="/api/orders", method=RequestMethod.GET)
     public @ResponseBody List<OrderVO> getDailyOrders(
-            @RequestParam("time") long time,
+            @RequestParam(value="time", defaultValue="0") long time,
             HttpServletRequest request,
             HttpServletResponse response) {
         EmenuContext context = newContext(request);
+        if (time == 0) {
+            time = System.currentTimeMillis();
+        }
         List<Order> orders = orderLogic.getDailyOrders(context, time);
         return orderWraper.wrap(context, orders);
     }

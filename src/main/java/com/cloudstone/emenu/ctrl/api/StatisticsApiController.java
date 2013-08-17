@@ -1,5 +1,7 @@
 package com.cloudstone.emenu.ctrl.api;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +21,14 @@ public class StatisticsApiController extends BaseApiController {
     @Autowired
     private StatisticsLogic statisticsLogic;
 
-    @RequestMapping(value="/api/stat", method=RequestMethod.GET)
-    public @ResponseBody DailyStat getDailyStat(
-            @RequestParam("time") long time,
+    @RequestMapping(value="/api/stats", method=RequestMethod.GET)
+    public @ResponseBody List<DailyStat> getDailyStat(
+            @RequestParam(value="time", defaultValue="0") long time,
             HttpServletRequest request) {
         EmenuContext context = newContext(request);
+        if (time == 0) {
+            time = System.currentTimeMillis();
+        }
         return statisticsLogic.getDailyStat(context, time);
     }
 }

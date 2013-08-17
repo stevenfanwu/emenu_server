@@ -228,6 +228,16 @@ public class PrinterLogic extends BaseLogic {
         return config;
     }
     
+    public PrinterConfig getPrinterConfig(EmenuContext context, int id) {
+        String[] printers = listPrinters();
+        for (String p:printers) {
+            if (p.hashCode() == id) {
+                return getPrinterConfig(context, p);
+            }
+        }
+        return null;
+    }
+    
     public PrinterConfig updatePrinterConfig(EmenuContext context, PrinterConfig config) {
         printerConfigDb.update(context, config);
         return printerConfigDb.getConfig(context, config.getName());

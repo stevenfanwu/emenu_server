@@ -86,7 +86,7 @@ public class StatisticsLogic extends BaseLogic {
         int totalTables = tableLogic.getAll(context).size();
         double rate = 0;
         if (0 != totalTables) {
-            rate = (double) bills.size() / (double) totalTables;
+            rate = 100.0 * bills.size() / totalTables;
         }
         dailyStat.setTableRate(rate);
         return dailyStat;

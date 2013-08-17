@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.cloudstone.emenu.exception.DbNotFoundException;
 import com.cloudstone.emenu.exception.HttpStatusError;
 import com.cloudstone.emenu.util.JsonUtils;
+import com.cloudstone.emenu.util.StringUtils;
 
 /**
  * @author xuhongfeng
@@ -77,7 +78,7 @@ public class ErrorController extends BaseController {
             resp.setStatus(e.getStatusCode());
             resp.setContentType("application/json; charset=UTF-8");
             model.put("code", e.getStatusCode());
-            if (e.getStatusCode() == 500) {
+            if (e.getStatusCode() == 500 && StringUtils.isBlank(e.getMessage())) {
                 model.put("message", "服务器错误");
             } else {
                 model.put("message", e.getMessage());

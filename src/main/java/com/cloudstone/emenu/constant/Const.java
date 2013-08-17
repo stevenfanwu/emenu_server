@@ -67,6 +67,11 @@ public class Const {
         public static final int CANCELED = 4;
     }
     
+    public static class OrderStatus {
+        public static final int ORDERED = 0;
+        public static final int PAYED = 1;
+    }
+    
     public static class UserAgent {
         public static final String CLOUD_HAND = "CloudHand";
     }

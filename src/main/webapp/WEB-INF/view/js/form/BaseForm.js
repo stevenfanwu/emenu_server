@@ -115,7 +115,7 @@ define(function (require, exports, module) {
                 data: this.getFormData(),
                 success: this.onSuccess.bind(this),
                 error: this.onFailed.bind(this),
-                url: this.model.url
+                url: this.model ? this.model.url : ''
             }, options);
             $.ajax(options.url, options);
         },

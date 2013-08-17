@@ -1,0 +1,16 @@
+<td>
+    {{id}}
+</td>
+<td>
+    {{table.name}}
+</td>
+<td>
+    {{createdTime}}
+</td>
+<td>
+    {{#unless payed}}
+    <a href="/bill?tableId={{table.id}}" class="btn-check">结账</a>
+    |
+    {{/unless}}
+    <a href="#" class="btn-print">打印</a>
+</td>

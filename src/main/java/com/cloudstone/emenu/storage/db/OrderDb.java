@@ -13,7 +13,6 @@ import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -68,7 +67,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     
     private static enum Column {
         ID("id"), ORIGIN_PRICE("originPrice"), PRICE("price"), TABLE_ID("tableId"),
-        CUSTOMER_NUMBER("customerNumber"),
+        CUSTOMER_NUMBER("customerNumber"), STATUS("status"),
         CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
         
         private final String str;
@@ -87,11 +86,12 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         .append(Column.PRICE, DataType.REAL, "NOT NULL")
         .append(Column.TABLE_ID, DataType.INTEGER, "NOT NULL")
         .append(Column.CUSTOMER_NUMBER, DataType.INTEGER, "NOT NULL")
+        .append(Column.STATUS, DataType.INTEGER, "NOT NULL")
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
     
     private static class OrderBinder implements StatementBinder {
         private final Order order;
@@ -108,9 +108,10 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             stmt.bind(3, order.getPrice());
             stmt.bind(4, order.getTableId());
             stmt.bind(5, order.getCustomerNumber());
-            stmt.bind(6, order.getCreatedTime());
-            stmt.bind(7, order.getUpdateTime());
-            stmt.bind(8, order.isDeleted() ? 1 : 0);
+            stmt.bind(6, order.getStatus());
+            stmt.bind(7, order.getCreatedTime());
+            stmt.bind(8, order.getUpdateTime());
+            stmt.bind(9, order.isDeleted() ? 1 : 0);
         }
     }
     
@@ -128,10 +129,11 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             stmt.bind(2, order.getPrice());
             stmt.bind(3, order.getTableId());
             stmt.bind(4, order.getCustomerNumber());
-            stmt.bind(5, order.getCreatedTime());
-            stmt.bind(6, order.getUpdateTime());
-            stmt.bind(7, order.isDeleted() ? 1 : 0);
-            stmt.bind(8, order.getId());
+            stmt.bind(5, order.getStatus());
+            stmt.bind(6, order.getCreatedTime());
+            stmt.bind(7, order.getUpdateTime());
+            stmt.bind(8, order.isDeleted() ? 1 : 0);
+            stmt.bind(9, order.getId());
         }
     }
     
@@ -148,9 +150,10 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             order.setPrice(stmt.columnDouble(2));
             order.setTableId(stmt.columnInt(3));
             order.setCustomerNumber(stmt.columnInt(4));
-            order.setCreatedTime(stmt.columnLong(5));
-            order.setUpdateTime(stmt.columnLong(6));
-            order.setDeleted(stmt.columnInt(7) == 1);
+            order.setStatus(stmt.columnInt(5));
+            order.setCreatedTime(stmt.columnLong(6));
+            order.setUpdateTime(stmt.columnLong(7));
+            order.setDeleted(stmt.columnInt(8) == 1);
             return order;
         }
     };
@@ -159,6 +162,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         .appendSetValue(Column.PRICE)
         .appendSetValue(Column.TABLE_ID)
         .appendSetValue(Column.CUSTOMER_NUMBER)
+        .appendSetValue(Column.STATUS)
         .appendSetValue(Column.CREATED_TIME)
         .appendSetValue(Column.UPDATE_TIME)
         .appendSetValue(Column.DELETED)

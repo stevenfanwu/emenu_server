@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.EmenuContext;
+import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Dish;
@@ -138,6 +139,7 @@ public class OrderLogic extends BaseLogic {
         if (table == null || table.getStatus() != TableStatus.OCCUPIED) {
             throw new BadRequestError();
         }
+        order.setStatus(Const.OrderStatus.PAYED);
         OrderVO orderVO = orderWraper.wrap(context, order);
         bill.setOrder(orderVO);
         long now = System.currentTimeMillis();
@@ -146,6 +148,7 @@ public class OrderLogic extends BaseLogic {
         //Start transaction
         context.beginTransaction(dataSource);
         try {
+            orderDb.update(context, order);
             billDb.add(context, bill);
             table.setStatus(TableStatus.EMPTY);
             table.setOrderId(0);
