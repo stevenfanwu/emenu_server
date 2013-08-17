@@ -18,4 +18,5 @@ public interface IOrderDb {
     public void update(EmenuContext context, Order order);
     public Order get(EmenuContext context, int id) ;
     public List<Order> getOrdersByTime(EmenuContext context, long startTime, long endTime) ;
+    public Order getOldestOrder(EmenuContext context);
 }

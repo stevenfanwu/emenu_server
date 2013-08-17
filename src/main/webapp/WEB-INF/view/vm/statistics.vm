@@ -1,3 +1,14 @@
 #set($mode="admin")
-#set($pageName="Statistics")
+#set($pageName="Stat")
 
+
+#macro (stat_nav_item, $tab_name)
+  <li class="tab-$tab_name">
+    <a href="#$tab_name" class="link-$tab_name">$!bodyContent</a>
+  </li>
+#end
+<ul class="nav nav-tabs">
+    #@stat_nav_item("stat")统计数据#end
+</ul>
+<div class="bottom-content">
+</div>

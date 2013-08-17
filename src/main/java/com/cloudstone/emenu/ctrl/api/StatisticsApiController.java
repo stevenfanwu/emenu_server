@@ -24,11 +24,12 @@ public class StatisticsApiController extends BaseApiController {
     @RequestMapping(value="/api/stats", method=RequestMethod.GET)
     public @ResponseBody List<DailyStat> getDailyStat(
             @RequestParam(value="time", defaultValue="0") long time,
+            @RequestParam(value="page", defaultValue="0") int page,
             HttpServletRequest request) {
         EmenuContext context = newContext(request);
         if (time == 0) {
             time = System.currentTimeMillis();
         }
-        return statisticsLogic.getDailyStat(context, time);
+        return statisticsLogic.listDailyStat(context, time, page);
     }
 }

@@ -11,6 +11,15 @@ define(function (require, exports, module) {
             var d = new Date(timestamp);
             return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() + ' ' +
                 d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        },
+
+        formatDateDay: function (timestamp) {
+            var d = new Date(timestamp);
+            return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+        },
+
+        formatPercentage: function (data) {
+            return Math.round(data * 100) / 100 + '%';
         }
     });
     

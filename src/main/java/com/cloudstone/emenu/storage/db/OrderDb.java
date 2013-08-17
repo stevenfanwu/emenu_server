@@ -50,6 +50,11 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
         return query(context, SQL_SELECT_BY_TIME, binder, rowMapper);
     }
+    
+    @Override
+    public Order getOldestOrder(EmenuContext context) {
+        return queryOne(context, SQL_SELECT_OLDEST, StatementBinder.NULL, rowMapper);
+    }
 
     /* ---------- Override ---------- */
     @Override
@@ -171,4 +176,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
         .append(" WHERE createdTime>? ")
         .append(" AND createdTime<?").build();
+    
+    private static final String SQL_SELECT_OLDEST = new SelectSqlBuilder(TABLE_NAME)
+        .append(" ORDER BY createdTime ASC LIMIT 1").build();
 }

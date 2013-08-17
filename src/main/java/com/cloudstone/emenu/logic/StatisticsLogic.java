@@ -1,6 +1,7 @@
 
 package com.cloudstone.emenu.logic;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.DailyStat;
+import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.IStatDb;
@@ -16,6 +18,7 @@ import com.cloudstone.emenu.util.UnitUtils;
 
 @Component
 public class StatisticsLogic extends BaseLogic {
+    private static final int PAGE_COUNT = 15;
 
     @Autowired
     private IStatDb statDb;
@@ -25,7 +28,21 @@ public class StatisticsLogic extends BaseLogic {
 
     @Autowired
     private TableLogic tableLogic;
-
+    
+    public List<DailyStat> listDailyStat(EmenuContext context, long time, int page) {
+        List<DailyStat> list = new LinkedList<DailyStat>();
+        Order oldest = orderLogic.getOldestOrder(context);
+        if (oldest == null) {
+            return list;
+        }
+        long p = time - page*UnitUtils.DAY;
+        long endTime = oldest.getCreatedTime() - UnitUtils.DAY;
+        for (int i=0; i<PAGE_COUNT && p>endTime; i++, p-=UnitUtils.DAY) {
+            list.add(getDailyStat(context, p));
+        }
+        return list;
+    }
+    
     public DailyStat getDailyStat(EmenuContext context, long time) {
         if (time <= 0)
             throw new BadRequestError();

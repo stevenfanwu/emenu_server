@@ -76,6 +76,10 @@ public class OrderLogic extends BaseLogic {
         orderDishDb.update(context, orderDish);
     }
     
+    public Order getOldestOrder(EmenuContext context) {
+        return orderDb.getOldestOrder(context);
+    }
+    
     public Order getOrder(EmenuContext context, int orderId) {
         return orderDb.get(context, orderId);
     }
