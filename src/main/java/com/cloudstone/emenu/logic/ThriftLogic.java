@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +43,7 @@ import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
 import com.cloudstone.emenu.util.ThriftUtils;
+import com.cloudstone.emenu.wrap.OrderWraper;
 
 /**
  * @author xuhongfeng
@@ -48,6 +51,8 @@ import com.cloudstone.emenu.util.ThriftUtils;
  */
 @Component
 public class ThriftLogic extends BaseLogic {
+    private static final Logger LOG = LoggerFactory.getLogger(ThriftLogic.class);
+    
     @Autowired
     private TableLogic tableLogic;
     @Autowired
@@ -57,9 +62,15 @@ public class ThriftLogic extends BaseLogic {
     @Autowired
     private DeviceLogic deviceLogic;
     @Autowired
+    private PrinterLogic printerLogic;
+    @Autowired
+    private UserLogic userLogic;
+    @Autowired
     private ThriftCache thriftCache;
     @Autowired
     private ThriftSessionDb thriftSessionDb;
+    @Autowired
+    private OrderWraper orderWraper;
 
     public TableInfo getTableInfo(EmenuContext context, String tableName) throws TException {
         Table table = tableLogic.getByName(context, tableName);
@@ -281,6 +292,11 @@ public class ThriftLogic extends BaseLogic {
             context.commitTransaction();
         } finally {
             context.closeTransaction(dataSource);
+        }
+        try {
+            printerLogic.printOrder(context, orderWraper.wrap(context, orderValue), userLogic.getUser(context, context.getLoginUserId()));
+        } catch (Exception e) {
+            LOG.error("", e);
         }
     }
     

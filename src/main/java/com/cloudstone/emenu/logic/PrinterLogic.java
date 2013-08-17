@@ -21,6 +21,7 @@ import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.data.PrinterConfig;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
+import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.storage.db.IPrintComponentDb;
 import com.cloudstone.emenu.storage.db.IPrintTemplateDb;
@@ -75,35 +76,71 @@ public class PrinterLogic extends BaseLogic {
     public void printBill(EmenuContext context, Bill bill, User user, String printer, int templateId) throws Exception {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
-            StringBuilder sb = new StringBuilder();
-            int headerId = template.getHeaderId();
-            int footerId = template.getFooterId();
-            
-            if (headerId != 0) {
-                PrintComponent header = getComponent(context, headerId);
-                if (header != null) {
-                    sb.append(header.getContent());
-                    sb.append(DIVIDER);
-                }
-            }
-            sb.append(DISH_TEMPLATE);
-            
-            if (footerId != 0) {
-                PrintComponent footer = getComponent(context, footerId);
-                if (footer != null) {
-                    sb.append(DIVIDER);
-                    sb.append(footer.getContent());
-                }
-            }
+            String templateString = getTemplateString(context, template);
             if (template.getCutType() == Const.CutType.PER_DISH && bill.getOrder().getDishes().size()>0) {
                 for (OrderDishVO dish:bill.getOrder().getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    String content = velocityRender.renderBill(bill, user, dishes, sb.toString());
+                    String content = velocityRender.renderBill(bill, user, dishes, templateString);
                     PrinterUtils.print(printer, content);
                 }
             } else {
-                String content = velocityRender.renderBill(bill, user, bill.getOrder().getDishes(), sb.toString());
+                String content = velocityRender.renderBill(bill, user, bill.getOrder().getDishes(), templateString);
+                PrinterUtils.print(printer, content);
+            }
+        }
+    }
+    
+    private String getTemplateString(EmenuContext context, PrintTemplate template) {
+        StringBuilder sb = new StringBuilder();
+        int headerId = template.getHeaderId();
+        int footerId = template.getFooterId();
+        
+        if (headerId != 0) {
+            PrintComponent header = getComponent(context, headerId);
+            if (header != null) {
+                sb.append(header.getContent());
+                sb.append(DIVIDER);
+            }
+        }
+        sb.append(DISH_TEMPLATE);
+        
+        if (footerId != 0) {
+            PrintComponent footer = getComponent(context, footerId);
+            if (footer != null) {
+                sb.append(DIVIDER);
+                sb.append(footer.getContent());
+            }
+        }
+        return sb.toString();
+    }
+    
+    public void printOrder(EmenuContext context, OrderVO order, User user) throws Exception {
+        String[] printers = listPrinters();
+        for (String printer:printers) {
+            PrinterConfig config = getPrinterConfig(context, printer);
+            if (config != null && config.isWhenOrdered()) {
+                for (int templateId:config.getOrderedTemplateIds()) {
+                    LOG.info("print templateId :" + templateId);
+                    printOrder(context, order, user, printer, templateId);
+                }
+            }
+        }
+    }
+    
+    public void printOrder(EmenuContext context, OrderVO order, User user, String printer, int templateId) throws Exception {
+        PrintTemplate template = getTemplate(context, templateId);
+        if (template != null) {
+            String templateString = getTemplateString(context, template);
+            if (template.getCutType() == Const.CutType.PER_DISH && order.getDishes().size()>0) {
+                for (OrderDishVO dish:order.getDishes()) {
+                    List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
+                    dishes.add(dish);
+                    String content = velocityRender.renderOrder(order, user, dishes, templateString);
+                    PrinterUtils.print(printer, content);
+                }
+            } else {
+                String content = velocityRender.renderOrder(order, user, order.getDishes(), templateString);
                 PrinterUtils.print(printer, content);
             }
         }

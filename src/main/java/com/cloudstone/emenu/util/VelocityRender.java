@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
+import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.web.velocitytool.Utils;
 
@@ -45,7 +46,24 @@ public class VelocityRender {
             userName = "";
         }
         context.put("userName", userName);
-        
+        return render(context, template);
+    }
+    
+    public String renderOrder(OrderVO order, User user, List<OrderDishVO> dishes, String template) {
+        VelocityContext context = new VelocityContext();
+        context.put("dishes", dishes);
+        context.put("order", order);
+        context.put("table", order.getTable());
+        context.put("time", utils.formatDate(order.getUpdateTime()));
+        String userName = user.getRealName();
+        if (userName == null) {
+            userName = "";
+        }
+        context.put("userName", userName);
+        return render(context, template);
+    }
+    
+    private String render(VelocityContext context, String template) {
         RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();            
         StringReader reader = new StringReader(template);
         SimpleNode node;
