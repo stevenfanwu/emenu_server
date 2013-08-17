@@ -65,8 +65,8 @@ public class PrinterUtils {
         PrintService printService[] = PrintServiceLookup.lookupPrintServices(flavor, pras);
         PrintService ps = null;
         LOG.info("printer :" + printerName);
+        LOG.info("content: + " + content);
         for (PrintService p:printService) {
-            LOG.info("p :" + p.getName());
             if (p.getName().equals(printerName)) {
                 ps = p;
                 break;
@@ -75,8 +75,6 @@ public class PrinterUtils {
         if (ps == null) {
             ps = PrintServiceLookup.lookupDefaultPrintService();
         }
-        
-        LOG.info(content);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         

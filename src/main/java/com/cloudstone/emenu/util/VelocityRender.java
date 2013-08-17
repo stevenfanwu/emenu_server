@@ -5,6 +5,7 @@
 package com.cloudstone.emenu.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.web.velocitytool.Utils;
 
 /**
@@ -28,12 +30,14 @@ public class VelocityRender {
     @Autowired
     private Utils utils;
     
-    public String renderBill(Bill bill, User user) {
+    public String renderBill(Bill bill, User user, List<OrderDishVO> dishes, String template) {
         VelocityEngine engine = velocityConfigurer.getVelocityEngine();
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("bill", bill);
-        model.put("dishes", bill.getOrder().getDishes());
-        model.put("Utils", utils);
+        model.put("dishes", dishes);
+        model.put("order", bill.getOrder());
+        model.put("table", bill.getOrder().getTable());
+        model.put("time", utils.formatDate(bill.getCreatedTime()));
         String userName = user.getRealName();
         if (userName == null) {
             userName = "";

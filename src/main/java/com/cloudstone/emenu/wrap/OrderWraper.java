@@ -17,7 +17,6 @@ import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.vo.OrderVO;
-import com.cloudstone.emenu.util.JsonUtils;
 
 /**
  * @author xuhongfeng

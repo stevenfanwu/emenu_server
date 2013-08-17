@@ -4,7 +4,6 @@
  */
 package com.cloudstone.emenu.storage.db;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;

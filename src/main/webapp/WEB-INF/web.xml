@@ -19,6 +19,10 @@
     </servlet-mapping>
 
 	<!-- listeners -->
+    <listener>
+        <listener-class>com.cloudstone.emenu.MyContextListener</listener-class>
+    </listener>
+    
     <context-param>
         <param-name>log4jConfigLocation</param-name>
         <param-value>classpath:log4j.properties</param-value>

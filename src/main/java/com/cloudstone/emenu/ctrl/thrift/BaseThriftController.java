@@ -28,7 +28,6 @@ import com.cloudstone.emenu.ctrl.BaseController;
 import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.logic.ThriftLogic;
 import com.cloudstone.emenu.storage.db.ThriftSessionDb;
-import com.cloudstone.emenu.util.UnitUtils;
 
 /**
  * @author xuhongfeng

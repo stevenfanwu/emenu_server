@@ -91,10 +91,6 @@ define(function (require, exports, module) {
         }, {
             name: 'discountDishIds',
             type: BillOrders
-        }, {
-            name: 'printer',
-            type: Select,
-            el: '.input-printer'
         }],
 
         getFormData: function () {

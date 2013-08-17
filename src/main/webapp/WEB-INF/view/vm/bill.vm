@@ -62,27 +62,6 @@
                 </div>
                 <div class="help-inline error"></div>
             </div>
-            #if ($printers.size() == 0)
-                <div class="alert alert-error">
-                    找不到打印机
-                </div>
-            #else
-                <div class="input-printer control-group">
-                    <div class="row controls">
-                        <div class="span1">打印机:</div>
-                        <select class="span2 item-control">
-                            #foreach($printer in $printers)
-                                <option>$printer</option>
-                            #end
-                        </select>
-                    </div>
-                    <div class="help-inline error"></div>
-                </div>
-                <div class="row">
-                    <div class="span1 item-label">打印小票:</div>
-                    <input class="span2 item-control cb-printer" type="checkbox" checked/>
-                </div>
-            #end
         </div>
         <div class="span8 well">
             <table class="table table-striped table-hover table-dish">

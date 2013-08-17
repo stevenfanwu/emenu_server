@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 
 /**

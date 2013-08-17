@@ -5,15 +5,22 @@
 package com.cloudstone.emenu.logic;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.almworks.sqlite4java.SQLiteException;
+import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.PrintComponent;
 import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.data.PrinterConfig;
+import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.IPrintComponentDb;
@@ -21,6 +28,7 @@ import com.cloudstone.emenu.storage.db.IPrintTemplateDb;
 import com.cloudstone.emenu.storage.db.IPrinterConfigDb;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.PrinterUtils;
+import com.cloudstone.emenu.util.VelocityRender;
 
 /**
  * @author xuhongfeng
@@ -28,6 +36,20 @@ import com.cloudstone.emenu.util.PrinterUtils;
  */
 @Component
 public class PrinterLogic extends BaseLogic {
+    private static final Logger LOG = LoggerFactory.getLogger(PrinterLogic.class);
+    
+    private static final String DIVIDER = "\n------------------------n";
+    
+    private static final String DISH_TEMPLATE = "\n" +
+            "菜品\t数量*单价\t金额\n" +
+            "#foreach($dish in $dishes)\n" +
+            "$dish.name\t$dish.number*$dish.price\t$dish.totalCost\b" +
+            "#end" +
+            "\n";
+    
+    
+    @Autowired
+    private VelocityRender velocityRender;
     @Autowired
     private IPrintComponentDb printComponentDb;
     @Autowired
@@ -38,8 +60,58 @@ public class PrinterLogic extends BaseLogic {
     public String[] listPrinters() {
         return PrinterUtils.listPrinters();
     }
-    public void print(String printerName, String content) throws Exception {
-        PrinterUtils.print(printerName, content);
+    public void printBill(Bill bill, User user) throws Exception {
+        String[] printers = listPrinters();
+        for (String printer:printers) {
+            PrinterConfig config = getPrinterConfig(printer);
+            if (config != null && config.isWhenBill()) {
+                for (int templateId:config.getBillTemplateIds()) {
+                    LOG.info("print templateId :" + templateId);
+                    printBill(bill, user, printer, templateId);
+                }
+            }
+        }
+    }
+    
+    public void printBill(Bill bill, User user, String printer, int templateId) throws Exception {
+        PrintTemplate template = getTemplate(templateId);
+        if (template != null) {
+            StringBuilder sb = new StringBuilder();
+            int headerId = template.getHeaderId();
+            int footerId = template.getFooterId();
+            
+            if (headerId != 0) {
+                PrintComponent header = getComponent(headerId);
+                if (header != null) {
+                    sb.append(header.getContent());
+                    sb.append(DIVIDER);
+                }
+            }
+            sb.append(DISH_TEMPLATE);
+            
+            if (footerId != 0) {
+                PrintComponent footer = getComponent(footerId);
+                if (footer != null) {
+                    sb.append(DIVIDER);
+                    sb.append(footer.getContent());
+                }
+            }
+            if (template.getCutType() == Const.CutType.PER_DISH && bill.getOrder().getDishes().size()>0) {
+                for (OrderDishVO dish:bill.getOrder().getDishes()) {
+                    List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
+                    dishes.add(dish);
+                    String content = velocityRender.renderBill(bill, user, dishes, sb.toString());
+                    PrinterUtils.print(printer, content);
+                }
+            } else {
+                String content = velocityRender.renderBill(bill, user, bill.getOrder().getDishes(), sb.toString());
+                PrinterUtils.print(printer, content);
+            }
+        }
+    }
+    
+    public PrintTemplate getTemplate(int id) {
+        return printTemplateDb.get(id);
     }
     
     public List<PrintComponent> listComponents() {

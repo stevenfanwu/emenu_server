@@ -50,7 +50,7 @@ define(function (require, exports, module) {
 
         onAddWaiterName: function (evt) {
             evt.preventDefault();
-            this.addText('$user.name');
+            this.addText('$userName');
             evt.stopPropagation();
         }
     });

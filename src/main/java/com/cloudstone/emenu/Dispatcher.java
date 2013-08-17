@@ -9,6 +9,7 @@ import java.io.File;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
+import org.apache.log4j.FileAppender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -23,24 +24,11 @@ import com.cloudstone.emenu.constant.Const;
 public class Dispatcher extends DispatcherServlet {
     private static final long serialVersionUID = 1245712434233720170L;
     //Global TODO
-    //TODO database upgrade
     
     private static final Logger LOG = LoggerFactory.getLogger(Dispatcher.class);
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        File homeDir = new File(config.getServletContext().getRealPath("/"));
-        System.setProperty(Const.PARAM_WEB_HOME_DIR, homeDir.getAbsolutePath());
-        File tomcatHome = homeDir.getParentFile().getParentFile();
-        System.setProperty(Const.PARAM_TOMCAT_HOME, tomcatHome.getAbsolutePath());
-        File dataDir = new File(tomcatHome, "cloudstone-data");
-        System.setProperty(Const.PARAM_CLOUDSTONE_DATA_DIR, dataDir.getAbsolutePath());
-        if (!dataDir.exists()) {
-            dataDir.mkdir();
-        }
-        File dbFile = new File(dataDir, "cloudstone.db");
-        System.setProperty(Const.PARAM_DB_FILE, dbFile.getAbsolutePath());
-        
         super.init(config);
     }
 }

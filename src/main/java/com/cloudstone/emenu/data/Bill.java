@@ -23,16 +23,6 @@ public class Bill extends IEntity {
     private String remarks;
     private OrderVO order;
     
-    //temp
-    private String printer;
-    
-    public String getPrinter() {
-        return printer;
-    }
-    public void setPrinter(String printer) {
-        this.printer = printer;
-    }
-    
     public int getOrderId() {
         return orderId;
     }

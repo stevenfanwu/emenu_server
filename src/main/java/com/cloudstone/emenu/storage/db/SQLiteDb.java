@@ -6,7 +6,8 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +37,6 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     private static final String SQL_CREATE = "CREATE TABLE IF NOT EXISTS %s (%s)";
     
-    private static final ReentrantLock LOCK = new ReentrantLock();
-            
     private SqliteDataSource dataSource;
     
     private IdGenerator idGenerator = new IdGenerator();
@@ -91,10 +90,16 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     private volatile boolean inited = false;
+    @PostConstruct
     protected void init() throws SQLiteException {
         if(!inited) {
             inited = true;
-            onCheckCreateTable();
+            try {
+                onCheckCreateTable();
+            } catch (SQLiteException e) {
+                inited = false;
+                throw e;
+            }
         }
     }
 
@@ -106,18 +111,18 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     protected void executeSQL(DbTransaction trans, String sql, StatementBinder binder) throws SQLiteException {
         LOG.info(sql);
-        SQLiteConnection conn = getConnection(trans);
-        SQLiteStatement stmt = conn.prepare(sql);
-        LOCK.lock();
-        try {
-            binder.onBind(stmt);
-            stmt.stepThrough();
-        } finally {
-            stmt.dispose();
-            if (trans == null) {
-                conn.dispose();
+        synchronized (SQLiteDb.class) {
+            SQLiteConnection conn = getConnection(trans);
+            SQLiteStatement stmt = conn.prepare(sql);
+            try {
+                binder.onBind(stmt);
+                stmt.stepThrough();
+            } finally {
+                stmt.dispose();
+                if (trans == null) {
+                    conn.dispose();
+                }
             }
-            LOCK.unlock();
         }
     }
     
@@ -143,19 +148,16 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
         protected R exec(String sql, StatementBinder binder, RowMapper<T> rowMapper) throws SQLiteException {
-            SQLiteConnection conn = getConnection(null);
-            SQLiteStatement stmt = conn.prepare(sql);
-            try {
-                binder.onBind(stmt);
-                LOCK.lock();
+            synchronized (SQLiteDb.class) {
+                SQLiteConnection conn = getConnection(null);
+                SQLiteStatement stmt = conn.prepare(sql);
                 try {
+                    binder.onBind(stmt);
                     return parseData(stmt, rowMapper);
                 } finally {
-                    LOCK.unlock();
+                    stmt.dispose();
+                    conn.dispose();
                 }
-            } finally {
-                stmt.dispose();
-                conn.dispose();
             }
         }
         

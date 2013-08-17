@@ -257,22 +257,26 @@ public class ThriftLogic extends BaseLogic {
         
         DbTransaction trans = openTrans();
         trans.begin();
-        if (oldOrder != null) {
-            orderLogic.updateOrder(trans, oldOrder);
-            orderValue = oldOrder;
-            for (OrderDish r:needUpdate) {
-                orderLogic.updateOrderDish(trans, r);
+        try {
+            if (oldOrder != null) {
+                orderLogic.updateOrder(trans, oldOrder);
+                orderValue = oldOrder;
+                for (OrderDish r:needUpdate) {
+                    orderLogic.updateOrderDish(trans, r);
+                }
+            } else {
+                orderLogic.addOrder(trans, orderValue);
             }
-        } else {
-            orderLogic.addOrder(trans, orderValue);
+            for (OrderDish r:needInsert) {
+                r.setOrderId(orderValue.getId());
+                orderLogic.addOrderDish(trans, r);
+            }
+            table.setOrderId(orderValue.getId());
+            tableLogic.update(trans, table);
+            trans.commit();
+        } finally {
+            trans.close();
         }
-        for (OrderDish r:needInsert) {
-            r.setOrderId(orderValue.getId());
-            orderLogic.addOrderDish(trans, r);
-        }
-        table.setOrderId(orderValue.getId());
-        tableLogic.update(trans, table);
-        trans.commit();
     }
     
     public Order getOrderByTable(String tableName) throws TableEmptyException, TException {

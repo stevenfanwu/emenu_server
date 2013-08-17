@@ -4,7 +4,6 @@
  */
 package com.cloudstone.emenu.logic;
 
-import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,13 +23,10 @@ import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.service.IOrderService;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
-import com.cloudstone.emenu.util.StringUtils;
 import com.cloudstone.emenu.util.UnitUtils;
-import com.cloudstone.emenu.util.VelocityRender;
 import com.cloudstone.emenu.wrap.OrderWraper;
 
 
@@ -54,9 +50,6 @@ public class OrderLogic extends BaseLogic {
     
     @Autowired
     private IOrderService orderService;
-    
-    @Autowired
-    private VelocityRender velocityRender;
     
     public void addOrderDish(DbTransaction trans, OrderDish orderDish) {
         long now = System.currentTimeMillis();
@@ -136,13 +129,11 @@ public class OrderLogic extends BaseLogic {
             table.setStatus(TableStatus.EMPTY);
             table.setOrderId(0);
             tableLogic.update(trans, table);
-            
-            if (!StringUtils.isBlank(bill.getPrinter())) {
-                try {
-                    printerLogic.print(bill.getPrinter(), velocityRender.renderBill(bill, user));
-                } catch (Exception e) {
-                    throw new PreconditionFailedException("打印失败", e);
-                }
+        
+            try {
+                printerLogic.printBill(bill, user);
+            } catch (Exception e) {
+                throw new PreconditionFailedException("打印失败", e);
             }
             
             trans.commit();
