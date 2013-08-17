@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.storage.db.RelationDb.Relation;
 
 /**
@@ -13,13 +14,13 @@ import com.cloudstone.emenu.storage.db.RelationDb.Relation;
  *
  */
 public interface IDishPageDb extends IDb {
-    public void deleteByDishId(int dishId) ;
-    public void deleteByMenuPageId(int menuPageId) ;
-    public List<DishPage> getByMenuPageId(int menuPageId) ;
-    public List<DishPage> getByDishId(int dishId) ;
-    public int countByDishId(int dishId) ;
-    public void add(int menuPageId, int dishId, int pos) ;
-    public void delete(int menuPageId, int pos) ;
+    public void deleteByDishId(EmenuContext context, int dishId) ;
+    public void deleteByMenuPageId(EmenuContext context, int menuPageId) ;
+    public List<DishPage> getByMenuPageId(EmenuContext context, int menuPageId) ;
+    public List<DishPage> getByDishId(EmenuContext context, int dishId) ;
+    public int countByDishId(EmenuContext context, int dishId) ;
+    public void add(EmenuContext context, int menuPageId, int dishId, int pos) ;
+    public void delete(EmenuContext context, int menuPageId, int pos) ;
     
     public static class DishPage extends Relation {
         private int pos;

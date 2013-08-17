@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -81,57 +82,58 @@ public class UserDb extends SQLiteDb implements IUserDb {
         .appendSetValue(Column.PASSWORD.toString()).appendWhereId().build();
     
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
     
     @Override
-    public User getByName(String userName) {
-        User user = super.getByName(userName, rowMapper);
-        if (user==null && userName.equals("admin") && getAll().size()==0) {
+    public User getByName(EmenuContext context, String userName) {
+        User user = super.getByName(context, userName, rowMapper);
+        if (user==null && userName.equals("admin")
+                && getAll(context).size()==0) {
             //create a default admin user
             user = User.newSuperUser();
             user.setName("admin");
             user.setComment("默认密码admin,请及时修改");
             user.setPassword(RsaUtils.encrypt(DEFAULT_ADMIN_PASSWORD));
             user.setRealName("超级用户");
-            user = add(user);
+            user = add(context, user);
         }
         return user;
     }
     
     @Override
-    public User update(User user) {
+    public User update(EmenuContext context, User user) {
         String sql = SQL_UPDATE;
-        executeSQL(null, sql, new UpdateBinder(user));
-        return get(user.getId());
+        executeSQL(context, sql, new UpdateBinder(user));
+        return get(context, user.getId());
     }
     
     @Override
-    public boolean modifyPassword(int userId, String password)
+    public boolean modifyPassword(EmenuContext context, int userId, String password)
             {
-        executeSQL(null, SQL_MODIFY_PASSWORD, new ModifyPasswordBinder(userId, password));
+        executeSQL(context, SQL_MODIFY_PASSWORD, new ModifyPasswordBinder(userId, password));
         return true;
     }
     
     @Override
-    public User get(int userId) {
+    public User get(EmenuContext context, int userId) {
         IdStatementBinder binder = new IdStatementBinder(userId);
-        User user = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+        User user = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return user;
     }
     
     @Override
-    public List<User> getAll() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    public List<User> getAll(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public User add(User user) {
-        user.setId(genId());
+    public User add(EmenuContext context, User user) {
+        user.setId(genId(context));
         UserBinder binder = new UserBinder(user);
-        executeSQL(null, SQL_INSERT, binder);
-        return get(user.getId());
+        executeSQL(context, SQL_INSERT, binder);
+        return get(context, user.getId());
     }
     
     private RowMapper<User> rowMapper = new RowMapper<User>() {

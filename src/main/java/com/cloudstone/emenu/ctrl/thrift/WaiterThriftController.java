@@ -26,6 +26,8 @@ import cn.com.cloudstone.menu.server.thrift.api.TableInfo;
 import cn.com.cloudstone.menu.server.thrift.api.TableOccupiedException;
 import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 
+import com.cloudstone.emenu.EmenuContext;
+
 /**
  * @author xuhongfeng
  *
@@ -53,10 +55,11 @@ public class WaiterThriftController extends BaseThriftController {
         public boolean occupyTable(String sessionId, String tableId,
                 int customNumber) throws UserNotLoginException,
                 PermissionDenyExcpetion, TableOccupiedException, TException {
-            LOG.info("occupyTable");
-            authorize(sessionId);
+            LOG.info("occupyTable, customerNum = " + customNumber);
+            EmenuContext context = new EmenuContext();
+            authorize(context, sessionId);
             String tableName = tableId;
-            thriftLogic.occupyTable(tableName);
+            thriftLogic.occupyTable(context, tableName, customNumber);
             return true;
         }
 
@@ -65,8 +68,9 @@ public class WaiterThriftController extends BaseThriftController {
                 throws UserNotLoginException, PermissionDenyExcpetion,
                 TException {
             LOG.info("queryTableInfos");
-            authorize(sessionId);
-            return thriftLogic.getAllTables();
+            EmenuContext context = new EmenuContext();
+            authorize(context, sessionId);
+            return thriftLogic.getAllTables(context);
         }
 
         @Override
@@ -92,8 +96,9 @@ public class WaiterThriftController extends BaseThriftController {
                 throws UserNotLoginException, PermissionDenyExcpetion,
                 TException {
             LOG.info("emptyTable");
-            authorize(sessionId);
-            thriftLogic.emptyTable(tableName);
+            EmenuContext context = new EmenuContext();
+            authorize(context, sessionId);
+            thriftLogic.emptyTable(context, tableName);
             return true;
         }
 

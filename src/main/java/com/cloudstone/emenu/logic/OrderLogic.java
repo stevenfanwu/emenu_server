@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Dish;
@@ -30,7 +31,6 @@ import com.cloudstone.emenu.storage.db.IBillDb;
 import com.cloudstone.emenu.storage.db.IOrderDb;
 import com.cloudstone.emenu.storage.db.IOrderDishDb;
 import com.cloudstone.emenu.storage.db.IPayTypeDb;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.UnitUtils;
 import com.cloudstone.emenu.wrap.OrderWraper;
@@ -63,43 +63,43 @@ public class OrderLogic extends BaseLogic {
     @Autowired
     protected OrderWraper orderWraper;
     
-    public void addOrderDish(DbTransaction trans, OrderDish orderDish) {
+    public void addOrderDish(EmenuContext context, OrderDish orderDish) {
         long now = System.currentTimeMillis();
         orderDish.setCreatedTime(now);
         orderDish.setUpdateTime(now);
-        orderDishDb.add(trans, orderDish);
+        orderDishDb.add(context, orderDish);
     }
     
-    public void updateOrderDish(DbTransaction trans, OrderDish orderDish) {
+    public void updateOrderDish(EmenuContext context, OrderDish orderDish) {
         orderDish.setUpdateTime(System.currentTimeMillis());
-        orderDishDb.update(trans, orderDish);
+        orderDishDb.update(context, orderDish);
     }
     
-    public Order getOrder(int orderId) {
-        return orderDb.get(orderId);
+    public Order getOrder(EmenuContext context, int orderId) {
+        return orderDb.get(context, orderId);
     }
     
-    public void updateOrder(DbTransaction trans, Order order) {
+    public void updateOrder(EmenuContext context, Order order) {
         //TODO check order
         order.setUpdateTime(System.currentTimeMillis());
-        orderDb.update(trans, order);
+        orderDb.update(context, order);
     }
     
-    public void addOrder(DbTransaction trans, Order order) {
+    public void addOrder(EmenuContext context, Order order) {
         //TODO Check Order
         long now = System.currentTimeMillis();
         order.setUpdateTime(now);
         order.setCreatedTime(now);
-        orderDb.add(trans, order);
+        orderDb.add(context, order);
     }
     
-    public List<Dish> listDishes(int orderId) {
-        List<OrderDish> relations = orderDishDb.listOrderDish(orderId);
+    public List<Dish> listDishes(EmenuContext context, int orderId) {
+        List<OrderDish> relations = orderDishDb.listOrderDish(context, orderId);
         DataUtils.filterDeleted(relations);
         List<Dish> dishes = new ArrayList<Dish>();
         for (OrderDish r:relations) {
             int dishId = r.getDishId();
-            Dish dish = menuLogic.getDish(dishId);
+            Dish dish = menuLogic.getDish(context, dishId);
             if (dish != null) {
                 dishes.add(dish);
             }
@@ -107,73 +107,70 @@ public class OrderLogic extends BaseLogic {
         return dishes;
     }
     
-    public List<OrderDish> listOrderDishes(int orderId) {
-        List<OrderDish> datas = orderDishDb.listOrderDish(orderId);
+    public List<OrderDish> listOrderDishes(EmenuContext context, int orderId) {
+        List<OrderDish> datas = orderDishDb.listOrderDish(context, orderId);
         DataUtils.filterDeleted(datas);
         return datas;
     }
     
-    public List<PayType> listPayTypes() {
-        List<PayType> datas = payTypeDb.getAllPayType();
+    public List<PayType> listPayTypes(EmenuContext context) {
+        List<PayType> datas = payTypeDb.getAllPayType(context);
         DataUtils.filterDeleted(datas);
         return datas;
     }
     
-    public List<Bill> listBills() {
-        List<Bill> datas = billDb.listBills();
+    public List<Bill> listBills(EmenuContext context) {
+        List<Bill> datas = billDb.listBills(context);
         DataUtils.filterDeleted(datas);
         return datas;
     }
     
-    public Bill payBill(Bill bill, User user) {
+    public Bill payBill(EmenuContext context, Bill bill, User user) {
         
-        if (getBillByOrderId(bill.getOrderId()) != null) {
+        if (getBillByOrderId(context, bill.getOrderId()) != null) {
             throw new DataConflictException("请勿重复提交订单");
         }
-        Order order = getOrder(bill.getOrderId());
+        Order order = getOrder(context, bill.getOrderId());
         if (order == null) {
             throw new BadRequestError();
         }
-        Table table = tableLogic.get(order.getTableId());
+        Table table = tableLogic.get(context, order.getTableId());
         if (table == null || table.getStatus() != TableStatus.OCCUPIED) {
             throw new BadRequestError();
         }
-        OrderVO orderVO = orderWraper.wrap(order);
+        OrderVO orderVO = orderWraper.wrap(context, order);
         bill.setOrder(orderVO);
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
         //Start transaction
-        DbTransaction trans = openTrans();
-        trans.begin();
+        context.beginTransaction(dataSource);
         try {
-            billDb.add(trans, bill);
+            billDb.add(context, bill);
             table.setStatus(TableStatus.EMPTY);
             table.setOrderId(0);
-            tableLogic.update(trans, table);
+            tableLogic.update(context, table);
         
             try {
-                printerLogic.printBill(bill, user);
+                printerLogic.printBill(context, bill, user);
             } catch (Exception e) {
                 throw new PreconditionFailedException("打印失败", e);
             }
             
-            trans.commit();
+            context.commitTransaction();
             //End transaction
         } finally {
-            trans.close();
+            context.closeTransaction(dataSource);
         }
-        return billDb.get(bill.getId());
+        tableLogic.setCustomerNumber(context, table.getId(), 0);
+        return billDb.get(context, bill.getId());
     }
     
-    public Bill getBillByOrderId(int orderId) {
-        return billDb.getByOrderId(orderId);
+    public Bill getBillByOrderId(EmenuContext context, int orderId) {
+        return billDb.getByOrderId(context, orderId);
     }
     
-    public void changeTable(Table from, Table to) {
-    }
-
-    public List<Order> getDailyOrders(long time) {
+    public List<Order> getDailyOrders(EmenuContext context, long time) {
         if (time <= 0)
             throw new BadRequestError();
         //long offset = Calendar.getInstance().getTimeZone().getRawOffset();
@@ -182,8 +179,8 @@ public class OrderLogic extends BaseLogic {
         long startTime = currentDay * UnitUtils.DAY;
         long endTime = startTime + UnitUtils.DAY;
 
-        List<Order> orders = orderDb.getOrdersByTime(startTime, endTime);
-        List<Bill> bills = billDb.getBillsByTime(startTime, endTime);
+        List<Order> orders = orderDb.getOrdersByTime(context, startTime, endTime);
+        List<Bill> bills = billDb.getBillsByTime(context, startTime, endTime);
         DataUtils.filterDeleted(bills);
         for(Bill bill : bills) {
             orders.add(bill.getOrder());
@@ -193,13 +190,13 @@ public class OrderLogic extends BaseLogic {
         return orders;
     }
 
-    public List<Bill> getDailyBills(long time) {
+    public List<Bill> getDailyBills(EmenuContext context, long time) {
         if (time <= 0)
             throw new BadRequestError();
         long currentDay = (long) (time / UnitUtils.DAY);
         long startTime = currentDay * UnitUtils.DAY;
         long endTime = startTime + UnitUtils.DAY;
-        List<Bill> bills = billDb.getBillsByTime(startTime, endTime);
+        List<Bill> bills = billDb.getBillsByTime(context, startTime, endTime);
         DataUtils.filterDeleted(bills);
         return bills;
     }

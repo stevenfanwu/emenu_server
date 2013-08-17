@@ -16,11 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.BaseStorage;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -57,24 +57,26 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     @Override
-    public int getMaxId() {
+    public int getMaxId(EmenuContext context) {
         String sql = "SELECT MAX(id) FROM " + getTableName();
-        return queryInt(sql, StatementBinder.NULL);
+        return queryInt(context, sql, StatementBinder.NULL);
     }
     
-    public void delete(int id) {
+    @Override
+    public void delete(EmenuContext context, int id) {
         String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE id=?";
-        executeSQL(null, sql, new IdStatementBinder(id));
+        executeSQL(context, sql, new IdStatementBinder(id));
     }
     
     /* ---------- protected ----------*/
-    protected int genId() {
-        return idGenerator.generateId(this);
+    protected int genId(EmenuContext context) {
+        return idGenerator.generateId(context, this);
     }
     
-    protected <T extends BaseData> T getByName(String name, RowMapper<T> rowMapper) {
+    protected <T extends BaseData> T getByName(EmenuContext context,
+            String name, RowMapper<T> rowMapper) {
         String sql = new SelectSqlBuilder(getTableName()).appendWhereName().build();
-        List<T> list = query(sql, new NameStatementBinder(name), rowMapper);
+        List<T> list = query(context, sql, new NameStatementBinder(name), rowMapper);
         T r = null;
         for (int i=0; i<list.size(); i++) {
             r = list.get(i);
@@ -85,42 +87,45 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         return r;
     }
     
-    protected List<IdName> getIdNames() {
+    protected List<IdName> getIdNames(EmenuContext context) {
         String sql = "SELECT id, name, createdTime, updateTime, deleted FROM " + getTableName();
-        return query(sql, StatementBinder.NULL, ID_NAME_ROW_MAPPER);
+        return query(context, sql, StatementBinder.NULL, ID_NAME_ROW_MAPPER);
     }
     
     private volatile boolean inited = false;
     @PostConstruct
-    protected void init() {
-        if(!inited) {
-            inited = true;
-            try {
-                onCheckCreateTable();
-            } catch (Throwable e) {
-                inited = false;
-            }
+    public void init() {
+        inited = true;
+        try {
+            init(new EmenuContext());
+        } catch (Throwable e) {
+            LOG.error("", e);
+            inited = false;
         }
     }
+    
+    protected void init(EmenuContext context) {
+        onCheckCreateTable(context);
+    }
 
-    protected void checkCreateTable(String tableName, String columnDef) {
+    protected void checkCreateTable(EmenuContext context, String tableName, String columnDef) {
         String sql = String.format(SQL_CREATE, tableName, columnDef);
 //        LOG.info("create table sql: " + sql);
-        executeSQL(null, sql, StatementBinder.NULL);
+        executeSQL(context, sql, StatementBinder.NULL);
     }
     
-    protected void executeSQL(DbTransaction trans, String sql, StatementBinder binder) {
+    protected void executeSQL(EmenuContext context, String sql, StatementBinder binder) {
         LOG.info(sql);
-        synchronized (SQLiteDb.class) {
+        synchronized (dataSource) {
             try {
-                SQLiteConnection conn = getConnection(trans);
+                SQLiteConnection conn = getConnection(context);
                 SQLiteStatement stmt = conn.prepare(sql);
                 try {
                     binder.onBind(stmt);
                     stmt.stepThrough();
                 } finally {
                     stmt.dispose();
-                    if (trans == null) {
+                    if (context.getTransaction() == null) {
                         conn.dispose();
                     }
                 }
@@ -130,38 +135,42 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         }
     }
     
-    protected String queryString(String sql, StatementBinder binder) {
-        return new QueryStringGetter().exec(sql, binder);
+    protected String queryString(EmenuContext context, String sql, StatementBinder binder) {
+        return new QueryStringGetter().exec(context, sql, binder);
     }
     
-    protected int queryInt(String sql, StatementBinder binder) {
-        return new QueryIntGetter().exec(sql, binder);
+    protected int queryInt(EmenuContext context, String sql, StatementBinder binder) {
+        return new QueryIntGetter().exec(context, sql, binder);
     }
     
-    protected <T> T queryOne(String sql, StatementBinder binder, RowMapper<T> rowMapper) {
-        return new QueryObjectGetter<T>() {}.exec(sql, binder, rowMapper);
+    protected <T> T queryOne(EmenuContext context, String sql, StatementBinder binder, RowMapper<T> rowMapper) {
+        return new QueryObjectGetter<T>() {}.exec(context,
+                sql, binder, rowMapper);
     }
     
-    protected <T> List<T> query(String sql, StatementBinder binder, RowMapper<T> rowMapper) {
-        return new QueryListGetter<T>().exec(sql, binder, rowMapper);
+    protected <T> List<T> query(EmenuContext context, String sql, StatementBinder binder, RowMapper<T> rowMapper) {
+        return new QueryListGetter<T>().exec(context, sql, binder, rowMapper);
     }
     
     /* ---------- abstract ----------*/
-    protected abstract void onCheckCreateTable() ;
+    protected abstract void onCheckCreateTable(EmenuContext context) ;
     
     /* ---------- Inner Class ---------- */
     private abstract class BaseQueryGetter<T, R> {
-        protected R exec(String sql, StatementBinder binder, RowMapper<T> rowMapper) {
-            synchronized (SQLiteDb.class) {
+        protected R exec(EmenuContext context, String sql,
+                StatementBinder binder, RowMapper<T> rowMapper) {
+            synchronized (dataSource) {
                 try {
-                    SQLiteConnection conn = getConnection(null);
+                    SQLiteConnection conn = getConnection(context);
                     SQLiteStatement stmt = conn.prepare(sql);
                     try {
                         binder.onBind(stmt);
                         return parseData(stmt, rowMapper);
                     } finally {
                         stmt.dispose();
-                        conn.dispose();
+                        if (context.getTransaction() == null) {
+                            conn.dispose();
+                        }
                     }
                 } catch (SQLiteException e) {
                     throw new ServerError(e);
@@ -174,9 +183,9 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     private abstract class QueryObjectGetter<T> extends BaseQueryGetter<T, T> {
         @Override
-        public T exec(String sql, StatementBinder binder,
+        public T exec(EmenuContext context, String sql, StatementBinder binder,
                 RowMapper<T> rowMapper) {
-            return super.exec(sql, binder, rowMapper);
+            return super.exec(context, sql, binder, rowMapper);
         }
         
         @Override
@@ -203,8 +212,8 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     private class QueryStringGetter extends QueryObjectGetter<String> {
-        public String exec(String sql, StatementBinder binder) {
-            return super.exec(sql, binder, null);
+        public String exec(EmenuContext context, String sql, StatementBinder binder) {
+            return super.exec(context, sql, binder, null);
         }
         @Override
         protected String parseData(SQLiteStatement stmt,
@@ -218,8 +227,8 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     private class QueryIntGetter extends QueryObjectGetter<Integer> {
-        public Integer exec(String sql, StatementBinder binder) {
-            return super.exec(sql, binder, null);
+        public Integer exec(EmenuContext context, String sql, StatementBinder binder) {
+            return super.exec(context, sql, binder, null);
         }
         @Override
         protected Integer parseData(SQLiteStatement stmt,
@@ -257,13 +266,24 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
         this.dataSource = dataSource;
     }
 
-    private SQLiteConnection getConnection(DbTransaction trans) throws SQLiteException {
+    private SQLiteConnection getConnection(EmenuContext context) {
         if (!inited) {
-            init();
+            inited = true;
+            try {
+                init(context);
+            } catch (Throwable  e){
+                inited = false;
+                throw new ServerError(e);
+            }
         }
-        if (trans != null)
-            return trans.getTransConn();
-        else
-            return dataSource.open();
+        if (context.getTransaction() != null)
+            return context.getTransaction().getTransConn();
+        else {
+            try {
+                return dataSource.open();
+            } catch (SQLiteException e) {
+                throw new ServerError(e);
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.util;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.storage.db.IDb;
 
 /**
@@ -13,9 +14,9 @@ import com.cloudstone.emenu.storage.db.IDb;
 public class IdGenerator {
     
     private int lastId = -1;
-    public synchronized int generateId(IDb db) {
+    public synchronized int generateId(EmenuContext context, IDb db) {
         if (lastId == -1) {
-            lastId = db.getMaxId();
+            lastId = db.getMaxId(context);
         }
         lastId++;
         if (lastId < 1) {

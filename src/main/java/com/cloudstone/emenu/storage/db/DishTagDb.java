@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.DishTag;
 
 /**
@@ -23,45 +24,45 @@ public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
     };
     
     @Override
-    protected void init() {
-        super.init();
-        if (listAll().size() == 0) {
+    protected void init(EmenuContext context) {
+        super.init(context);
+        if (listAll(context).size() == 0) {
             for (String name: DEFAULT_DISH_TAGS) {
                 DishTag tag = new DishTag();
                 tag.setName(name);
-                add(tag);
+                add(context, tag);
             }
         }
     }
     
     @Override
-    public DishTag getDishTagByName(String name) {
-        return getByName(name);
+    public DishTag getDishTagByName(EmenuContext context, String name) {
+        return getByName(context, name);
     }
     
     @Override
-    public DishTag getDishTag(int id) {
-        return get(id);
+    public DishTag getDishTag(EmenuContext context, int id) {
+        return get(context, id);
     }
 
     @Override
-    public List<DishTag> listAll() {
-        return getAll();
+    public List<DishTag> listAll(EmenuContext context) {
+        return getAll(context);
     }
 
     @Override
-    public void addDishTag(DishTag tag) {
-        add(tag);
+    public void addDishTag(EmenuContext context, DishTag tag) {
+        add(context, tag);
     }
 
     @Override
-    public void updateDishTag(DishTag tag) {
-        update(tag);
+    public void updateDishTag(EmenuContext context, DishTag tag) {
+        update(context, tag);
     }
 
     @Override
-    public void deleteDishTag(int id) {
-        delete(id);
+    public void deleteDishTag(EmenuContext context, int id) {
+        delete(context, id);
     }
     
     @Override

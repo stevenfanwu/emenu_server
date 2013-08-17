@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -38,27 +39,27 @@ public class JsonDb extends SQLiteDb {
         SQL_SELECT_ALL = "SELECT value FROM " + TABLE_NAME;
     }
     
-    public <T> T get(String key, Class<T> clazz) throws SQLiteException {
-        String json = innerGet(key);
+    public <T> T get(EmenuContext context, String key, Class<T> clazz) {
+        String json = innerGet(context, key);
         return json == null ? null : JsonUtils.fromJson(json, clazz);
     }
     
-    public List<String> getAll() {
-        return query(SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
+    public List<String> getAll(EmenuContext context) {
+        return query(context, SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
     }
     
-    public void remove(String key) {
-        executeSQL(null, SQL_DELETE, new KeyBinder(key));
+    public void remove(EmenuContext context, String key) {
+        executeSQL(context, SQL_DELETE, new KeyBinder(key));
         cache.remove(key);
     }
     
-    private String innerGet(String key) throws SQLiteException {
+    private String innerGet(EmenuContext context, String key) {
         if (key == null) {
             return null;
         }
         String value = cache.get(key);
         if (value == null) {
-            value = queryString(SQL_SELECT, new KeyBinder(key));
+            value = queryString(context, SQL_SELECT, new KeyBinder(key));
             if (value != null) {
                 cache.put(key, value);
             }
@@ -66,16 +67,16 @@ public class JsonDb extends SQLiteDb {
         return value;
     }
     
-    public <T> void set(String key, T value) {
+    public <T> void set(EmenuContext context, String key, T value) {
         try {
-            innerSet(key, JsonUtils.toJson(value));
+            innerSet(context, key, JsonUtils.toJson(value));
         } catch (SQLiteException e) {
             throw new ServerError(e);
         }
     }
     
-    private void innerSet(String key, String value) throws SQLiteException {
-        executeSQL(null, SQL_REPLACE, new ReplaceBinder(key, value));
+    private void innerSet(EmenuContext context, String key, String value) throws SQLiteException {
+        executeSQL(context, SQL_REPLACE, new ReplaceBinder(key, value));
         cache.put(key, value);
     }
 
@@ -85,8 +86,8 @@ public class JsonDb extends SQLiteDb {
     }
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
 
     private class ReplaceBinder implements StatementBinder {

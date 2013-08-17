@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Menu;
 
 /**
@@ -24,28 +25,28 @@ public class MenuDb extends IdNameDb<Menu> implements IMenuDb {
     }
 
     @Override
-    public void addMenu(Menu menu) {
-        add(menu);
+    public void addMenu(EmenuContext context, Menu menu) {
+        add(context, menu);
     }
 
     @Override
-    public void updateMenu(Menu menu) {
-        update(menu);
+    public void updateMenu(EmenuContext context, Menu menu) {
+        update(context, menu);
     }
 
     @Override
-    public void deleteMenu(int id) {
-        delete(id);
+    public void deleteMenu(EmenuContext context, int id) {
+        delete(context, id);
     }
 
     @Override
-    public List<Menu> getAllMenu() {
-        return getAll();
+    public List<Menu> getAllMenu(EmenuContext context) {
+        return getAll(context);
     }
 
     @Override
-    public Menu getMenu(int id) {
-        return get(id);
+    public Menu getMenu(EmenuContext context, int id) {
+        return get(context, id);
     }
     
     @Override

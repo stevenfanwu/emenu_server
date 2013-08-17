@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.storage.db.IDishPageDb.DishPage;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
@@ -60,8 +61,8 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
 
     /* ---------- public ---------- */
     @Override
-    public void add(int menuPageId, int dishId, final int pos) {
-        add(null, new InsertBinder(menuPageId, dishId) {
+    public void add(EmenuContext context, int menuPageId, int dishId, final int pos) {
+        add(context, new InsertBinder(menuPageId, dishId) {
             @Override
             protected void bindOthers(SQLiteStatement stmt)
                     throws SQLiteException {
@@ -75,38 +76,38 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     }
 
     @Override
-    public void deleteByDishId(int dishId) {
-        deleteById2(dishId);
+    public void deleteByDishId(EmenuContext context, int dishId) {
+        deleteById2(context, dishId);
     }
 
     @Override
-    public void deleteByMenuPageId(int menuPageId) {
-        deleteById1(menuPageId);
+    public void deleteByMenuPageId(EmenuContext context, int menuPageId) {
+        deleteById1(context, menuPageId);
     }
 
     @Override
-    public List<DishPage> getByMenuPageId(int menuPageId)
+    public List<DishPage> getByMenuPageId(EmenuContext context, int menuPageId)
             {
-        return listById1(menuPageId);
+        return listById1(context, menuPageId);
     }
 
     @Override
-    public List<DishPage> getByDishId(int dishId)
+    public List<DishPage> getByDishId(EmenuContext context, int dishId)
             {
-        return listById2(dishId);
+        return listById2(context, dishId);
     }
 
     @Override
-    public int countByDishId(int dishId) {
-        return countId2(dishId);
+    public int countByDishId(EmenuContext context, int dishId) {
+        return countId2(context, dishId);
     }
     
     @Override
-    public void delete(final int menuPageId, final int pos) {
+    public void delete(EmenuContext context, final int menuPageId, final int pos) {
         String sql = new UpdateSqlBuilder(TABLE_NAME)
             .appendSetValue(COL_DELETED)
             .appendWhere(ID1).appendWhere(COL_POS).build();
-        executeSQL(null, sql, new StatementBinder() {
+        executeSQL(context, sql, new StatementBinder() {
             @Override
             public void onBind(SQLiteStatement stmt) throws SQLiteException {
                 stmt.bind(1, 1);

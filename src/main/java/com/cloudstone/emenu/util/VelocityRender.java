@@ -4,19 +4,23 @@
  */
 package com.cloudstone.emenu.util;
 
-import java.util.HashMap;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.runtime.RuntimeServices;
+import org.apache.velocity.runtime.RuntimeSingleton;
+import org.apache.velocity.runtime.parser.ParseException;
+import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.velocity.VelocityEngineUtils;
-import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
+import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.web.velocitytool.Utils;
 
 /**
@@ -26,24 +30,37 @@ import com.cloudstone.emenu.web.velocitytool.Utils;
 @Component
 public class VelocityRender {
     @Autowired
-    private VelocityConfigurer velocityConfigurer;
-    @Autowired
     private Utils utils;
     
     public String renderBill(Bill bill, User user, List<OrderDishVO> dishes, String template) {
-        VelocityEngine engine = velocityConfigurer.getVelocityEngine();
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("bill", bill);
-        model.put("dishes", dishes);
-        model.put("order", bill.getOrder());
-        model.put("table", bill.getOrder().getTable());
-        model.put("time", utils.formatDate(bill.getCreatedTime()));
+        
+        VelocityContext context = new VelocityContext();
+        context.put("bill", bill);
+        context.put("dishes", dishes);
+        context.put("order", bill.getOrder());
+        context.put("table", bill.getOrder().getTable());
+        context.put("time", utils.formatDate(bill.getCreatedTime()));
         String userName = user.getRealName();
         if (userName == null) {
             userName = "";
         }
-        model.put("userName", userName);
-        return VelocityEngineUtils.
-                mergeTemplateIntoString(engine, "print_bill.vm", "UTF-8", model);
+        context.put("userName", userName);
+        
+        RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();            
+        StringReader reader = new StringReader(template);
+        SimpleNode node;
+        try {
+            node = runtimeServices.parse(reader, "Template name");
+        } catch (ParseException e) {
+            throw new ServerError(e);
+        }
+        Template t = new Template();
+        t.setRuntimeServices(runtimeServices);
+        t.setData(node);
+        t.initDocument();
+        StringWriter writer = new StringWriter();
+        t.merge(context, writer);
+        writer.write("\n\n\n\n\n");
+        return writer.toString();
     }
 } 

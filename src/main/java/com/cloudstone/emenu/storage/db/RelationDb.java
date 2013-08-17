@@ -9,11 +9,11 @@ import java.util.List;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.storage.db.RelationDb.Relation;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.CountSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -30,7 +30,7 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
 
     /* ---------- init ---------- */
     @Override
-    protected void onCheckCreateTable() {
+    protected void onCheckCreateTable(EmenuContext context) {
         //create table
         ColumnDefBuilder columnDefBuilder = new ColumnDefBuilder().append(ID1, DataType.INTEGER, "NOT NULL")
                 .append(ID2, DataType.INTEGER, "NOT NULL");
@@ -46,7 +46,7 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
             }
         }
         columnDefBuilder.appendPrimaryKey(primaryKeys.toArray(new String[0]));
-        checkCreateTable(config.tableName, columnDefBuilder.build());
+        checkCreateTable(context, config.tableName, columnDefBuilder.build());
         
     }
     
@@ -57,50 +57,50 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
     protected abstract RelationRowMapper<T> onCreateRowMapper();
     
     /* ---------- protected ---------- */
-    protected void add(DbTransaction trans, InsertBinder binder) {
+    protected void add(EmenuContext context, InsertBinder binder) {
         int columnCount = 2 + config.columns.length;
         String sql = new InsertSqlBuilder(config.tableName, columnCount, true).build();
-        executeSQL(trans, sql, binder);
+        executeSQL(context, sql, binder);
     }
     
-    protected void deleteById2(int id2) {
-        deleteById(ID2, id2);
+    protected void deleteById2(EmenuContext context, int id2) {
+        deleteById(context, ID2, id2);
     }
     
-    protected void deleteById1(int id1) {
-        deleteById(ID1, id1);
+    protected void deleteById1(EmenuContext context, int id1) {
+        deleteById(context, ID1, id1);
     }
     
-    private void deleteById(String idName, int id) {
+    private void deleteById(EmenuContext context, String idName, int id) {
         String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE " + idName + "=?";
-        executeSQL(null, sql, new IdStatementBinder(id));
+        executeSQL(context, sql, new IdStatementBinder(id));
     }
     
-    protected List<T> listById1(int id1) {
-        return listById(ID1, id1);
+    protected List<T> listById1(EmenuContext context, int id1) {
+        return listById(context, ID1, id1);
     }
     
-    protected List<T> listById2(int id2) {
-        return listById(ID2, id2);
+    protected List<T> listById2(EmenuContext context, int id2) {
+        return listById(context, ID2, id2);
     }
     
-    private List<T> listById(String idName, int id) {
+    private List<T> listById(EmenuContext context, String idName, int id) {
         String sql = new SelectSqlBuilder(config.tableName).appendWhere(idName).build();
-        return query(sql, new IdStatementBinder(id), rowMapper);
+        return query(context, sql, new IdStatementBinder(id), rowMapper);
     }
     
-    protected int countId1(int id1) {
-        return countId(ID1, id1);
+    protected int countId1(EmenuContext context, int id1) {
+        return countId(context, ID1, id1);
     }
     
-    protected int countId2(int id2) {
-        return countId(ID2, id2);
+    protected int countId2(EmenuContext context, int id2) {
+        return countId(context, ID2, id2);
     }
     
-    private int countId(String idName, int id) {
+    private int countId(EmenuContext context, String idName, int id) {
         String sql = new CountSqlBuilder(config.tableName).appendWhere(idName)
                 .appendNotDeleted().build();
-        return queryInt(sql, new IdStatementBinder(id));
+        return queryInt(context, sql, new IdStatementBinder(id));
     }
     
     /* ---------- Inner Class ---------- */

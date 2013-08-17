@@ -1,12 +1,13 @@
 
 package com.cloudstone.emenu.storage.db;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.DailyStat;
 
 public interface IStatDb extends IDb {
-    public void add(DailyStat stat);
+    public void add(EmenuContext context, DailyStat stat);
 
-    public DailyStat get(long time);
+    public DailyStat get(EmenuContext context, long time);
 
-    public void update(DailyStat stat);
+    public void update(EmenuContext context, DailyStat stat);
 }

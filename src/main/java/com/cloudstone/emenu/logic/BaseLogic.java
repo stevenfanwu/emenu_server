@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
 
 /**
@@ -19,7 +18,7 @@ import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
 public class BaseLogic {
 
     @Autowired
-    private SqliteDataSource dataSource;
+    protected SqliteDataSource dataSource;
 
     protected final ExecutorService threadPool = Executors.newCachedThreadPool();
 
@@ -27,7 +26,4 @@ public class BaseLogic {
         threadPool.submit(task);
     }
 
-    protected DbTransaction openTrans() {
-        return dataSource.openTrans();
-    }
 }

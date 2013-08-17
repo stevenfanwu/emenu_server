@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.ServerConfig;
 import com.cloudstone.emenu.logic.ConfigLogic;
@@ -35,7 +36,7 @@ public class DbUpgrader {
     @Autowired
     private IUserDb userDb;
     
-    public void checkUpgrade() {
+    public void checkUpgrade(final EmenuContext context) {
         if (upgrading) {
             return;
         }
@@ -44,7 +45,7 @@ public class DbUpgrader {
             @Override
             public void run() {
                 try {
-                    startUpgrade();
+                    startUpgrade(context);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -54,7 +55,7 @@ public class DbUpgrader {
         }.start();
     }
     
-    private void startUpgrade() throws Exception {
+    private void startUpgrade(EmenuContext context) throws Exception {
         File dbDir = new File(System.getProperty(Const.PARAM_CLOUDSTONE_DATA_DIR));
         File dbFile = new File(System.getProperty(Const.PARAM_DB_FILE));
         File tmpFile = new File(dbDir, "tmp.db");
@@ -62,11 +63,11 @@ public class DbUpgrader {
         try {
             FileUtils.copyFile(dbFile, tmpFile);
             dataSource.setDbFile(tmpFile);
-            int oldVersion = configLogic.getDbVersion();
+            int oldVersion = configLogic.getDbVersion(context);
             int newVersion = ServerConfig.DB_VERSION;
             for (int i=oldVersion+1; i<=newVersion; i++) {
                 onUpgrade(i-1, i);
-                configLogic.setDbVersion(i);
+                configLogic.setDbVersion(context, i);
                 FileUtils.copyFile(tmpFile, dbFile);
             }
         } finally {

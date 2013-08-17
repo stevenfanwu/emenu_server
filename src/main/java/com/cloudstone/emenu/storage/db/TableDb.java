@@ -12,9 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -83,40 +83,40 @@ public class TableDb extends SQLiteDb implements ITableDb {
         .build();
 
     @Override
-    public Table add(Table table) {
-        table.setId(genId());
+    public Table add(EmenuContext context, Table table) {
+        table.setId(genId(context));
         TableBinder binder = new TableBinder(table);
-        executeSQL(null, SQL_INSERT, binder);
-        return get(table.getId());
+        executeSQL(context, SQL_INSERT, binder);
+        return get(context, table.getId());
     }
     
     @Override
-    public Table get(int id) {
+    public Table get(EmenuContext context, int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
-        Table table = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+        Table table = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return table;
     }
     
     @Override
-    public Table getByTableName(String name) {
-        return getByName(name, rowMapper);
+    public Table getByTableName(EmenuContext context, String name) {
+        return getByName(context, name, rowMapper);
     }
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
     
     @Override
-    public List<Table> getAll() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    public List<Table> getAll(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
     @Override
-    public Table update(DbTransaction trans, Table table) {
+    public Table update(EmenuContext context, Table table) {
         String sql = SQL_UPDATE;
-        executeSQL(trans, sql, new UpdateBinder(table));
-        return get(table.getId());
+        executeSQL(context, sql, new UpdateBinder(table));
+        return get(context, table.getId());
     }
     
     private class TableBinder implements StatementBinder {

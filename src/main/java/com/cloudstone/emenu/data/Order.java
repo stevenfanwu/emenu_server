@@ -24,6 +24,7 @@ public class Order extends IEntity {
         setOriginPrice(order.getOriginPrice());
         setPrice(order.getPrice());
         setTableId(order.getTableId());
+        setCustomerNumber(order.getCustomerNumber());
     }
     
     public double getOriginPrice() {

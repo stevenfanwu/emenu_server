@@ -22,6 +22,8 @@ import cn.com.cloudstone.menu.server.thrift.api.IMenuService;
 import cn.com.cloudstone.menu.server.thrift.api.IMenuService.Processor;
 import cn.com.cloudstone.menu.server.thrift.api.Menu;
 
+import com.cloudstone.emenu.EmenuContext;
+
 /**
  * @author xuhongfeng
  *
@@ -48,12 +50,14 @@ public class MenuThriftController extends BaseThriftController {
         @Override
         public Menu getCurrentMenu() throws TException {
             LOG.info("getCurrentMenu");
-            return thriftLogic.getCurrentMenu();
+            EmenuContext context = new EmenuContext();
+            return thriftLogic.getCurrentMenu(context);
         }
 
         @Override
         public List<String> getAllNotes() throws TException {
-            return thriftLogic.getAllNotes();
+            EmenuContext context = new EmenuContext();
+            return thriftLogic.getAllNotes(context);
         }
     }
 }

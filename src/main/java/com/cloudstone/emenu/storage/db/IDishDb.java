@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.IdName;
 
@@ -14,11 +15,11 @@ import com.cloudstone.emenu.data.IdName;
  *
  */
 public interface IDishDb extends IDb {
-    public void add(Dish dish) ;
-    public void update(Dish dish) ;
-    public Dish get(int dishId) ;
-    public Dish getByName(String name) ;
-    public List<Dish> getAll() ;
-    public void delete(int dishId) ;
-    public List<IdName> getDishSuggestion() ;
+    public void add(EmenuContext context, Dish dish) ;
+    public void update(EmenuContext context, Dish dish) ;
+    public Dish get(EmenuContext context, int dishId) ;
+    public Dish getByName(EmenuContext context, String name) ;
+    public List<Dish> getAll(EmenuContext context) ;
+    public void delete(EmenuContext context, int dishId) ;
+    public List<IdName> getDishSuggestion(EmenuContext context) ;
 }

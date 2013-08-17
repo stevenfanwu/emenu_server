@@ -15,7 +15,8 @@ define(function (require, exports, module) {
             'click .btn-add-custom-num': 'onAddCustomNum',
             'click .btn-add-table-name': 'onAddTableName',
             'click .btn-add-order-id': 'onAddOrderId',
-            'click .btn-add-waiter-name': 'onAddWaiterName'
+            'click .btn-add-waiter-name': 'onAddWaiterName',
+            'click .btn-add-cost': 'onAddCost'
         },
 
         addText: function (text) {
@@ -52,7 +53,14 @@ define(function (require, exports, module) {
             evt.preventDefault();
             this.addText('$userName');
             evt.stopPropagation();
+        },
+
+        onAddCost: function (evt) {
+            evt.preventDefault();
+            this.addText('$bill.cost');
+            evt.stopPropagation();
         }
+        
     });
     
     var EditPrintComponentDialog = EditDialog.extend({

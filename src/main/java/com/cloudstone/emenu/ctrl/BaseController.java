@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.logic.DeviceLogic;
@@ -107,7 +108,17 @@ public class BaseController {
         }
     }
     
+    //TODO save userId only
     protected User getLoginUser(HttpServletRequest req) {
         return (User) req.getSession().getAttribute("loginUser");
+    }
+    
+    protected EmenuContext newContext(HttpServletRequest request) {
+        EmenuContext context = new EmenuContext();
+        User user = getLoginUser(request);
+        if (user != null) {
+            context.setLoginUserId(user.getId());
+        }
+        return context;
     }
 }

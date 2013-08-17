@@ -12,6 +12,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
@@ -64,8 +65,8 @@ public class MenuLogic extends BaseLogic {
     private ImageLogic imageLogic;
     
     /* ---------- menu ---------- */
-    public Menu addMenu(Menu menu) {
-        Menu old = menuDb.getByName(menu.getName());
+    public Menu addMenu(EmenuContext context, Menu menu) {
+        Menu old = menuDb.getByName(context, menu.getName());
         if (old!=null && !old.isDeleted()) {
             throw new DataConflictException("该菜单已存在");
         }
@@ -75,68 +76,68 @@ public class MenuLogic extends BaseLogic {
         if (old != null) {
             menu.setId(old.getId());
             menu.setCreatedTime(old.getCreatedTime());
-            menuDb.updateMenu(menu);
+            menuDb.updateMenu(context, menu);
         } else {
             menu.setCreatedTime(now);
-            menuDb.addMenu(menu);
+            menuDb.addMenu(context, menu);
         }
-        return menuDb.getMenu(menu.getId());
+        return menuDb.getMenu(context, menu.getId());
     }
     
-    public void bindDish(int menuPageId, int dishId, int pos) {
-        MenuPage page = getMenuPage(menuPageId);
+    public void bindDish(EmenuContext context, int menuPageId, int dishId, int pos) {
+        MenuPage page = getMenuPage(context, menuPageId);
         if (page == null) {
             throw new PreconditionFailedException("该菜单页不存在");
         }
-        if (isDishInChapter(dishId, page.getChapterId())) {
+        if (isDishInChapter(context, dishId, page.getChapterId())) {
             throw new PreconditionFailedException("当前菜单分类已经添加过该菜品");
         }
-        dishPageDb.add(menuPageId, dishId, pos);
-        checkDishInMenu(dishId);
+        dishPageDb.add(context, menuPageId, dishId, pos);
+        checkDishInMenu(context, dishId);
     }
     
-    public void unbindDish(int menuPageId, int dishId, int pos) {
-        dishPageDb.delete(menuPageId, pos);
-        checkDishInMenu(dishId);
+    public void unbindDish(EmenuContext context, int menuPageId, int dishId, int pos) {
+        dishPageDb.delete(context, menuPageId, pos);
+        checkDishInMenu(context, dishId);
     }
     
-    public Menu getMenu(int id) {
-        return menuDb.getMenu(id);
+    public Menu getMenu(EmenuContext context, int id) {
+        return menuDb.getMenu(context, id);
     }
     
-    public List<Menu> getAllMenu() {
-        List<Menu> menus = menuDb.getAllMenu();
+    public List<Menu> getAllMenu(EmenuContext context) {
+        List<Menu> menus = menuDb.getAllMenu(context);
         DataUtils.filterDeleted(menus);
         return menus;
     }
     
-    public Menu getCurrentMenu() {
+    public Menu getCurrentMenu(EmenuContext context) {
         //TODO
-        List<Menu> menus = getAllMenu();
+        List<Menu> menus = getAllMenu(context);
         if (menus.size() > 0) {
             return menus.get(0);
         }
         return null;
     }
     
-    public Menu updateMenu(Menu menu) {
-        Menu old = menuDb.getByName(menu.getName());
+    public Menu updateMenu(EmenuContext context, Menu menu) {
+        Menu old = menuDb.getByName(context, menu.getName());
         if (old!=null && old.getId()!=menu.getId() && !old.isDeleted()) {
             throw new DataConflictException("该菜单已存在");
         }
         menu.setUpdateTime(System.currentTimeMillis());
-        menuDb.updateMenu(menu);
-        return menuDb.getMenu(menu.getId());
+        menuDb.updateMenu(context, menu);
+        return menuDb.getMenu(context, menu.getId());
     }
     
-    public void deleteMenu(final int id) {
-        menuDb.deleteMenu(id);
-        deleteChaptersByMenuId(id);
+    public void deleteMenu(EmenuContext context, final int id) {
+        menuDb.deleteMenu(context, id);
+        deleteChaptersByMenuId(context, id);
     }
     
     /* ---------- dish ---------- */
-    public Dish addDish(Dish dish) {
-        Dish old = dishDb.getByName(dish.getName());
+    public Dish addDish(EmenuContext context, Dish dish) {
+        Dish old = dishDb.getByName(context, dish.getName());
         if (old!=null && !old.isDeleted()) {
             throw new DataConflictException("该菜品已存在");
         }
@@ -153,18 +154,18 @@ public class MenuLogic extends BaseLogic {
         if (old != null) {
             dish.setId(old.getId());
             dish.setCreatedTime(old.getCreatedTime());
-            dishDb.update(dish);
+            dishDb.update(context, dish);
         } else {
             dish.setCreatedTime(now);
             dish.setPinyin(CnToPinyinUtils.cn2Spell(dish.getName()));
-            dishDb.add(dish);
+            dishDb.add(context, dish);
         }
         //get with uriData
-        return getDish(dish.getId(), true);
+        return getDish(context, dish.getId(), true);
     }
     
-    public Dish updateDish(Dish dish) {
-        Dish old = dishDb.getByName(dish.getName());
+    public Dish updateDish(EmenuContext context, Dish dish) {
+        Dish old = dishDb.getByName(context, dish.getName());
         if (old!=null && old.getId()!=dish.getId() && !old.isDeleted()) {
             throw new DataConflictException("该菜品已存在");
         }
@@ -175,36 +176,36 @@ public class MenuLogic extends BaseLogic {
             dish.setImageId(imageId);
         }
         //save to db
-        dishDb.update(dish);
+        dishDb.update(context, dish);
         //get with uriData
-        return getDish(dish.getId(), true);
+        return getDish(context, dish.getId(), true);
     }
     
-    public List<IdName> getDishSuggestion() {
-        List<IdName> names = dishDb.getDishSuggestion();
+    public List<IdName> getDishSuggestion(EmenuContext context) {
+        List<IdName> names = dishDb.getDishSuggestion(context);
         DataUtils.filterDeleted(names);
         return names;
     }
     
-    public List<Dish> getAllDish() {
-        List<Dish> dishes = dishDb.getAll();
+    public List<Dish> getAllDish(EmenuContext context) {
+        List<Dish> dishes = dishDb.getAll(context);
         DataUtils.filterDeleted(dishes);
         return dishes;
     }
     
-    public List<Dish> getDishByMenuPageId(int menuPageId) {
+    public List<Dish> getDishByMenuPageId(EmenuContext context, int menuPageId) {
         List<Dish> ret = new ArrayList<Dish>();
-        MenuPage page = getMenuPage(menuPageId);
+        MenuPage page = getMenuPage(context, menuPageId);
         if (page == null) {
             throw new NotFoundException("");
         }
         Dish[] dishes = new Dish[page.getDishCount()];
-        List<DishPage> relation = dishPageDb.getByMenuPageId(menuPageId);
+        List<DishPage> relation = dishPageDb.getByMenuPageId(context, menuPageId);
         DataUtils.filterDeleted(relation);
         for (DishPage r:relation) {
             int dishId = r.getDishId();
             int pos = r.getPos();
-            dishes[pos] = getDish(dishId, false);
+            dishes[pos] = getDish(context, dishId, false);
         }
         for (int i=0; i<dishes.length; i++) {
             Dish dish = dishes[i];
@@ -216,17 +217,17 @@ public class MenuLogic extends BaseLogic {
         return ret;
     }
     
-    public void deleteDish(int id) {
-        dishDb.delete(id);
-        dishPageDb.deleteByDishId(id);
+    public void deleteDish(EmenuContext context, int id) {
+        dishDb.delete(context, id);
+        dishPageDb.deleteByDishId(context, id);
     }
     
-    public Dish getDish(int id) {
-        return getDish(id, false);
+    public Dish getDish(EmenuContext context, int id) {
+        return getDish(context, id, false);
     }
 
-    public Dish getDish(int id, boolean withUriData) {
-        Dish dish = dishDb.get(id);
+    public Dish getDish(EmenuContext context, int id, boolean withUriData) {
+        Dish dish = dishDb.get(context, id);
         String imageId = dish.getImageId();
         if (withUriData && !StringUtils.isBlank(imageId)) {
             String uriData = imageLogic.getDishUriData(imageId);
@@ -235,28 +236,28 @@ public class MenuLogic extends BaseLogic {
         return dish;
     }
 
-    public Dish updateDishSoldout(int id, boolean soldout) {
-        Dish dish = dishDb.get(id);
+    public Dish updateDishSoldout(EmenuContext context, int id, boolean soldout) {
+        Dish dish = dishDb.get(context, id);
         if (dish == null || dish.isDeleted()) {
             throw new DbNotFoundException("没有这个菜或者这个菜已经被删除了");
         }
         dish.setSoldout(soldout);
-        dishDb.update(dish);
-        return getDish(dish.getId(), true);
+        dishDb.update(context, dish);
+        return getDish(context, dish.getId(), true);
     }
 
-    public void updateDishesSoldout(boolean soldout) {
-        List<Dish> dishes = dishDb.getAll();
+    public void updateDishesSoldout(EmenuContext context, boolean soldout) {
+        List<Dish> dishes = dishDb.getAll(context);
         DataUtils.filterDeleted(dishes);
         for (Dish dish : dishes) {
             dish.setSoldout(soldout);
-            dishDb.update(dish);
+            dishDb.update(context, dish);
         }
     }
 
     /* ---------- chapter ---------- */
-    public Chapter addChapter(Chapter chapter) {
-        Chapter old = chapterDb.getChapterByName(chapter.getName());
+    public Chapter addChapter(EmenuContext context, Chapter chapter) {
+        Chapter old = chapterDb.getChapterByName(context, chapter.getName());
         if (old!= null && old.getMenuId()==chapter.getMenuId() && !old.isDeleted()) {
             throw new DataConflictException("该分类已存在");
         }
@@ -265,25 +266,25 @@ public class MenuLogic extends BaseLogic {
         if (old != null && old.getMenuId()==chapter.getMenuId()) {
             chapter.setId(old.getId());
             chapter.setCreatedTime(old.getCreatedTime());
-            chapterDb.updateChapter(chapter);
+            chapterDb.updateChapter(context, chapter);
         } else {
             chapter.setCreatedTime(now);
-            chapterDb.addChapter(chapter);
+            chapterDb.addChapter(context, chapter);
         }
-        return chapterDb.getChapter(chapter.getId());
+        return chapterDb.getChapter(context, chapter.getId());
     }
     
-    public Chapter getChapter(int id) {
-        return chapterDb.getChapter(id);
+    public Chapter getChapter(EmenuContext context, int id) {
+        return chapterDb.getChapter(context, id);
     }
     
-    public List<Chapter> listChapters(final int menuId, int dishId) {
-        List<MenuPage> pages = listMenuPageByDishId(dishId);
+    public List<Chapter> listChapters(EmenuContext context, final int menuId, int dishId) {
+        List<MenuPage> pages = listMenuPageByDishId(context, dishId);
         Set<Integer> chapterIds = new HashSet<Integer>();
         for (MenuPage p:pages) {
             chapterIds.add(p.getChapterId());
         }
-        List<Chapter> chapters = chapterDb.listChapters(CollectionUtils.toIntArray(chapterIds));
+        List<Chapter> chapters = chapterDb.listChapters(context, CollectionUtils.toIntArray(chapterIds));
         DataUtils.filterDeleted(chapters);
         CollectionUtils.filter(chapters, new Tester<Chapter>() {
             @Override
@@ -294,9 +295,9 @@ public class MenuLogic extends BaseLogic {
         return chapters;
     }
     
-    public boolean isDishInChapter(int dishId, int chapterId) {
-        List<MenuPage> pages = listMenuPageByChapterId(chapterId);
-        List<MenuPage> relations = listMenuPageByDishId(dishId);
+    public boolean isDishInChapter(EmenuContext context, int dishId, int chapterId) {
+        List<MenuPage> pages = listMenuPageByChapterId(context, chapterId);
+        List<MenuPage> relations = listMenuPageByDishId(context, dishId);
         for (MenuPage p:pages) {
             for (MenuPage r:relations) {
                 if (p.getId() == r.getId()) {
@@ -307,155 +308,155 @@ public class MenuLogic extends BaseLogic {
         return false;
     }
     
-    public List<DishPage> listDishPage(int dishId) {
-        List<DishPage> dishPages = dishPageDb.getByDishId(dishId);
+    public List<DishPage> listDishPage(EmenuContext context, int dishId) {
+        List<DishPage> dishPages = dishPageDb.getByDishId(context, dishId);
         DataUtils.filterDeleted(dishPages);
         return dishPages;
     }
     
-    public List<Chapter> getAllChapter() {
-        List<Chapter> chapters = chapterDb.getAllChapter();
+    public List<Chapter> getAllChapter(EmenuContext context) {
+        List<Chapter> chapters = chapterDb.getAllChapter(context);
         DataUtils.filterDeleted(chapters);
         return chapters;
     }
     
-    public Chapter updateChapter(Chapter chapter) {
-        Chapter old = chapterDb.getChapterByName(chapter.getName());
+    public Chapter updateChapter(EmenuContext context, Chapter chapter) {
+        Chapter old = chapterDb.getChapterByName(context, chapter.getName());
         if (old!=null && old.getId()!=chapter.getId() && chapter.getMenuId()==old.getMenuId()
                 && !old.isDeleted()) {
             throw new DataConflictException("该分类已存在");
         }
         chapter.setUpdateTime(System.currentTimeMillis());
-        chapterDb.updateChapter(chapter);
-        return chapterDb.getChapter(chapter.getId());
+        chapterDb.updateChapter(context, chapter);
+        return chapterDb.getChapter(context, chapter.getId());
     }
     
-    public void deleteChapter(final int id) {
-        chapterDb.deleteChapter(id);
-        List<MenuPage> pages = listMenuPageByChapterId(id);
+    public void deleteChapter(EmenuContext context, final int id) {
+        chapterDb.deleteChapter(context, id);
+        List<MenuPage> pages = listMenuPageByChapterId(context, id);
         for (MenuPage page:pages) {
-            deleteMenuPage(page.getId());
+            deleteMenuPage(context, page.getId());
         }
     }
     
-    public void deleteChaptersByMenuId(int menuId) {
-        List<Chapter> chapters = listChapterByMenuId(menuId);
+    public void deleteChaptersByMenuId(EmenuContext context, int menuId) {
+        List<Chapter> chapters = listChapterByMenuId(context, menuId);
         for(Chapter chapter:chapters) {
-            deleteChapter(chapter.getId());
+            deleteChapter(context, chapter.getId());
         }
     }
     
-    public List<Chapter> listChapterByMenuId(int menuId) {
-        List<Chapter> chapters = chapterDb.listChapters(menuId);
+    public List<Chapter> listChapterByMenuId(EmenuContext context, int menuId) {
+        List<Chapter> chapters = chapterDb.listChapters(context, menuId);
         DataUtils.filterDeleted(chapters);
         return chapters;
     }
     
     /* ---------- MenuPage ---------- */
     
-    public List<MenuPage> listMenuPageByDishId(int dishId) {
-        List<DishPage> relations = listDishPage(dishId);
+    public List<MenuPage> listMenuPageByDishId(EmenuContext context, int dishId) {
+        List<DishPage> relations = listDishPage(context, dishId);
         Set<Integer> pageIds = new HashSet<Integer>();
         for (DishPage r:relations) {
             pageIds.add(r.getMenuPageId());
         }
-        List<MenuPage> pages = menuPageDb.listMenuPages(CollectionUtils.toIntArray(pageIds));
+        List<MenuPage> pages = menuPageDb.listMenuPages(context, CollectionUtils.toIntArray(pageIds));
         DataUtils.filterDeleted(pages);
         return pages;
     }
     
-    public List<MenuPage> listMenuPageByChapterId(int chapterId) {
-        List<MenuPage> datas = menuPageDb.listMenuPages(chapterId);
+    public List<MenuPage> listMenuPageByChapterId(EmenuContext context, int chapterId) {
+        List<MenuPage> datas = menuPageDb.listMenuPages(context, chapterId);
         DataUtils.filterDeleted(datas);
         
         for (int i=1; i<=datas.size(); i++) {
             MenuPage p = datas.get(i-1);
             if (p.getOrdinal() != i) {
                 p.setOrdinal(i);
-                innnerUpdateMenuPage(p);
+                innnerUpdateMenuPage(context, p);
             }
         }
         return datas;
     }
     
-    private void innnerUpdateMenuPage(MenuPage p) {
+    private void innnerUpdateMenuPage(EmenuContext context, MenuPage p) {
         p.setUpdateTime(System.currentTimeMillis());
-        menuPageDb.updateMenuPage(p);
+        menuPageDb.updateMenuPage(context, p);
     }
     
-    public MenuPage addMenuPage(MenuPage page) {
-        List<MenuPage> pages = listMenuPageByChapterId(page.getChapterId());
+    public MenuPage addMenuPage(EmenuContext context, MenuPage page) {
+        List<MenuPage> pages = listMenuPageByChapterId(context, page.getChapterId());
         for (int i=page.getOrdinal(); i<=pages.size(); i++) {
             MenuPage p = pages.get(i-1);
             p.setOrdinal(i+1);
-            innnerUpdateMenuPage(p);
+            innnerUpdateMenuPage(context, p);
         }
         long now = System.currentTimeMillis();
         page.setCreatedTime(now);
         page.setUpdateTime(now);
-        menuPageDb.addMenuPage(page);
-        return menuPageDb.getMenuPage(page.getId());
+        menuPageDb.addMenuPage(context, page);
+        return menuPageDb.getMenuPage(context, page.getId());
     }
     
-    public void deleteMenuPage(int id) {
-        MenuPage old = getMenuPage(id);
+    public void deleteMenuPage(EmenuContext context, int id) {
+        MenuPage old = getMenuPage(context, id);
         if (old==null || old.isDeleted()) {
             throw new BadRequestError();
         }
-        List<MenuPage> pages = listMenuPageByChapterId(old.getChapterId());
+        List<MenuPage> pages = listMenuPageByChapterId(context, old.getChapterId());
         for (int i=old.getOrdinal()+1; i<=pages.size(); i++) {
             MenuPage p = pages.get(i-1);
             p.setOrdinal(p.getOrdinal()-1);
-            innnerUpdateMenuPage(p);
+            innnerUpdateMenuPage(context, p);
         }
             //delete page
-            menuPageDb.deleteMenuPage(id);
-            List<DishPage> relation = dishPageDb.getByMenuPageId(id);
-            dishPageDb.deleteByMenuPageId(id);
+            menuPageDb.deleteMenuPage(context, id);
+            List<DishPage> relation = dishPageDb.getByMenuPageId(context, id);
+            dishPageDb.deleteByMenuPageId(context, id);
             for (DishPage r:relation) {
                 int dishId = r.getDishId();
-                checkDishInMenu(dishId);
+                checkDishInMenu(context, dishId);
             }
     }
     
-    public MenuPage getMenuPage(int id) {
-        return menuPageDb.getMenuPage(id);
+    public MenuPage getMenuPage(EmenuContext context, int id) {
+        return menuPageDb.getMenuPage(context, id);
     }
     
-    public MenuPage updateMenuPage(MenuPage page) {
-        MenuPage old = getMenuPage(page.getId());
+    public MenuPage updateMenuPage(EmenuContext context, MenuPage page) {
+        MenuPage old = getMenuPage(context, page.getId());
         if (old == null) {
             throw new BadRequestError();
         }
         if (old.getOrdinal() != page.getOrdinal()) {
-            List<MenuPage> pages = listMenuPageByChapterId(page.getChapterId());
+            List<MenuPage> pages = listMenuPageByChapterId(context, page.getChapterId());
             if (page.getOrdinal() < old.getOrdinal()) {
                 for (int i=page.getOrdinal(); i<=old.getOrdinal()-1; i++) {
                     MenuPage p = pages.get(i-1);
                     p.setOrdinal(p.getOrdinal()+1);
-                    innnerUpdateMenuPage(p);
+                    innnerUpdateMenuPage(context, p);
                 }
             } else {
                 for (int i=old.getOrdinal()+1; i<=page.getOrdinal(); i++) {
                     MenuPage p = pages.get(i-1);
                     p.setOrdinal(p.getOrdinal()-1);
-                    innnerUpdateMenuPage(p);
+                    innnerUpdateMenuPage(context, p);
                 }
             }
         }
-        innnerUpdateMenuPage(page);
-        return menuPageDb.getMenuPage(page.getId());
+        innnerUpdateMenuPage(context, page);
+        return menuPageDb.getMenuPage(context, page.getId());
     }
     
     /* ---------- DishTag ---------- */
-    public List<DishTag> listAllDishTag() {
-        List<DishTag> tags = dishTagDb.listAll();
+    public List<DishTag> listAllDishTag(EmenuContext context) {
+        List<DishTag> tags = dishTagDb.listAll(context);
         DataUtils.filterDeleted(tags);
         return tags;
     }
     
-    public DishTag addDishTag(DishTag tag) {
-        DishTag old = dishTagDb.getDishTagByName(tag.getName());
+    public DishTag addDishTag(EmenuContext context, DishTag tag) {
+        DishTag old = dishTagDb.getDishTagByName(context, tag.getName());
         if (old!= null && !old.isDeleted()) {
             throw new DataConflictException("该标签已存在");
         }
@@ -464,35 +465,35 @@ public class MenuLogic extends BaseLogic {
         if (old != null) {
             tag.setId(old.getId());
             tag.setCreatedTime(old.getCreatedTime());
-            dishTagDb.updateDishTag(tag);
+            dishTagDb.updateDishTag(context, tag);
         } else {
             tag.setUpdateTime(now);
-            dishTagDb.addDishTag(tag);
+            dishTagDb.addDishTag(context, tag);
         }
-        return dishTagDb.getDishTag(tag.getId());
+        return dishTagDb.getDishTag(context, tag.getId());
     }
-    public DishTag updateDishTag(DishTag tag) {
-        DishTag old = dishTagDb.getDishTagByName(tag.getName());
+    public DishTag updateDishTag(EmenuContext context, DishTag tag) {
+        DishTag old = dishTagDb.getDishTagByName(context, tag.getName());
         if (old!= null && old.getId()!=tag.getId() && !old.isDeleted()) {
             throw new DataConflictException("该标签已存在");
         }
         tag.setUpdateTime(System.currentTimeMillis());
-        dishTagDb.updateDishTag(tag);
-        return dishTagDb.getDishTag(tag.getId());
+        dishTagDb.updateDishTag(context, tag);
+        return dishTagDb.getDishTag(context, tag.getId());
     }
-    public void deleteDishTag(int id) {
-        dishTagDb.deleteDishTag(id);
+    public void deleteDishTag(EmenuContext context, int id) {
+        dishTagDb.deleteDishTag(context, id);
     }
     
     /* ---------- DishNote ---------- */
-    public List<DishNote> listAllDishNote() {
-        List<DishNote> notes = dishNoteDb.listAll();
+    public List<DishNote> listAllDishNote(EmenuContext context) {
+        List<DishNote> notes = dishNoteDb.listAll(context);
         DataUtils.filterDeleted(notes);
         return notes;
     }
     
-    public DishNote addDishNote(DishNote note) {
-        DishNote old = dishNoteDb.getDishNoteByName(note.getName());
+    public DishNote addDishNote(EmenuContext context, DishNote note) {
+        DishNote old = dishNoteDb.getDishNoteByName(context, note.getName());
         if (old!= null && !old.isDeleted()) {
             throw new DataConflictException("该菜品备注已存在");
         }
@@ -501,44 +502,44 @@ public class MenuLogic extends BaseLogic {
         if (old != null) {
             note.setId(old.getId());
             note.setCreatedTime(old.getCreatedTime());
-            dishNoteDb.updateDishNote(note);
+            dishNoteDb.updateDishNote(context, note);
         } else {
             note.setUpdateTime(now);
-            dishNoteDb.addDishNote(note);
+            dishNoteDb.addDishNote(context, note);
         }
-        return dishNoteDb.getDishNote(note.getId());
+        return dishNoteDb.getDishNote(context, note.getId());
     }
-    public DishNote updateDishNote(DishNote note) {
-        DishNote old = dishNoteDb.getDishNoteByName(note.getName());
+    public DishNote updateDishNote(EmenuContext context, DishNote note) {
+        DishNote old = dishNoteDb.getDishNoteByName(context, note.getName());
         if (old!= null && old.getId()!=note.getId() && !old.isDeleted()) {
             throw new DataConflictException("该菜品备注已存在");
         }
         note.setUpdateTime(System.currentTimeMillis());
-        dishNoteDb.updateDishNote(note);
-        return dishNoteDb.getDishNote(note.getId());
+        dishNoteDb.updateDishNote(context, note);
+        return dishNoteDb.getDishNote(context, note.getId());
     }
-    public void deleteDishNote(int id) {
-        dishNoteDb.deleteDishNote(id);
+    public void deleteDishNote(EmenuContext context, int id) {
+        dishNoteDb.deleteDishNote(context, id);
     }
     
-    private void checkDishInMenu(int dishId) {
-        Dish dish = dishDb.get(dishId);
+    private void checkDishInMenu(EmenuContext context, int dishId) {
+        Dish dish = dishDb.get(context, dishId);
         if (dish != null) {
-            int count = dishPageDb.countByDishId(dishId);
+            int count = dishPageDb.countByDishId(context, dishId);
             int oldStatus = dish.getStatus();
             int status = count==0? Const.DishStatus.STATUS_INIT : Const.DishStatus.STATUS_IN_MENU;
             if (status != oldStatus) {
                 dish.setStatus(status);
-                dishDb.update(dish);
+                dishDb.update(context, dish);
             }
         }
     }
     
-    public List<MenuPage> listMenuPageByMenuId(int menuId) {
+    public List<MenuPage> listMenuPageByMenuId(EmenuContext context, int menuId) {
         List<MenuPage> ret = new ArrayList<MenuPage>();
-        List<Chapter> chapters = chapterDb.listChapters(menuId);
+        List<Chapter> chapters = chapterDb.listChapters(context, menuId);
         for (Chapter chapter:chapters) {
-            List<MenuPage> pages = menuPageDb.listMenuPages(chapter.getId());
+            List<MenuPage> pages = menuPageDb.listMenuPages(context, chapter.getId());
             ret.addAll(pages);
         }
         return ret;

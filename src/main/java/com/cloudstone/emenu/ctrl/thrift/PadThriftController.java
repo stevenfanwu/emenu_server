@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import cn.com.cloudstone.menu.server.thrift.api.IPadInfoService;
 import cn.com.cloudstone.menu.server.thrift.api.PadInfo;
 
+import com.cloudstone.emenu.EmenuContext;
+
 /**
  * @author xuhongfeng
  *
@@ -43,7 +45,8 @@ public class PadThriftController extends BaseThriftController {
 
         @Override
         public boolean submitPadInfo(PadInfo info) throws TException {
-            thriftLogic.submitPadInfo(info);
+            EmenuContext context = new EmenuContext();
+            thriftLogic.submitPadInfo(context, info);
             return true;
         }
     }

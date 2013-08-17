@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.DbTransaction;
@@ -28,27 +29,27 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 @Repository
 public class OrderDb extends SQLiteDb implements IOrderDb {
     @Override
-    public void add(DbTransaction trans, Order order) {
-        order.setId(genId());
+    public void add(EmenuContext context, Order order) {
+        order.setId(genId(context));
         OrderBinder binder = new OrderBinder(order);
-        executeSQL(trans, SQL_INSERT, binder);
+        executeSQL(context, SQL_INSERT, binder);
     }
     
     @Override
-    public Order get(int id) {
+    public Order get(EmenuContext context, int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
-        return queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+        return queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
     }
     
     @Override
-    public void update(DbTransaction trans, Order order) {
-        executeSQL(trans, SQL_UPDATE, new UpdateBinder(order));
+    public void update(EmenuContext context, Order order) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(order));
     }
 
     @Override
-    public List<Order> getOrdersByTime(long startTime, long endTime) {
+    public List<Order> getOrdersByTime(EmenuContext context, long startTime, long endTime) {
         TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
-        return query(SQL_SELECT_BY_TIME, binder, rowMapper);
+        return query(context, SQL_SELECT_BY_TIME, binder, rowMapper);
     }
 
     /* ---------- Override ---------- */
@@ -58,8 +59,8 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     }
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
 
     /* ---------- SQL ---------- */

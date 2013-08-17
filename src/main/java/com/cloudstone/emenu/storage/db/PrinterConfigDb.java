@@ -10,9 +10,8 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Repository;
 
-import com.almworks.sqlite4java.SQLiteException;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.PrinterConfig;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.util.JsonUtils;
 
 
@@ -29,22 +28,18 @@ public class PrinterConfigDb extends JsonDb implements IPrinterConfigDb {
     }
 
     @Override
-    public void update(PrinterConfig config) {
-        set(config.getName(), config);
+    public void update(EmenuContext context, PrinterConfig config) {
+        set(context, config.getName(), config);
     }
 
     @Override
-    public PrinterConfig getConfig(String name) {
-        try {
-            return get(name, PrinterConfig.class);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+    public PrinterConfig getConfig(EmenuContext context, String name) {
+        return get(context, name, PrinterConfig.class);
     }
     
     @Override
-    public void removeTemplate(int templateId) {
-        for (PrinterConfig config:listAll()) {
+    public void removeTemplate(EmenuContext context, int templateId) {
+        for (PrinterConfig config:listAll(context)) {
             boolean needUpdate = false;
             if (ArrayUtils.contains(config.getOrderedTemplateIds(), templateId)) {
                 int idx = ArrayUtils.indexOf(config.getOrderedTemplateIds(), templateId);
@@ -59,13 +54,13 @@ public class PrinterConfigDb extends JsonDb implements IPrinterConfigDb {
                 needUpdate = true;
             }
             if (needUpdate) {
-                update(config);
+                update(context, config);
             }
         }
     }
 
-    private List<PrinterConfig> listAll() {
-        List<String> jsonList = getAll();
+    private List<PrinterConfig> listAll(EmenuContext context) {
+        List<String> jsonList = getAll(context);
         List<PrinterConfig> r = new LinkedList<PrinterConfig>();
         for (String json:jsonList) {
             r.add(JsonUtils.fromJson(json, PrinterConfig.class));

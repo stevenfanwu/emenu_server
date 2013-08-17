@@ -6,16 +6,16 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Order;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 
 /**
  * @author xuhongfeng
  *
  */
 public interface IOrderDb {
-    public void add(DbTransaction trans, Order order) ;
-    public void update(DbTransaction trans, Order order);
-    public Order get(int id) ;
-    public List<Order> getOrdersByTime(long startTime, long endTime) ;
+    public void add(EmenuContext context, Order order) ;
+    public void update(EmenuContext context, Order order);
+    public Order get(EmenuContext context, int id) ;
+    public List<Order> getOrdersByTime(EmenuContext context, long startTime, long endTime) ;
 }

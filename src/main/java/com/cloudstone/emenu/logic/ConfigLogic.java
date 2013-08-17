@@ -7,7 +7,7 @@ package com.cloudstone.emenu.logic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.almworks.sqlite4java.SQLiteException;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.JsonKeyConst;
 import com.cloudstone.emenu.constant.ServerConfig;
 import com.cloudstone.emenu.exception.ServerError;
@@ -27,27 +27,23 @@ public class ConfigLogic extends BaseLogic {
         return 2;
     }
     
-    public int getDbVersion() {
-        try {
-            Integer v = configDb.get(JsonKeyConst.DB_VERSION, Integer.class);
-            if (v == null) {
-                return 1;
-            }
-            return v;
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
+    public int getDbVersion(EmenuContext context) {
+        Integer v = configDb.get(context, JsonKeyConst.DB_VERSION, Integer.class);
+        if (v == null) {
+            return 1;
         }
+        return v;
     }
     
-    public void setDbVersion(int version) throws SQLiteException {
-        configDb.set(JsonKeyConst.DB_VERSION, version);
+    public void setDbVersion(EmenuContext context, int version) {
+        configDb.set(context, JsonKeyConst.DB_VERSION, version);
     }
     
-    public boolean needUpgradeDb() {
-        if (ServerConfig.DB_VERSION == getDbVersion()) {
+    public boolean needUpgradeDb(EmenuContext context) {
+        if (ServerConfig.DB_VERSION == getDbVersion(context)) {
             return false;
         }
-        if (ServerConfig.DB_VERSION < getDbVersion()) {
+        if (ServerConfig.DB_VERSION < getDbVersion(context)) {
             throw new ServerError("error db version");
         }
         return true;

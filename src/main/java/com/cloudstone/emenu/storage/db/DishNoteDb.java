@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.DishNote;
 
 /**
@@ -23,45 +24,45 @@ public class DishNoteDb extends IdNameDb<DishNote> implements IDishNoteDb {
     };
     
     @Override
-    protected void init() {
-        super.init();
-        if (listAll().size() == 0) {
+    protected void init(EmenuContext context) {
+        super.init(context);
+        if (listAll(context).size() == 0) {
             for (String name: DEFAULT_DISH_NOTES) {
                 DishNote note = new DishNote();
                 note.setName(name);
-                add(note);
+                add(context, note);
             }
         }
     }
     
     @Override
-    public DishNote getDishNoteByName(String name) {
-        return getByName(name);
+    public DishNote getDishNoteByName(EmenuContext context, String name) {
+        return getByName(context, name);
     }
     
     @Override
-    public DishNote getDishNote(int id) {
-        return get(id);
+    public DishNote getDishNote(EmenuContext context, int id) {
+        return get(context, id);
     }
 
     @Override
-    public List<DishNote> listAll() {
-        return getAll();
+    public List<DishNote> listAll(EmenuContext context) {
+        return getAll(context);
     }
 
     @Override
-    public void addDishNote(DishNote note) {
-        add(note);
+    public void addDishNote(EmenuContext context, DishNote note) {
+        add(context, note);
     }
 
     @Override
-    public void updateDishNote(DishNote note) {
-        update(note);
+    public void updateDishNote(EmenuContext context, DishNote note) {
+        update(context, note);
     }
 
     @Override
-    public void deleteDishNote(int id) {
-        delete(id);
+    public void deleteDishNote(EmenuContext context, int id) {
+        delete(context, id);
     }
     
     @Override

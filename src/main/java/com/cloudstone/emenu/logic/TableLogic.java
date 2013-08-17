@@ -9,13 +9,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.storage.db.ITableDb;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
+import com.cloudstone.emenu.storage.db.MiscStorage;
 import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.CollectionUtils.Tester;
 import com.cloudstone.emenu.util.DataUtils;
@@ -29,29 +30,30 @@ public class TableLogic extends BaseLogic {
     
     @Autowired
     private ITableDb tableDb;
+    @Autowired
+    private MiscStorage miscStorage;
     
     @Autowired
     private OrderLogic orderLogic;
     
-    public void changeTable(int fromId, int toId) {
-        Table from = get(fromId);
+    public void changeTable(EmenuContext context, int fromId, int toId) {
+        Table from = get(context, fromId);
         if (from == null || from.getStatus() == TableStatus.EMPTY) {
             throw new BadRequestError();
         }
-        Table to = get(toId);
+        Table to = get(context, toId);
         if (to == null || to.getStatus() != TableStatus.EMPTY) {
             throw new BadRequestError();
         }
         Order order = null;
         if (from.getOrderId() != 0) {
-            order = orderLogic.getOrder(from.getOrderId());
+            order = orderLogic.getOrder(context, from.getOrderId());
             if (order == null) {
                 throw new BadRequestError();
             }
         }
 
-        DbTransaction trans = openTrans();
-        trans.begin();
+        context.beginTransaction(dataSource);
         try {
             to.setStatus(from.getStatus());
             to.setOrderId(from.getOrderId());
@@ -60,22 +62,22 @@ public class TableLogic extends BaseLogic {
     
             long now = System.currentTimeMillis();
             from.setUpdateTime(now);
-            tableDb.update(trans, from);
+            tableDb.update(context, from);
             to.setUpdateTime(now);
-            tableDb.update(trans, to);
+            tableDb.update(context, to);
             
             if (order != null) {
                 order.setTableId(to.getId());
-                orderLogic.updateOrder(trans, order);
+                orderLogic.updateOrder(context, order);
             }
-            trans.commit();
+            context.commitTransaction();
         } finally {
-            trans.close();
+            context.closeTransaction(dataSource);
         }
     }
     
-    public Table add(Table table) {
-        Table oldTable = getByName(table.getName());
+    public Table add(EmenuContext context, Table table) {
+        Table oldTable = getByName(context, table.getName());
         if (oldTable != null && !oldTable.isDeleted()) {
             throw new DataConflictException("该餐桌已存在");
         }
@@ -83,22 +85,22 @@ public class TableLogic extends BaseLogic {
         table.setUpdateTime(now);
         if (oldTable != null) {
             table.setId(oldTable.getId());
-            tableDb.update(null, table);
+            tableDb.update(context, table);
         } else {
             table.setCreatedTime(now);
-            tableDb.add(table);
+            tableDb.add(context, table);
         }
-        return tableDb.get(table.getId());
+        return tableDb.get(context, table.getId());
     }
     
-    public List<Table> getAll() {
-        List<Table> tables = tableDb.getAll();
+    public List<Table> getAll(EmenuContext context) {
+        List<Table> tables = tableDb.getAll(context);
         DataUtils.filterDeleted(tables);
         return tables;
     }
     
-    public List<Table> getOccupied() {
-        List<Table> tables = getAll();
+    public List<Table> getOccupied(EmenuContext context) {
+        List<Table> tables = getAll(context);
         CollectionUtils.filter(tables, new Tester<Table>() {
             @Override
             public boolean test(Table table) {
@@ -109,25 +111,34 @@ public class TableLogic extends BaseLogic {
     }
 
     
-    public Table update(DbTransaction trans, Table table) {
-        Table other = tableDb.getByTableName(table.getName());
+    public Table update(EmenuContext context, Table table) {
+        Table other = tableDb.getByTableName(context, table.getName());
         if (other!=null && other.getId()!=table.getId() && !other.isDeleted()) {
             throw new DataConflictException("该餐桌已存在");
         }
         table.setUpdateTime(System.currentTimeMillis());
-        tableDb.update(trans, table);
-        return tableDb.get(table.getId());
+        tableDb.update(context, table);
+        return tableDb.get(context, table.getId());
     }
     
-    public void delete(int tableId) {
-        tableDb.delete(tableId);
+    public void setCustomerNumber(EmenuContext context,
+            int tableId, int num) {
+        miscStorage.setCustomerNumber(context, tableId, num);
     }
     
-    public Table get(int tableId) {
-        return tableDb.get(tableId);
+    public int getCustomerNumber(EmenuContext context, int tableId) {
+        return miscStorage.getCustomerNumber(context, tableId);
     }
     
-    public Table getByName(String name) {
-        return tableDb.getByTableName(name);
+    public void delete(EmenuContext context, int tableId) {
+        tableDb.delete(context, tableId);
+    }
+    
+    public Table get(EmenuContext context, int tableId) {
+        return tableDb.get(context, tableId);
+    }
+    
+    public Table getByName(EmenuContext context, String name) {
+        return tableDb.getByTableName(context, name);
     }
 }

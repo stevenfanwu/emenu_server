@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Menu;
 import com.cloudstone.emenu.data.Pad;
@@ -38,11 +39,11 @@ public class ThriftCache extends BaseCache {
     
     private int currentMenuId = -1;
     
-    public String getCategory(int goodId) {
+    public String getCategory(EmenuContext context, int goodId) {
         String category = categoryMap.get(goodId);
         if (category == null) {
-            int menuId = getCurrentMenuId();
-            List<Chapter> chapters = menuLogic.listChapters(menuId, goodId);
+            int menuId = getCurrentMenuId(context);
+            List<Chapter> chapters = menuLogic.listChapters(context, menuId, goodId);
             if (chapters.size() > 0) {
                 category = chapters.get(0).getName();
                 categoryMap.put(goodId, category);
@@ -56,9 +57,9 @@ public class ThriftCache extends BaseCache {
         categoryMap.clear();
     }
     
-    public int getCurrentMenuId() {
+    public int getCurrentMenuId(EmenuContext context) {
         if (currentMenuId == -1) {
-            Menu menu = menuLogic.getCurrentMenu();
+            Menu menu = menuLogic.getCurrentMenu(context);
             if (menu != null) {
                 currentMenuId = menu.getId();
             }
@@ -66,9 +67,9 @@ public class ThriftCache extends BaseCache {
         return currentMenuId;
     }
     
-    public boolean isValidImei(String imei) {
+    public boolean isValidImei(EmenuContext context, String imei) {
         if (imeiSet.isEmpty()) {
-            List<Pad> pads = deviceLogic.listAllPad();
+            List<Pad> pads = deviceLogic.listAllPad(context);
             for (Pad p:pads) {
                 imeiSet.add(p.getImei());
             }

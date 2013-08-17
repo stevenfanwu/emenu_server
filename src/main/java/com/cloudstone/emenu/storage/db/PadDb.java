@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Pad;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -33,29 +34,29 @@ public class PadDb extends SQLiteDb implements IPadDb {
     }
 
     @Override
-    public Pad get(int id) {
-        return queryOne(SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
+    public Pad get(EmenuContext context, int id) {
+        return queryOne(context, SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
     }
 
     @Override
-    public List<Pad> listAll() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    public List<Pad> listAll(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public void add(Pad pad) {
-        pad.setId(genId());
-        executeSQL(null, SQL_INSERT, new PadBinder(pad));
+    public void add(EmenuContext context, Pad pad) {
+        pad.setId(genId(context));
+        executeSQL(context, SQL_INSERT, new PadBinder(pad));
     }
 
     @Override
-    public void update(Pad pad) {
-        executeSQL(null, SQL_UPDATE, new UpdateBinder(pad));
+    public void update(EmenuContext context, Pad pad) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(pad));
     }
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
     
     private static enum Column {

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
@@ -44,7 +45,8 @@ public class TestController extends BaseApiController {
 
     @RequestMapping(value = "/api/test", method = RequestMethod.GET)
     public @ResponseBody String test(HttpServletRequest req) {
-        User user = userLogic.getUser(1);
+        EmenuContext context = newContext(req);
+        User user = userLogic.getUser(context, 1);
         return JsonUtils.toJson(user);
     }
 
@@ -57,6 +59,7 @@ public class TestController extends BaseApiController {
 
     @RequestMapping(value = "/api/testdish", method = RequestMethod.GET)
     public @ResponseBody Dish testDish(HttpServletRequest req) {
+        EmenuContext context = newContext(req);
         Dish dish = new Dish();
         dish.setCreatedTime(199999);
         dish.setUpdateTime(122333333);
@@ -68,13 +71,14 @@ public class TestController extends BaseApiController {
         dish.setDesc("adada");
         dish.setImageId("12");
         dish.setSoldout(false);
-        menuLogic.addDish(dish);
-        Dish dish2 = menuLogic.updateDishSoldout(1, true);
+        menuLogic.addDish(context, dish);
+        Dish dish2 = menuLogic.updateDishSoldout(context, 1, true);
         return dish2;
     }
 
     @RequestMapping(value = "/api/testorder", method = RequestMethod.GET)
     public @ResponseBody OrderVO testOrder(HttpServletRequest req) {
+        EmenuContext context = newContext(req);
         Order order = new Order();
         order.setCreatedTime(System.currentTimeMillis());
         order.setUpdateTime(System.currentTimeMillis());
@@ -83,7 +87,7 @@ public class TestController extends BaseApiController {
         order.setId(1);
         order.setDeleted(false);
         order.setTableId(1);
-        orderLogic.addOrder(null, order);
+        orderLogic.addOrder(context, order);
         
         Table table = new Table();
         table.setCapacity(2);
@@ -93,14 +97,15 @@ public class TestController extends BaseApiController {
         table.setOrderId(1);
         table.setStatus(0);
         table.setTip(10.0d);
-        tableLogic.add(table);
+        tableLogic.add(context, table);
         
-        return orderWraper.wrap(orderLogic.getOrder(1));
+        return orderWraper.wrap(context, orderLogic.getOrder(context, 1));
     }
     
     
     @RequestMapping(value = "/api/testtrans", method = RequestMethod.GET)
     public @ResponseBody Bill testTrans(HttpServletRequest req) {
+        EmenuContext context = newContext(req);
         Bill bill = new Bill();
         bill.setCost(152.2d);
         long now = System.currentTimeMillis();
@@ -117,13 +122,13 @@ public class TestController extends BaseApiController {
         bill.setInvoice(false);
         bill.setRemarks("sa");
         bill.setTip(1.8d);
-        bill.setOrder(orderWraper.wrap(orderLogic.getOrder(1)));
+        bill.setOrder(orderWraper.wrap(context, orderLogic.getOrder(context, 1)));
         // Start transaction
         DbTransaction trans = dataSource.openTrans();
         trans.begin();
-        billDb.add(trans, bill);
+        billDb.add(context, bill);
         trans.commit();
         trans.close();
-        return billDb.get(2);
+        return billDb.get(context, 2);
     }
 }

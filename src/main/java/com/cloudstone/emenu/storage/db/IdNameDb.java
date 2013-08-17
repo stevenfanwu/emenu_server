@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -24,31 +25,31 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(getTableName(), COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, getTableName(), COL_DEF);
     }
     
-    protected void add(T data) {
-        data.setId(genId());
-        executeSQL(null, SQL_INSERT, new IdNameBinder(data));
+    protected void add(EmenuContext context, T data) {
+        data.setId(genId(context));
+        executeSQL(context, SQL_INSERT, new IdNameBinder(data));
     }
     
-    protected void update(T data) {
-        executeSQL(null, SQL_UPDATE, new UpdateBinder(data));
+    protected void update(EmenuContext context, T data) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(data));
     }
     
-    protected List<T> getAll() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    protected List<T> getAll(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
-    protected T get(int id) {
+    protected T get(EmenuContext context, int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
-        T data = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+        T data = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return data;
     }
     
-    public T getByName(String name) {
-        return super.getByName(name, rowMapper);
+    public T getByName(EmenuContext context, String name) {
+        return super.getByName(context, name, rowMapper);
     }
     
     /* -------- abstract --------- */

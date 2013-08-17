@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.DailyStat;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
@@ -24,21 +25,21 @@ public class StatDb extends SQLiteDb implements IStatDb {
     private static final Logger LOG = LoggerFactory.getLogger(StatDb.class);
 
     @Override
-    public DailyStat get(long time) {
+    public DailyStat get(EmenuContext context, long time) {
         NameStatementBinder binder = new NameStatementBinder("" + time);
-        return queryOne(SQL_SELECT_BY_TIME, binder, rowMapper);
+        return queryOne(context, SQL_SELECT_BY_TIME, binder, rowMapper);
     }
 
     @Override
-    public void update(DailyStat stat) {
-        executeSQL(null, SQL_UPDATE, new UpdateBinder(stat));
+    public void update(EmenuContext context, DailyStat stat) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(stat));
     }
 
     @Override
-    public void add(DailyStat stat) {
-        stat.setId(genId());
+    public void add(EmenuContext context, DailyStat stat) {
+        stat.setId(genId(context));
         StatBinder binder = new StatBinder(stat);
-        executeSQL(null, SQL_INSERT, binder);
+        executeSQL(context, SQL_INSERT, binder);
     }
 
     @Override
@@ -47,8 +48,8 @@ public class StatDb extends SQLiteDb implements IStatDb {
     }
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
 
     /* ---------- SQL ---------- */

@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.PrinterConfig;
 
 
@@ -12,7 +13,7 @@ import com.cloudstone.emenu.data.PrinterConfig;
  *
  */
 public interface IPrinterConfigDb {
-    public void update(PrinterConfig config);
-    public PrinterConfig getConfig(String name);
-    public void removeTemplate(int templateId);
+    public void update(EmenuContext context, PrinterConfig config);
+    public PrinterConfig getConfig(EmenuContext context, String name);
+    public void removeTemplate(EmenuContext context, int templateId);
 }

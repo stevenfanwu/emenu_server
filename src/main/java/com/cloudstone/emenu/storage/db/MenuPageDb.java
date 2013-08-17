@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.MenuPage;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -32,48 +33,48 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     }
 
     @Override
-    public void addMenuPage(MenuPage page) {
-        page.setId(genId());
-        executeSQL(null, SQL_INSERT, new MenuPageBinder(page));
+    public void addMenuPage(EmenuContext context, MenuPage page) {
+        page.setId(genId(context));
+        executeSQL(context, SQL_INSERT, new MenuPageBinder(page));
     }
 
     @Override
-    public void updateMenuPage(MenuPage page) {
-        executeSQL(null, SQL_UPDATE, new UpdateBinder(page));
+    public void updateMenuPage(EmenuContext context, MenuPage page) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(page));
     }
 
     @Override
-    public void deleteMenuPage(int id) {
-        delete(id);
+    public void deleteMenuPage(EmenuContext context, int id) {
+        delete(context, id);
     }
 
     @Override
-    public List<MenuPage> getAllMenuPage() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    public List<MenuPage> getAllMenuPage(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public List<MenuPage> listMenuPages(int chapterId) {
+    public List<MenuPage> listMenuPages(EmenuContext context, int chapterId) {
         GetByChapterIdBinder binder = new  GetByChapterIdBinder(chapterId);
-        return query(SQL_SELECT_BY_CHAPTER_ID, binder, rowMapper);
+        return query(context, SQL_SELECT_BY_CHAPTER_ID, binder, rowMapper);
     }
     
     @Override
-    public List<MenuPage> listMenuPages(int[] ids) {
+    public List<MenuPage> listMenuPages(EmenuContext context, int[] ids) {
         String sql = new SelectSqlBuilder(TABLE_NAME).appendWhereIdIn(ids).build();
-        return query(sql, StatementBinder.NULL, rowMapper);
+        return query(context, sql, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public MenuPage getMenuPage(int id) {
+    public MenuPage getMenuPage(EmenuContext context, int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
-        MenuPage page = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+        MenuPage page = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return page;
     }
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
 
     /* --------- SQL ---------- */

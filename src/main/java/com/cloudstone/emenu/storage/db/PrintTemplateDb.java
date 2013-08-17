@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -27,13 +28,13 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
     
     @Override
-    public void removeComponent(int componentId) {
+    public void removeComponent(EmenuContext context, int componentId) {
         String sql = "UPDATE " + TABLE_NAME
                 + " SET headerId=0 WHERE headerId=" + componentId;
-        executeSQL(null, sql, StatementBinder.NULL);
+        executeSQL(context, sql, StatementBinder.NULL);
         sql = "UPDATE " + TABLE_NAME
                 + " SET footerId=0 WHERE footerId=" + componentId;
-        executeSQL(null, sql, StatementBinder.NULL);
+        executeSQL(context, sql, StatementBinder.NULL);
     }
 
     @Override
@@ -42,29 +43,29 @@ public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
     }
 
     @Override
-    public void add(PrintTemplate data) {
-        data.setId(genId());
-        executeSQL(null, SQL_INSERT, new PrintTemplateBinder(data));
+    public void add(EmenuContext context, PrintTemplate data) {
+        data.setId(genId(context));
+        executeSQL(context, SQL_INSERT, new PrintTemplateBinder(data));
     }
 
     @Override
-    public void update(PrintTemplate template) {
-        executeSQL(null, SQL_UPDATE, new UpdateBinder(template));
+    public void update(EmenuContext context, PrintTemplate template) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(template));
     }
 
     @Override
-    public PrintTemplate get(int id) {
-        return queryOne(SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
+    public PrintTemplate get(EmenuContext context, int id) {
+        return queryOne(context, SQL_SELECT_BY_ID, new IdStatementBinder(id), rowMapper);
     }
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
     
     @Override
-    public List<PrintTemplate> listAll() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    public List<PrintTemplate> listAll(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     /* ---------- SQL ---------- */

@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Chapter;
 
 /**
@@ -14,12 +15,12 @@ import com.cloudstone.emenu.data.Chapter;
  */
 public interface IChapterDb extends IDb {
 
-    public void addChapter(Chapter chapter) ;
-    public void updateChapter(Chapter chapter) ;
-    public void deleteChapter(int id) ;
-    public List<Chapter> getAllChapter() ;
-    public List<Chapter> listChapters(int menuId) ;
-    public List<Chapter> listChapters(int[] ids) ;
-    public Chapter getChapter(int id) ;
-    public Chapter getChapterByName(String name) ;
+    public void addChapter(EmenuContext context, Chapter chapter) ;
+    public void updateChapter(EmenuContext context, Chapter chapter) ;
+    public void deleteChapter(EmenuContext context, int id) ;
+    public List<Chapter> getAllChapter(EmenuContext context) ;
+    public List<Chapter> listChapters(EmenuContext context, int menuId) ;
+    public List<Chapter> listChapters(EmenuContext context, int[] ids) ;
+    public Chapter getChapter(EmenuContext context, int id) ;
+    public Chapter getChapterByName(EmenuContext context, String name) ;
 }

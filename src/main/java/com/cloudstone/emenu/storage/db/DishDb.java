@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
@@ -37,42 +38,42 @@ public class DishDb extends SQLiteDb implements IDishDb {
     }
     
     @Override
-    public List<IdName> getDishSuggestion() {
-        return getIdNames();
+    public List<IdName> getDishSuggestion(EmenuContext context) {
+        return getIdNames(context);
     }
     
     @Override
-    public void add(Dish dish) {
-        dish.setId(genId());
+    public void add(EmenuContext context, Dish dish) {
+        dish.setId(genId(context));
         DishBinder binder = new DishBinder(dish);
-        executeSQL(null, SQL_INSERT, binder);
+        executeSQL(context, SQL_INSERT, binder);
     }
     
     @Override
-    public Dish getByName(String name) {
-        return super.getByName(name, rowMapper);
+    public Dish getByName(EmenuContext context, String name) {
+        return super.getByName(context, name, rowMapper);
     }
     
     @Override
-    public Dish get(int dishId) {
+    public Dish get(EmenuContext context, int dishId) {
         IdStatementBinder binder = new IdStatementBinder(dishId);
-        Dish dish = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+        Dish dish = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return dish;
     }
     
     @Override
-    public List<Dish> getAll() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    public List<Dish> getAll(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
     @Override
-    public void update(Dish dish) {
-        executeSQL(null, SQL_UPDATE, new UpdateBinder(dish));
+    public void update(EmenuContext context, Dish dish) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(dish));
     }
     
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
     
     /* ---------- inner class ---------- */

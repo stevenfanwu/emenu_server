@@ -6,6 +6,7 @@ package com.cloudstone.emenu.ctrl.api;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.DishNote;
@@ -37,139 +39,184 @@ public class MenuApiController extends BaseApiController {
     private static final Logger LOG = LoggerFactory.getLogger(MenuApiController.class);
 
     @RequestMapping(value="/api/menus", method=RequestMethod.POST)
-    public @ResponseBody Menu addMenu(@RequestBody String body, HttpServletResponse resp) {
+    public @ResponseBody Menu addMenu(@RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse resp) {
+        EmenuContext context = newContext(request);
         Menu menu = JsonUtils.fromJson(body, Menu.class);
-        menu = menuLogic.addMenu(menu);
+        menu = menuLogic.addMenu(context, menu);
         sendSuccess(resp, HttpServletResponse.SC_CREATED);
         return menu;
     }
     
     @RequestMapping(value="/api/menus/{id:[\\d]+}", method=RequestMethod.DELETE)
     public void deleteMenu(@PathVariable(value="id") int id,
+            HttpServletRequest request,
             HttpServletResponse response) {
-        menuLogic.deleteMenu(id);
+        EmenuContext context = newContext(request);
+        menuLogic.deleteMenu(context, id);
     }
     
     @RequestMapping(value="/api/menus/unbind", method=RequestMethod.PUT)
     public @ResponseBody Dish unbindDish(@RequestParam("menuPageId") int menuPageId,
+            HttpServletRequest request,
             @RequestParam("dishId") int dishId,
             @RequestParam("pos") int pos) {
-        menuLogic.unbindDish(menuPageId, dishId, pos);
+        EmenuContext context = newContext(request);
+        menuLogic.unbindDish(context, menuPageId, dishId, pos);
         return Dish.getNullDish(pos);
     }
     
     @RequestMapping(value="/api/menus/bind", method=RequestMethod.PUT)
     public @ResponseBody Dish bindDish(@RequestParam("menuPageId") int menuPageId,
             @RequestParam("dishId") int dishId,
-            @RequestParam("pos") int pos) {
-        menuLogic.bindDish(menuPageId, dishId, pos);
-        return menuLogic.getDish(dishId, false);
+            @RequestParam("pos") int pos,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        menuLogic.bindDish(context, menuPageId, dishId, pos);
+        return menuLogic.getDish(context, dishId, false);
     }
 
     @RequestMapping(value="/api/menus", method=RequestMethod.GET)
-    public @ResponseBody List<Menu> listMenu() {
-        return menuLogic.getAllMenu();
+    public @ResponseBody List<Menu> listMenu(HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return menuLogic.getAllMenu(context);
     }
     
     @RequestMapping(value="/api/menus/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody Menu updateMenu(@PathVariable(value="id") int id,
-            @RequestBody String body, HttpServletResponse response) {
+            @RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
         Menu menu = JsonUtils.fromJson(body, Menu.class);
         if (menu.getId() != id) {
             sendError(response, HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
-        return menuLogic.updateMenu(menu);
+        return menuLogic.updateMenu(context, menu);
     }
 
     @RequestMapping(value="/api/pages", method=RequestMethod.POST)
-    public @ResponseBody MenuPage addMenuPage(@RequestBody String body, HttpServletResponse resp) {
+    public @ResponseBody MenuPage addMenuPage(@RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse resp) {
+        EmenuContext context = newContext(request);
         MenuPage page = JsonUtils.fromJson(body, MenuPage.class);
-        page = menuLogic.addMenuPage(page);
+        page = menuLogic.addMenuPage(context, page);
         sendSuccess(resp, HttpServletResponse.SC_CREATED);
         return page;
     }
     
     @RequestMapping(value="/api/pages/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody MenuPage updateMenuPage(@PathVariable(value="id") int id,
-            @RequestBody String body, HttpServletResponse response) {
+            @RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
         MenuPage page = JsonUtils.fromJson(body, MenuPage.class);
         if (page.getId() != id) {
             throw new BadRequestError();
         }
-        return menuLogic.updateMenuPage(page);
+        return menuLogic.updateMenuPage(context, page);
     }
     
     @RequestMapping(value="/api/pages/{id:[\\d]+}", method=RequestMethod.DELETE)
     public void deleteMenuPage(@PathVariable(value="id") int id,
+            HttpServletRequest request,
             HttpServletResponse response) {
-        menuLogic.deleteMenuPage(id);
+        EmenuContext context = newContext(request);
+        menuLogic.deleteMenuPage(context, id);
     }
 
     @RequestMapping(value="/api/pages", method=RequestMethod.GET)
-    public @ResponseBody List<MenuPage> getMenuPageByChapterId(@RequestParam("chapterId") int chapterId) {
-        return menuLogic.listMenuPageByChapterId(chapterId);
+    public @ResponseBody List<MenuPage> getMenuPageByChapterId(
+            @RequestParam("chapterId") int chapterId,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return menuLogic.listMenuPageByChapterId(context, chapterId);
     }
 
     @RequestMapping(value="/api/chapters", method=RequestMethod.POST)
-    public @ResponseBody Chapter addChapter(@RequestBody String body, HttpServletResponse resp) {
+    public @ResponseBody Chapter addChapter(@RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse resp) {
+        EmenuContext context = newContext(request);
         Chapter chapter = JsonUtils.fromJson(body, Chapter.class);
-        chapter = menuLogic.addChapter(chapter);
+        chapter = menuLogic.addChapter(context, chapter);
         sendSuccess(resp, HttpServletResponse.SC_CREATED);
         return chapter;
     }
     
     @RequestMapping(value="/api/chapters/{id:[\\d]+}", method=RequestMethod.DELETE)
     public void deleteChapter(@PathVariable(value="id") int id,
+            HttpServletRequest request,
             HttpServletResponse response) {
-        menuLogic.deleteChapter(id);
+        EmenuContext context = newContext(request);
+        menuLogic.deleteChapter(context, id);
     }
 
     @RequestMapping(value="/api/chapters/all", method=RequestMethod.GET)
-    public @ResponseBody List<Chapter> listChapters() {
-        return menuLogic.getAllChapter();
+    public @ResponseBody List<Chapter> listChapters(HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return menuLogic.getAllChapter(context);
     }
     
     @RequestMapping(value="/api/chapters", method=RequestMethod.GET)
-    public @ResponseBody List<Chapter> getChapterByMenuId(@RequestParam("menuId") int menuId) {
-        return menuLogic.listChapterByMenuId(menuId);
+    public @ResponseBody List<Chapter> getChapterByMenuId(
+            HttpServletRequest request,
+            @RequestParam("menuId") int menuId) {
+        EmenuContext context = newContext(request);
+        return menuLogic.listChapterByMenuId(context, menuId);
     }
     
     @RequestMapping(value="/api/chapters/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody Chapter updateChapter(@PathVariable(value="id") int id,
-            @RequestBody String body, HttpServletResponse response) {
+            @RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
         Chapter chapter = JsonUtils.fromJson(body, Chapter.class);
         if (chapter.getId() != id) {
             sendError(response, HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
-        return menuLogic.updateChapter(chapter);
+        return menuLogic.updateChapter(context, chapter);
     }
     
     
     @RequestMapping(value="/api/dishes/suggestion", method=RequestMethod.GET)
-    public @ResponseBody List<IdName> getDishSuggestion() {
-        return menuLogic.getDishSuggestion();
+    public @ResponseBody List<IdName> getDishSuggestion(HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return menuLogic.getDishSuggestion(context);
     }
 
     @RequestMapping(value="/api/dishes", method=RequestMethod.GET)
     public @ResponseBody List<Dish> listDish(
-            @RequestParam(value="menuPageId", required=false, defaultValue="0") int menuPageId) {
+            @RequestParam(value="menuPageId", required=false, defaultValue="0") int menuPageId,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
         if (menuPageId == 0) {
-            return menuLogic.getAllDish();
+            return menuLogic.getAllDish(context);
         } else {
-            return menuLogic.getDishByMenuPageId(menuPageId);
+            return menuLogic.getDishByMenuPageId(context, menuPageId);
         }
     }
     
     @RequestMapping(value="/api/dishes/{id:[\\d]+}", method=RequestMethod.DELETE)
-    public void deleteDish(@PathVariable(value="id") int dishId, HttpServletResponse response) {
-        menuLogic.deleteDish(dishId);
+    public void deleteDish(@PathVariable(value="id") int dishId,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        menuLogic.deleteDish(context, dishId);
     }
     
     @RequestMapping(value="/api/dishes/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody Dish updateDish(@PathVariable(value="id") int dishId,
-            @RequestBody String body, HttpServletResponse response) {
+            @RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
         Dish dish = JsonUtils.fromJson(body, Dish.class);
         if (dish.getId() != dishId) {
             sendError(response, HttpServletResponse.SC_BAD_REQUEST);
@@ -178,93 +225,123 @@ public class MenuApiController extends BaseApiController {
         if (dish.getMemberPrice() == 0) {
             dish.setMemberPrice(dish.getPrice());
         }
-        return menuLogic.updateDish(dish);
+        return menuLogic.updateDish(context, dish);
     }
     
     @RequestMapping(value="/api/dishes", method=RequestMethod.POST)
-    public @ResponseBody Dish addDish(@RequestBody String body, HttpServletResponse response) {
+    public @ResponseBody Dish addDish(@RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
         Dish dish = JsonUtils.fromJson(body, Dish.class);
         if (dish.getMemberPrice() == 0) {
             dish.setMemberPrice(dish.getPrice());
         }
-        dish = menuLogic.addDish(dish);
+        dish = menuLogic.addDish(context, dish);
         sendSuccess(response, HttpServletResponse.SC_CREATED);
         return dish;
     }
 
     @RequestMapping(value = "/api/dishes/{id:[\\d]+}/soldout", method = RequestMethod.PUT)
-    public @ResponseBody Dish soldoutDish(@PathVariable(value = "id") int dishId) {
-        return menuLogic.updateDishSoldout(dishId, true);
+    public @ResponseBody Dish soldoutDish(@PathVariable(value = "id") int dishId,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return menuLogic.updateDishSoldout(context, dishId, true);
     }
 
     @RequestMapping(value = "/api/dishes/{id:[\\d]+}/unsoldout", method = RequestMethod.PUT)
-    public @ResponseBody Dish unsoldoutDish(@PathVariable(value = "id") int dishId) {
-        return menuLogic.updateDishSoldout(dishId, false);
+    public @ResponseBody Dish unsoldoutDish(
+            HttpServletRequest request,
+            @PathVariable(value = "id") int dishId) {
+        EmenuContext context = newContext(request);
+        return menuLogic.updateDishSoldout(context, dishId, false);
     }
 
     @RequestMapping(value = "/api/dishes/unsoldout", method = RequestMethod.PUT)
-    public void unsoldoutAllDishes(HttpServletResponse response) {
-        menuLogic.updateDishesSoldout(false);
+    public void unsoldoutAllDishes(
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        menuLogic.updateDishesSoldout(context, false);
         sendSuccess(response, HttpServletResponse.SC_OK);
         return;
     }
 
     @RequestMapping(value = "/api/dishes/soldout", method = RequestMethod.PUT)
-    public void soldoutAllDishes(HttpServletResponse response) {
-        menuLogic.updateDishesSoldout(true);
+    public void soldoutAllDishes(
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        menuLogic.updateDishesSoldout(context, true);
         sendSuccess(response, HttpServletResponse.SC_OK);
         return;
     }
 
     @RequestMapping(value="/api/dish/tags", method=RequestMethod.GET)
-    public @ResponseBody List<DishTag> getAllDishTag() {
-        return menuLogic.listAllDishTag();
+    public @ResponseBody List<DishTag> getAllDishTag(
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return menuLogic.listAllDishTag(context);
     }
     
     @RequestMapping(value="/api/dish/tags", method=RequestMethod.POST)
-    public @ResponseBody DishTag addDishTag(@RequestBody String body) {
+    public @ResponseBody DishTag addDishTag(@RequestBody String body,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
         DishTag tag = JsonUtils.fromJson(body, DishTag.class);
-        tag = menuLogic.addDishTag(tag);
+        tag = menuLogic.addDishTag(context, tag);
         return tag;
     }
     
     @RequestMapping(value="/api/dish/tags/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody DishTag updateDishTag(@RequestBody String body,
-            @PathVariable(value="id") int id) {
+            @PathVariable(value="id") int id,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
         DishTag tag = JsonUtils.fromJson(body, DishTag.class);
-        tag = menuLogic.updateDishTag(tag);
+        tag = menuLogic.updateDishTag(context, tag);
         return tag;
     }
     
     @RequestMapping(value="/api/dish/tags/{id:[\\d]+}", method=RequestMethod.DELETE)
     public void deleteDishTag(@PathVariable(value="id") int id,
+            HttpServletRequest request,
             HttpServletResponse response) {
-        menuLogic.deleteDishTag(id);
+        EmenuContext context = newContext(request);
+        menuLogic.deleteDishTag(context, id);
     }
     
     @RequestMapping(value="/api/dish/notes", method=RequestMethod.GET)
-    public @ResponseBody List<DishNote> getAllDishNote() {
-        return menuLogic.listAllDishNote();
+    public @ResponseBody List<DishNote> getAllDishNote(HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return menuLogic.listAllDishNote(context);
     }
     
     @RequestMapping(value="/api/dish/notes", method=RequestMethod.POST)
-    public @ResponseBody DishNote addDishNote(@RequestBody String body) {
+    public @ResponseBody DishNote addDishNote(@RequestBody String body,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
         DishNote note = JsonUtils.fromJson(body, DishNote.class);
-        note = menuLogic.addDishNote(note);
+        note = menuLogic.addDishNote(context, note);
         return note;
     }
     
     @RequestMapping(value="/api/dish/notes/{id:[\\d]+}", method=RequestMethod.PUT)
     public @ResponseBody DishNote updateDishNote(@RequestBody String body,
-            @PathVariable(value="id") int id) {
+            @PathVariable(value="id") int id,
+            HttpServletRequest request
+            ) {
+        EmenuContext context = newContext(request);
         DishNote note = JsonUtils.fromJson(body, DishNote.class);
-        note = menuLogic.updateDishNote(note);
+        note = menuLogic.updateDishNote(context, note);
         return note;
     }
     
     @RequestMapping(value="/api/dish/notes/{id:[\\d]+}", method=RequestMethod.DELETE)
     public void deleteDishNote(@PathVariable(value="id") int id,
+            HttpServletRequest request,
             HttpServletResponse response) {
-        menuLogic.deleteDishNote(id);
+        EmenuContext context = newContext(request);
+        menuLogic.deleteDishNote(context, id);
     }
 }

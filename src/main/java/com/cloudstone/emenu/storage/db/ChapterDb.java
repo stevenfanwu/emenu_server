@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
@@ -31,53 +32,53 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     }
     
     @Override
-    public Chapter getChapterByName(String name) {
-        return getByName(name, rowMapper);
+    public Chapter getChapterByName(EmenuContext context, String name) {
+        return getByName(context, name, rowMapper);
     }
     
     @Override
-    public List<Chapter> listChapters(int menuId) {
+    public List<Chapter> listChapters(EmenuContext context, int menuId) {
         GetByMenuIdBinder binder = new GetByMenuIdBinder(menuId);
-        return query(SQL_SELECT_BY_MENU_ID, binder, rowMapper);
+        return query(context, SQL_SELECT_BY_MENU_ID, binder, rowMapper);
     }
     
     @Override
-    public List<Chapter> listChapters(int[] ids) {
+    public List<Chapter> listChapters(EmenuContext context, int[] ids) {
         String sql = new SelectSqlBuilder(TABLE_NAME).appendWhereIdIn(ids).build();
-        return query(sql, StatementBinder.NULL, rowMapper);
+        return query(context, sql, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public void addChapter(Chapter chapter) {
-        chapter.setId(genId());
-        executeSQL(null, SQL_INSERT, new ChapterBinder(chapter));
+    public void addChapter(EmenuContext context, Chapter chapter) {
+        chapter.setId(genId(context));
+        executeSQL(context, SQL_INSERT, new ChapterBinder(chapter));
     }
 
     @Override
-    public void updateChapter(Chapter chapter) {
-        executeSQL(null, SQL_UPDATE, new UpdateBinder(chapter));
+    public void updateChapter(EmenuContext context, Chapter chapter) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(chapter));
     }
 
     @Override
-    public void deleteChapter(int id) {
-        delete(id);
+    public void deleteChapter(EmenuContext context, int id) {
+        delete(context, id);
     }
 
     @Override
-    public List<Chapter> getAllChapter() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    public List<Chapter> getAllChapter(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
 
     @Override
-    public Chapter getChapter(int id) {
+    public Chapter getChapter(EmenuContext context, int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
-        Chapter chapter = queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+        Chapter chapter = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return chapter;
     }
 
     @Override
-    protected void onCheckCreateTable() {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context) {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
     
     /* ---------- SQL ---------- */

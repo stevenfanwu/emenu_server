@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.PrintComponent;
 
 /**
@@ -14,9 +15,9 @@ import com.cloudstone.emenu.data.PrintComponent;
  */
 public interface IPrintComponentDb {
 
-    public List<PrintComponent> listAll();
-    public void add(PrintComponent data);
-    public void update(PrintComponent data);
-    public void delete(int id) ;
-    public PrintComponent get(int id);
+    public List<PrintComponent> listAll(EmenuContext context);
+    public void add(EmenuContext context, PrintComponent data);
+    public void update(EmenuContext context, PrintComponent data);
+    public void delete(EmenuContext context, int id) ;
+    public PrintComponent get(EmenuContext context, int id);
 }

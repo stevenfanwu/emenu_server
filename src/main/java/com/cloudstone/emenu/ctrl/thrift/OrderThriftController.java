@@ -27,6 +27,8 @@ import cn.com.cloudstone.menu.server.thrift.api.TableEmptyException;
 import cn.com.cloudstone.menu.server.thrift.api.UnderMinChargeException;
 import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 
+import com.cloudstone.emenu.EmenuContext;
+
 /**
  * @author xuhongfeng
  *
@@ -54,8 +56,9 @@ public class OrderThriftController extends BaseThriftController {
                 throws UserNotLoginException, TableEmptyException,
                 HasInvalidGoodsException, UnderMinChargeException, TException {
             LOG.info("submitOrder, order.price="  +order.getPrice() + ",originPrice=" + order.getOriginalPrice());
-            authorize(sessionId);
-            thriftLogic.submitOrder(order);
+            EmenuContext context = new EmenuContext();
+            authorize(context, sessionId);
+            thriftLogic.submitOrder(context, order);
             return true;
         }
 
@@ -63,11 +66,12 @@ public class OrderThriftController extends BaseThriftController {
         public List<Order> queryOrder(String sessionId, String tableName)
                 throws UserNotLoginException, TableEmptyException, TException {
             LOG.info("queryOrder, tableName = " + tableName);
-            authorize(sessionId);
+            EmenuContext context = new EmenuContext();
+            authorize(context, sessionId);
             
             List<Order> ret = new ArrayList<Order>();
             
-            Order order = thriftLogic.getOrderByTable(tableName);
+            Order order = thriftLogic.getOrderByTable(context, tableName);
             if (order != null) {
                 ret.add(order);
             }

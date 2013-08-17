@@ -26,6 +26,7 @@ import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 import cn.com.cloudstone.menu.server.thrift.api.UserType;
 import cn.com.cloudstone.menu.server.thrift.api.WrongUsernameOrPasswordException;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.util.ThriftUtils;
@@ -57,11 +58,13 @@ public class ProfileThriftController extends BaseThriftController {
                 throws WrongUsernameOrPasswordException,
                 IMEINotAllowedException, TException {
             LOG.info("login, imei = " + imei);
-            User user = userLogic.login(username, pwd);
+            EmenuContext context = new EmenuContext();
+            User user = userLogic.login(context, username, pwd);
             if (user == null) {
                 throw new WrongUsernameOrPasswordException();
             }
-            if (!thriftLogic.isValidImei(imei)) {
+            context.setLoginUserId(user.getId());
+            if (!thriftLogic.isValidImei(context, imei)) {
                 throw new IMEINotAllowedException();
             }
             
@@ -72,7 +75,7 @@ public class ProfileThriftController extends BaseThriftController {
             session.setActivateTime(System.currentTimeMillis());
             session.setImei(imei);
             session.setUser(user);
-            thriftSessionDb.put(sessionId, session);
+            thriftSessionDb.put(context, sessionId, session);
             
             //build Login
             UserType type = ThriftUtils.getUserType(user);
@@ -82,7 +85,8 @@ public class ProfileThriftController extends BaseThriftController {
 
         @Override
         public boolean logout(String sessionId) throws TException {
-            thriftSessionDb.remove(sessionId);
+            EmenuContext context = new EmenuContext();
+            thriftSessionDb.remove(context, sessionId);
             return true;
         }
 
@@ -95,7 +99,8 @@ public class ProfileThriftController extends BaseThriftController {
 
         @Override
         public List<String> getAllUsers() throws TException {
-            return userLogic.listUserNames();
+            EmenuContext context = new EmenuContext();
+            return userLogic.listUserNames(context);
         }
     }
 }

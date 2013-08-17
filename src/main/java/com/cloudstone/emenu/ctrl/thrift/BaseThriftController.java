@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.ctrl.BaseController;
 import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.logic.ThriftLogic;
@@ -45,19 +46,20 @@ public abstract class BaseThriftController extends BaseController {
     @Autowired
     protected ThriftSessionDb thriftSessionDb;
     
-    protected ThriftSession authorize(String sessionId) throws UserNotLoginException {
-        ThriftSession session = thriftSessionDb.get(sessionId);
+    protected ThriftSession authorize(EmenuContext context, String sessionId) throws UserNotLoginException {
+        ThriftSession session = thriftSessionDb.get(context, sessionId);
         long now = System.currentTimeMillis();
         if (session == null) {
             throw new UserNotLoginException();
         }
         if (now - session.getActivateTime() > ThriftSessionDb.EXPIRE_TIME
-                || !thriftLogic.isValidImei(session.getImei())) {
-            thriftSessionDb.remove(sessionId);
+                || !thriftLogic.isValidImei(context, session.getImei())) {
+            thriftSessionDb.remove(context, sessionId);
             throw new UserNotLoginException();
         }
         session.setActivateTime(now);
-        thriftSessionDb.put(sessionId, session);
+        thriftSessionDb.put(context, sessionId, session);
+        context.setLoginUserId(session.getUser().getId());
         return session;
     }
     

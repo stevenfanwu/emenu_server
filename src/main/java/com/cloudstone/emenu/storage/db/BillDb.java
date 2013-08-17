@@ -6,15 +6,14 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -23,6 +22,7 @@ import com.cloudstone.emenu.storage.db.util.SqlUtils;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.TimeStatementBinder;
 import com.cloudstone.emenu.util.JsonUtils;
+import com.cloudstone.emenu.util.StringUtils;
 
 /**
  * @author xuhongfeng
@@ -32,34 +32,34 @@ import com.cloudstone.emenu.util.JsonUtils;
 public class BillDb extends SQLiteDb implements IBillDb {
     
     @Override
-    public Bill getByOrderId(int orderId) {
-        return queryOne(SQL_SELECT_BY_ORDER_ID, new OrderIdBinder(orderId), rowMapper);
+    public Bill getByOrderId(EmenuContext context, int orderId) {
+        return queryOne(context, SQL_SELECT_BY_ORDER_ID, new OrderIdBinder(orderId), rowMapper);
     }
 
     @Override
-    public void add(DbTransaction trans, Bill bill) {
-        bill.setId(genId());
+    public void add(EmenuContext context, Bill bill) {
+        bill.setId(genId(context));
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        executeSQL(trans, SQL_INSERT, new BillBinder(bill));
+        executeSQL(context, SQL_INSERT, new BillBinder(bill));
     }
 
     @Override
-    public List<Bill> listBills() {
-        return query(SQL_SELECT, StatementBinder.NULL, rowMapper);
+    public List<Bill> listBills(EmenuContext context) {
+        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
     }
     
     @Override
-    public Bill get(int id)  {
+    public Bill get(EmenuContext context, int id)  {
         IdStatementBinder binder = new IdStatementBinder(id);
-        return queryOne(SQL_SELECT_BY_ID, binder, rowMapper);
+        return queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
     }
 
     @Override
-    public List<Bill> getBillsByTime(long startTime, long endTime)  {
+    public List<Bill> getBillsByTime(EmenuContext context, long startTime, long endTime)  {
         TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
-        return query(SQL_SELECT_BY_TIME, binder, rowMapper);
+        return query(context, SQL_SELECT_BY_TIME, binder, rowMapper);
     }
 
     @Override
@@ -68,8 +68,8 @@ public class BillDb extends SQLiteDb implements IBillDb {
     }
 
     @Override
-    protected void onCheckCreateTable()  {
-        checkCreateTable(TABLE_NAME, COL_DEF);
+    protected void onCheckCreateTable(EmenuContext context)  {
+        checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
 
     private static final String TABLE_NAME = "bill";

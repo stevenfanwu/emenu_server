@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.PayType;
 
 /**
@@ -13,6 +14,6 @@ import com.cloudstone.emenu.data.PayType;
  *
  */
 public interface IPayTypeDb {
-    public List<PayType> getAllPayType() ;
-    public void addPayType(PayType payType) ;
+    public List<PayType> getAllPayType(EmenuContext context) ;
+    public void addPayType(EmenuContext context, PayType payType) ;
 }

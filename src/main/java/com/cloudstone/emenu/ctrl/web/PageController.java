@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.logic.ConfigLogic;
 
 /**
@@ -26,7 +27,8 @@ public class PageController extends BaseWebController {
     @RequestMapping("/upgrading")
     public String upgrading(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
-        if (!configLogic.needUpgradeDb()) {
+        EmenuContext context = newContext(req);
+        if (!configLogic.needUpgradeDb(context)) {
             sendRedirect("/", resp);
             return null;
         }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.PayType;
 
 /**
@@ -28,13 +29,13 @@ public class PayTypeDb extends IdNameDb<PayType> implements IPayTypeDb {
     }
     
     @Override
-    protected void init() {
-        super.init();
-        if (getAll().size() == 0) {
+    protected void init(EmenuContext context) {
+        super.init(context);
+        if (getAll(context).size() == 0) {
             for (String name:DEFAULT_PAY_TYPE) {
                 PayType type = new PayType();
                 type.setName(name);
-                add(type);
+                add(context, type);
             }
         }
     }
@@ -45,14 +46,13 @@ public class PayTypeDb extends IdNameDb<PayType> implements IPayTypeDb {
     }
 
     @Override
-    public List<PayType> getAllPayType() {
-        return getAll();
+    public List<PayType> getAllPayType(EmenuContext context) {
+        return getAll(context);
     }
 
     @Override
-    public void addPayType(PayType payType) {
-        add(payType);
+    public void addPayType(EmenuContext context, PayType payType) {
+        add(context, payType);
     }
 
-    
 }

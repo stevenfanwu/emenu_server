@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.OrderDish;
-import com.cloudstone.emenu.storage.db.util.DbTransaction;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 import com.cloudstone.emenu.util.CollectionUtils;
@@ -38,8 +38,8 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             new RelationDbColumn("deleted", DataType.INTEGER, false);
     
     @Override
-    public void add(DbTransaction trans, final OrderDish data) {
-        add(trans, new InsertBinder(data.getOrderId(), data.getDishId()) {
+    public void add(EmenuContext context, final OrderDish data) {
+        add(context, new InsertBinder(data.getOrderId(), data.getDishId()) {
             @Override
             protected void bindOthers(SQLiteStatement stmt)
                     throws SQLiteException {
@@ -56,13 +56,13 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
     }
     
     @Override
-    public void update(DbTransaction trans, OrderDish data) {
-        executeSQL(trans, SQL_UPDATE, new UpdateBinder(data));
+    public void update(EmenuContext context, OrderDish data) {
+        executeSQL(context, SQL_UPDATE, new UpdateBinder(data));
     }
     
     @Override
-    public List<OrderDish> listOrderDish(int orderId) {
-        return listById1(orderId);
+    public List<OrderDish> listOrderDish(EmenuContext context, int orderId) {
+        return listById1(context, orderId);
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.logic.ConfigLogic;
 import com.cloudstone.emenu.storage.db.util.DbUpgrader;
 
@@ -49,8 +50,9 @@ public class UpgradingFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        if (configLogic.needUpgradeDb()) {
-            dbUpgrader.checkUpgrade();
+        EmenuContext context = new EmenuContext();
+        if (configLogic.needUpgradeDb(context)) {
+            dbUpgrader.checkUpgrade(context);
             if (url.startsWith("/api") || url.endsWith("thrifs")) {
                 resp.sendError(512);
             } else {

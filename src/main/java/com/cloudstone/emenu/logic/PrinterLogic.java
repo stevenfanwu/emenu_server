@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.PrintComponent;
@@ -36,12 +37,12 @@ import com.cloudstone.emenu.util.VelocityRender;
 public class PrinterLogic extends BaseLogic {
     private static final Logger LOG = LoggerFactory.getLogger(PrinterLogic.class);
     
-    private static final String DIVIDER = "\n------------------------n";
+    private static final String DIVIDER = "\n------------------------\n";
     
     private static final String DISH_TEMPLATE = "\n" +
             "菜品\t数量*单价\t金额\n" +
             "#foreach($dish in $dishes)\n" +
-            "$dish.name\t$dish.number*$dish.price\t$dish.totalCost\b" +
+            "$dish.name\t$dish.number*$dish.price\t$dish.totalCost\n" +
             "#end" +
             "\n";
     
@@ -58,28 +59,28 @@ public class PrinterLogic extends BaseLogic {
     public String[] listPrinters() {
         return PrinterUtils.listPrinters();
     }
-    public void printBill(Bill bill, User user) throws Exception {
+    public void printBill(EmenuContext context, Bill bill, User user) throws Exception {
         String[] printers = listPrinters();
         for (String printer:printers) {
-            PrinterConfig config = getPrinterConfig(printer);
+            PrinterConfig config = getPrinterConfig(context, printer);
             if (config != null && config.isWhenBill()) {
                 for (int templateId:config.getBillTemplateIds()) {
                     LOG.info("print templateId :" + templateId);
-                    printBill(bill, user, printer, templateId);
+                    printBill(context, bill, user, printer, templateId);
                 }
             }
         }
     }
     
-    public void printBill(Bill bill, User user, String printer, int templateId) throws Exception {
-        PrintTemplate template = getTemplate(templateId);
+    public void printBill(EmenuContext context, Bill bill, User user, String printer, int templateId) throws Exception {
+        PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
             StringBuilder sb = new StringBuilder();
             int headerId = template.getHeaderId();
             int footerId = template.getFooterId();
             
             if (headerId != 0) {
-                PrintComponent header = getComponent(headerId);
+                PrintComponent header = getComponent(context, headerId);
                 if (header != null) {
                     sb.append(header.getContent());
                     sb.append(DIVIDER);
@@ -88,7 +89,7 @@ public class PrinterLogic extends BaseLogic {
             sb.append(DISH_TEMPLATE);
             
             if (footerId != 0) {
-                PrintComponent footer = getComponent(footerId);
+                PrintComponent footer = getComponent(context, footerId);
                 if (footer != null) {
                     sb.append(DIVIDER);
                     sb.append(footer.getContent());
@@ -108,98 +109,98 @@ public class PrinterLogic extends BaseLogic {
         }
     }
     
-    public PrintTemplate getTemplate(int id) {
-        return printTemplateDb.get(id);
+    public PrintTemplate getTemplate(EmenuContext context, int id) {
+        return printTemplateDb.get(context, id);
     }
     
-    public List<PrintComponent> listComponents() {
-        List<PrintComponent> list = printComponentDb.listAll();
+    public List<PrintComponent> listComponents(EmenuContext context) {
+        List<PrintComponent> list = printComponentDb.listAll(context);
         DataUtils.filterDeleted(list);
         return list;
     }
     
-    public PrintComponent addComponent(PrintComponent data) {
-        printComponentDb.add(data);
-        return printComponentDb.get(data.getId());
+    public PrintComponent addComponent(EmenuContext context, PrintComponent data) {
+        printComponentDb.add(context, data);
+        return printComponentDb.get(context, data.getId());
     }
     
-    public PrintComponent updateComponent(PrintComponent data) {
-        PrintComponent old = printComponentDb.get(data.getId());
+    public PrintComponent updateComponent(EmenuContext context, PrintComponent data) {
+        PrintComponent old = printComponentDb.get(context, data.getId());
         if (old==null || old.isDeleted()) {
             throw new NotFoundException("该页眉页脚不存在");
         }
-        printComponentDb.update(data);
-        return printComponentDb.get(data.getId());
+        printComponentDb.update(context, data);
+        return printComponentDb.get(context, data.getId());
     }
     
-    public PrintComponent getComponent(int id) {
-        return printComponentDb.get(id);
+    public PrintComponent getComponent(EmenuContext context, int id) {
+        return printComponentDb.get(context, id);
     }
     
-    public void deleteComponent(int id) {
-        PrintComponent old = printComponentDb.get(id);
+    public void deleteComponent(EmenuContext context, int id) {
+        PrintComponent old = printComponentDb.get(context, id);
         if (old==null || old.isDeleted()) {
             throw new NotFoundException("该页眉页脚不存在");
         }
-        printComponentDb.delete(id);
-        printTemplateDb.removeComponent(id);
+        printComponentDb.delete(context, id);
+        printTemplateDb.removeComponent(context, id);
     }
     
-    public List<PrintTemplate> listTemplate() {
-        List<PrintTemplate> list = printTemplateDb.listAll();
+    public List<PrintTemplate> listTemplate(EmenuContext context) {
+        List<PrintTemplate> list = printTemplateDb.listAll(context);
         DataUtils.filterDeleted(list);
         return list;
     }
     
-    public PrintTemplate addTemplate(PrintTemplate template) {
-        printTemplateDb.add(template);
-        return printTemplateDb.get(template.getId());
+    public PrintTemplate addTemplate(EmenuContext context, PrintTemplate template) {
+        printTemplateDb.add(context, template);
+        return printTemplateDb.get(context, template.getId());
     }
     
-    public PrintTemplate updateTemplate(PrintTemplate template) {
+    public PrintTemplate updateTemplate(EmenuContext context, PrintTemplate template) {
         int headerId = template.getHeaderId();
         if (headerId != 0) {
-            PrintComponent header = getComponent(headerId);
+            PrintComponent header = getComponent(context, headerId);
             if (header==null || header.isDeleted()) {
                 throw new NotFoundException("该页眉不存在");
             }
         }
         int footerId = template.getFooterId();
         if (footerId != 0) {
-            PrintComponent footer = getComponent(footerId);
+            PrintComponent footer = getComponent(context, footerId);
             if (footer==null || footer.isDeleted()) {
                 throw new NotFoundException("该页脚不存在");
             }
         }
-        printTemplateDb.update(template);
-        return printTemplateDb.get(template.getId());
+        printTemplateDb.update(context, template);
+        return printTemplateDb.get(context, template.getId());
     }
     
-    public void deleteTemplate(int id) {
-        printTemplateDb.delete(id);
-        printerConfigDb.removeTemplate(id);
+    public void deleteTemplate(EmenuContext context, int id) {
+        printTemplateDb.delete(context, id);
+        printerConfigDb.removeTemplate(context, id);
     }
     
-    public PrinterConfig getPrinterConfig(String name) {
-        PrinterConfig config = printerConfigDb.getConfig(name);
+    public PrinterConfig getPrinterConfig(EmenuContext context, String name) {
+        PrinterConfig config = printerConfigDb.getConfig(context, name);
         if (config == null) {
             config = new PrinterConfig();
             config.setName(name);
-            printerConfigDb.update(config);
+            printerConfigDb.update(context, config);
         }
         return config;
     }
     
-    public PrinterConfig updatePrinterConfig(PrinterConfig config) {
-        printerConfigDb.update(config);
-        return printerConfigDb.getConfig(config.getName());
+    public PrinterConfig updatePrinterConfig(EmenuContext context, PrinterConfig config) {
+        printerConfigDb.update(context, config);
+        return printerConfigDb.getConfig(context, config.getName());
     }
     
-    public List<PrinterConfig> listPrinterConfig() {
+    public List<PrinterConfig> listPrinterConfig(EmenuContext context) {
         String[] printers = listPrinters();
         List<PrinterConfig> configs = new ArrayList<PrinterConfig>();
         for (String name:printers) {
-            configs.add(getPrinterConfig(name));
+            configs.add(getPrinterConfig(context, name));
         }
         return configs;
     }

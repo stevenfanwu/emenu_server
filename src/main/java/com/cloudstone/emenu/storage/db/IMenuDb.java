@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Menu;
 
 /**
@@ -14,10 +15,10 @@ import com.cloudstone.emenu.data.Menu;
  */
 public interface IMenuDb extends IDb {
 
-    public void addMenu(Menu menu) ;
-    public void updateMenu(Menu menu) ;
-    public void deleteMenu(int id) ;
-    public List<Menu> getAllMenu() ;
-    public Menu getMenu(int id) ;
-    public Menu getByName(String name) ;
+    public void addMenu(EmenuContext context, Menu menu) ;
+    public void updateMenu(EmenuContext context, Menu menu) ;
+    public void deleteMenu(EmenuContext context, int id) ;
+    public List<Menu> getAllMenu(EmenuContext context) ;
+    public Menu getMenu(EmenuContext context, int id) ;
+    public Menu getByName(EmenuContext context, String name) ;
 }

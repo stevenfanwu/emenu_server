@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.storage.db.IUserDb;
@@ -32,8 +33,8 @@ public class UserLogic extends BaseLogic {
      * @param encryptedPassword
      * @return
      */
-    public User login(String userName, String encryptedPassword) {
-        User user = userDb.getByName(userName);
+    public User login(EmenuContext context, String userName, String encryptedPassword) {
+        User user = userDb.getByName(context, userName);
         if (user == null || user.isDeleted()) {
             return null;
         }
@@ -45,8 +46,8 @@ public class UserLogic extends BaseLogic {
         return user;
     }
     
-    public User add(User user) {
-        User oldUser = userDb.getByName(user.getName());
+    public User add(EmenuContext context, User user) {
+        User oldUser = userDb.getByName(context, user.getName());
         if (oldUser != null && !oldUser.isDeleted()) {
             throw new DataConflictException("用户名已存在");
         }
@@ -55,45 +56,45 @@ public class UserLogic extends BaseLogic {
         if (oldUser !=null) {
             user.setId(oldUser.getId());
             user.setCreatedTime(oldUser.getCreatedTime());
-            userDb.update(user);
+            userDb.update(context, user);
         } else {
             user.setCreatedTime(now);
-            userDb.add(user);
+            userDb.add(context, user);
         }
-        return userDb.get(user.getId());
+        return userDb.get(context, user.getId());
     }
     
-    public User update(User user) {
-        User oldUser = userDb.getByName(user.getName());
+    public User update(EmenuContext context, User user) {
+        User oldUser = userDb.getByName(context, user.getName());
         if (oldUser!=null && oldUser.getId()!=user.getId() && !oldUser.isDeleted()) {
             throw new DataConflictException("用户名已存在");
         }
         long now = System.currentTimeMillis();
         user.setUpdateTime(now);
-        userDb.update(user);
-        return userDb.get(user.getId());
+        userDb.update(context, user);
+        return userDb.get(context, user.getId());
     }
     
-    public User getUser(int userId) {
-        return userDb.get(userId);
+    public User getUser(EmenuContext context, int userId) {
+        return userDb.get(context, userId);
     }
     
-    public List<User> getAll() {
-        List<User> users = userDb.getAll();
+    public List<User> getAll(EmenuContext context) {
+        List<User> users = userDb.getAll(context);
         DataUtils.filterDeleted(users);
         return users;
     }
     
-    public boolean modifyPassword(int userId, String password) {
-        return userDb.modifyPassword(userId, password);
+    public boolean modifyPassword(EmenuContext context, int userId, String password) {
+        return userDb.modifyPassword(context, userId, password);
     }
     
-    public void delete(int userId) {
-        userDb.delete(userId);
+    public void delete(EmenuContext context, int userId) {
+        userDb.delete(context, userId);
     }
     
-    public List<String> listUserNames() {
-        List<User> users = getAll();
+    public List<String> listUserNames(EmenuContext context) {
+        List<User> users = getAll(context);
         List<String> names = new ArrayList<String>(users.size());
         for (User user:users) {
             names.add(user.getName());

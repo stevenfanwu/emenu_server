@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.User;
 
 /**
@@ -14,10 +15,10 @@ import com.cloudstone.emenu.data.User;
  */
 public interface IUserDb extends IDb {
 
-    public User getByName(String userName) ;
-    public User get(int userId) ;
-    public List<User> getAll() ;
-    public User add(User user) ;
-    public User update(User user) ;
-    public boolean modifyPassword(int userId, String password) ;
+    public User getByName(EmenuContext context, String userName) ;
+    public User get(EmenuContext context, int userId) ;
+    public List<User> getAll(EmenuContext context) ;
+    public User add(EmenuContext context, User user) ;
+    public User update(EmenuContext context, User user) ;
+    public boolean modifyPassword(EmenuContext context, int userId, String password) ;
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.PayType;
@@ -30,30 +31,39 @@ import com.cloudstone.emenu.util.JsonUtils;
 public class OrderApiController extends BaseApiController {
     
     @RequestMapping(value="/api/orders", method=RequestMethod.GET)
-    public @ResponseBody OrderVO getOrder(@RequestParam("id") int orderId, HttpServletResponse response) {
-        Order order  =orderLogic.getOrder(orderId);
+    public @ResponseBody OrderVO getOrder(@RequestParam("id") int orderId,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        Order order  =orderLogic.getOrder(context, orderId);
         if (order == null) {
             sendError(response, HttpServletResponse.SC_NOT_FOUND);
         }
-        return orderWraper.wrap(order);
+        return orderWraper.wrap(context, order);
     }
     
     @RequestMapping(value="/api/orders/daily", method=RequestMethod.GET)
-    public @ResponseBody List<OrderVO> getDailyOrders(@RequestParam("time") long time, HttpServletResponse response) {
-        List<Order> orders = orderLogic.getDailyOrders(time);
-        return orderWraper.wrap(orders);
+    public @ResponseBody List<OrderVO> getDailyOrders(
+            @RequestParam("time") long time,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        List<Order> orders = orderLogic.getDailyOrders(context, time);
+        return orderWraper.wrap(context, orders);
     }
 
     @RequestMapping(value="/api/pay-types", method=RequestMethod.GET)
-    public @ResponseBody List<PayType> listPayTypes() {
-        return orderLogic.listPayTypes();
+    public @ResponseBody List<PayType> listPayTypes(HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return orderLogic.listPayTypes(context);
     }
     
     @RequestMapping(value="/api/bills", method=RequestMethod.POST)
     public @ResponseBody Bill payBill(@RequestBody String body,
             HttpServletRequest req,
             HttpServletResponse response) {
+        EmenuContext context = newContext(req);
         Bill bill = JsonUtils.fromJson(body, Bill.class);
-        return orderLogic.payBill(bill, getLoginUser(req));
+        return orderLogic.payBill(context, bill, getLoginUser(req));
     }
 }

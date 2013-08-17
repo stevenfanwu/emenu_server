@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.UserSession;
@@ -76,7 +77,7 @@ public class AuthHelper {
             }
             req.getSession().setAttribute(SESSION_ACTIVE_TIME, now);
             
-            User loginUser = userLogic.getUser(userId);
+            User loginUser = userLogic.getUser(new EmenuContext(), userId);
             onAuthSuccess(req, resp, loginUser, false);
         }
         return checkResult;

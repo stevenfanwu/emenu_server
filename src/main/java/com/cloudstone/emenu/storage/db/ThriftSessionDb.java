@@ -13,9 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.almworks.sqlite4java.SQLiteException;
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.ThriftSession;
-import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.util.JsonUtils;
 import com.cloudstone.emenu.util.UnitUtils;
 
@@ -35,21 +34,17 @@ public class ThriftSessionDb extends JsonDb {
         super(TABLE_NAME);
     }
 
-    public ThriftSession get(String sessionId) {
-        try {
-            return get(sessionId, ThriftSession.class);
-        } catch (SQLiteException e) {
-            throw new ServerError(e);
-        }
+    public ThriftSession get(EmenuContext context, String sessionId) {
+        return get(context, sessionId, ThriftSession.class);
     }
     
-    public void put(String sessionId, ThriftSession session) {
-        super.set(sessionId, session);
+    public void put(EmenuContext context, String sessionId, ThriftSession session) {
+        super.set(context, sessionId, session);
     }
     
-    public List<ThriftSession> getAllSession() {
+    public List<ThriftSession> getAllSession(EmenuContext context) {
         List<ThriftSession> ret = new LinkedList<ThriftSession>();
-        List<String> list = super.getAll();
+        List<String> list = super.getAll(context);
         for (String s:list) {
             ThriftSession session = JsonUtils.fromJson(s, ThriftSession.class);
             ret.add(session);
@@ -57,11 +52,11 @@ public class ThriftSessionDb extends JsonDb {
         return ret;
     }
     
-    public ThriftSession getLatest(String imei) {
-        List<ThriftSession> list = getAllSession();
+    public ThriftSession getLatest(EmenuContext context, String imei) {
+        List<ThriftSession> list = getAllSession(context);
         for (ThriftSession s:list) {
             if (System.currentTimeMillis() - s.getActivateTime() > EXPIRE_TIME) {
-                remove(s.getSessionId());
+                remove(context, s.getSessionId());
             }
         }
         Collections.sort(list, CMP);

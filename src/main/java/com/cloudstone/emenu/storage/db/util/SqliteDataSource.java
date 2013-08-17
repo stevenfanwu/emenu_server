@@ -48,14 +48,32 @@ public class SqliteDataSource {
         this.dbFile = dbFile;
     }
 
-    public DbTransaction openTrans() {
+    public synchronized DbTransaction openTrans() {
+        waitForTransaction();
+        inTransaction = true;
         return new DbTransaction(new SQLiteConnection(getDbFile()));
     }
 
-    public SQLiteConnection open() throws SQLiteException {
+    public synchronized SQLiteConnection open() throws SQLiteException {
+        waitForTransaction();
         SQLiteConnection conn = new SQLiteConnection(getDbFile());
         conn.open();
         return conn;
     }
-
+    
+    private boolean inTransaction = false;
+    public synchronized void waitForTransaction() {
+        if (inTransaction) {
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                LOG.error("", e);
+            }
+        }
+    }
+    
+    public synchronized void notifyTransactionDone() {
+        inTransaction = false;
+        this.notifyAll();
+    }
 }

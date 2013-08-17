@@ -6,6 +6,7 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.PrintTemplate;
 
 /**
@@ -14,10 +15,10 @@ import com.cloudstone.emenu.data.PrintTemplate;
  */
 public interface IPrintTemplateDb {
 
-    public void add(PrintTemplate template);
-    public void update(PrintTemplate template);
-    public PrintTemplate get(int id);
-    public List<PrintTemplate> listAll();
-    public void delete(int id) ;
-    public void removeComponent(int componentId);
+    public void add(EmenuContext context, PrintTemplate template);
+    public void update(EmenuContext context, PrintTemplate template);
+    public PrintTemplate get(EmenuContext context, int id);
+    public List<PrintTemplate> listAll(EmenuContext context);
+    public void delete(EmenuContext context, int id) ;
+    public void removeComponent(EmenuContext context, int componentId);
 }

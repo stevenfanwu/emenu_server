@@ -4,16 +4,18 @@
  */
 package com.cloudstone.emenu.data;
 
+
 /**
  * @author xuhongfeng
  *
  */
 public class ThriftSession {
     private String sessionId;
+    //TODO save userId only
     private User user;
     private long activateTime;
     private String imei;
-
+    
     public String getSessionId() {
         return sessionId;
     }
