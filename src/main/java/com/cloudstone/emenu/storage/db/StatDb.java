@@ -11,7 +11,6 @@ import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.DailyStat;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
@@ -25,9 +24,9 @@ public class StatDb extends SQLiteDb implements IStatDb {
     private static final Logger LOG = LoggerFactory.getLogger(StatDb.class);
 
     @Override
-    public DailyStat get(EmenuContext context, long time) {
-        NameStatementBinder binder = new NameStatementBinder("" + time);
-        return queryOne(context, SQL_SELECT_BY_TIME, binder, rowMapper);
+    public DailyStat get(EmenuContext context, long day) {
+        DayBinder binder = new DayBinder(day);
+        return queryOne(context, SQL_SELECT_BY_DAY, binder, rowMapper);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
 
     /* ---------- SQL ---------- */
     private static enum Column {
-        ID("id"), TIME("day"), INCOME("income"), CUSTOMER_COUNT("customerCount"), TABLE_COUNT(
+        ID("id"), DAY("day"), INCOME("income"), CUSTOMER_COUNT("customerCount"), TABLE_COUNT(
                 "tableCount"), TABLE_RATE("tableRate"), CREATED_TIME("createdTime"), UPDATE_TIME(
                 "time"), DELETED("deleted");
 
@@ -72,7 +71,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
 
     private static final String COL_DEF = new ColumnDefBuilder()
             .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
-            .append(Column.TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DAY, DataType.INTEGER, "NOT NULL")
             .append(Column.INCOME, DataType.REAL, "NOT NULL")
             .append(Column.CUSTOMER_COUNT, DataType.INTEGER, "NOT NULL")
             .append(Column.TABLE_COUNT, DataType.INTEGER, "NOT NULL")
@@ -94,7 +93,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, stat.getId());
-            stmt.bind(2, stat.getTime());
+            stmt.bind(2, stat.getDay());
             stmt.bind(3, stat.getIncome());
             stmt.bind(4, stat.getCustomerCount());
             stmt.bind(5, stat.getTableCount());
@@ -115,7 +114,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
 
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
-            stmt.bind(1, stat.getTime());
+            stmt.bind(1, stat.getDay());
             stmt.bind(2, stat.getIncome());
             stmt.bind(3, stat.getCustomerCount());
             stmt.bind(4, stat.getTableCount());
@@ -130,8 +129,8 @@ public class StatDb extends SQLiteDb implements IStatDb {
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME).appendWhereId()
             .build();
 
-    private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
-            .appendWhereTime().build();
+    private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
+        .appendWhere(Column.DAY).build();
 
     private static final RowMapper<DailyStat> rowMapper = new RowMapper<DailyStat>() {
 
@@ -139,7 +138,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
         public DailyStat map(SQLiteStatement stmt) throws SQLiteException {
             DailyStat stat = new DailyStat();
             stat.setId(stmt.columnInt(0));
-            stat.setTime(stmt.columnLong(1));
+            stat.setDay(stmt.columnLong(1));
             stat.setIncome(stmt.columnDouble(2));
             stat.setCustomerCount(stmt.columnInt(3));
             stat.setTableCount(stmt.columnInt(4));
@@ -152,7 +151,7 @@ public class StatDb extends SQLiteDb implements IStatDb {
     };
 
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-            .appendSetValue(Column.TIME)
+            .appendSetValue(Column.DAY)
             .appendSetValue(Column.INCOME)
             .appendSetValue(Column.CUSTOMER_COUNT)
             .appendSetValue(Column.TABLE_COUNT)
@@ -163,4 +162,17 @@ public class StatDb extends SQLiteDb implements IStatDb {
             .appendWhereId()
             .build();
 
+    private static final class DayBinder implements StatementBinder {
+        private final long day;
+
+        public DayBinder(long day) {
+            super();
+            this.day = day;
+        }
+
+        @Override
+        public void onBind(SQLiteStatement stmt) throws SQLiteException {
+            stmt.bind(1, day);
+        }
+    }
 }

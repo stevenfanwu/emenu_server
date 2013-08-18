@@ -14,7 +14,7 @@ define(function (require, exports, module) {
 
         getRenderData: function () {
             var data = Tr.prototype.getRenderData.apply(this, arguments);
-            data.time = StringUtils.formatDateDay(data.time * 3600 * 24 * 1000);
+            data.time = StringUtils.formatDateDay(data.day * 3600 * 24 * 1000);
             data.tableRate = StringUtils.formatPercentage(data.tableRate);
             return data;
         }

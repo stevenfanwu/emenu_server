@@ -11,8 +11,8 @@ package com.cloudstone.emenu.data;
 public class DailyStat extends BaseData {
     private int id;
     
-    //当天 精度为天
-    private long time;
+    //当天 精度为天  day = timestamp/UnitUtils.DAY
+    private long day;
     
     //当天总收入
     private double income;
@@ -32,14 +32,6 @@ public class DailyStat extends BaseData {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
     }
 
     public double getIncome() {
@@ -73,5 +65,12 @@ public class DailyStat extends BaseData {
     public void setTableRate(double tableRate) {
         this.tableRate = tableRate;
     }
-    
+
+    public long getDay() {
+        return day;
+    }
+
+    public void setDay(long day) {
+        this.day = day;
+    }
 }

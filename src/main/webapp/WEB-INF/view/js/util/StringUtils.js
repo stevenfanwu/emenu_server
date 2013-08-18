@@ -9,13 +9,13 @@ define(function (require, exports, module) {
     var StringUtils = BaseUtils.extend({
         formatDate: function (timestamp) {
             var d = new Date(timestamp);
-            return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate() + ' ' +
+            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' +
                 d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
         },
 
         formatDateDay: function (timestamp) {
             var d = new Date(timestamp);
-            return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
         },
 
         formatPercentage: function (data) {

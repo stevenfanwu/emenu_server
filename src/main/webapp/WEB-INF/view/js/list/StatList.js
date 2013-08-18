@@ -8,7 +8,7 @@ define(function (require, exports, module) {
     var StatModel = require('../model/StatModel');
     
     var StatList = BaseTable.extend({
-        heads: ['收入', '桌次', '客流量', '翻桌率'],
+        heads: ['时间', '收入', '桌次', '客流量', '翻桌率'],
         
         ItemType: require('./item/StatItem'),
 

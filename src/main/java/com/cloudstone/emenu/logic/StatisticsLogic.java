@@ -36,8 +36,8 @@ public class StatisticsLogic extends BaseLogic {
             return list;
         }
         long p = time - page*UnitUtils.DAY;
-        long endTime = oldest.getCreatedTime() - UnitUtils.DAY;
-        for (int i=0; i<PAGE_COUNT && p>endTime; i++, p-=UnitUtils.DAY) {
+        long endTime = UnitUtils.getDayByMillis(oldest.getCreatedTime()) * UnitUtils.DAY;
+        for (int i=0; i<PAGE_COUNT && p>=endTime; i++, p-=UnitUtils.DAY) {
             list.add(getDailyStat(context, p));
         }
         return list;
@@ -81,7 +81,7 @@ public class StatisticsLogic extends BaseLogic {
 
         DailyStat dailyStat = new DailyStat();
         // TIME
-        dailyStat.setTime(System.currentTimeMillis() / UnitUtils.DAY);
+        dailyStat.setDay(time / UnitUtils.DAY);
         // INCOME
         List<Bill> bills = orderLogic.getDailyBills(context, time);
         double income = 0;
