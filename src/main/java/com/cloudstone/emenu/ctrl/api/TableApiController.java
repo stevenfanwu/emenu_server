@@ -81,4 +81,12 @@ public class TableApiController extends BaseApiController {
         EmenuContext context = newContext(request);
         tableLogic.changeTable(context, fromId, toId);
     }
+    
+    @RequestMapping(value="/api/tables/{id:[\\d]+}/occupy", method=RequestMethod.PUT)
+    public @ResponseBody Table occupy(@PathVariable("id") int tableId,
+            @RequestParam("customerNumber") int customerNumber,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return tableLogic.occupy(context, tableId, customerNumber);
+    }
 }

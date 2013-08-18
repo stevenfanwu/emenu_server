@@ -10,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.EmenuContext;
+import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.storage.db.ITableDb;
 import com.cloudstone.emenu.storage.db.MiscStorage;
 import com.cloudstone.emenu.util.CollectionUtils;
@@ -110,6 +112,29 @@ public class TableLogic extends BaseLogic {
         return tables;
     }
 
+    public Table occupy(EmenuContext context, int tableId, int customNum) {
+        Table table = get(context, tableId);
+        if (table==null || table.isDeleted()) {
+            throw new NotFoundException("桌子不存在");
+        }
+        if (table.getStatus() != Const.TableStatus.EMPTY) {
+            throw new DataConflictException("桌子已被占用");
+        }
+        return occupy(context, table, customNum);
+    }
+    public Table occupy(EmenuContext context, Table table, int customNum) {
+        table.setStatus(Const.TableStatus.OCCUPIED);
+        
+        context.beginTransaction(dataSource);
+        try {
+            table = update(context, table);
+            setCustomerNumber(context, table.getId(), customNum);
+        } finally {
+            context.closeTransaction(dataSource);
+        }
+        
+        return table;
+    }
     
     public Table update(EmenuContext context, Table table) {
         Table other = tableDb.getByTableName(context, table.getName());
