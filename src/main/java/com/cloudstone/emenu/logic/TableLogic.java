@@ -136,6 +136,26 @@ public class TableLogic extends BaseLogic {
         return table;
     }
     
+    public Table clearTable(EmenuContext context, int tableId) {
+        Table table = get(context, tableId);
+        if (table == null) {
+            throw new NotFoundException("该餐桌不存在");
+        }
+        return clearTable(context, table);
+    }
+    
+    public Table clearTable(EmenuContext context, Table table) {
+        int orderId = table.getOrderId();
+        if (orderId != 0) {
+            orderLogic.deleteOrder(context, orderId);
+        }
+        table.setOrderId(0);
+        table.setStatus(Const.TableStatus.EMPTY);
+        update(context, table);
+        setCustomerNumber(context, table.getId(), 0);
+        return table;
+    }
+    
     public Table update(EmenuContext context, Table table) {
         Table other = tableDb.getByTableName(context, table.getName());
         if (other!=null && other.getId()!=table.getId() && !other.isDeleted()) {

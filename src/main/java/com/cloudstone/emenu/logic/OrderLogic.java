@@ -98,6 +98,10 @@ public class OrderLogic extends BaseLogic {
         orderDb.add(context, order);
     }
     
+    public void deleteOrder(EmenuContext context, int orderId) {
+        orderDb.delete(context, orderId);
+    }
+    
     public List<Dish> listDishes(EmenuContext context, int orderId) {
         List<OrderDish> relations = orderDishDb.listOrderDish(context, orderId);
         DataUtils.filterDeleted(relations);

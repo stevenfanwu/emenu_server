@@ -82,6 +82,13 @@ public class TableApiController extends BaseApiController {
         tableLogic.changeTable(context, fromId, toId);
     }
     
+    @RequestMapping(value="/api/tables/{id:[\\d]+}/clear", method=RequestMethod.PUT)
+    public @ResponseBody Table clear(@PathVariable("id") int tableId,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        return tableLogic.clearTable(context, tableId);
+    }
+    
     @RequestMapping(value="/api/tables/{id:[\\d]+}/occupy", method=RequestMethod.PUT)
     public @ResponseBody Table occupy(@PathVariable("id") int tableId,
             @RequestParam("customerNumber") int customerNumber,

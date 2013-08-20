@@ -116,10 +116,7 @@ public class ThriftLogic extends BaseLogic {
         if (table == null) {
             throw new TException("table not found, tableName = " + tableName);
         }
-        table.setOrderId(0);
-        table.setStatus(Const.TableStatus.EMPTY);
-        tableLogic.update(context, table);
-        tableLogic.setCustomerNumber(context, table.getId(), 0);
+        tableLogic.clearTable(context, table);
     }
     
     public Menu getCurrentMenu(EmenuContext context) {
