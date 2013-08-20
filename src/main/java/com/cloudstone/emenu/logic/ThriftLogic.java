@@ -157,8 +157,8 @@ public class ThriftLogic extends BaseLogic {
                         goods.setNumberDecimalPermited(dish.isNonInt());
                         if (!StringUtils.isBlank(dish.getImageId())) {
                             List<Img> imgs = new ArrayList<Img>();
-                            Img img = new Img("images/"+dish.getImageId()+"?width=250&height=250",
-                                    "images/"+dish.getImageId()+"?width=600&height=450");
+                            Img img = new Img("images/"+dish.getImageId(),
+                                    "images/"+dish.getImageId());
                             imgs.add(img);
                             goods.setImgs(imgs);
                         }
