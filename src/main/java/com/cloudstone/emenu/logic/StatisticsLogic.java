@@ -28,46 +28,38 @@ public class StatisticsLogic extends BaseLogic {
 
     @Autowired
     private TableLogic tableLogic;
-    
+
     public List<DailyStat> listDailyStat(EmenuContext context, long time, int page) {
         List<DailyStat> list = new LinkedList<DailyStat>();
         Order oldest = orderLogic.getOldestOrder(context);
         if (oldest == null) {
             return list;
         }
-        long p = time - page*UnitUtils.DAY;
+        long p = time - page * UnitUtils.DAY;
         long endTime = UnitUtils.getDayByMillis(oldest.getCreatedTime()) * UnitUtils.DAY;
-        for (int i=0; i<PAGE_COUNT && p>=endTime; i++, p-=UnitUtils.DAY) {
-            list.add(getDailyStat(context, p));
+        for (int i = 0; i < PAGE_COUNT && p >= endTime; i++, p -= UnitUtils.DAY) {
+            list.add(getStat(context, p));
         }
         return list;
     }
-    
-    public DailyStat getDailyStat(EmenuContext context, long time) {
+
+    public DailyStat getStat(EmenuContext context, long time) {
         if (time <= 0)
             throw new BadRequestError();
-        // long offset = Calendar.getInstance().getTimeZone().getRawOffset();
 
         long requestDay = UnitUtils.getDayByMillis(time);
 
         DailyStat dailyStat = null;
         long currentDay = UnitUtils.getDayByMillis(System.currentTimeMillis());
         if (requestDay == currentDay) {
-            dailyStat = computeDailyStat(context, time);
-            DailyStat oldStat = statDb.get(context, requestDay);
-            if (oldStat != null) {
-                dailyStat.setUpdateTime(System.currentTimeMillis());
-                dailyStat.setId(oldStat.getId());
-                statDb.update(context, dailyStat);
-            } else {
-                dailyStat.setCreatedTime(System.currentTimeMillis());
-                dailyStat.setUpdateTime(System.currentTimeMillis());
-                statDb.add(context, dailyStat);
-            }
+            dailyStat = computeStat(context, time);
+            dailyStat.setCreatedTime(System.currentTimeMillis());
+            dailyStat.setUpdateTime(System.currentTimeMillis());
+            dailyStat.setId(0);
         } else {
             dailyStat = statDb.get(context, requestDay);
             if (dailyStat == null) {
-                dailyStat = computeDailyStat(context, time);
+                dailyStat = computeStat(context, time);
                 dailyStat.setCreatedTime(System.currentTimeMillis());
                 dailyStat.setUpdateTime(System.currentTimeMillis());
                 statDb.add(context, dailyStat);
@@ -77,13 +69,34 @@ public class StatisticsLogic extends BaseLogic {
         return dailyStat;
     }
 
-    private DailyStat computeDailyStat(EmenuContext context, long time) {
+    public DailyStat getStat(EmenuContext context, long startTime, long endTime) {
+
+        long requestDay = UnitUtils.getDayByMillis(startTime);
+
+        DailyStat dailyStat = null;
+        long currentDay = UnitUtils.getDayByMillis(System.currentTimeMillis());
+        if (requestDay == currentDay) {
+            dailyStat = computeStat(context, startTime, endTime);
+            dailyStat.setCreatedTime(System.currentTimeMillis());
+            dailyStat.setUpdateTime(System.currentTimeMillis());
+            dailyStat.setId(0);
+        } else {
+            throw new BadRequestError();
+        }
+        return dailyStat;
+    }
+
+    private DailyStat computeStat(EmenuContext context, long time) {
+        return computeStat(context, time, time);
+    }
+
+    private DailyStat computeStat(EmenuContext context, long startTime, long endTime) {
 
         DailyStat dailyStat = new DailyStat();
         // TIME
-        dailyStat.setDay(time / UnitUtils.DAY);
+        dailyStat.setDay(startTime / UnitUtils.DAY);
         // INCOME
-        List<Bill> bills = orderLogic.getDailyBills(context, time);
+        List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
         double income = 0;
         for (Bill bill : bills) {
             income += bill.getCost();
@@ -94,7 +107,7 @@ public class StatisticsLogic extends BaseLogic {
         // CUSTOMERCOUNT
         int customers = 0;
         for (Bill bill : bills) {
-            if(bill.getOrder() == null)
+            if (bill.getOrder() == null)
                 throw new ServerError("bill.getOrder is null!");
             customers += bill.getOrder().getCustomerNumber();
         }

@@ -22,6 +22,7 @@ import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.data.vo.OrderVO;
+import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -49,10 +50,27 @@ public class OrderApiController extends BaseApiController {
             HttpServletRequest request,
             HttpServletResponse response) {
         EmenuContext context = newContext(request);
+        if (time < 0) {
+            throw new BadRequestError();
+        }
         if (time == 0) {
             time = System.currentTimeMillis();
         }
-        List<Order> orders = orderLogic.getDailyOrders(context, time);
+        List<Order> orders = orderLogic.getOrders(context, time);
+        return orderWraper.wrap(context, orders);
+    }
+
+    @RequestMapping(value="/api/orders", method=RequestMethod.GET)
+    public @ResponseBody List<OrderVO> getTimeIntervalOrders(
+            @RequestParam(value="start") long startTime,
+            @RequestParam(value="end") long endTime,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        if (startTime <= 0 || endTime <= 0 || startTime > endTime) {
+            throw new BadRequestError();
+        }
+        List<Order> orders = orderLogic.getOrders(context, startTime, endTime);
         return orderWraper.wrap(context, orders);
     }
 

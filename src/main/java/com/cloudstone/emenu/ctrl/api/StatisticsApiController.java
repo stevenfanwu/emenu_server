@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.DailyStat;
+import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.logic.StatisticsLogic;
 
 @Controller
@@ -31,5 +32,17 @@ public class StatisticsApiController extends BaseApiController {
             time = System.currentTimeMillis();
         }
         return statisticsLogic.listDailyStat(context, time, page);
+    }
+
+    @RequestMapping(value="/api/stats", method=RequestMethod.GET)
+    public @ResponseBody DailyStat getTimeIntervalStat(
+            @RequestParam(value="start") long startTime,
+            @RequestParam(value="end") long endTime,
+            HttpServletRequest request) {
+        EmenuContext context = newContext(request);
+        if (startTime <=0 || endTime <= 0 || startTime > endTime) {
+            throw new BadRequestError();
+        }
+        return statisticsLogic.getStat(context, startTime, endTime);
     }
 }
