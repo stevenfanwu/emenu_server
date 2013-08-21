@@ -17,11 +17,13 @@ public class Bill extends IEntity {
     private double cost;
     private double discount;
     private double tip;
+    private double invoicePrice;
     private boolean invoice;
     private int[] discountDishIds;
     private int payType;
     private String remarks;
     private OrderVO order;
+    private int userId;
     
     public int getOrderId() {
         return orderId;
@@ -29,11 +31,23 @@ public class Bill extends IEntity {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
+    public int getUserId() {
+        return userId;
+    }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
     public double getCost() {
         return cost;
     }
     public void setCost(double cost) {
         this.cost = cost;
+    }
+    public double getInvoicePrice() {
+        return invoicePrice;
+    }
+    public void setInvoicePrice(double invoicePrice) {
+        this.invoicePrice = invoicePrice;
     }
     public double getDiscount() {
         return discount;

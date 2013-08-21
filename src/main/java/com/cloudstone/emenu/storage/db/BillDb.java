@@ -75,8 +75,8 @@ public class BillDb extends SQLiteDb implements IBillDb {
     private static final String TABLE_NAME = "bill";
     
     private static enum Column {
-        ID("id"), ORDER_ID("orderId"), COST("cost"), DISCOUNT("discount"),
-        TIP("tip"), INVOICE("invoice"), DISCOUNT_DISH_IDS("discountDishIds"),
+        ID("id"), ORDER_ID("orderId"), USER_ID("userId"), COST("cost"), DISCOUNT("discount"),
+        TIP("tip"), INVOICE("invoice"), INVOICE_PRICE("invoicePrice"), DISCOUNT_DISH_IDS("discountDishIds"),
         PAY_TYPE("payType"), REMARKS("remarks"), ORDER("`order`"),
         CREATED_TIME("createdTime"), UPDATE_TIME("update_time"), DELETED("deleted");
         
@@ -93,10 +93,12 @@ public class BillDb extends SQLiteDb implements IBillDb {
     private static final String COL_DEF = new ColumnDefBuilder()
         .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
         .append(Column.ORDER_ID, DataType.INTEGER, "NOT NULL")
+        .append(Column.USER_ID, DataType.INTEGER, "NOT NULL")
         .append(Column.COST, DataType.REAL, "NOT NULL")
         .append(Column.DISCOUNT, DataType.REAL, "NOT NULL")
         .append(Column.TIP, DataType.REAL, "NOT NULL")
         .append(Column.INVOICE, DataType.INTEGER, "NOT NULL")
+        .append(Column.INVOICE_PRICE, DataType.REAL, "NOT NULL")
         .append(Column.DISCOUNT_DISH_IDS, DataType.TEXT, "NOT NULL")
         .append(Column.PAY_TYPE, DataType.INTEGER, "NOT NULL")
         .append(Column.REMARKS, DataType.TEXT, "NOT NULL")
@@ -105,7 +107,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 13).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 15).build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     
     private static class BillBinder implements StatementBinder {
@@ -124,17 +126,19 @@ public class BillDb extends SQLiteDb implements IBillDb {
             }
             stmt.bind(1, bill.getId());
             stmt.bind(2, bill.getOrderId());
-            stmt.bind(3, bill.getCost());
-            stmt.bind(4, bill.getDiscount());
-            stmt.bind(5, bill.getTip());
-            stmt.bind(6, bill.isInvoice() ? 1 : 0);
-            stmt.bind(7, SqlUtils.idsToStr(bill.getDiscountDishIds()));
-            stmt.bind(8, bill.getPayType());
-            stmt.bind(9, bill.getRemarks());
-            stmt.bind(10, archive);
-            stmt.bind(11, bill.getCreatedTime());
-            stmt.bind(12, bill.getUpdateTime());
-            stmt.bind(13, bill.isDeleted() ? 1 : 0);
+            stmt.bind(3, bill.getUserId());
+            stmt.bind(4, bill.getCost());
+            stmt.bind(5, bill.getDiscount());
+            stmt.bind(6, bill.getTip());
+            stmt.bind(7, bill.isInvoice() ? 1 : 0);
+            stmt.bind(8, bill.getInvoicePrice());
+            stmt.bind(9, SqlUtils.idsToStr(bill.getDiscountDishIds()));
+            stmt.bind(10, bill.getPayType());
+            stmt.bind(11, bill.getRemarks());
+            stmt.bind(12, archive);
+            stmt.bind(13, bill.getCreatedTime());
+            stmt.bind(14, bill.getUpdateTime());
+            stmt.bind(15, bill.isDeleted() ? 1 : 0);
         }
     }
     
@@ -145,21 +149,23 @@ public class BillDb extends SQLiteDb implements IBillDb {
             Bill bill = new Bill();
             bill.setId(stmt.columnInt(0));
             bill.setOrderId(stmt.columnInt(1));
-            bill.setCost(stmt.columnDouble(2));
-            bill.setDiscount(stmt.columnDouble(3));
-            bill.setTip(stmt.columnDouble(4));
-            bill.setInvoice(stmt.columnInt(5) == 1);
-            bill.setDiscountDishIds(SqlUtils.strToIds(stmt.columnString(6)));
-            bill.setPayType(stmt.columnInt(7));
-            bill.setRemarks(stmt.columnString(8));
-            String archive = stmt.columnString(9);
+            bill.setUserId(stmt.columnInt(2));
+            bill.setCost(stmt.columnDouble(3));
+            bill.setDiscount(stmt.columnDouble(4));
+            bill.setTip(stmt.columnDouble(5));
+            bill.setInvoice(stmt.columnInt(6) == 1);
+            bill.setInvoicePrice(stmt.columnDouble(7));
+            bill.setDiscountDishIds(SqlUtils.strToIds(stmt.columnString(8)));
+            bill.setPayType(stmt.columnInt(9));
+            bill.setRemarks(stmt.columnString(10));
+            String archive = stmt.columnString(11);
             if (!StringUtils.isBlank(archive)) {
                 OrderVO order = JsonUtils.fromJson(archive, OrderVO.class);
                 bill.setOrder(order);
             }
-            bill.setCreatedTime(stmt.columnLong(10));
-            bill.setUpdateTime(stmt.columnLong(11));
-            bill.setDeleted(stmt.columnInt(12) == 1);
+            bill.setCreatedTime(stmt.columnLong(12));
+            bill.setUpdateTime(stmt.columnLong(13));
+            bill.setDeleted(stmt.columnInt(14) == 1);
             
             return bill;
         }

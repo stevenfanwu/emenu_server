@@ -12,6 +12,7 @@ public class Order extends IEntity {
     private double originPrice;
     private double price;
     private int tableId;
+    private int userId;
     private int customerNumber;
     private int status;
     
@@ -46,6 +47,12 @@ public class Order extends IEntity {
     }
     public void setTableId(int tableId) {
         this.tableId = tableId;
+    }
+    public int getUserId() {
+        return userId;
+    }
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getCustomerNumber() {
