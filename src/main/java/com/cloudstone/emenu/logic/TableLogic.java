@@ -122,6 +122,7 @@ public class TableLogic extends BaseLogic {
         }
         return occupy(context, table, customNum);
     }
+
     public Table occupy(EmenuContext context, Table table, int customNum) {
         table.setStatus(Const.TableStatus.OCCUPIED);
         
@@ -129,10 +130,10 @@ public class TableLogic extends BaseLogic {
         try {
             table = update(context, table);
             setCustomerNumber(context, table.getId(), customNum);
+            context.commitTransaction();
         } finally {
             context.closeTransaction(dataSource);
         }
-        
         return table;
     }
     
