@@ -76,6 +76,17 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
         executeSQL(context, sql, new IdStatementBinder(id));
     }
     
+    protected void delete(EmenuContext context, final int id1, final int id2) {
+        String sql = "UPDATE " + getTableName() + " SET deleted=1 WHERE " + ID1 + "=? AND " + ID2 + "=?";
+        executeSQL(context, sql, new StatementBinder() {
+            @Override
+            public void onBind(SQLiteStatement stmt) throws SQLiteException {
+                stmt.bind(1, id1);
+                stmt.bind(2, id2);
+            }
+        });
+    }
+    
     protected List<T> listById1(EmenuContext context, int id1) {
         return listById(context, ID1, id1);
     }

@@ -16,5 +16,6 @@ import com.cloudstone.emenu.data.OrderDish;
 public interface IOrderDishDb {
     public void add(EmenuContext context, OrderDish data) ;
     public void update(EmenuContext context, OrderDish data);
+    public void delete(EmenuContext context, int orderId, int dishId);
     public List<OrderDish> listOrderDish(EmenuContext context, int orderId) ;
 }

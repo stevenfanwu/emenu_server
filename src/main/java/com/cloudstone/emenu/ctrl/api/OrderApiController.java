@@ -70,4 +70,15 @@ public class OrderApiController extends BaseApiController {
         Bill bill = JsonUtils.fromJson(body, Bill.class);
         return orderLogic.payBill(context, bill, getLoginUser(req));
     }
+    
+    @RequestMapping(value="/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/cancel", method=RequestMethod.GET)
+    public @ResponseBody OrderVO cancelDish(@PathVariable("id") int orderId,
+            @PathVariable("dishId") int dishId,
+            @RequestParam("count") int count,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        Order order = orderLogic.cancelDish(context, orderId, dishId, count);
+        return orderWraper.wrap(context, order);
+    }
 }
