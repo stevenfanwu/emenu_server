@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.DailyStat;
+import com.cloudstone.emenu.data.GenStat;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.ServerError;
-import com.cloudstone.emenu.storage.db.IStatDb;
+import com.cloudstone.emenu.storage.db.IGenStatDb;
 import com.cloudstone.emenu.util.UnitUtils;
 
 @Component
@@ -21,7 +21,7 @@ public class StatisticsLogic extends BaseLogic {
     private static final int PAGE_COUNT = 15;
 
     @Autowired
-    private IStatDb statDb;
+    private IGenStatDb genStatDb;
 
     @Autowired
     private OrderLogic orderLogic;
@@ -29,8 +29,8 @@ public class StatisticsLogic extends BaseLogic {
     @Autowired
     private TableLogic tableLogic;
 
-    public List<DailyStat> listDailyStat(EmenuContext context, long time, int page) {
-        List<DailyStat> list = new LinkedList<DailyStat>();
+    public List<GenStat> listGenStat(EmenuContext context, long time, int page) {
+        List<GenStat> list = new LinkedList<GenStat>();
         Order oldest = orderLogic.getOldestOrder(context);
         if (oldest == null) {
             return list;
@@ -43,13 +43,13 @@ public class StatisticsLogic extends BaseLogic {
         return list;
     }
 
-    public DailyStat getStat(EmenuContext context, long time) {
+    public GenStat getStat(EmenuContext context, long time) {
         if (time <= 0)
             throw new BadRequestError();
 
         long requestDay = UnitUtils.getDayByMillis(time);
 
-        DailyStat dailyStat = null;
+        GenStat dailyStat = null;
         long currentDay = UnitUtils.getDayByMillis(System.currentTimeMillis());
         if (requestDay == currentDay) {
             dailyStat = computeStat(context, time);
@@ -57,69 +57,91 @@ public class StatisticsLogic extends BaseLogic {
             dailyStat.setUpdateTime(System.currentTimeMillis());
             dailyStat.setId(0);
         } else {
-            dailyStat = statDb.get(context, requestDay);
+            dailyStat = genStatDb.get(context, requestDay);
             if (dailyStat == null) {
                 dailyStat = computeStat(context, time);
                 dailyStat.setCreatedTime(System.currentTimeMillis());
                 dailyStat.setUpdateTime(System.currentTimeMillis());
-                statDb.add(context, dailyStat);
+                genStatDb.add(context, dailyStat);
             }
         }
 
         return dailyStat;
     }
 
-    public DailyStat getStat(EmenuContext context, long startTime, long endTime) {
+    public GenStat getStat(EmenuContext context, long startTime, long endTime) {
 
         long requestDay = UnitUtils.getDayByMillis(startTime);
 
-        DailyStat dailyStat = null;
+        GenStat genStat = null;
         long currentDay = UnitUtils.getDayByMillis(System.currentTimeMillis());
         if (requestDay == currentDay) {
-            dailyStat = computeStat(context, startTime, endTime);
-            dailyStat.setCreatedTime(System.currentTimeMillis());
-            dailyStat.setUpdateTime(System.currentTimeMillis());
-            dailyStat.setId(0);
+            genStat = computeStat(context, startTime, endTime);
+            genStat.setCreatedTime(System.currentTimeMillis());
+            genStat.setUpdateTime(System.currentTimeMillis());
+            genStat.setId(0);
         } else {
             throw new BadRequestError();
         }
-        return dailyStat;
+        return genStat;
     }
 
-    private DailyStat computeStat(EmenuContext context, long time) {
+    private GenStat computeStat(EmenuContext context, long time) {
         return computeStat(context, time, time);
     }
 
-    private DailyStat computeStat(EmenuContext context, long startTime, long endTime) {
+    private GenStat computeStat(EmenuContext context, long startTime, long endTime) {
 
-        DailyStat dailyStat = new DailyStat();
+        GenStat genStat = new GenStat();
+
         // TIME
-        dailyStat.setDay(startTime / UnitUtils.DAY);
-        // INCOME
+        genStat.setDay(startTime / UnitUtils.DAY);
+
         List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
         double income = 0;
-        for (Bill bill : bills) {
-            income += bill.getCost();
-        }
-        dailyStat.setIncome(income);
-        // TABLECOUNT
-        dailyStat.setTableCount(bills.size());
-        // CUSTOMERCOUNT
         int customers = 0;
+        int invoices = 0;
+        double invoiceAmount = 0;
+        double serviceAmount = 0;
         for (Bill bill : bills) {
             if (bill.getOrder() == null)
                 throw new ServerError("bill.getOrder is null!");
             customers += bill.getOrder().getCustomerNumber();
+            if (bill.isInvoice()) {
+                invoices++;
+                invoiceAmount += bill.getCost();
+            }
+            income += bill.getCost();
+            serviceAmount += bill.getTip();
         }
-        dailyStat.setCustomerCount(customers);
+
+        // COUNT
+        genStat.setCount(bills.size());
+        // INCOME
+        genStat.setIncome(income);
+        // CUSTOMER_COUNT
+        genStat.setCustomerCount(customers);
+        // INVOICE_COUNT
+        genStat.setInvoiceCount(invoices);
+        // INVOICE_AMOUNT
+        genStat.setInvoiceAmount(invoiceAmount);
+        // SERVICE_AMOUNT
+        genStat.setTips(serviceAmount);
+
         // TABLERATE
         int totalTables = tableLogic.getAll(context).size();
         double rate = 0;
         if (0 != totalTables) {
             rate = 100.0 * bills.size() / totalTables;
         }
-        dailyStat.setTableRate(rate);
-        return dailyStat;
+        genStat.setTableRate(rate);
+
+        // AVE_PERSON_PRICE
+        genStat.setAvePersonPrice(income / customers);
+
+        // AVE_ORDER_PRICE
+        genStat.setAveOrderPrice(income / bills.size());
+        return genStat;
     }
 
 }
