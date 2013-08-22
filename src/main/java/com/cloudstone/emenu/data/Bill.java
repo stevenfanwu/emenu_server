@@ -23,19 +23,12 @@ public class Bill extends IEntity {
     private int payType;
     private String remarks;
     private OrderVO order;
-    private int userId;
     
     public int getOrderId() {
         return orderId;
     }
     public void setOrderId(int orderId) {
         this.orderId = orderId;
-    }
-    public int getUserId() {
-        return userId;
-    }
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
     public double getCost() {
         return cost;

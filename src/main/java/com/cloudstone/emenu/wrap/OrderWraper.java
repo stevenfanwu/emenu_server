@@ -17,6 +17,7 @@ import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderVO;
 
 /**
@@ -32,7 +33,8 @@ public class OrderWraper extends BaseWraper {
                 .listOrderDishes(context, order.getId());
         List<Dish> dishes = orderLogic
                 .listDishes(context, order.getId());
-        return OrderVO.create(order, table, relations, dishes);
+        User user = userLogic.getUser(context, order.getUserId());
+        return OrderVO.create(order, table, relations, dishes, user);
     }
 
     public List<OrderVO> wrap(EmenuContext context, List<Order> orders) {

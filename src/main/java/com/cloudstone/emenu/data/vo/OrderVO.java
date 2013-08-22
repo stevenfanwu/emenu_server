@@ -11,6 +11,7 @@ import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.data.User;
 
 /**
  * @author xuhongfeng
@@ -19,6 +20,7 @@ import com.cloudstone.emenu.data.Table;
 public class OrderVO extends Order {
     private Table table;
     private List<OrderDishVO> dishes;
+    private User user;
     
     public OrderVO() {
         super();
@@ -29,7 +31,7 @@ public class OrderVO extends Order {
     }
     
     public static OrderVO create(Order order, Table table, List<OrderDish> relations,
-            List<Dish> dishes) {
+            List<Dish> dishes, User user) {
         OrderVO o = new OrderVO(order);
         o.setTable(table);
         List<OrderDishVO> dishVOs = new ArrayList<OrderDishVO>();
@@ -37,6 +39,7 @@ public class OrderVO extends Order {
             dishVOs.add(OrderDishVO.create(relations.get(i), dishes.get(i)));
         }
         o.setDishes(dishVOs);
+        o.setUser(user);
         return o;
     }
 
@@ -54,5 +57,13 @@ public class OrderVO extends Order {
 
     public void setDishes(List<OrderDishVO> dishes) {
         this.dishes = dishes;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
