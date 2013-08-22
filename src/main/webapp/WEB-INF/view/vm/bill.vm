@@ -72,7 +72,8 @@
                         <th>单价</th>
                         <th>数量</th>
                         <th>总价</th>
-                        <th>是否参加折扣</th>
+                        <th>参加折扣</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,6 +89,9 @@
                             <td>$dish.number</td>
                             <td>$dish.totalCost</td>
                             <td><input type="checkbox" class="cb-discount" checked/></td>
+                            <td>
+                                <a href="#" class="btn-cancel-dish">退菜</a>
+                            </td>
                         <tr>
                     #end
                 </tbody>

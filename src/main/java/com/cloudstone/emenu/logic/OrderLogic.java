@@ -27,6 +27,7 @@ import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
 import com.cloudstone.emenu.storage.db.IBillDb;
 import com.cloudstone.emenu.storage.db.IOrderDb;
@@ -225,4 +226,17 @@ public class OrderLogic extends BaseLogic {
         }
 
     };
+    
+    private Order cancelDish(EmenuContext context, int orderId, int dishId) {
+        Order order = getOrder(context, orderId);
+        if (order==null || order.isDeleted()) {
+            throw new NotFoundException("该订单不存在");
+        }
+        List<OrderDish> dishes = listOrderDishes(context, orderId);
+        OrderDish dish = null;
+        for (OrderDish d:dishes) {
+            //TODO
+        }
+        return order;
+    }
 }
