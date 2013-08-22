@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.EmenuContext;
-import com.cloudstone.emenu.data.GenStat;
+import com.cloudstone.emenu.data.GeneralStat;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.logic.StatisticsLogic;
 
@@ -23,7 +23,7 @@ public class StatisticsApiController extends BaseApiController {
     private StatisticsLogic statisticsLogic;
 
     @RequestMapping(value="/api/stats", method=RequestMethod.GET)
-    public @ResponseBody List<GenStat> getDailyStat(
+    public @ResponseBody List<GeneralStat> getDailyStat(
             @RequestParam(value="time", defaultValue="0") long time,
             @RequestParam(value="page", defaultValue="0") int page,
             HttpServletRequest request) {
@@ -31,11 +31,11 @@ public class StatisticsApiController extends BaseApiController {
         if (time == 0) {
             time = System.currentTimeMillis();
         }
-        return statisticsLogic.listGenStat(context, time, page);
+        return statisticsLogic.listGeneralStat(context, time, page);
     }
 
     @RequestMapping(value="/api/stats", method=RequestMethod.GET)
-    public @ResponseBody GenStat getTimeIntervalStat(
+    public @ResponseBody GeneralStat getTimeIntervalStat(
             @RequestParam(value="start") long startTime,
             @RequestParam(value="end") long endTime,
             HttpServletRequest request) {
@@ -43,6 +43,6 @@ public class StatisticsApiController extends BaseApiController {
         if (startTime <=0 || endTime <= 0 || startTime > endTime) {
             throw new BadRequestError();
         }
-        return statisticsLogic.getStat(context, startTime, endTime);
+        return statisticsLogic.getGeneralStat(context, startTime, endTime);
     }
 }

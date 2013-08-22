@@ -8,7 +8,7 @@ package com.cloudstone.emenu.data;
 /**
  * @author carelife
  */
-public class GenStat extends AveStat {
+public class GeneralStat extends AveStat {
     // 当天客流量
     private int customerCount;
 
@@ -24,7 +24,7 @@ public class GenStat extends AveStat {
     // 服务费总额
     private double tips;
 
-    public GenStat() {
+    public GeneralStat() {
         super();
     }
 

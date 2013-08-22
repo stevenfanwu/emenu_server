@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
-import com.cloudstone.emenu.data.GenStat;
+import com.cloudstone.emenu.data.GeneralStat;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
@@ -23,13 +23,13 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
     private static final Logger LOG = LoggerFactory.getLogger(GenStatDb.class);
 
     @Override
-    public GenStat get(EmenuContext context, long day) {
+    public GeneralStat get(EmenuContext context, long day) {
         DayBinder binder = new DayBinder(day);
         return queryOne(context, SQL_SELECT_BY_DAY, binder, rowMapper);
     }
 
     @Override
-    public void add(EmenuContext context, GenStat stat) {
+    public void add(EmenuContext context, GeneralStat stat) {
         stat.setId(genId(context));
         StatBinder binder = new StatBinder(stat);
         executeSQL(context, SQL_INSERT, binder);
@@ -85,9 +85,9 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 15).build();
 
     private static class StatBinder implements StatementBinder {
-        private final GenStat stat;
+        private final GeneralStat stat;
 
-        public StatBinder(GenStat stat) {
+        public StatBinder(GeneralStat stat) {
             super();
             this.stat = stat;
         }
@@ -115,11 +115,11 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.DAY).build();
 
-    private static final RowMapper<GenStat> rowMapper = new RowMapper<GenStat>() {
+    private static final RowMapper<GeneralStat> rowMapper = new RowMapper<GeneralStat>() {
 
         @Override
-        public GenStat map(SQLiteStatement stmt) throws SQLiteException {
-            GenStat stat = new GenStat();
+        public GeneralStat map(SQLiteStatement stmt) throws SQLiteException {
+            GeneralStat stat = new GeneralStat();
             stat.setId(stmt.columnInt(0));
             stat.setDay(stmt.columnLong(1));
             stat.setIncome(stmt.columnDouble(2));

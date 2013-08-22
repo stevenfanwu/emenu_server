@@ -2,10 +2,10 @@
 package com.cloudstone.emenu.storage.db;
 
 import com.cloudstone.emenu.EmenuContext;
-import com.cloudstone.emenu.data.GenStat;
+import com.cloudstone.emenu.data.GeneralStat;
 
 public interface IGenStatDb extends IDb {
-    public void add(EmenuContext context, GenStat stat);
+    public void add(EmenuContext context, GeneralStat stat);
 
-    public GenStat get(EmenuContext context, long day);
+    public GeneralStat get(EmenuContext context, long day);
 }
