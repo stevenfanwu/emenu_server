@@ -56,6 +56,11 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
     }
     
     @Override
+    public void delete(EmenuContext context, int orderId, int dishId) {
+        super.delete(context, orderId, dishId);
+    }
+    
+    @Override
     public void update(EmenuContext context, OrderDish data) {
         executeSQL(context, SQL_UPDATE, new UpdateBinder(data));
     }
@@ -110,6 +115,7 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
         .appendSetValue(COL_NUMBER)
         .appendSetValue(COL_PRICE)
         .appendSetValue(COL_STATUS)
+        .appendSetValue(COL_REMARKS)
         .appendSetValue(COL_CREATED_TIME)
         .appendSetValue(COL_UPDATE_TIME)
         .appendSetValue(COL_DELETED)
@@ -130,11 +136,16 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             stmt.bind(1, data.getNumber());
             stmt.bind(2, data.getPrice());
             stmt.bind(3, data.getStatus());
-            stmt.bind(4, data.getCreatedTime());
-            stmt.bind(5, data.getUpdateTime());
-            stmt.bind(6, data.isDeleted() ? 1 : 0);
-            stmt.bind(7, data.getId1());
-            stmt.bind(8, data.getId2());
+            String remarks = "";
+            if (data.getRemarks() != null) {
+                remarks = CollectionUtils.join(data.getRemarks(), SPLIT_REMARKS);
+            }
+            stmt.bind(4, remarks);
+            stmt.bind(5, data.getCreatedTime());
+            stmt.bind(6, data.getUpdateTime());
+            stmt.bind(7, data.isDeleted() ? 1 : 0);
+            stmt.bind(8, data.getId1());
+            stmt.bind(9, data.getId2());
         }
     }
 }

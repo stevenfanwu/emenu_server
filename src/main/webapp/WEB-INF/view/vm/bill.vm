@@ -68,20 +68,30 @@
                 <thead>
                     <tr class='head-row'>
                         <th>菜品</th>
+                        <th>备注</th>
                         <th>单价</th>
                         <th>数量</th>
                         <th>总价</th>
-                        <th>是否参加折扣</th>
+                        <th>参加折扣</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     #foreach($dish in $order.dishes)
                         <tr id="dish-item-$dish.id">
                             <td>$dish.name</td>
+                            <td>
+                                #foreach($remark in $dish.remarks)
+                                    $remark
+                                #end
+                            </td>
                             <td>$dish.price</td>
                             <td>$dish.number</td>
                             <td>$dish.totalCost</td>
                             <td><input type="checkbox" class="cb-discount" checked/></td>
+                            <td>
+                                <a href="#" class="btn-cancel-dish">退菜</a>
+                            </td>
                         <tr>
                     #end
                 </tbody>

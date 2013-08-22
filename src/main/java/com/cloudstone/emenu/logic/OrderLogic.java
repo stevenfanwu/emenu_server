@@ -28,6 +28,7 @@ import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
+import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
 import com.cloudstone.emenu.storage.db.IBillDb;
 import com.cloudstone.emenu.storage.db.IOrderDb;
@@ -104,6 +105,10 @@ public class OrderLogic extends BaseLogic {
 
     public void deleteOrder(EmenuContext context, int orderId) {
         orderDb.delete(context, orderId);
+    }
+
+    public void deleteOrderDish(EmenuContext context, int orderId, int dishId) {
+        orderDishDb.delete(context, orderId, dishId);
     }
 
     public List<Dish> listDishes(EmenuContext context, int orderId) {
@@ -236,4 +241,32 @@ public class OrderLogic extends BaseLogic {
         }
 
     };
+    
+    public Order cancelDish(EmenuContext context, int orderId, int dishId, int count) {
+        Order order = getOrder(context, orderId);
+        if (order==null || order.isDeleted()) {
+            throw new NotFoundException("该订单不存在");
+        }
+        List<OrderDish> dishes = listOrderDishes(context, orderId);
+        OrderDish dish = null;
+        for (OrderDish d:dishes) {
+            if (d.getDishId() == dishId) {
+                dish = d;
+                break;
+            }
+        }
+        if (dish==null) {
+            throw new NotFoundException("订单中不存在该菜品");
+        }
+        if (dish.getNumber()<count) {
+            throw new PreconditionFailedException("菜品数量错误");
+        }
+        if (dish.getNumber() > count) {
+            dish.setNumber(dish.getNumber() - count);
+            updateOrderDish(context, dish);
+        } else {
+            deleteOrderDish(context, orderId, dishId);
+        }
+        return order;
+    }
 }
