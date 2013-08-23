@@ -38,8 +38,19 @@ public class OrderController extends BaseWebController {
             throw new PreconditionFailedException("该餐桌未下单");
         }
         model.put("order", orderWraper.wrap(context, order));
-        model.put("printers", printerLogic.listPrinters());
         return sendView("bill", req, resp, model);
     }
 
+    
+    @RequestMapping("/order")
+    public String order(HttpServletRequest req, HttpServletResponse resp,
+            @RequestParam("orderId") int orderId, ModelMap model) {
+        EmenuContext context = newContext(req);
+        Order order = orderLogic.getOrder(context, orderId);
+        if (order == null) {
+            throw new PreconditionFailedException("该订单不存在");
+        }
+        model.put("order", orderWraper.wrap(context, order));
+        return sendView("bill", req, resp, model);
+    }
 }

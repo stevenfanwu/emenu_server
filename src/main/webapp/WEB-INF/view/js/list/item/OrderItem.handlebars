@@ -8,9 +8,7 @@
     {{createdTime}}
 </td>
 <td>
-    {{#unless payed}}
-    <a href="/bill?tableId={{table.id}}" class="btn-check">结账</a>
+    <a href="/order?orderId={{id}}" class="btn-check">查看</a>
     |
-    {{/unless}}
     <a href="#" class="btn-print">打印</a>
 </td>

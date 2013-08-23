@@ -25,40 +25,43 @@
             </div>
             <div class="input-tip control-group">
                 <div class="row controls">
-                    <div class="span1">服务费:</div><input class="span2" type="text" name="tip"/>
+                    <div class="span1">服务费:</div>
+                    <input class="span2" type="text" name="tip"#if($order.status==1) disabled#end/>
                 </div>
                 <div class="help-inline error"></div>
             </div>
             <div class="input-discount control-group">
                 <div class="row controls">
-                    <div class="span1">折扣:</div><input class="span2" type="text" name="discount"/>
+                    <div class="span1">折扣:</div>
+                    <input class="span2" type="text" name="discount"#if($order.status==1) disabled#end/>
                 </div>
                 <div class="help-inline error"></div>
             </div>
             <div class="input-cost control-group">
                 <div class="row controls">
-                    <div class="span1">实收款:</div><input class="span2" type="text" name="cost"/>
+                    <div class="span1">实收款:</div>
+                    <input class="span2" type="text" name="cost"#if($order.status==1) disabled#end/>
                 </div>
                 <div class="help-inline error"></div>
             </div>
             <div class="input-invoice control-group">
                 <div class="row controls">
                     <div class="span1">开发票:</div>
-                    <input class="span2" type="checkbox" name="invoice"/>
+                    <input class="span2" type="checkbox" name="invoice"#if($order.status==1) disabled#end/>
                 </div>
                 <div class="help-inline error"></div>
             </div>
             <div class="input-payType control-group">
                 <div class="row controls">
                     <div class="span1">结账方式:</div>
-                    <select class="span2 item-control">
+                    <select class="span2 item-control"#if($order.status==1) disabled#end>
                     </select>
                 </div>
                 <div class="help-inline error"></div>
             </div>
             <div class="input-remarks control-group">
                 <div class="row controls">
-                    <div class="span1">备注:</div><input class="span2" type="text" name="remarks"/>
+                    <div class="span1">备注:</div><input class="span2" type="text" name="remarks"#if($order.status==1) disabled#end/>
                 </div>
                 <div class="help-inline error"></div>
             </div>
@@ -88,16 +91,22 @@
                             <td>$dish.price</td>
                             <td>$dish.number</td>
                             <td>$dish.totalCost</td>
-                            <td><input type="checkbox" class="cb-discount" checked/></td>
+                            <td><input type="checkbox" class="cb-discount" checked#if($order.status==1) disabled#end/></td>
                             <td>
-                                <a href="#" class="btn-cancel-dish">退菜</a>
+                                #if($order.status==0)
+                                    <a href="#" class="btn-cancel-dish">退菜</a>
+                                #end
                             </td>
                         <tr>
                     #end
                 </tbody>
             </table>
-            <span class="btn btn-primary btn-submit">结账</span>
-            <span class="btn btn-back">返回</span>
+            #if($order.status==0)
+                <span class="btn btn-primary btn-submit">结账</span>
+                <span class="btn btn-back">返回</span>
+            #else
+                <span class="label label-success">已结账</span>
+            #end
         </div>
     </form>
 </div>
