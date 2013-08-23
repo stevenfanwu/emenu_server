@@ -2,6 +2,7 @@
  * @(#)OrderLogic.java, Jul 29, 2013. 
  * 
  */
+
 package com.cloudstone.emenu.logic;
 
 import java.util.ArrayList;
@@ -37,81 +38,84 @@ import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.UnitUtils;
 import com.cloudstone.emenu.wrap.OrderWraper;
 
-
 /**
  * @author xuhongfeng
- *
  */
 @Component
 public class OrderLogic extends BaseLogic {
     private static final Logger LOG = LoggerFactory.getLogger(OrderLogic.class);
-    
+
     @Autowired
     private IBillDb billDb;
+
     @Autowired
     private IOrderDb orderDb;
+
     @Autowired
     private IOrderDishDb orderDishDb;
+
     @Autowired
     private IPayTypeDb payTypeDb;
-    
+
     @Autowired
     private TableLogic tableLogic;
+
     @Autowired
     private MenuLogic menuLogic;
+
     @Autowired
     private PrinterLogic printerLogic;
-    
+
     @Autowired
     protected OrderWraper orderWraper;
-    
+
     public void addOrderDish(EmenuContext context, OrderDish orderDish) {
         long now = System.currentTimeMillis();
         orderDish.setCreatedTime(now);
         orderDish.setUpdateTime(now);
         orderDishDb.add(context, orderDish);
     }
-    
+
     public void updateOrderDish(EmenuContext context, OrderDish orderDish) {
         orderDish.setUpdateTime(System.currentTimeMillis());
         orderDishDb.update(context, orderDish);
     }
-    
+
     public Order getOldestOrder(EmenuContext context) {
         return orderDb.getOldestOrder(context);
     }
-    
+
     public Order getOrder(EmenuContext context, int orderId) {
         return orderDb.get(context, orderId);
     }
-    
+
     public void updateOrder(EmenuContext context, Order order) {
-        //TODO check order
+        // TODO check order
         order.setUpdateTime(System.currentTimeMillis());
         orderDb.update(context, order);
     }
-    
+
     public void addOrder(EmenuContext context, Order order) {
-        //TODO Check Order
+        // TODO Check Order
         long now = System.currentTimeMillis();
         order.setUpdateTime(now);
         order.setCreatedTime(now);
         orderDb.add(context, order);
     }
-    
+
     public void deleteOrder(EmenuContext context, int orderId) {
         orderDb.delete(context, orderId);
     }
-    
+
     public void deleteOrderDish(EmenuContext context, int orderId, int dishId) {
         orderDishDb.delete(context, orderId, dishId);
     }
-    
+
     public List<Dish> listDishes(EmenuContext context, int orderId) {
         List<OrderDish> relations = orderDishDb.listOrderDish(context, orderId);
         DataUtils.filterDeleted(relations);
         List<Dish> dishes = new ArrayList<Dish>();
-        for (OrderDish r:relations) {
+        for (OrderDish r : relations) {
             int dishId = r.getDishId();
             Dish dish = menuLogic.getDish(context, dishId);
             if (dish != null) {
@@ -120,27 +124,27 @@ public class OrderLogic extends BaseLogic {
         }
         return dishes;
     }
-    
+
     public List<OrderDish> listOrderDishes(EmenuContext context, int orderId) {
         List<OrderDish> datas = orderDishDb.listOrderDish(context, orderId);
         DataUtils.filterDeleted(datas);
         return datas;
     }
-    
+
     public List<PayType> listPayTypes(EmenuContext context) {
         List<PayType> datas = payTypeDb.getAllPayType(context);
         DataUtils.filterDeleted(datas);
         return datas;
     }
-    
+
     public List<Bill> listBills(EmenuContext context) {
         List<Bill> datas = billDb.listBills(context);
         DataUtils.filterDeleted(datas);
         return datas;
     }
-    
+
     public Bill payBill(EmenuContext context, Bill bill, User user) {
-        
+
         if (getBillByOrderId(context, bill.getOrderId()) != null) {
             throw new DataConflictException("请勿重复提交订单");
         }
@@ -158,7 +162,7 @@ public class OrderLogic extends BaseLogic {
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
-        //Start transaction
+        // Start transaction
         context.beginTransaction(dataSource);
         try {
             orderDb.update(context, order);
@@ -166,39 +170,41 @@ public class OrderLogic extends BaseLogic {
             table.setStatus(TableStatus.EMPTY);
             table.setOrderId(0);
             tableLogic.update(context, table);
-        
+
             try {
                 printerLogic.printBill(context, bill, user);
             } catch (Exception e) {
                 throw new PreconditionFailedException("打印失败", e);
             }
-            
+
             context.commitTransaction();
-            //End transaction
+            // End transaction
         } finally {
             context.closeTransaction(dataSource);
         }
         tableLogic.setCustomerNumber(context, table.getId(), 0);
         return billDb.get(context, bill.getId());
     }
-    
+
     public Bill getBillByOrderId(EmenuContext context, int orderId) {
         return billDb.getByOrderId(context, orderId);
     }
-    
-    public List<Order> getDailyOrders(EmenuContext context, long time) {
-        if (time <= 0)
-            throw new BadRequestError();
-        //long offset = Calendar.getInstance().getTimeZone().getRawOffset();
-        //time += offset;
+
+    public List<Order> getOrders(EmenuContext context, long time) {
+        // long offset = Calendar.getInstance().getTimeZone().getRawOffset();
+        // time += offset;
         long currentDay = (long) (time / UnitUtils.DAY);
         long startTime = currentDay * UnitUtils.DAY;
         long endTime = startTime + UnitUtils.DAY;
 
+        return getOrders(context, startTime, endTime);
+    }
+
+    public List<Order> getOrders(EmenuContext context, long startTime, long endTime) {
         List<Order> orders = orderDb.getOrdersByTime(context, startTime, endTime);
         List<Bill> bills = billDb.getBillsByTime(context, startTime, endTime);
         DataUtils.filterDeleted(bills);
-        for(Bill bill : bills) {
+        for (Bill bill : bills) {
             orders.add(bill.getOrder());
         }
         DataUtils.filterDeleted(orders);
@@ -206,13 +212,18 @@ public class OrderLogic extends BaseLogic {
         return orders;
     }
 
-    public List<Bill> getDailyBills(EmenuContext context, long time) {
-        if (time <= 0)
+    public List<Bill> getBills(EmenuContext context, long startTime, long endTime) {
+        if (startTime <= 0 || endTime <= 0 || startTime > endTime)
             throw new BadRequestError();
-        long currentDay = (long) (time / UnitUtils.DAY);
-        long startTime = currentDay * UnitUtils.DAY;
-        long endTime = startTime + UnitUtils.DAY;
-        List<Bill> bills = billDb.getBillsByTime(context, startTime, endTime);
+        List<Bill> bills = null;
+        if (startTime == endTime) {
+            long currentDay = (long) (startTime / UnitUtils.DAY);
+            long start = currentDay * UnitUtils.DAY;
+            long end = start + UnitUtils.DAY;
+            bills = billDb.getBillsByTime(context, start, end);
+        } else {
+            bills = billDb.getBillsByTime(context, startTime, endTime);
+        }
         DataUtils.filterDeleted(bills);
         return bills;
     }

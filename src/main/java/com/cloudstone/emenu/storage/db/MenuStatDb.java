@@ -1,41 +1,31 @@
 
 package com.cloudstone.emenu.storage.db;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
-import com.cloudstone.emenu.data.DailyStat;
+import com.cloudstone.emenu.data.MenuStat;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
-import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 @Repository
-public class StatDb extends SQLiteDb implements IStatDb {
+public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
 
-    private static final String TABLE_NAME = "stat";
-
-    private static final Logger LOG = LoggerFactory.getLogger(StatDb.class);
+    private static final String TABLE_NAME = "dishstat";
 
     @Override
-    public DailyStat get(EmenuContext context, long day) {
+    public MenuStat get(EmenuContext context, long day) {
         DayBinder binder = new DayBinder(day);
         return queryOne(context, SQL_SELECT_BY_DAY, binder, rowMapper);
     }
 
     @Override
-    public void update(EmenuContext context, DailyStat stat) {
-        executeSQL(context, SQL_UPDATE, new UpdateBinder(stat));
-    }
-
-    @Override
-    public void add(EmenuContext context, DailyStat stat) {
+    public void add(EmenuContext context, MenuStat stat) {
         stat.setId(genId(context));
         StatBinder binder = new StatBinder(stat);
         executeSQL(context, SQL_INSERT, binder);
@@ -53,9 +43,9 @@ public class StatDb extends SQLiteDb implements IStatDb {
 
     /* ---------- SQL ---------- */
     private static enum Column {
-        ID("id"), DAY("day"), INCOME("income"), CUSTOMER_COUNT("customerCount"), TABLE_COUNT(
-                "tableCount"), TABLE_RATE("tableRate"), CREATED_TIME("createdTime"), UPDATE_TIME(
-                "time"), DELETED("deleted");
+        ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
+        CHAPTER_NAME("chapterName"),
+        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
 
         private final String str;
 
@@ -73,9 +63,9 @@ public class StatDb extends SQLiteDb implements IStatDb {
             .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
             .append(Column.DAY, DataType.INTEGER, "NOT NULL")
             .append(Column.INCOME, DataType.REAL, "NOT NULL")
-            .append(Column.CUSTOMER_COUNT, DataType.INTEGER, "NOT NULL")
-            .append(Column.TABLE_COUNT, DataType.INTEGER, "NOT NULL")
-            .append(Column.TABLE_RATE, DataType.REAL, "NOT NULL")
+            .append(Column.COUNT, DataType.INTEGER, "NOT NULL")
+            .append(Column.DISCOUNT, DataType.REAL, "NOT NULL")
+            .append(Column.CHAPTER_NAME, DataType.TEXT, "NOT NULL")
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.DELETED, DataType.INTEGER, "NOT NULL").build();
@@ -83,9 +73,9 @@ public class StatDb extends SQLiteDb implements IStatDb {
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
 
     private static class StatBinder implements StatementBinder {
-        private final DailyStat stat;
+        private final MenuStat stat;
 
-        public StatBinder(DailyStat stat) {
+        public StatBinder(MenuStat stat) {
             super();
             this.stat = stat;
         }
@@ -95,72 +85,35 @@ public class StatDb extends SQLiteDb implements IStatDb {
             stmt.bind(1, stat.getId());
             stmt.bind(2, stat.getDay());
             stmt.bind(3, stat.getIncome());
-            stmt.bind(4, stat.getCustomerCount());
-            stmt.bind(5, stat.getTableCount());
-            stmt.bind(6, stat.getTableRate());
+            stmt.bind(4, stat.getCount());
+            stmt.bind(5, stat.getDiscount());
+            stmt.bind(6, stat.getChapterName());
             stmt.bind(7, stat.getCreatedTime());
             stmt.bind(8, stat.getUpdateTime());
             stmt.bind(9, stat.isDeleted() ? 1 : 0);
         }
     }
 
-    private static class UpdateBinder implements StatementBinder {
-        private final DailyStat stat;
-
-        public UpdateBinder(DailyStat stat) {
-            super();
-            this.stat = stat;
-        }
-
-        @Override
-        public void onBind(SQLiteStatement stmt) throws SQLiteException {
-            stmt.bind(1, stat.getDay());
-            stmt.bind(2, stat.getIncome());
-            stmt.bind(3, stat.getCustomerCount());
-            stmt.bind(4, stat.getTableCount());
-            stmt.bind(5, stat.getTableRate());
-            stmt.bind(6, stat.getCreatedTime());
-            stmt.bind(7, stat.getUpdateTime());
-            stmt.bind(8, stat.isDeleted() ? 1 : 0);
-            stmt.bind(9, stat.getId());
-        }
-    }
-
-    private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME).appendWhereId()
-            .build();
-
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.DAY).build();
 
-    private static final RowMapper<DailyStat> rowMapper = new RowMapper<DailyStat>() {
+    private static final RowMapper<MenuStat> rowMapper = new RowMapper<MenuStat>() {
 
         @Override
-        public DailyStat map(SQLiteStatement stmt) throws SQLiteException {
-            DailyStat stat = new DailyStat();
+        public MenuStat map(SQLiteStatement stmt) throws SQLiteException {
+            MenuStat stat = new MenuStat();
             stat.setId(stmt.columnInt(0));
             stat.setDay(stmt.columnLong(1));
             stat.setIncome(stmt.columnDouble(2));
-            stat.setCustomerCount(stmt.columnInt(3));
-            stat.setTableCount(stmt.columnInt(4));
-            stat.setTableRate(stmt.columnDouble(5));
+            stat.setCount(stmt.columnInt(3));
+            stat.setDiscount(stmt.columnDouble(4));
+            stat.setChapterName(stmt.columnString(5));
             stat.setCreatedTime(stmt.columnLong(6));
             stat.setUpdateTime(stmt.columnLong(7));
             stat.setDeleted(stmt.columnInt(8) == 1);
             return stat;
         }
     };
-
-    private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-            .appendSetValue(Column.DAY)
-            .appendSetValue(Column.INCOME)
-            .appendSetValue(Column.CUSTOMER_COUNT)
-            .appendSetValue(Column.TABLE_COUNT)
-            .appendSetValue(Column.TABLE_RATE)
-            .appendSetValue(Column.CREATED_TIME)
-            .appendSetValue(Column.UPDATE_TIME)
-            .appendSetValue(Column.DELETED)
-            .appendWhereId()
-            .build();
 
     private static final class DayBinder implements StatementBinder {
         private final long day;
