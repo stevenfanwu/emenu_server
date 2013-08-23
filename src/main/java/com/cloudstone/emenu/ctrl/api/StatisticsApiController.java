@@ -1,5 +1,6 @@
 package com.cloudstone.emenu.ctrl.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,23 +27,24 @@ public class StatisticsApiController extends BaseApiController {
     public @ResponseBody List<GeneralStat> getDailyStat(
             @RequestParam(value="time", defaultValue="0") long time,
             @RequestParam(value="page", defaultValue="0") int page,
-            HttpServletRequest request) {
-        EmenuContext context = newContext(request);
-        if (time == 0) {
-            time = System.currentTimeMillis();
-        }
-        return statisticsLogic.listGeneralStat(context, time, page);
-    }
-
-    @RequestMapping(value="/api/stats", method=RequestMethod.GET)
-    public @ResponseBody GeneralStat getTimeIntervalStat(
-            @RequestParam(value="start") long startTime,
+            @RequestParam(value="start", defaultValue="0") long startTime,
             @RequestParam(value="end") long endTime,
             HttpServletRequest request) {
-        EmenuContext context = newContext(request);
-        if (startTime <=0 || endTime <= 0 || startTime > endTime) {
+        if (time<0 || page < 0 || startTime <0
+                || endTime < 0 || startTime > endTime) {
             throw new BadRequestError();
         }
-        return statisticsLogic.getGeneralStat(context, startTime, endTime);
+        EmenuContext context = newContext(request);
+        if (time > 0) {
+            return statisticsLogic.listGeneralStat(context, time, page);
+        } else if (startTime > 0) {
+            GeneralStat stat = statisticsLogic.getGeneralStat(context, startTime, endTime);
+            List<GeneralStat> stats = new ArrayList<GeneralStat>(1);
+            stats.add(stat);
+            return stats;
+        } else {
+            time = System.currentTimeMillis();
+            return statisticsLogic.listGeneralStat(context, time, page);
+        }
     }
 }

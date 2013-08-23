@@ -48,30 +48,23 @@ public class OrderApiController extends BaseApiController {
     @RequestMapping(value="/api/orders", method=RequestMethod.GET)
     public @ResponseBody List<OrderVO> getDailyOrders(
             @RequestParam(value="time", defaultValue="0") long time,
+            @RequestParam(value="start", defaultValue="0") long startTime,
+            @RequestParam(value="end", defaultValue="0") long endTime,
             HttpServletRequest request,
             HttpServletResponse response) {
         EmenuContext context = newContext(request);
-        if (time < 0) {
+        if (time < 0 || startTime < 0 || endTime < 0 || startTime > endTime) {
             throw new BadRequestError();
         }
-        if (time == 0) {
+        List<Order> orders;
+        if (time > 0) {
+            orders = orderLogic.getOrders(context, time);
+        } else if (startTime > 0) {
+            orders = orderLogic.getOrders(context, startTime, endTime);
+        } else {
             time = System.currentTimeMillis();
+            orders = orderLogic.getOrders(context, time);
         }
-        List<Order> orders = orderLogic.getOrders(context, time);
-        return orderWraper.wrap(context, orders);
-    }
-
-    @RequestMapping(value="/api/orders", method=RequestMethod.GET)
-    public @ResponseBody List<OrderVO> getTimeIntervalOrders(
-            @RequestParam(value="start") long startTime,
-            @RequestParam(value="end") long endTime,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        EmenuContext context = newContext(request);
-        if (startTime <= 0 || endTime <= 0 || startTime > endTime) {
-            throw new BadRequestError();
-        }
-        List<Order> orders = orderLogic.getOrders(context, startTime, endTime);
         return orderWraper.wrap(context, orders);
     }
 
