@@ -258,4 +258,24 @@ public class OrderLogic extends BaseLogic {
         }
         return order;
     }
+    
+    public Order submit(EmenuContext context, Order order, Table table, List<OrderDish> dishes) {
+        int customerNumber = tableLogic.getCustomerNumber(context, table.getId());
+        context.beginTransaction(dataSource);
+        try {
+            order.setCustomerNumber(customerNumber);
+            addOrder(context, order);
+            for (OrderDish r:dishes) {
+                r.setOrderId(order.getId());
+                r.setStatus(Const.OrderDishStatus.ORDERED);
+                //TODO check price
+                addOrderDish(context, r);
+            }
+            table.setOrderId(order.getId());
+            tableLogic.update(context, table);
+            return order;
+        } finally {
+            context.closeTransaction(dataSource);
+        }
+    }
 }
