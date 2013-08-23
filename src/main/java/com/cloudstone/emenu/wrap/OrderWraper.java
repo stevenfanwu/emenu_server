@@ -13,12 +13,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.EmenuContext;
+import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.OrderVO;
+import com.cloudstone.emenu.data.vo.PayedOrderVO;
 
 /**
  * @author xuhongfeng
@@ -34,7 +37,12 @@ public class OrderWraper extends BaseWraper {
         List<Dish> dishes = orderLogic
                 .listDishes(context, order.getId());
         User user = userLogic.getUser(context, order.getUserId());
-        return OrderVO.create(order, table, relations, dishes, user);
+        OrderVO o = new OrderVO(order, table, relations, dishes, user);
+        if (o.getStatus() == Const.OrderStatus.PAYED) {
+            Bill bill = orderLogic.getBillByOrderId(context, order.getId());
+            o = new PayedOrderVO(o, bill);
+        }
+        return o;
     }
 
     public List<OrderVO> wrap(EmenuContext context, List<Order> orders) {

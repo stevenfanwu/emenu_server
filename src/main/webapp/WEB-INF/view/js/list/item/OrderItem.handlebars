@@ -2,10 +2,27 @@
     {{id}}
 </td>
 <td>
+    {{customerNumber}}
+</td>
+<td>
     {{table.name}}
 </td>
 <td>
-    {{createdTime}}
+    {{user.realName}}
+</td>
+<td>
+    {{#if payed}}
+        {{income}}
+    {{else}}
+        未结账
+    {{/if}}
+</td>
+<td>
+    {{#if payed}}
+        {{billTime}}
+    {{else}}
+        未结账
+    {{/if}}
 </td>
 <td>
     <a href="/order?orderId={{id}}" class="btn-check">查看</a>

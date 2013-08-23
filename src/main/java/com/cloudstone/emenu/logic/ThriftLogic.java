@@ -214,6 +214,8 @@ public class ThriftLogic extends BaseLogic {
         orderValue.setPrice(order.getPrice());
         orderValue.setTableId(table.getId());
         
+        int userId = context.getLoginUserId();
+        
         //merge order if necessary
         com.cloudstone.emenu.data.Order oldOrder = null;
         if (table.getOrderId() != 0) {
@@ -224,6 +226,7 @@ public class ThriftLogic extends BaseLogic {
             oldOrder.setPrice(orderValue.getPrice() + oldOrder.getPrice());
             orderValue = oldOrder;
         }
+        orderValue.setUserId(userId);
         
         List<OrderDish> relations = new ArrayList<OrderDish>();
         for (int i=0; i<dishes.size(); i++) {

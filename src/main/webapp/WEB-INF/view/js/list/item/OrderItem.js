@@ -17,8 +17,11 @@ define(function (require, exports, module) {
 
         getRenderData: function () {
             var data = Tr.prototype.getRenderData.apply(this, arguments);
-            data.createdTime = require('../../util/StringUtils').formatDate(data.createdTime);
             data.payed = data.status === 1;
+            if (data.payed) {
+                data.billTime = require('../../util/StringUtils').formatDate(data.bill.createdTime);
+                data.income = data.bill.cost.toMoney();
+            }
             return data;
         },
 
