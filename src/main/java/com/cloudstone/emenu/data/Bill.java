@@ -17,6 +17,7 @@ public class Bill extends IEntity {
     private double cost;
     private double discount;
     private double tip;
+    private double invoicePrice;
     private boolean invoice;
     private int[] discountDishIds;
     private int payType;
@@ -34,6 +35,12 @@ public class Bill extends IEntity {
     }
     public void setCost(double cost) {
         this.cost = cost;
+    }
+    public double getInvoicePrice() {
+        return invoicePrice;
+    }
+    public void setInvoicePrice(double invoicePrice) {
+        this.invoicePrice = invoicePrice;
     }
     public double getDiscount() {
         return discount;
