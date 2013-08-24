@@ -54,7 +54,9 @@ define(function (require, exports, module) {
         
             if (this.ContentType) {
                 var Content = this.ContentType;
-                this.contentView = new Content();
+                this.contentView = new Content({
+                    model: this.model
+                });
                 this.contentView.dialog = this;
                 this.contentView.render();
                 this.$('.modal-body').append(this.contentView.el);

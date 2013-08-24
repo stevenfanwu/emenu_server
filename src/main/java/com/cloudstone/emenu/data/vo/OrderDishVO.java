@@ -16,6 +16,7 @@ public class OrderDishVO extends Dish {
     private String[] remarks;
     private int orderStatus;
     private double totalCost;
+    private int orderId;
 
     public OrderDishVO() {
         super();
@@ -25,13 +26,14 @@ public class OrderDishVO extends Dish {
         super(dish);
     }
     
-    public static OrderDishVO create(OrderDish r, Dish dish) {
+    public static OrderDishVO create(OrderDish r, Dish dish, int orderId) {
         OrderDishVO o = new OrderDishVO(dish);
         o.setNumber(r.getNumber());
         o.setRemarks(r.getRemarks());
         o.setOrderStatus(r.getStatus());
         //TODO round
         o.setTotalCost(o.getNumber()*o.getPrice());
+        o.setOrderId(orderId);
         return o;
     }
 
@@ -65,5 +67,13 @@ public class OrderDishVO extends Dish {
 
     public void setOrderStatus(int orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 }

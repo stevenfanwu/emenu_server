@@ -15,7 +15,8 @@ define(function (require, exports, module) {
 
     var DishItem = Backbone.View.extend({
         events: {
-            'click input[type=checkbox]': 'onCheckedChange'
+            'click input[type=checkbox]': 'onCheckedChange',
+            'click .btn-cancel-dish': 'onCancelDish'
         },
 
         isChecked: function () {
@@ -24,7 +25,23 @@ define(function (require, exports, module) {
 
         onCheckedChange: function (evt) {
             this.model.trigger('checkedChange');
+        },
+
+        onCancelDish: function (evt) {
+            evt.preventDefault();
+
+            var Dialog = require('../dialog/CancelDishDialog');
+            var dialog = new Dialog({
+                model: this.model
+            });
+            dialog.model.on('saved', function () {
+                window.location.reload(true);
+            }.bind(this));
+            dialog.show();
+
+            evt.stopPropagation();
         }
+        
     });
 
     var Bill = BasePage.extend({

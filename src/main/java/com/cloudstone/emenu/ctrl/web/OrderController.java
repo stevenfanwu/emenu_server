@@ -34,7 +34,7 @@ public class OrderController extends BaseWebController {
             return null;
         }
         Order order = orderLogic.getOrder(context, table.getOrderId());
-        if (order == null) {
+        if (order == null || order.isDeleted()) {
             throw new PreconditionFailedException("该餐桌未下单");
         }
         model.put("order", orderWraper.wrap(context, order));
@@ -47,7 +47,7 @@ public class OrderController extends BaseWebController {
             @RequestParam("orderId") int orderId, ModelMap model) {
         EmenuContext context = newContext(req);
         Order order = orderLogic.getOrder(context, orderId);
-        if (order == null) {
+        if (order == null || order.isDeleted()) {
             throw new PreconditionFailedException("该订单不存在");
         }
         model.put("order", orderWraper.wrap(context, order));

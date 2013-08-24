@@ -191,8 +191,6 @@ public class OrderLogic extends BaseLogic {
     }
 
     public List<Order> getOrders(EmenuContext context, long time) {
-        // long offset = Calendar.getInstance().getTimeZone().getRawOffset();
-        // time += offset;
         long currentDay = (long) (time / UnitUtils.DAY);
         long startTime = currentDay * UnitUtils.DAY;
         long endTime = startTime + UnitUtils.DAY;
@@ -261,11 +259,24 @@ public class OrderLogic extends BaseLogic {
         if (dish.getNumber()<count) {
             throw new PreconditionFailedException("菜品数量错误");
         }
-        if (dish.getNumber() > count) {
-            dish.setNumber(dish.getNumber() - count);
-            updateOrderDish(context, dish);
-        } else {
-            deleteOrderDish(context, orderId, dishId);
+        context.beginTransaction(dataSource);
+        try {
+            //update orderDish
+            if (dish.getNumber() > count) {
+                dish.setNumber(dish.getNumber() - count);
+                updateOrderDish(context, dish);
+            } else {
+                deleteOrderDish(context, orderId, dishId);
+            }
+            
+            //update order
+            order.setPrice(order.getPrice() - count*dish.getPrice());
+            order.setOriginPrice(order.getOriginPrice() - count*dish.getPrice());
+            updateOrder(context, order);
+            
+            context.commitTransaction();
+        } finally {
+            context.closeTransaction(dataSource);
         }
         return order;
     }

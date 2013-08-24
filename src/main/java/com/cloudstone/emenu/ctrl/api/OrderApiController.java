@@ -83,7 +83,7 @@ public class OrderApiController extends BaseApiController {
         return orderLogic.payBill(context, bill, getLoginUser(req));
     }
     
-    @RequestMapping(value="/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/cancel", method=RequestMethod.GET)
+    @RequestMapping(value="/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/cancel", method=RequestMethod.PUT)
     public @ResponseBody OrderVO cancelDish(@PathVariable("id") int orderId,
             @PathVariable("dishId") int dishId,
             @RequestParam("count") int count,

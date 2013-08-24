@@ -39,7 +39,8 @@ public class OrderVO extends Order {
         setTable(table);
         List<OrderDishVO> dishVOs = new ArrayList<OrderDishVO>();
         for (int i=0; i<relations.size(); i++) {
-            dishVOs.add(OrderDishVO.create(relations.get(i), dishes.get(i)));
+            dishVOs.add(OrderDishVO.create(relations.get(i), dishes.get(i),
+                    order.getId()));
         }
         setDishes(dishVOs);
         setUser(user);
