@@ -4,6 +4,8 @@
 define(function (require, exports, module) {
     "use strict";
     
+    //http://www.malot.fr/bootstrap-datetimepicker/
+
     var BaseView = require('../BaseView');
     var StringUtils = require('../util/StringUtils');
 

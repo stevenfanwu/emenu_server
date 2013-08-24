@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cloudstone.emenu.EmenuContext;
+import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
@@ -51,6 +53,10 @@ public class OrderController extends BaseWebController {
             throw new PreconditionFailedException("该订单不存在");
         }
         model.put("order", orderWraper.wrap(context, order));
+        if (order.getStatus() == Const.OrderStatus.PAYED) {
+            Bill bill = orderLogic.getBillByOrderId(context, orderId);
+            model.put("bill", bill);
+        }
         return sendView("bill", req, resp, model);
     }
 }

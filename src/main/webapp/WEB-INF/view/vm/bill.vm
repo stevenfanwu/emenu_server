@@ -44,12 +44,21 @@
                 </div>
                 <div class="help-inline error"></div>
             </div>
-            <div class="input-invoice control-group">
-                <div class="row controls">
-                    <div class="span1">开发票:</div>
-                    <input class="span2" type="checkbox" name="invoice"#if($order.status==1) disabled#end/>
+            <div class="invoice-wrap">
+                <div class="input-invoice control-group">
+                    <div class="row controls">
+                        <div class="span1">开发票:</div>
+                        <input class="span2" type="checkbox" name="invoice"#if($order.status==1) disabled#end/>
+                    </div>
+                    <div class="help-inline error"></div>
                 </div>
-                <div class="help-inline error"></div>
+                <div class="input-invoicePrice control-group">
+                    <div class="row controls">
+                        <div class="span1">发票金额:</div>
+                        <input class="span2 item-control" type="text" name="invoicePrice"#if($order.status==1) disabled#end/>
+                    </div>
+                    <div class="help-inline error"></div>
+                </div>
             </div>
             <div class="input-payType control-group">
                 <div class="row controls">
@@ -111,3 +120,4 @@
     </form>
 </div>
 #pageData("order", $Utils.toJson($order))
+#pageData("bill", $Utils.toJson($bill))

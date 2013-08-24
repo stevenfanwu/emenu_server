@@ -61,11 +61,14 @@ define(function (require, exports, module) {
 
             //step 2. build BillModel
             var originPrice = this.orderModel.get('originPrice');
-            var bill = {
-                tip : this.orderModel.tableModel.computeTip(originPrice),
-                discount: 10,
-                orderId: this.orderModel.get('id')
-            };
+            var bill = PageDataUtils.getData('bill');
+            if (!bill) {
+                bill = {
+                    tip : this.orderModel.tableModel.computeTip(originPrice),
+                    discount: 10,
+                    orderId: this.orderModel.get('id')
+                };
+            }
             this.model = new BillModel();
             this.model.set(bill);
             this.model.on('computeCost', this.onComputeCost, this);

@@ -14,6 +14,8 @@ define(function (require, exports, module) {
     var Select = require('./item/Select');
     var CheckBox = require('./item/CheckBox');
     var BillOrders = require('./item/BillOrders');
+    var Invoice = require('./item/Invoice');
+    var InvoiceValidator = require('./validator/InvoiceValidator');
 
     var BillForm = BaseForm.extend({
         url: '/api/bills',
@@ -73,8 +75,11 @@ define(function (require, exports, module) {
             }]
         }, {
             name: 'invoice',
-            type: CheckBox,
-            el: '.input-invoice'
+            type: Invoice,
+            el: '.invoice-wrap',
+            validators: [{
+                type: InvoiceValidator
+            }]
         }, {
             name: 'payType',
             type: AjaxSelect,

@@ -13,7 +13,8 @@ define(function (require, exports, module) {
                 format = 'yyyy-mm-dd hh:ii:ss';
             }
             format = this.parseFormat(format);
-            return DPGlobal.formatDate(new Date(timestamp), format, 'zh-CN', 'standard');
+            return DPGlobal.formatDate(new Date(timestamp + 8 * 3600 * 1000),
+                format, 'zh-CN', 'standard');
         },
 
         parseFormat: function (format) {
