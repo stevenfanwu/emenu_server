@@ -20,19 +20,19 @@ public class AveStat extends BaseStat {
         super();
     }
 
-    public void setAveOrderPrice(double aveOrderPrice) {
-        this.aveOrder = aveOrderPrice;
+    public void setAveOrder(double aveOrder) {
+        this.aveOrder = aveOrder;
     }
 
-    public double getAveOrderPrice() {
+    public double getAveOrder() {
         return aveOrder;
     }
 
-    public void setAvePersonPrice(double avePersonPrice) {
-        this.avePerson = avePersonPrice;
+    public void setAvePerson(double avePerson) {
+        this.avePerson = avePerson;
     }
 
-    public double getAvePersonPrice() {
+    public double getAvePerson() {
         return avePerson;
     }
 }

@@ -16,6 +16,8 @@ define(function (require, exports, module) {
             var data = Tr.prototype.getRenderData.apply(this, arguments);
             data.time = StringUtils.formatDateDay(data.day * 3600 * 24 * 1000);
             data.tableRate = StringUtils.formatPercentage(data.tableRate);
+            data.aveOrder = data.aveOrder.toMoney();
+            data.avePerson = data.avePerson.toMoney();
             return data;
         }
         

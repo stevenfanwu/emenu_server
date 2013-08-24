@@ -8,10 +8,21 @@ define(function (require, exports, module) {
     var StatModel = require('../model/StatModel');
 
     var StatCollection = BaseCollection.extend({
-        url: '/api/stats',
+        baseUrl: '/api/stats',
 
-        model: StatModel
+        model: StatModel,
+
+        startTime: null,
+
+        endTime: null,
         
+        url : function () {
+            if (this.startTime) {
+                return this.baseUrl + '?start=' + this.startTime
+                    + '&end=' + this.endTime;
+            }
+            return this.baseUrl;
+        }
     });
     
     return StatCollection;

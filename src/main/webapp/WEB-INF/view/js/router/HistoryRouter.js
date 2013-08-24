@@ -9,11 +9,16 @@ define(function (require, exports, module) {
     var HistoryRouter = BaseRouter.extend({
         routes: {
             '': 'showOrder',
-            'order': 'showOrder'
+            'order': 'showOrder',
+            'stat': 'showStat'
         },
         
         showOrder: function () {
             this.page.trigger('showOrder');
+        },
+        
+        showStat: function () {
+            this.page.trigger('showStat');
         }
     });
     

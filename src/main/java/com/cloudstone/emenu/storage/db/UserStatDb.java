@@ -91,8 +91,8 @@ public class UserStatDb extends SQLiteDb implements IUserStatDb {
             stmt.bind(3, stat.getIncome());
             stmt.bind(4, stat.getCount());
             stmt.bind(5, stat.getDiscount());
-            stmt.bind(6, stat.getAvePersonPrice());
-            stmt.bind(7, stat.getAveOrderPrice());
+            stmt.bind(6, stat.getAvePerson());
+            stmt.bind(7, stat.getAveOrder());
             stmt.bind(8, stat.getCustomerCount());
             stmt.bind(9, stat.getUserName());
             stmt.bind(10, stat.getCreatedTime());
@@ -114,8 +114,8 @@ public class UserStatDb extends SQLiteDb implements IUserStatDb {
             stat.setIncome(stmt.columnDouble(2));
             stat.setCount(stmt.columnInt(3));
             stat.setDiscount(stmt.columnDouble(4));
-            stat.setAvePersonPrice(stmt.columnDouble(5));
-            stat.setAveOrderPrice(stmt.columnDouble(6));
+            stat.setAvePerson(stmt.columnDouble(5));
+            stat.setAveOrder(stmt.columnDouble(6));
             stat.setCustomerCount(stmt.columnInt(7));
             stat.setUserName(stmt.columnString(8));
             stat.setCreatedTime(stmt.columnLong(9));

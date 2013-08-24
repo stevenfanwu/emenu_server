@@ -137,10 +137,10 @@ public class StatisticsLogic extends BaseLogic {
         genStat.setTableRate(rate);
 
         // AVE_PERSON_PRICE
-        genStat.setAvePersonPrice(income / customers);
+        genStat.setAvePerson(income / customers);
 
         // AVE_ORDER_PRICE
-        genStat.setAveOrderPrice(income / bills.size());
+        genStat.setAveOrder(income / bills.size());
         return genStat;
     }
 

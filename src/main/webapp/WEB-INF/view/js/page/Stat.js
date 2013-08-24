@@ -7,6 +7,7 @@ define(function (require, exports, module) {
     var TabPage = require('./TabPage');
     var StatList = require('../list/StatList');
     var OrderList = require('../list/OrderList');
+    var DatePicker = require('../component/DatePicker');
 
     var Stat = TabPage.extend({
         RouterType: require('../router/StatRouter'),
@@ -19,7 +20,6 @@ define(function (require, exports, module) {
                 this.emptyPullRightTab();
                 this.activeTab('.tab-order');
 
-                var DatePicker = require('../component/DatePicker');
                 this.picker = new DatePicker();
                 this.list = new OrderList();
                 this.$('.bottom-content').empty();
@@ -36,10 +36,19 @@ define(function (require, exports, module) {
             this.on('showStat', function () {
                 this.emptyPullRightTab();
                 this.activeTab('.tab-stat');
-                var list = new StatList();
-                list.render();
+
+                this.picker = new DatePicker();
+                this.list = new StatList();
                 this.$('.bottom-content').empty();
-                this.$('.bottom-content').append(list.el);
+                this.$('.bottom-content').append(this.picker.el);
+                this.$('.bottom-content').append(this.list.el);
+
+                this.picker.on('dateChanged', function (data) {
+                    this.list.collection.startTime = data.start.getTime();
+                    this.list.collection.endTime = data.end.getTime();
+                    this.list.refresh();
+                }, this);
+                this.picker.render();
             }, this);
         }
     });

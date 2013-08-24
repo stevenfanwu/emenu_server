@@ -55,8 +55,9 @@ define(function (require, exports, module) {
                 format: this.getFormat(),
                 minView: this.getMinView(),
                 maxView: this.getMaxView(),
-                todayBtn: true,
-                todayHighlight: true
+                startView: this.getMaxView(),
+                todayBtn: this.options.timeMode !== 'time',
+                todayHighlight: this.options.timeMode !== 'time'
             };
             options.initialDate = this.getInitDate(isStart);
 
@@ -64,23 +65,44 @@ define(function (require, exports, module) {
         },
 
         getInitDate: function (isStart) {
-            var now = new Date();
-            if (isStart) {
-                var weekAgo = new Date(now.getTime() - 6 * 24 * 3600 * 1000);
-                return weekAgo;
+            var HOUR = 3600 * 1000;
+            var DAY = 24 * HOUR;
+            var time = new Date().getTime();
+            time = Math.floor(time / DAY) * DAY;
+            time = time - 8 * HOUR;
+
+            if (this.options.timeMode === 'time') {
+                if (!isStart) {
+                    time = time + DAY - 1;
+                }
+            } else {
+                if (isStart) {
+                    time = time - 6 * DAY;
+                } else {
+                    time = time + DAY;
+                }
             }
-            return now;
+            return new Date(time);
         },
 
         getFormat: function () {
+            if (this.options.timeMode === 'time') {
+                return 'yyyy-mm-dd hh:ii';
+            }
             return 'yyyy-mm-dd';
         },
 
         getMinView: function () {
+            if (this.options.timeMode === 'time') {
+                return 1;
+            }
             return 2;
         },
 
         getMaxView: function () {
+            if (this.options.timeMode === 'time') {
+                return 1;
+            }
             return 2;
         },
 

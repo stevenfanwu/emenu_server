@@ -28,7 +28,7 @@ public class StatisticsApiController extends BaseApiController {
             @RequestParam(value="time", defaultValue="0") long time,
             @RequestParam(value="page", defaultValue="0") int page,
             @RequestParam(value="start", defaultValue="0") long startTime,
-            @RequestParam(value="end") long endTime,
+            @RequestParam(value="end", defaultValue="0") long endTime,
             HttpServletRequest request) {
         if (time<0 || page < 0 || startTime <0
                 || endTime < 0 || startTime > endTime) {

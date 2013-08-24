@@ -99,8 +99,8 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
             stmt.bind(3, stat.getIncome());
             stmt.bind(4, stat.getCount());
             stmt.bind(5, stat.getDiscount());
-            stmt.bind(6, stat.getAvePersonPrice());
-            stmt.bind(7, stat.getAveOrderPrice());
+            stmt.bind(6, stat.getAvePerson());
+            stmt.bind(7, stat.getAveOrder());
             stmt.bind(8, stat.getCustomerCount());
             stmt.bind(9, stat.getTableRate());
             stmt.bind(10, stat.getInvoiceCount());
@@ -125,8 +125,8 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
             stat.setIncome(stmt.columnDouble(2));
             stat.setCount(stmt.columnInt(3));
             stat.setDiscount(stmt.columnDouble(4));
-            stat.setAvePersonPrice(stmt.columnDouble(5));
-            stat.setAveOrderPrice(stmt.columnDouble(6));
+            stat.setAvePerson(stmt.columnDouble(5));
+            stat.setAveOrder(stmt.columnDouble(6));
             stat.setCustomerCount(stmt.columnInt(7));
             stat.setTableRate(stmt.columnDouble(8));
             stat.setInvoiceCount(stmt.columnInt(9));
