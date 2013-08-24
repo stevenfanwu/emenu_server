@@ -9,9 +9,21 @@ define(function (require, exports, module) {
     var OrderModel = require('../model/OrderModel');
 
     var OrderCollection = BaseCollection.extend({
-        url: '/api/orders',
+        baseUrl: '/api/orders',
 
-        model: OrderModel
+        model: OrderModel,
+
+        startTime: null,
+
+        endTime: null,
+
+        url : function () {
+            if (this.startTime) {
+                return this.baseUrl + '?start=' + this.startTime
+                    + '&end=' + this.endTime;
+            }
+            return this.baseUrl;
+        }
     });
     
     return OrderCollection;

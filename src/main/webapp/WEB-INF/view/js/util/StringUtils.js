@@ -5,21 +5,32 @@ define(function (require, exports, module) {
     "use strict";
 
     var BaseUtils = require('./BaseUtils');
+    var DPGlobal = window.jQuery.fn.datetimepicker.DPGlobal;
 
     var StringUtils = BaseUtils.extend({
-        formatDate: function (timestamp) {
-            var d = new Date(timestamp);
-            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' +
-                d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        formatDate: function (timestamp, format) {
+            if (!format) {
+                format = 'yyyy-mm-dd hh:ii:ss';
+            }
+            format = this.parseFormat(format);
+            return DPGlobal.formatDate(new Date(timestamp), format, 'zh-CN', 'standard');
+        },
+
+        parseFormat: function (format) {
+            return DPGlobal.parseFormat(format, 'standard');
         },
 
         formatDateDay: function (timestamp) {
-            var d = new Date(timestamp);
-            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+            return this.formatDate(timestamp, 'yyyy-mm-dd');
         },
 
         formatPercentage: function (data) {
             return Math.round(data * 100) / 100 + '%';
+        },
+
+        parseDate: function (dateStr, format) {
+            format = this.parseFormat(format);
+            return DPGlobal.parseDate(dateStr, format, 'zh-CN', 'standard');
         }
     });
     

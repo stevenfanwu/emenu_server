@@ -8,8 +8,13 @@ define(function (require, exports, module) {
 
     var StatRouter = BaseRouter.extend({
         routes: {
-            '': 'showStat',
+            '': 'showOrder',
+            'order': 'showOrder',
             'stat': 'showStat'
+        },
+
+        showOrder: function () {
+            this.page.trigger('showOrder');
         },
 
         showStat: function () {
