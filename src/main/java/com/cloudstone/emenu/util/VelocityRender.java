@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.User;
-import com.cloudstone.emenu.data.vo.OrderDishVO;
+import com.cloudstone.emenu.data.vo.DishGroup;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.web.velocitytool.Utils;
@@ -33,11 +33,11 @@ public class VelocityRender {
     @Autowired
     private Utils utils;
     
-    public String renderBill(Bill bill, User user, List<OrderDishVO> dishes, String template) {
+    public String renderBill(Bill bill, User user, List<DishGroup> dishGroups, String template) {
         
         VelocityContext context = new VelocityContext();
         context.put("bill", bill);
-        context.put("dishes", dishes);
+        context.put("dishGroups", dishGroups);
         context.put("order", bill.getOrder());
         context.put("table", bill.getOrder().getTable());
         context.put("time", utils.formatDate(bill.getCreatedTime()));
@@ -49,9 +49,9 @@ public class VelocityRender {
         return render(context, template);
     }
     
-    public String renderOrder(OrderVO order, User user, List<OrderDishVO> dishes, String template) {
+    public String renderOrder(OrderVO order, User user, List<DishGroup> dishGroups, String template) {
         VelocityContext context = new VelocityContext();
-        context.put("dishes", dishes);
+        context.put("dishGroups", dishGroups);
         context.put("order", order);
         context.put("table", order.getTable());
         context.put("time", utils.formatDate(order.getUpdateTime()));

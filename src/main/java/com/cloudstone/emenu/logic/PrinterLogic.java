@@ -29,6 +29,7 @@ import com.cloudstone.emenu.storage.db.IPrinterConfigDb;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.PrinterUtils;
 import com.cloudstone.emenu.util.VelocityRender;
+import com.cloudstone.emenu.wrap.DishWraper;
 
 /**
  * @author xuhongfeng
@@ -36,17 +37,33 @@ import com.cloudstone.emenu.util.VelocityRender;
  */
 @Component
 public class PrinterLogic extends BaseLogic {
+    
     private static final Logger LOG = LoggerFactory.getLogger(PrinterLogic.class);
     
-    private static final String DIVIDER = "\n------------------------\n";
+    @Autowired
+    private DishWraper dishWraper;
     
+    private static final String DIVIDER = "\n---------------------------------------\n";
+    
+//    private static final String DISH_TEMPLATE = "\n" +
+//            "菜品\t数量*单价\t金额\n" +
+//            "#foreach($dish in $dishes)\n" +
+//            "$dish.name\t$dish.number*$dish.price\t$dish.totalCost\n" +
+//            "#end" +
+//            "\n";
+    
+
     private static final String DISH_TEMPLATE = "\n" +
-            "菜品\t数量*单价\t金额\n" +
-            "#foreach($dish in $dishes)\n" +
-            "$dish.name\t$dish.number*$dish.price\t$dish.totalCost\n" +
+            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "数量*单价"
+                + PrinterUtils.absoluteHorizontalPosition(1, 125) + "金额\n" +
+            "#foreach($group in $dishGroups)\n" +
+                "【$group.category】\n" +
+                "#foreach($dish in $group.dishes)\n" +
+                "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0)
+                    + "$dish.number*$dish.price" + PrinterUtils.absoluteHorizontalPosition(1, 125) + "$dish.totalCost\n" +
+                "#end" +
             "#end" +
             "\n";
-    
     
     @Autowired
     private VelocityRender velocityRender;
@@ -81,11 +98,14 @@ public class PrinterLogic extends BaseLogic {
                 for (OrderDishVO dish:bill.getOrder().getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    String content = velocityRender.renderBill(bill, user, dishes, templateString);
+                    String content = velocityRender.renderBill(bill,
+                            user, dishWraper.wrapDishGroup(context, dishes), templateString);
                     PrinterUtils.print(printer, content);
                 }
             } else {
-                String content = velocityRender.renderBill(bill, user, bill.getOrder().getDishes(), templateString);
+                String content = velocityRender.renderBill(bill, user,
+                        dishWraper.wrapDishGroup(context, bill.getOrder().getDishes()),
+                        templateString);
                 PrinterUtils.print(printer, content);
             }
         }
@@ -136,11 +156,14 @@ public class PrinterLogic extends BaseLogic {
                 for (OrderDishVO dish:order.getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    String content = velocityRender.renderOrder(order, user, dishes, templateString);
+                    String content = velocityRender.renderOrder(order, user,
+                            dishWraper.wrapDishGroup(context, dishes), templateString);
                     PrinterUtils.print(printer, content);
                 }
             } else {
-                String content = velocityRender.renderOrder(order, user, order.getDishes(), templateString);
+                String content = velocityRender.renderOrder(order, user,
+                        dishWraper.wrapDishGroup(context,order.getDishes()),
+                        templateString);
                 PrinterUtils.print(printer, content);
             }
         }

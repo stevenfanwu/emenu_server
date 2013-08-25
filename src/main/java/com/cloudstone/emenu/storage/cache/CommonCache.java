@@ -41,6 +41,9 @@ public class CommonCache extends BaseCache {
                 categoryMap.put(goodId, category);
             }
         }
+        if (category == null) {
+            category = "其它";
+        }
         return category;
     }
     

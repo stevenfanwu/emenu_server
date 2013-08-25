@@ -286,7 +286,7 @@ public class MenuLogic extends BaseLogic {
     }
     
     public List<Chapter> listChapters(EmenuContext context, final int menuId, int dishId) {
-        List<Chapter> chapters = chapterDb.listChapters(context, menuId);
+        List<Chapter> chapters = chapterDb.listChapters(context, menuId, dishId);
         DataUtils.filterDeleted(chapters);
         return chapters;
     }
