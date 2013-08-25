@@ -15,4 +15,5 @@ public interface IDb {
     public int getMaxId(EmenuContext context) ;
     public void delete(EmenuContext context, int id) ;
     public String getTableName();
+    public int count(EmenuContext context);
 }

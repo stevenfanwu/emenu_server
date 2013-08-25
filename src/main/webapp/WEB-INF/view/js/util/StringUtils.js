@@ -32,8 +32,7 @@ define(function (require, exports, module) {
         parseDate: function (dateStr, format) {
             format = this.parseFormat(format);
             var  time = DPGlobal.parseDate(dateStr, format, 'zh-CN', 'standard').getTime();
-            time = time - 8 * 3600 * 1000;
-            return new Date(time);
+            return new Date(time - 8 * 3600 * 1000);
         }
     });
     

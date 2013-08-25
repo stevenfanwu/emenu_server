@@ -1,6 +1,5 @@
 package com.cloudstone.emenu.ctrl.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +37,7 @@ public class StatisticsApiController extends BaseApiController {
         if (time > 0) {
             return statisticsLogic.listGeneralStat(context, time, page);
         } else if (startTime > 0) {
-            GeneralStat stat = statisticsLogic.getGeneralStat(context, startTime, endTime);
-            List<GeneralStat> stats = new ArrayList<GeneralStat>(1);
-            stats.add(stat);
-            return stats;
+            return statisticsLogic.listGeneralStat(context, startTime, endTime);
         } else {
             time = System.currentTimeMillis();
             return statisticsLogic.listGeneralStat(context, time, page);

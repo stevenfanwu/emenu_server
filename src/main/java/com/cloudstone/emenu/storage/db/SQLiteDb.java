@@ -57,6 +57,12 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     @Override
+    public int count(EmenuContext context) {
+        String sql = "SELECT count(*) FROM " + getTableName() + " WHERE deleted=0";
+        return queryInt(context, sql, StatementBinder.NULL);
+    }
+    
+    @Override
     public int getMaxId(EmenuContext context) {
         String sql = "SELECT MAX(id) FROM " + getTableName();
         return queryInt(context, sql, StatementBinder.NULL);
@@ -165,6 +171,7 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
                     SQLiteStatement stmt = conn.prepare(sql);
                     try {
                         binder.onBind(stmt);
+                        LOG.info(sql);
                         return parseData(stmt, rowMapper);
                     } finally {
                         stmt.dispose();

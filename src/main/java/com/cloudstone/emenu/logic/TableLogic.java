@@ -101,6 +101,10 @@ public class TableLogic extends BaseLogic {
         return tables;
     }
     
+    public int tableCount(EmenuContext context) {
+        return tableDb.count(context);
+    }
+    
     public List<Table> getOccupied(EmenuContext context) {
         List<Table> tables = getAll(context);
         CollectionUtils.filter(tables, new Tester<Table>() {

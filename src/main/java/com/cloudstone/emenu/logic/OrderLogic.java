@@ -150,7 +150,7 @@ public class OrderLogic extends BaseLogic {
             throw new DataConflictException("请勿重复提交订单");
         }
         Order order = getOrder(context, bill.getOrderId());
-        if (order == null) {
+        if (order == null || order.isDeleted()) {
             throw new BadRequestError();
         }
         Table table = tableLogic.get(context, order.getTableId());
@@ -193,7 +193,7 @@ public class OrderLogic extends BaseLogic {
         return billDb.getByOrderId(context, orderId);
     }
 
-    public List<Order> getOrders(EmenuContext context, long time) {
+    public List<Order> getDailyOrders(EmenuContext context, long time) {
         long currentDay = (long) (time / UnitUtils.DAY);
         long startTime = currentDay * UnitUtils.DAY;
         long endTime = startTime + UnitUtils.DAY;
@@ -203,11 +203,6 @@ public class OrderLogic extends BaseLogic {
 
     public List<Order> getOrders(EmenuContext context, long startTime, long endTime) {
         List<Order> orders = orderDb.getOrdersByTime(context, startTime, endTime);
-        List<Bill> bills = billDb.getBillsByTime(context, startTime, endTime);
-        DataUtils.filterDeleted(bills);
-        for (Bill bill : bills) {
-            orders.add(bill.getOrder());
-        }
         DataUtils.filterDeleted(orders);
         Collections.sort(orders, ORDER_COMPARATOR);
         return orders;
@@ -216,15 +211,7 @@ public class OrderLogic extends BaseLogic {
     public List<Bill> getBills(EmenuContext context, long startTime, long endTime) {
         if (startTime <= 0 || endTime <= 0 || startTime > endTime)
             throw new BadRequestError();
-        List<Bill> bills = null;
-        if (startTime == endTime) {
-            long currentDay = (long) (startTime / UnitUtils.DAY);
-            long start = currentDay * UnitUtils.DAY;
-            long end = start + UnitUtils.DAY;
-            bills = billDb.getBillsByTime(context, start, end);
-        } else {
-            bills = billDb.getBillsByTime(context, startTime, endTime);
-        }
+        List<Bill> bills = billDb.getBillsByTime(context, startTime, endTime);
         DataUtils.filterDeleted(bills);
         return bills;
     }

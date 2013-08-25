@@ -90,7 +90,15 @@ public class UnitUtils {
     }
 
     public static long getDayByMillis(long millis) {
-        return millis / (long) DAY;
+        return (millis + 8*HOUR) / (long) DAY;
     }
 
+    /**
+     * 
+     * @return  timestamp of 0'clock
+     */
+    public static long getDayStart(long time) {
+        long day = getDayByMillis(time);
+        return day*DAY - 8 * HOUR;
+    }
 }

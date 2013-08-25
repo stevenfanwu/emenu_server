@@ -68,8 +68,7 @@ define(function (require, exports, module) {
             var HOUR = 3600 * 1000;
             var DAY = 24 * HOUR;
             var time = new Date().getTime();
-            time = Math.floor(time / DAY) * DAY;
-            time = time - 8 * HOUR;
+            time = Math.floor((time + 8 * HOUR) / DAY) * DAY - 8 * HOUR;
 
             if (this.options.timeMode === 'time') {
                 if (!isStart) {
@@ -79,7 +78,7 @@ define(function (require, exports, module) {
                 if (isStart) {
                     time = time - 6 * DAY;
                 } else {
-                    time = time + DAY;
+                    time = time + DAY - 1;
                 }
             }
             return new Date(time);
@@ -114,7 +113,9 @@ define(function (require, exports, module) {
 
             dateStr = this.$('.date-end input').val();
             data.end = StringUtils.parseDate(dateStr, format);
-            data.end = new Date(data.end.getTime() + 24 * 3600 * 1000);
+            if (this.options.timeMode === 'date') {
+                data.end = new Date(data.end.getTime() + 24 * 3600 * 1000 - 1);
+            }
 
             this.trigger('dateChanged', data);
         }

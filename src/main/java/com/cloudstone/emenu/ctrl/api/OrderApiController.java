@@ -58,12 +58,12 @@ public class OrderApiController extends BaseApiController {
         }
         List<Order> orders;
         if (time > 0) {
-            orders = orderLogic.getOrders(context, time);
+            orders = orderLogic.getDailyOrders(context, time);
         } else if (startTime > 0) {
             orders = orderLogic.getOrders(context, startTime, endTime);
         } else {
             time = System.currentTimeMillis();
-            orders = orderLogic.getOrders(context, time);
+            orders = orderLogic.getDailyOrders(context, time);
         }
         return orderWraper.wrap(context, orders);
     }
