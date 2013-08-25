@@ -17,7 +17,7 @@ public class SQLBuilder {
         super();
     }
     
-    protected SQLBuilder append(Object s) {
+    public SQLBuilder append(Object s) {
         sb.append(s);
         return this;
     }

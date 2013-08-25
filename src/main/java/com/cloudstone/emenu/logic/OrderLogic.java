@@ -19,6 +19,7 @@ import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Bill;
+import com.cloudstone.emenu.data.CancelDishRecord;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
@@ -67,6 +68,9 @@ public class OrderLogic extends BaseLogic {
     @Autowired
     private PrinterLogic printerLogic;
 
+    @Autowired
+    private RecordLogic recordLogic;
+    
     @Autowired
     protected OrderWraper orderWraper;
 
@@ -264,6 +268,13 @@ public class OrderLogic extends BaseLogic {
             order.setOriginPrice(order.getOriginPrice() - count*dish.getPrice());
             updateOrder(context, order);
             
+            CancelDishRecord record = new CancelDishRecord();
+            record.setTime(System.currentTimeMillis());
+            record.setDishId(dishId);
+            record.setCount(count);
+            record.setOrderId(orderId);
+            recordLogic.addCancelDishRecord(context, record);
+            
             context.commitTransaction();
         } finally {
             context.closeTransaction(dataSource);
@@ -301,6 +312,7 @@ public class OrderLogic extends BaseLogic {
             //update table
             table.setOrderId(order.getId());
             tableLogic.update(context, table);
+            
             context.commitTransaction();
             return order;
         } finally {
