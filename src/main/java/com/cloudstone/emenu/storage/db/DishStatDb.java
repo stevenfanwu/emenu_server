@@ -19,8 +19,8 @@ public class DishStatDb extends SQLiteDb implements IDishStatDb {
     private static final String TABLE_NAME = "dishstat";
 
     @Override
-    public DishStat get(EmenuContext context, long day) {
-        DayBinder binder = new DayBinder(day);
+    public DishStat get(EmenuContext context, String dishName, long day) {
+        DayBinder binder = new DayBinder(dishName, day);
         return queryOne(context, SQL_SELECT_BY_DAY, binder, rowMapper);
     }
 
@@ -101,6 +101,7 @@ public class DishStatDb extends SQLiteDb implements IDishStatDb {
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
+        .appendWhere(Column.DISH_NAME)
         .appendWhere(Column.DAY).build();
 
     private static final RowMapper<DishStat> rowMapper = new RowMapper<DishStat>() {
@@ -126,15 +127,18 @@ public class DishStatDb extends SQLiteDb implements IDishStatDb {
 
     private static final class DayBinder implements StatementBinder {
         private final long day;
+        private final String dishName;
 
-        public DayBinder(long day) {
+        public DayBinder(String dishName, long day) {
             super();
             this.day = day;
+            this.dishName = dishName;
         }
 
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
-            stmt.bind(1, day);
+            stmt.bind(1, dishName);
+            stmt.bind(2, day);
         }
     }
 }

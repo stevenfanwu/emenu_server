@@ -32,8 +32,8 @@ public class CancelDishRecordDb extends SQLiteDb implements ICancelDishRecordDb 
         String sql = new SQLBuilder().append("SELECT COUNT(*) FROM ")
             .append(TABLE_NAME)
             .appendWhere(Column.DISH_ID)
-            .append(" AND startTime>=?")
-            .append(" AND endTime<=?")
+            .append(" AND time>=?")
+            .append(" AND time<=?")
             .build();
         return queryInt(context, sql, new StatementBinder() {
             

@@ -10,6 +10,7 @@
 <ul class="nav nav-tabs">
     #@stat_nav_item("order")历史订单#end
     #@stat_nav_item("stat")综合统计#end
+    #@stat_nav_item("dish-stat")菜品统计#end
 </ul>
 <div class="bottom-content">
 </div>

@@ -10,7 +10,8 @@ define(function (require, exports, module) {
         routes: {
             '': 'showOrder',
             'order': 'showOrder',
-            'stat': 'showStat'
+            'stat': 'showStat',
+            'dish-stat': 'showDishStat'
         },
         
         showOrder: function () {
@@ -19,6 +20,10 @@ define(function (require, exports, module) {
         
         showStat: function () {
             this.page.trigger('showStat');
+        },
+        
+        showDishStat: function () {
+            this.page.trigger('showDishStat');
         }
     });
     

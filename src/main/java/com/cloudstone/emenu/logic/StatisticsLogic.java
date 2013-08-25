@@ -10,9 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.EmenuContext;
+import com.cloudstone.emenu.data.BaseStat;
 import com.cloudstone.emenu.data.Bill;
+import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.DishStat;
 import com.cloudstone.emenu.data.GeneralStat;
+import com.cloudstone.emenu.data.vo.OrderDishVO;
+import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.ServerError;
+import com.cloudstone.emenu.storage.db.IDishStatDb;
 import com.cloudstone.emenu.storage.db.IGenStatDb;
 import com.cloudstone.emenu.util.UnitUtils;
 
@@ -24,135 +30,267 @@ public class StatisticsLogic extends BaseLogic {
 
     @Autowired
     private IGenStatDb genStatDb;
+    @Autowired
+    private IDishStatDb dishStatDb;
 
     @Autowired
     private OrderLogic orderLogic;
-
     @Autowired
     private TableLogic tableLogic;
+    @Autowired
+    private RecordLogic recordLogic;
+    @Autowired
+    private MenuLogic menuLogic;
 
     public List<GeneralStat> listGeneralStat(EmenuContext context, long time, int page) {
-        long endTime = UnitUtils.getDayStart(time - page*PAGE_COUNT*UnitUtils.DAY);
-        long startTime = endTime - PAGE_COUNT * UnitUtils.DAY;
-        return listGeneralStat(context, startTime, endTime);
+        return new GenStatGetter(context).list(time, page);
     }
 
     public List<GeneralStat> listGeneralStat(EmenuContext context, long startTime, long endTime) {
-        List<GeneralStat> ret = new LinkedList<GeneralStat>();
+        return new GenStatGetter(context).list(startTime, endTime);
+    }
+
+    public List<DishStat> listDishStat(EmenuContext context, long time, int page) {
+        long endTime = UnitUtils.getDayStart(time - page*PAGE_COUNT*UnitUtils.DAY);
+        long startTime = endTime - PAGE_COUNT * UnitUtils.DAY;
+        return listDishStat(context, startTime, endTime);
+    }
+
+    public List<DishStat> listDishStat(EmenuContext context, long startTime, long endTime) {
+        List<Dish> dishes = menuLogic.getAllDish(context);
+        List<DishStat> ret = new LinkedList<DishStat>();
+        for (Dish dish:dishes) {
+            List<DishStat> dishStats = new DishStatGetter(context, dish)
+                .list(startTime, endTime);
+            DishStat stat = null;
+            for (DishStat s:dishStats) {
+                if (stat == null) {
+                    stat = s;
+                } else {
+                    stat.setIncome(s.getIncome() + stat.getIncome());
+                    stat.setCount(s.getCount() + stat.getCount());
+                    stat.setBackCount(s.getBackCount() + stat.getBackCount());
+                    stat.setDiscount(s.getDiscount() + stat.getDiscount());
+                }
+            }
+            if (stat == null) {
+                stat = new DishStat();
+                stat.setDishName(dish.getName());
+                stat.setPrice(dish.getPrice());
+            }
+            ret.add(stat);
+        }
+        for (int i=0; i<ret.size(); i++) {
+            DishStat s = ret.get(i);
+            if (s.getId() == 0) {
+                s.setId(0-i);
+            }
+        }
+        return ret;
+    }
+
+    
+    private abstract class StatGetter<T extends BaseStat> {
+        protected final EmenuContext context;
+        
+        public StatGetter(EmenuContext context) {
+            super();
+            this.context = context;
+        }
+
+        public List<T> list(long time, int page) {
+            long endTime = UnitUtils.getDayStart(time - page*PAGE_COUNT*UnitUtils.DAY);
+            long startTime = endTime - PAGE_COUNT * UnitUtils.DAY;
+            return list(startTime, endTime);
+        }
+        
+        public List<T> list(long startTime, long endTime) {
+        List<T> ret = new LinkedList<T>();
         long p = startTime;
         if ((p-8*UnitUtils.HOUR) % UnitUtils.DAY != 0) {
             p = UnitUtils.getDayStart(p + UnitUtils.DAY);
         }
         if (p != startTime) {
-            ret.add(getDailyStat(context, startTime, p));
+            ret.add(getOne(startTime, p));
         }
         while (p < endTime) {
             long end = p + UnitUtils.DAY;
             if (end > endTime) {
                 end = endTime;
             }
-            ret.add(getDailyStat(context, p, end));
+            ret.add(getOne(p, end));
             p += UnitUtils.DAY;
         }
         for (int i=0; i<ret.size(); i++) {
-            GeneralStat stat = ret.get(i);
+            T stat = ret.get(i);
             if (stat.getId() == 0) {
                 //mock id
                 stat.setId(0 - i);
             }
         }
         return ret;
-    }
+        }
 
-    public GeneralStat getDailyStat(EmenuContext context, long startTime, long endTime) {
-        GeneralStat stat = null;
-        long today = UnitUtils.getDayStart(System.currentTimeMillis());
-        if (endTime - startTime == UnitUtils.DAY && endTime<=today) {
-            long day = UnitUtils.getDayByMillis((startTime+endTime)/2);
-            stat = genStatDb.get(context, day);
-            if (stat == null) {
-                stat = computeDailyStat(context, startTime);
-                long now = System.currentTimeMillis();
-                stat.setCreatedTime(now);
-                stat.setUpdateTime(now);
-                genStatDb.add(context, stat);
+        private T getOne(long startTime, long endTime) {
+            T stat = null;
+            long today = UnitUtils.getDayStart(System.currentTimeMillis());
+            if (endTime - startTime == UnitUtils.DAY && endTime<=today) {
+                long day = UnitUtils.getDayByMillis((startTime+endTime)/2);
+                stat = getFromDb(day);
+                if (stat == null) {
+                    stat = compute(context, startTime);
+                    long now = System.currentTimeMillis();
+                    stat.setCreatedTime(now);
+                    stat.setUpdateTime(now);
+                    addToDb(stat);
+                }
+            } else {
+                stat = compute(startTime, endTime);
             }
-        } else {
-            stat = computeDailyStat(context, startTime, endTime);
+            return stat;
         }
-        return stat;
+
+        private T compute(EmenuContext context, long time) {
+            long startTime = UnitUtils.getDayStart(time);
+            long endTime = startTime + UnitUtils.DAY;
+            return compute(startTime, endTime);
+        }
+        
+        protected abstract T getFromDb(long day);
+        protected abstract void addToDb(T stat);
+        protected abstract T compute(long startTime, long endTime);
     }
+    
+    private class GenStatGetter extends StatGetter<GeneralStat> {
 
-    private GeneralStat computeDailyStat(EmenuContext context, long time) {
-        long startTime = UnitUtils.getDayStart(time);
-        long endTime = startTime + UnitUtils.DAY;
-        return computeDailyStat(context, startTime, endTime);
-    }
+        public GenStatGetter(EmenuContext context) {
+            super(context);
+        }
 
-    private GeneralStat computeDailyStat(EmenuContext context, long startTime, long endTime) {
-        LOG.info("computeDailyStat");
-        LOG.info("startTime = " + startTime);
-        LOG.info("endTime = " + endTime);
+        @Override
+        protected GeneralStat getFromDb(long day) {
+            return genStatDb.get(context, day);
+        }
 
-        GeneralStat genStat = new GeneralStat();
+        @Override
+        protected void addToDb(GeneralStat stat) {
+            genStatDb.add(context, stat);
+        }
 
-        // TIME
-        genStat.setDay(UnitUtils.getDayByMillis((startTime+endTime)/2));
-
-        List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
-        LOG.info("bills.size = " + bills.size());
-        double income = 0;
-        int customers = 0;
-        int invoices = 0;
-        double invoiceAmount = 0;
-        double tips = 0;
-        for (Bill bill : bills) {
-            if (bill.getOrder() == null)
-                throw new ServerError("bill.getOrder is null!");
-            customers += bill.getOrder().getCustomerNumber();
-            if (bill.isInvoice()) {
-                invoices++;
-                invoiceAmount += bill.getInvoicePrice();
+        @Override
+        protected GeneralStat compute(long startTime, long endTime) {
+            GeneralStat genStat = new GeneralStat();
+    
+            // TIME
+            genStat.setDay(UnitUtils.getDayByMillis((startTime+endTime)/2));
+    
+            List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
+            double income = 0;
+            int customers = 0;
+            int invoices = 0;
+            double invoiceAmount = 0;
+            double tips = 0;
+            for (Bill bill : bills) {
+                if (bill.getOrder() == null)
+                    throw new ServerError("bill.getOrder is null!");
+                customers += bill.getOrder().getCustomerNumber();
+                if (bill.isInvoice()) {
+                    invoices++;
+                    invoiceAmount += bill.getInvoicePrice();
+                }
+                income += bill.getCost();
+                tips += bill.getTip();
             }
-            income += bill.getCost();
-            tips += bill.getTip();
+    
+            // COUNT
+            genStat.setCount(bills.size());
+            // INCOME
+            genStat.setIncome(income);
+            // CUSTOMER_COUNT
+            genStat.setCustomerCount(customers);
+            // INVOICE_COUNT
+            genStat.setInvoiceCount(invoices);
+            // INVOICE_AMOUNT
+            genStat.setInvoiceAmount(invoiceAmount);
+            // SERVICE_AMOUNT
+            genStat.setTips(tips);
+    
+            // TABLERATE
+            int tableCount = tableLogic.tableCount(context);
+            double rate = 0;
+            if (0 != tableCount) {
+                rate = 100.0 * bills.size() / tableCount;
+            }
+            genStat.setTableRate(rate);
+    
+            // AVE_PERSON_PRICE
+            if (customers == 0) {
+                genStat.setAvePerson(0);
+            } else {
+                genStat.setAvePerson(income / customers);
+            }
+    
+            // AVE_ORDER_PRICE
+            if (bills.size() == 0) {
+                genStat.setAveOrder(0);
+            } else {
+                genStat.setAveOrder(income / bills.size());
+            }
+            return genStat;
         }
-
-        // COUNT
-        genStat.setCount(bills.size());
-        // INCOME
-        genStat.setIncome(income);
-        // CUSTOMER_COUNT
-        genStat.setCustomerCount(customers);
-        // INVOICE_COUNT
-        genStat.setInvoiceCount(invoices);
-        // INVOICE_AMOUNT
-        genStat.setInvoiceAmount(invoiceAmount);
-        // SERVICE_AMOUNT
-        genStat.setTips(tips);
-
-        // TABLERATE
-        int tableCount = tableLogic.tableCount(context);
-        double rate = 0;
-        if (0 != tableCount) {
-            rate = 100.0 * bills.size() / tableCount;
-        }
-        genStat.setTableRate(rate);
-
-        // AVE_PERSON_PRICE
-        if (customers == 0) {
-            genStat.setAvePerson(0);
-        } else {
-            genStat.setAvePerson(income / customers);
-        }
-
-        // AVE_ORDER_PRICE
-        if (bills.size() == 0) {
-            genStat.setAveOrder(0);
-        } else {
-            genStat.setAveOrder(income / bills.size());
-        }
-        return genStat;
     }
+    
+    private class DishStatGetter extends StatGetter<DishStat> {
+        private final Dish dish;
 
+        public DishStatGetter(EmenuContext context, Dish dish) {
+            super(context);
+            this.dish = dish;
+        }
+
+        @Override
+        protected DishStat getFromDb(long day) {
+            return dishStatDb.get(context, dish.getName(), day);
+        }
+
+        @Override
+        protected void addToDb(DishStat stat) {
+            dishStatDb.add(context, stat);
+        }
+
+        @Override
+        protected DishStat compute(long startTime, long endTime) {
+            DishStat stat = new DishStat();
+    
+            // TIME
+            stat.setDay(UnitUtils.getDayByMillis((startTime+endTime)/2));
+    
+            List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
+            
+            double income = 0;
+            int count = 0;
+            for (Bill bill:bills) {
+                OrderVO order = bill.getOrder();
+                for (OrderDishVO d:order.getDishes()) {
+                    if (d.getId() == this.dish.getId()) {
+                        income += d.getPrice() * d.getNumber();
+                        count += d.getNumber();
+                    }
+                }
+            }
+            int backCount = recordLogic.getCancelDishCount(context,
+                    dish.getId(), startTime, endTime);
+            String category = menuLogic.getCategory(context, dish.getId());
+            
+            stat.setIncome(income);
+            stat.setCount(count);
+            stat.setBackCount(backCount);
+            stat.setDishName(dish.getName());
+            stat.setDishClass(category);
+            stat.setPrice(dish.getPrice());
+            //discount
+            
+            return stat;
+        }
+    }
 }

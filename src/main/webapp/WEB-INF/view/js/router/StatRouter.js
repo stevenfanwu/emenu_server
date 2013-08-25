@@ -10,11 +10,16 @@ define(function (require, exports, module) {
         routes: {
             '': 'showOrder',
             'order': 'showOrder',
-            'stat': 'showStat'
+            'stat': 'showStat',
+            'dish-stat': 'showDishStat'
         },
 
         showOrder: function () {
             this.page.trigger('showOrder');
+        },
+
+        showDishStat: function () {
+            this.page.trigger('showDishStat');
         },
 
         showStat: function () {
