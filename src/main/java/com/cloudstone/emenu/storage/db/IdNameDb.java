@@ -58,7 +58,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
     /* ---------- SQL ---------- */
     private static enum Column {
         ID("id"), NAME("name"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {

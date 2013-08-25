@@ -46,7 +46,7 @@ public class UserStatDb extends SQLiteDb implements IUserStatDb {
         ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
         AVE_PERSON("avePerson"), AVE_ORDER("aveOrder"),
         CUSTOMER_COUNT("customerCount"), USER_NAME("userName"), 
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
 
         private final String str;
 

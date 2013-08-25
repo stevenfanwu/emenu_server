@@ -73,7 +73,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     private static enum Column {
         ID("id"), ORIGIN_PRICE("originPrice"), PRICE("price"), TABLE_ID("tableId"),
         USER_ID("userId"), CUSTOMER_NUMBER("customerNumber"), STATUS("status"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {

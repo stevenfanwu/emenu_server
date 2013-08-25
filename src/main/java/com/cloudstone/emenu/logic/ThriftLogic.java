@@ -344,7 +344,7 @@ public class ThriftLogic extends BaseLogic {
             g.setRemarks(CollectionUtils.arrayToList(r.getRemarks()));
             g.setName(dish.getName());
             g.setShortName(dish.getName());
-            g.setCategory(thriftCache.getCategory(context, g.getId()));
+            g.setCategory(menuLogic.getCategory(context, g.getId()));
             g.setOrderid(orderId);
             g.setOnSales(dish.isSpecialPrice());
             //TODO
@@ -374,9 +374,12 @@ public class ThriftLogic extends BaseLogic {
         return thriftSessionDb.getLatest(context, imei);
     }
     
-    public void submitPadInfo(EmenuContext context, PadInfo info) {
+    public void submitPadInfo(EmenuContext context, PadInfo info) throws TException {
         String imei = info.getIMEI();
         Pad pad = deviceLogic.getPad(context, imei);
+        if (pad == null) {
+            throw new TException("pad not found");
+        }
         pad.setBatteryLevel(info.getBatteryLevel());
         deviceLogic.updatePad(context, pad);
     }

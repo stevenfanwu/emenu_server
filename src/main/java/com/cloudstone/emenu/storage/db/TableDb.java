@@ -41,7 +41,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
         ID("id"), NAME("name"), TYPE("type"),
         CAPACITY("capacity"), MIN_CHARGE("minCharge"), TIP_MODE("tipMode"),
         TIP("tip"), STATUS("status"), ORDER_ID("orderId"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {

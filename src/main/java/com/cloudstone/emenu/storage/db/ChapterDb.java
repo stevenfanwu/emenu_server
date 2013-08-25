@@ -32,6 +32,21 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     }
     
     @Override
+    public List<Chapter> listChapters(EmenuContext context, final int menuId,
+            final int dishId) {
+        String sql = "SELECT c.* FROM chapter c JOIN menuPage m ON c.id=m.chapterId" +
+                " AND m.deleted=0 JOIN dishPage dp ON m.id=dp.id1 AND dp.deleted=0" +
+                " AND dp.id2=? WHERE c.menuId=?";
+        return query(context, sql, new StatementBinder() {
+            @Override
+            public void onBind(SQLiteStatement stmt) throws SQLiteException {
+                stmt.bind(1, dishId);
+                stmt.bind(2, menuId);
+            }
+        }, rowMapper);
+    }
+    
+    @Override
     public Chapter getChapterByName(EmenuContext context, String name) {
         return getByName(context, name, rowMapper);
     }
@@ -85,7 +100,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     private static final String TABLE_NAME = "chapter";
     private static enum Column {
         ID("id"), NAME("name"), MENU_ID("menuId"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {

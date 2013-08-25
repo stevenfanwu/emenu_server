@@ -80,9 +80,9 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     /* --------- SQL ---------- */
     private static final String TABLE_NAME = "menuPage";
     private static enum Column {
-        ID("id"), CHAPTER_ID("pageId"), DISH_COUNT("dishCount"),
+        ID("id"), CHAPTER_ID("chapterId"), DISH_COUNT("dishCount"),
         ORDINAL("ordinal"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {

@@ -36,6 +36,16 @@ public class OrderDishVO extends Dish {
         o.setOrderId(orderId);
         return o;
     }
+    
+    public OrderDish toOrderDish() {
+        OrderDish r = new OrderDish();
+        r.setDishId(getId());
+        r.setOrderId(orderId);
+        r.setNumber(number);
+        r.setRemarks(remarks);
+        r.setPrice(getPrice());
+        return r;
+    }
 
     public double getTotalCost() {
         return totalCost;

@@ -20,6 +20,7 @@ public interface IChapterDb extends IDb {
     public void deleteChapter(EmenuContext context, int id) ;
     public List<Chapter> getAllChapter(EmenuContext context) ;
     public List<Chapter> listChapters(EmenuContext context, int menuId) ;
+    public List<Chapter> listChapters(EmenuContext context, int menuId, int dishId) ;
     public List<Chapter> listChapters(EmenuContext context, int[] ids) ;
     public Chapter getChapter(EmenuContext context, int id) ;
     public Chapter getChapterByName(EmenuContext context, String name) ;

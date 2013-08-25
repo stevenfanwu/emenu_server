@@ -42,7 +42,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     private static enum Column {
         ID("id"), NAME("name"), PASSWORD("password"),
         TYPE("type"), REAL_NAME("realName"), COMMENT("comment"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
         
         private final String str;
         private Column(String str) {

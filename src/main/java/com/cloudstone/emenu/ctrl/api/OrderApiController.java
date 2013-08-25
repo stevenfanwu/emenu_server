@@ -93,4 +93,13 @@ public class OrderApiController extends BaseApiController {
         Order order = orderLogic.cancelDish(context, orderId, dishId, count);
         return orderWraper.wrap(context, order);
     }
+    
+    @RequestMapping(value="/api/orders", method=RequestMethod.POST)
+    public @ResponseBody OrderVO submit(HttpServletRequest request
+            , HttpServletResponse response
+            , OrderVO order) {
+        EmenuContext context = newContext(request);
+        Order o = orderLogic.submit(context, order, order.getTable(), order.getDishes());
+        return orderWraper.wrap(context, o);
+    }
 }

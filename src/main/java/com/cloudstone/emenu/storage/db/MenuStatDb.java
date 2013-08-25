@@ -45,7 +45,7 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
     private static enum Column {
         ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
         CHAPTER_NAME("chapterName"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
 
         private final String str;
 

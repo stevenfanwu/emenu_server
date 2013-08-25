@@ -46,7 +46,7 @@ public class TableStatDb extends SQLiteDb implements ITableStatDb {
         ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
         AVE_PERSON("avePerson"), AVE_ORDER("aveOrder"),
         CUSTOMER_COUNT("customerCount"), TABLE_NAME("tableName"), TIPS("tips"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
 
         private final String str;
 

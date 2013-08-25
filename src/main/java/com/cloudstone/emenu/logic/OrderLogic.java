@@ -25,6 +25,7 @@ import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
@@ -157,6 +158,7 @@ public class OrderLogic extends BaseLogic {
             throw new BadRequestError();
         }
         order.setStatus(Const.OrderStatus.PAYED);
+        order.setPrice(bill.getCost());
         OrderVO orderVO = orderWraper.wrap(context, order);
         bill.setOrder(orderVO);
         long now = System.currentTimeMillis();
@@ -170,6 +172,7 @@ public class OrderLogic extends BaseLogic {
             table.setStatus(TableStatus.EMPTY);
             table.setOrderId(0);
             tableLogic.update(context, table);
+            tableLogic.setCustomerNumber(context, table.getId(), 0);
 
             try {
                 printerLogic.printBill(context, bill, user);
@@ -281,20 +284,37 @@ public class OrderLogic extends BaseLogic {
         return order;
     }
     
-    public Order submit(EmenuContext context, Order order, Table table, List<OrderDish> dishes) {
+    public Order submit(EmenuContext context, Order order, Table table, List<OrderDishVO> dishes) {
         int customerNumber = tableLogic.getCustomerNumber(context, table.getId());
         context.beginTransaction(dataSource);
         try {
+            //save order
+            order.setTableId(table.getId());
             order.setCustomerNumber(customerNumber);
+            double originPrice = 0;
+            for (OrderDishVO r:dishes) {
+                Dish dish = menuLogic.getDish(context, r.getId());
+                if (dish == null || dish.isDeleted()) {
+                    throw new NotFoundException("存在非法菜品");
+                }
+                originPrice += dish.getPrice() * r.getNumber();
+                r.setPrice(dish.getPrice());
+            }
+            order.setOriginPrice(originPrice);
+            order.setUserId(context.getLoginUserId());
             addOrder(context, order);
-            for (OrderDish r:dishes) {
+            
+            //save order dish
+            for (OrderDishVO r:dishes) {
                 r.setOrderId(order.getId());
                 r.setStatus(Const.OrderDishStatus.ORDERED);
-                //TODO check price
-                addOrderDish(context, r);
+                addOrderDish(context, r.toOrderDish());
             }
+            
+            //update table
             table.setOrderId(order.getId());
             tableLogic.update(context, table);
+            context.commitTransaction();
             return order;
         } finally {
             context.closeTransaction(dataSource);

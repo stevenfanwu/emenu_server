@@ -26,6 +26,7 @@ import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.DbNotFoundException;
 import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.exception.PreconditionFailedException;
+import com.cloudstone.emenu.storage.cache.CommonCache;
 import com.cloudstone.emenu.storage.db.IChapterDb;
 import com.cloudstone.emenu.storage.db.IDishDb;
 import com.cloudstone.emenu.storage.db.IDishNoteDb;
@@ -36,7 +37,6 @@ import com.cloudstone.emenu.storage.db.IMenuDb;
 import com.cloudstone.emenu.storage.db.IMenuPageDb;
 import com.cloudstone.emenu.util.CnToPinyinUtils;
 import com.cloudstone.emenu.util.CollectionUtils;
-import com.cloudstone.emenu.util.CollectionUtils.Tester;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.StringUtils;
 
@@ -63,6 +63,9 @@ public class MenuLogic extends BaseLogic {
     
     @Autowired
     private ImageLogic imageLogic;
+    
+    @Autowired
+    private CommonCache commonCache;
     
     /* ---------- menu ---------- */
     public Menu addMenu(EmenuContext context, Menu menu) {
@@ -278,20 +281,13 @@ public class MenuLogic extends BaseLogic {
         return chapterDb.getChapter(context, id);
     }
     
+    public String getCategory(EmenuContext context, int dishId) {
+        return commonCache.getCategory(context, dishId);
+    }
+    
     public List<Chapter> listChapters(EmenuContext context, final int menuId, int dishId) {
-        List<MenuPage> pages = listMenuPageByDishId(context, dishId);
-        Set<Integer> chapterIds = new HashSet<Integer>();
-        for (MenuPage p:pages) {
-            chapterIds.add(p.getChapterId());
-        }
-        List<Chapter> chapters = chapterDb.listChapters(context, CollectionUtils.toIntArray(chapterIds));
+        List<Chapter> chapters = chapterDb.listChapters(context, menuId);
         DataUtils.filterDeleted(chapters);
-        CollectionUtils.filter(chapters, new Tester<Chapter>() {
-            @Override
-            public boolean test(Chapter data) {
-                return data.getMenuId() == menuId;
-            }
-        });
         return chapters;
     }
     

@@ -51,7 +51,7 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
         AVE_PERSON("avePerson"), AVE_ORDER("aveOrder"),
         CUSTOMER_COUNT("customerCount"), TABLE_RATE("tableRate"), 
         INVOICE_COUNT("invoiceCount"), INVOICE_AMOUNT("invoiceAmount"), TIPS("tips"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
 
         private final String str;
 

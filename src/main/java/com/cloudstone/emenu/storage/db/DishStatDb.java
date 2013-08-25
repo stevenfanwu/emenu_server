@@ -45,7 +45,7 @@ public class DishStatDb extends SQLiteDb implements IDishStatDb {
     private static enum Column {
         ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
         DISH_NAME("dishName"), DISH_CLASS("dishClass"), BACK_COUNT("backCount"), PRICE("price"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
 
         private final String str;
 
