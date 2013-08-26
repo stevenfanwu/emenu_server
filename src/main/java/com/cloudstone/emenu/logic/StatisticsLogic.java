@@ -4,6 +4,7 @@ package com.cloudstone.emenu.logic;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,6 +190,7 @@ public class StatisticsLogic extends BaseLogic {
             int customers = 0;
             int invoices = 0;
             double invoiceAmount = 0;
+            double discount = 0;
             double tips = 0;
             for (Bill bill : bills) {
                 if (bill.getOrder() == null)
@@ -197,6 +199,10 @@ public class StatisticsLogic extends BaseLogic {
                 if (bill.isInvoice()) {
                     invoices++;
                     invoiceAmount += bill.getInvoicePrice();
+                }
+                double originCost = bill.getOrder().getOriginPrice() + bill.getTip();
+                if (bill.getCost() > originCost) {
+                    discount += (originCost-bill.getCost());
                 }
                 income += bill.getCost();
                 tips += bill.getTip();
@@ -214,6 +220,8 @@ public class StatisticsLogic extends BaseLogic {
             genStat.setInvoiceAmount(invoiceAmount);
             // SERVICE_AMOUNT
             genStat.setTips(tips);
+            // Discount
+            genStat.setDiscount(discount);
     
             // TABLERATE
             int tableCount = tableLogic.tableCount(context);
@@ -268,6 +276,7 @@ public class StatisticsLogic extends BaseLogic {
             List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
             
             double income = 0;
+            double discount = 0;
             int count = 0;
             for (Bill bill:bills) {
                 OrderVO order = bill.getOrder();
@@ -275,6 +284,11 @@ public class StatisticsLogic extends BaseLogic {
                     if (d.getId() == this.dish.getId()) {
                         income += d.getPrice() * d.getNumber();
                         count += d.getNumber();
+                        if (bill.getDiscountDishIds() != null
+                                && ArrayUtils.contains(bill.getDiscountDishIds(), d.getId())
+                                && bill.getDiscount()>0) {
+                            discount += (d.getPrice()*d.getNumber()*(10 - bill.getDiscount()));
+                        }
                     }
                 }
             }
@@ -288,7 +302,7 @@ public class StatisticsLogic extends BaseLogic {
             stat.setDishName(dish.getName());
             stat.setDishClass(category);
             stat.setPrice(dish.getPrice());
-            //discount
+            stat.setDiscount(discount);
             
             return stat;
         }
