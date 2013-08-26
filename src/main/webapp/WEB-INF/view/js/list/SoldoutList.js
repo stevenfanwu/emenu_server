@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     "use strict";
 
     var BaseTable = require('./BaseTable');
+    var Trie = require('../util/Trie');
 
     var SoldoutList = BaseTable.extend({
         
@@ -12,13 +13,12 @@ define(function (require, exports, module) {
 
         CollectionType: require('../collection/DishCollection'),
 
+        queryResult: {},
+
         ItemType: require('./item/SoldoutItem'),
         
         filterModel: function (model) {
-            if (this.query) {
-                return model.get('name').indexOf(this.query) !== -1;
-            }
-            return true;
+            return !this.query || this.queryResult[model.get('id')];
         },
 
         initialize: function () {
@@ -31,12 +31,51 @@ define(function (require, exports, module) {
             }, this);
         },
         
+        doRender: function () {
+            BaseTable.prototype.doRender.apply(this, arguments);
+
+            this.trie1 = new Trie({
+                getKey: function (model) {
+                    return model.get('name');
+                }
+            });
+            this.trie1.build(this.collection);
+            this.trie2 = new Trie({
+                getKey: function (model) {
+                    return model.get('pinyin').replace(/,/g, '').replace(/\s/g, '');
+                }
+            });
+            this.trie2.build(this.collection);
+            this.trie3 = new Trie({
+                getKey: function (model) {
+                    var pinyin = model.get('pinyin').replace(/\s/g, '');
+                    var key = '';
+                    pinyin.split(',').forEach(function (word) {
+                        key = key + word[0];
+                    });
+                    return key;
+                }
+            });
+            this.trie3.build(this.collection);
+        },
         
         /* -------------------- Event Listener ----------------------- */
         
         onQuery: function (query) {
+            query = query || '';
+            query = query.replace(/\s/g, '');
             if (this.query !== query) {
                 this.query = query;
+                this.queryResult = {};
+                this.trie1.search(query).forEach(function (model) {
+                    this.queryResult[model.get('id')] = true;
+                }, this);
+                this.trie2.search(query).forEach(function (model) {
+                    this.queryResult[model.get('id')] = true;
+                }, this);
+                this.trie3.search(query).forEach(function (model) {
+                    this.queryResult[model.get('id')] = true;
+                }, this);
                 this.render();
             }
         }
