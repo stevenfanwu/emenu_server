@@ -7,5 +7,5 @@ import com.cloudstone.emenu.data.MenuStat;
 public interface IMenuStatDb extends IDb {
     public void add(EmenuContext context, MenuStat stat);
 
-    public MenuStat get(EmenuContext context, long day);
+    public MenuStat get(EmenuContext context, String name, long day);
 }

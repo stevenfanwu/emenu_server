@@ -1,6 +1,9 @@
 
 package com.cloudstone.emenu.logic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,11 +19,13 @@ import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.DishStat;
 import com.cloudstone.emenu.data.GeneralStat;
+import com.cloudstone.emenu.data.MenuStat;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.db.IDishStatDb;
 import com.cloudstone.emenu.storage.db.IGenStatDb;
+import com.cloudstone.emenu.storage.db.IMenuStatDb;
 import com.cloudstone.emenu.util.UnitUtils;
 
 @Component
@@ -33,6 +38,8 @@ public class StatisticsLogic extends BaseLogic {
     private IGenStatDb genStatDb;
     @Autowired
     private IDishStatDb dishStatDb;
+    @Autowired
+    private IMenuStatDb menuStatDb;
 
     @Autowired
     private OrderLogic orderLogic;
@@ -90,7 +97,55 @@ public class StatisticsLogic extends BaseLogic {
         return ret;
     }
 
-    
+    public List<MenuStat> listMenuStat(EmenuContext context, long time, int page) {
+        long endTime = UnitUtils.getDayStart(time - page * PAGE_COUNT * UnitUtils.DAY);
+        long startTime = endTime - PAGE_COUNT * UnitUtils.DAY;
+        return listMenuStat(context, startTime, endTime);
+    }
+
+    public List<MenuStat> listMenuStat(EmenuContext context, long startTime, long endTime) {
+        List<Dish> dishes = menuLogic.getAllDish(context);
+        HashMap<String, ArrayList<Dish>> cateToDishes = new HashMap<String, ArrayList<Dish>>();
+        List<MenuStat> ret = new LinkedList<MenuStat>();
+        for (Dish dish : dishes) {
+            String name = menuLogic.getCategory(context, dish.getId());
+            if (cateToDishes.containsKey(name)) {
+                cateToDishes.get(name).add(dish);
+            } else {
+                cateToDishes.put(name, new ArrayList<Dish>());
+            }
+        }
+        Iterator<String> iterator = cateToDishes.keySet().iterator();
+        while (iterator.hasNext()) {
+            String chapterName = iterator.next();
+            List<Dish> dishInCate = cateToDishes.get(chapterName);
+            List<MenuStat> menuStats = new MenuStatGetter(context, chapterName, dishInCate).list(
+                    startTime, endTime);
+            MenuStat stat = null;
+            for (MenuStat s : menuStats) {
+                if (stat == null) {
+                    stat = s;
+                } else {
+                    stat.setIncome(s.getIncome() + stat.getIncome());
+                    stat.setCount(s.getCount() + stat.getCount());
+                    stat.setDiscount(s.getDiscount() + stat.getDiscount());
+                }
+                if (stat == null) {
+                    stat = new MenuStat();
+                    stat.setChapterName(chapterName);
+                }
+            }
+            ret.add(stat);
+        }
+        for (int i = 0; i < ret.size(); i++) {
+            MenuStat s = ret.get(i);
+            if (s.getId() == 0) {
+                s.setId(0 - i);
+            }
+        }
+        return ret;
+    }
+
     private abstract class StatGetter<T extends BaseStat> {
         protected final EmenuContext context;
         
@@ -307,4 +362,64 @@ public class StatisticsLogic extends BaseLogic {
             return stat;
         }
     }
+
+    private class MenuStatGetter extends StatGetter<MenuStat> {
+        private final List<Dish> dishes;
+
+        private final String chapterName;
+
+        public MenuStatGetter(EmenuContext context, String name, List<Dish> dishes) {
+            super(context);
+            this.dishes = dishes;
+            this.chapterName = name;
+        }
+
+        @Override
+        protected MenuStat getFromDb(long day) {
+            return menuStatDb.get(context, chapterName, day);
+        }
+
+        @Override
+        protected void addToDb(MenuStat stat) {
+            menuStatDb.add(context, stat);
+        }
+
+        @Override
+        protected MenuStat compute(long startTime, long endTime) {
+            MenuStat stat = new MenuStat();
+
+            // TIME
+            stat.setDay(UnitUtils.getDayByMillis((startTime + endTime) / 2));
+
+            List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
+
+            double income = 0;
+            double discount = 0;
+            int count = 0;
+            for (Dish dish : this.dishes) {
+                for (Bill bill : bills) {
+                    OrderVO order = bill.getOrder();
+                    for (OrderDishVO d : order.getDishes()) {
+                        if (d.getId() == dish.getId()) {
+                            income += d.getPrice() * d.getNumber();
+                            count += d.getNumber();
+                            if (bill.getDiscountDishIds() != null
+                                    && ArrayUtils.contains(bill.getDiscountDishIds(), d.getId())
+                                    && bill.getDiscount() > 0) {
+                                discount += (d.getPrice() * d.getNumber() * (10 - bill
+                                        .getDiscount()));
+                            }
+                        }
+                    }
+                }
+            }
+            stat.setIncome(income);
+            stat.setCount(count);
+            stat.setChapterName(this.chapterName);
+            stat.setDiscount(discount);
+
+            return stat;
+        }
+    }
+
 }

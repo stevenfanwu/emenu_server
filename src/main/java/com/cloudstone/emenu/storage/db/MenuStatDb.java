@@ -16,11 +16,11 @@ import com.cloudstone.emenu.storage.db.util.StatementBinder;
 @Repository
 public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
 
-    private static final String TABLE_NAME = "dishstat";
+    private static final String TABLE_NAME = "menustat";
 
     @Override
-    public MenuStat get(EmenuContext context, long day) {
-        DayBinder binder = new DayBinder(day);
+    public MenuStat get(EmenuContext context, String name, long day) {
+        DayBinder binder = new DayBinder(name, day);
         return queryOne(context, SQL_SELECT_BY_DAY, binder, rowMapper);
     }
 
@@ -95,6 +95,7 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
+        .appendWhere(Column.CHAPTER_NAME)
         .appendWhere(Column.DAY).build();
 
     private static final RowMapper<MenuStat> rowMapper = new RowMapper<MenuStat>() {
@@ -117,15 +118,18 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
 
     private static final class DayBinder implements StatementBinder {
         private final long day;
-
-        public DayBinder(long day) {
+        private final String name;
+        
+        public DayBinder(String name, long day) {
             super();
+            this.name = name;
             this.day = day;
         }
 
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
-            stmt.bind(1, day);
+            stmt.bind(1, name);
+            stmt.bind(2, day);
         }
     }
 }
