@@ -21,6 +21,9 @@ define(function (require, exports, module) {
                 options.statusCode[String(status)].call(this);
                 return;
             }
+            if (options.url.indexOf('/api/polling') !== -1) {
+                return;
+            }
             if (status === 500 || status === 412 || status === 409) {
                 if (status === 500 && !xhr.responseText) {
                     window.alert("服务器错误");
