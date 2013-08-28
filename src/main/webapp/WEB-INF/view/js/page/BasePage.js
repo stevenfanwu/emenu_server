@@ -7,6 +7,7 @@ define(function (require, exports, module) {
     var Backbone = require('../lib/backbone');
     var BaseView = require('../BaseView');
     var $ = require('../lib/jquery');
+    var BroadcastManager = require('../misc/BroadcastManager');
 
     var BasePage = BaseView.extend({
         el: 'body',
@@ -25,6 +26,33 @@ define(function (require, exports, module) {
             }
 
             this.initEvents();
+
+            this.broadcastManager = new BroadcastManager();
+            this.onRegisterBroadcast();
+            this.broadcastManager.start();
+        },
+
+        onRegisterBroadcast: function () {
+            this.broadcastManager.register(1, function (order) {
+                window.noty({
+                    text: '有新的订单',
+                    type: 'success',
+                    buttons: [{
+                        addClass: 'btn btn-primary btn-small',
+                        text: '查看',
+                        onClick: function ($noty) {
+                            window.open('/bill?tableId=' + order.tableId, '_blank');
+                            $noty.close();
+                        }
+                    }, {
+                        addClass: 'btn btn-danger btn-small',
+                        text: '关闭',
+                        onClick: function ($noty) {
+                            $noty.close();
+                        }
+                    }]
+                });
+            }.bind(this));
         },
 
         initEvents: function () {

@@ -97,9 +97,9 @@ public class OrderApiController extends BaseApiController {
     @RequestMapping(value="/api/orders", method=RequestMethod.POST)
     public @ResponseBody OrderVO submit(HttpServletRequest request
             , HttpServletResponse response
-            , OrderVO order) {
+            , @RequestBody String body) {
+        OrderVO order = JsonUtils.fromJson(body, OrderVO.class);
         EmenuContext context = newContext(request);
-        Order o = orderLogic.submit(context, order, order.getTable(), order.getDishes());
-        return orderWraper.wrap(context, o);
+        return orderLogic.submit(context, order, order.getDishes());
     }
 }

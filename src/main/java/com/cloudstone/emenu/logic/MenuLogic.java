@@ -154,13 +154,13 @@ public class MenuLogic extends BaseLogic {
             dish.setImageId(imageId);
         }
         
+        dish.setPinyin(CnToPinyinUtils.cn2Spell(dish.getName()));
         if (old != null) {
             dish.setId(old.getId());
             dish.setCreatedTime(old.getCreatedTime());
             dishDb.update(context, dish);
         } else {
             dish.setCreatedTime(now);
-            dish.setPinyin(CnToPinyinUtils.cn2Spell(dish.getName()));
             dishDb.add(context, dish);
         }
         //get with uriData

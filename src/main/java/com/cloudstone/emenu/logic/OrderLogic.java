@@ -26,6 +26,8 @@ import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.misc.PollingManager;
+import com.cloudstone.emenu.data.misc.PollingManager.PollingMessage;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.BadRequestError;
@@ -70,9 +72,14 @@ public class OrderLogic extends BaseLogic {
 
     @Autowired
     private RecordLogic recordLogic;
+    @Autowired
+    private UserLogic userLogic;
     
     @Autowired
     protected OrderWraper orderWraper;
+    
+    @Autowired
+    private PollingManager pollingManager;
 
     public void addOrderDish(EmenuContext context, OrderDish orderDish) {
         long now = System.currentTimeMillis();
@@ -282,7 +289,17 @@ public class OrderLogic extends BaseLogic {
         return order;
     }
     
-    public Order submit(EmenuContext context, Order order, Table table, List<OrderDishVO> dishes) {
+    public OrderVO submit(EmenuContext context, Order order, List<OrderDishVO> dishes) {
+        Table table = tableLogic.get(context, order.getTableId());
+        if (table==null || table.isDeleted()) {
+            throw new NotFoundException("该餐桌不存在");
+        }
+        if (table.getStatus() != Const.TableStatus.OCCUPIED) {
+            throw new PreconditionFailedException("该餐桌未开台");
+        }
+        if (table.getOrderId() != 0) {
+            throw new DataConflictException("该餐桌已经下单");
+        }
         int customerNumber = tableLogic.getCustomerNumber(context, table.getId());
         context.beginTransaction(dataSource);
         try {
@@ -314,9 +331,20 @@ public class OrderLogic extends BaseLogic {
             tableLogic.update(context, table);
             
             context.commitTransaction();
-            return order;
         } finally {
             context.closeTransaction(dataSource);
         }
+        
+        OrderVO orderVO = orderWraper.wrap(context, order);
+        pollingManager.putMessage(
+                new PollingMessage(PollingMessage.TYPE_NEW_ORDER, orderVO));
+
+        try {
+            printerLogic.printOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
+        } catch (Exception e) {
+            LOG.error("", e);
+        }
+        
+        return orderVO;
     }
 }

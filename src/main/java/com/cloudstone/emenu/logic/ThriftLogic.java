@@ -37,6 +37,9 @@ import com.cloudstone.emenu.data.Pad;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.ThriftSession;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.misc.PollingManager;
+import com.cloudstone.emenu.data.misc.PollingManager.PollingMessage;
+import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.storage.cache.ThriftCache;
 import com.cloudstone.emenu.storage.db.ThriftSessionDb;
 import com.cloudstone.emenu.util.CollectionUtils;
@@ -71,6 +74,8 @@ public class ThriftLogic extends BaseLogic {
     private ThriftSessionDb thriftSessionDb;
     @Autowired
     private OrderWraper orderWraper;
+    @Autowired
+    private PollingManager pollingManager;
 
     public TableInfo getTableInfo(EmenuContext context, String tableName) throws TException {
         Table table = tableLogic.getByName(context, tableName);
@@ -293,8 +298,13 @@ public class ThriftLogic extends BaseLogic {
         } finally {
             context.closeTransaction(dataSource);
         }
+        
+        OrderVO orderVO = orderWraper.wrap(context, orderValue);
+        pollingManager.putMessage(
+                new PollingMessage(PollingMessage.TYPE_NEW_ORDER, orderVO));
+
         try {
-            printerLogic.printOrder(context, orderWraper.wrap(context, orderValue), userLogic.getUser(context, context.getLoginUserId()));
+            printerLogic.printOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
         } catch (Exception e) {
             LOG.error("", e);
         }
