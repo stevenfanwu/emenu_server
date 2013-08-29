@@ -21,6 +21,7 @@ import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.CancelDishRecord;
 import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.FreeDishRecord;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.PayType;
@@ -281,6 +282,45 @@ public class OrderLogic extends BaseLogic {
             record.setCount(count);
             record.setOrderId(orderId);
             recordLogic.addCancelDishRecord(context, record);
+            
+            context.commitTransaction();
+        } finally {
+            context.closeTransaction(dataSource);
+        }
+        return order;
+    }
+    
+    public Order freeDish(EmenuContext context, int orderId, int dishId, int count) {
+        Order order = getOrder(context, orderId);
+        if (order==null || order.isDeleted()) {
+            throw new NotFoundException("该订单不存在");
+        }
+        List<OrderDish> dishes = listOrderDishes(context, orderId);
+        OrderDish dish = null;
+        for (OrderDish d:dishes) {
+            if (d.getDishId() == dishId) {
+                dish = d;
+                break;
+            }
+        }
+        if (dish==null) {
+            throw new NotFoundException("订单中不存在该菜品");
+        }
+        if (dish.getNumber()<count) {
+            throw new PreconditionFailedException("菜品数量错误");
+        }
+        context.beginTransaction(dataSource);
+        try {
+            //update order
+            order.setPrice(order.getPrice() - count*dish.getPrice());
+            updateOrder(context, order);
+            
+            FreeDishRecord record = new FreeDishRecord();
+            record.setTime(System.currentTimeMillis());
+            record.setDishId(dishId);
+            record.setCount(count);
+            record.setOrderId(orderId);
+            recordLogic.addFreeDishRecord(context, record);
             
             context.commitTransaction();
         } finally {

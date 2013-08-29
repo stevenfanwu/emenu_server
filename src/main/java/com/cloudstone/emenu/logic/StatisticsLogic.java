@@ -341,9 +341,12 @@ public class StatisticsLogic extends BaseLogic {
                                 && bill.getDiscount()>0) {
                             discount += (d.getPrice()*d.getNumber()*(10 - bill.getDiscount()));
                         }
+                        discount += d.getPrice()
+                                * recordLogic.getFreeDishCount(context, d.getId(), startTime, endTime);
                     }
                 }
             }
+
             int backCount = recordLogic.getCancelDishCount(context,
                     dish.getId(), startTime, endTime);
             String category = menuLogic.getCategory(context, dish.getId());
@@ -405,6 +408,8 @@ public class StatisticsLogic extends BaseLogic {
                                 && bill.getDiscount() > 0) {
                             discount += (d.getPrice() * d.getNumber() * (10 - bill.getDiscount()));
                         }
+                        discount += d.getPrice()
+                                * recordLogic.getFreeDishCount(context, d.getId(), startTime, endTime);
                     }
                 }
             }

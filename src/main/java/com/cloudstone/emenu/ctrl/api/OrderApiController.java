@@ -94,6 +94,17 @@ public class OrderApiController extends BaseApiController {
         return orderWraper.wrap(context, order);
     }
     
+    @RequestMapping(value="/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/free", method=RequestMethod.PUT)
+    public @ResponseBody OrderVO freeDish(@PathVariable("id") int orderId,
+            @PathVariable("dishId") int dishId,
+            @RequestParam("count") int count,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        Order order = orderLogic.cancelDish(context, orderId, dishId, count);
+        return orderWraper.wrap(context, order);
+    }
+    
     @RequestMapping(value="/api/orders", method=RequestMethod.POST)
     public @ResponseBody OrderVO submit(HttpServletRequest request
             , HttpServletResponse response
