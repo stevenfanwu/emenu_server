@@ -1,7 +1,6 @@
 
 package com.cloudstone.emenu.logic;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -105,20 +104,22 @@ public class StatisticsLogic extends BaseLogic {
 
     public List<MenuStat> listMenuStat(EmenuContext context, long startTime, long endTime) {
         List<Dish> dishes = menuLogic.getAllDish(context);
-        HashMap<String, ArrayList<Dish>> cateToDishes = new HashMap<String, ArrayList<Dish>>();
+        HashMap<String, HashMap<Integer, Dish>> cateToDishes = new HashMap<String, HashMap<Integer,Dish>>();
         List<MenuStat> ret = new LinkedList<MenuStat>();
         for (Dish dish : dishes) {
             String name = menuLogic.getCategory(context, dish.getId());
             if (cateToDishes.containsKey(name)) {
-                cateToDishes.get(name).add(dish);
+                cateToDishes.get(name).put(dish.getId(),dish);
             } else {
-                cateToDishes.put(name, new ArrayList<Dish>());
+                HashMap<Integer, Dish> tmpDishMap = new HashMap<Integer, Dish>();
+                tmpDishMap.put(dish.getId(), dish);
+                cateToDishes.put(name, tmpDishMap);
             }
         }
         Iterator<String> iterator = cateToDishes.keySet().iterator();
         while (iterator.hasNext()) {
             String chapterName = iterator.next();
-            List<Dish> dishInCate = cateToDishes.get(chapterName);
+            HashMap<Integer, Dish> dishInCate = cateToDishes.get(chapterName);
             List<MenuStat> menuStats = new MenuStatGetter(context, chapterName, dishInCate).list(
                     startTime, endTime);
             MenuStat stat = null;
@@ -129,10 +130,6 @@ public class StatisticsLogic extends BaseLogic {
                     stat.setIncome(s.getIncome() + stat.getIncome());
                     stat.setCount(s.getCount() + stat.getCount());
                     stat.setDiscount(s.getDiscount() + stat.getDiscount());
-                }
-                if (stat == null) {
-                    stat = new MenuStat();
-                    stat.setChapterName(chapterName);
                 }
             }
             ret.add(stat);
@@ -364,11 +361,11 @@ public class StatisticsLogic extends BaseLogic {
     }
 
     private class MenuStatGetter extends StatGetter<MenuStat> {
-        private final List<Dish> dishes;
+        private final HashMap<Integer, Dish> dishes;
 
         private final String chapterName;
 
-        public MenuStatGetter(EmenuContext context, String name, List<Dish> dishes) {
+        public MenuStatGetter(EmenuContext context, String name, HashMap<Integer, Dish> dishes) {
             super(context);
             this.dishes = dishes;
             this.chapterName = name;
@@ -396,23 +393,22 @@ public class StatisticsLogic extends BaseLogic {
             double income = 0;
             double discount = 0;
             int count = 0;
-            for (Dish dish : this.dishes) {
-                for (Bill bill : bills) {
-                    OrderVO order = bill.getOrder();
-                    for (OrderDishVO d : order.getDishes()) {
-                        if (d.getId() == dish.getId()) {
-                            income += d.getPrice() * d.getNumber();
-                            count += d.getNumber();
-                            if (bill.getDiscountDishIds() != null
-                                    && ArrayUtils.contains(bill.getDiscountDishIds(), d.getId())
-                                    && bill.getDiscount() > 0) {
-                                discount += (d.getPrice() * d.getNumber() * (10 - bill
-                                        .getDiscount()));
-                            }
+
+            for (Bill bill : bills) {
+                OrderVO order = bill.getOrder();
+                for (OrderDishVO d : order.getDishes()) {
+                    if (dishes.containsKey(d.getId())) {
+                        income += d.getPrice() * d.getNumber();
+                        count += d.getNumber();
+                        if (bill.getDiscountDishIds() != null
+                                && ArrayUtils.contains(bill.getDiscountDishIds(), d.getId())
+                                && bill.getDiscount() > 0) {
+                            discount += (d.getPrice() * d.getNumber() * (10 - bill.getDiscount()));
                         }
                     }
                 }
             }
+
             stat.setIncome(income);
             stat.setCount(count);
             stat.setChapterName(this.chapterName);
