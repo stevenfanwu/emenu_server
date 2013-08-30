@@ -7,7 +7,7 @@ define(function (require, exports, module) {
     var BaseForm = require('./BaseForm');
 
     var AjaxCheckboxGroup = require('./item/AjaxCheckboxGroup');
-    var Checkbox = require('./item/Checkbox');
+    var Checkbox = require('./item/CheckBox');
 
     var PrintTemplateCollection = require('../collection/PrintTemplateCollection');
     

@@ -11,7 +11,7 @@ define(function (require, exports, module) {
     var BillForm = require('../form/BillForm');
     var $ = require('../lib/jquery');
     var _ = require('../lib/underscore');
-    var Backbone = require('../lib/Backbone');
+    var Backbone = require('../lib/backbone');
 
     var DishItem = Backbone.View.extend({
         events: {

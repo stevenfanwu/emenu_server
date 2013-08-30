@@ -4,7 +4,7 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var Backbone = require('../lib/Backbone');
+    var Backbone = require('../lib/backbone');
 
     var BaseCollection  = Backbone.Collection.extend({
     });

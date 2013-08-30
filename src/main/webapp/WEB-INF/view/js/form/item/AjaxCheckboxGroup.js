@@ -4,7 +4,7 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var CheckboxGroup = require('./CheckboxGroup');
+    var CheckboxGroup = require('./CheckBoxGroup');
 
     var AjaxCheckboxGroup = CheckboxGroup.extend({
 
