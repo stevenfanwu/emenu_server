@@ -9,12 +9,13 @@ define(function (require, exports, module) {
     var OrderList = require('../list/OrderList');
     var StatList = require('../list/StatList');
     var DishStatList = require('../list/DishStatList');
+    var MenuStatList = require('../list/MenuStatList');
     var DatePicker = require('../component/DatePicker');
 
     var History = TabPage.extend({
         RouterType: require('../router/HistoryRouter'),
 
-        tabEl: ['.tab-order', '.tab-stat', '.tab-dish-stat'],
+        tabEl: ['.tab-order', '.tab-stat', '.tab-dish-stat', '.tab-menu-stat'],
 
         initEvents: function () {
             TabPage.prototype.initEvents.apply(this, arguments);

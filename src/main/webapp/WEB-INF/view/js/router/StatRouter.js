@@ -11,7 +11,8 @@ define(function (require, exports, module) {
             '': 'showOrder',
             'order': 'showOrder',
             'stat': 'showStat',
-            'dish-stat': 'showDishStat'
+            'dish-stat': 'showDishStat',
+            'menu-stat': 'showMenuStat'
         },
 
         showOrder: function () {
@@ -24,6 +25,10 @@ define(function (require, exports, module) {
 
         showStat: function () {
             this.page.trigger('showStat');
+        },
+ 
+        showMenuStat: function () {
+            this.page.trigger('showMenuStat');
         }
     });
     
