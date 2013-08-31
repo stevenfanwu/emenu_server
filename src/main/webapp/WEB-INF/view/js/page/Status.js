@@ -13,6 +13,14 @@ define(function (require, exports, module) {
         tabEl: ['.tab-all', '.tab-room', '.tab-hall', '.tab-booth'],
 
         ListType: require('../list/TableStatusList'),
+
+        onBroadcast: function (type, data) {
+            TabList.prototype.onBroadcast.apply(this, arguments);
+
+            if (type === 1) {
+                window.location.reload(true);
+            }
+        },
         
         initEvents: function () {
             TabList.prototype.initEvents.apply(this, arguments);

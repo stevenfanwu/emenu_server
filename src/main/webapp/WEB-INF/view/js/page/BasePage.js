@@ -16,6 +16,8 @@ define(function (require, exports, module) {
 
         router: null,
 
+        broadcast: [1],
+
         initialize: function () {
             BaseView.prototype.initialize.apply(this, arguments);
         
@@ -33,7 +35,16 @@ define(function (require, exports, module) {
         },
 
         onRegisterBroadcast: function () {
-            this.broadcastManager.register(1, function (order) {
+            this.broadcast.forEach(function (type) {
+                this.broadcastManager.register(type, function (data) {
+                    this.onBroadcast(type, data);
+                }.bind(this));
+            }, this);
+        },
+
+        onBroadcast: function (type, data) {
+            if (type === 1) {
+                var order = data;
                 window.noty({
                     text: '有新的订单',
                     type: 'success',
@@ -52,7 +63,7 @@ define(function (require, exports, module) {
                         }
                     }]
                 });
-            }.bind(this));
+            }
         },
 
         initEvents: function () {
