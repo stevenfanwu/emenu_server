@@ -11,6 +11,7 @@
     #@history_nav_item("order")今日订单#end
     #@history_nav_item("stat")综合统计#end
     #@history_nav_item("dish-stat")菜品统计#end
+    #@stat_nav_item("menu-stat")菜品分类统计#end
 </ul>
 <div class="bottom-content">
 </div>

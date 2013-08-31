@@ -65,6 +65,25 @@ define(function (require, exports, module) {
                 }, this);
                 this.picker.render();
             }, this);
+            this.on('showMenuStat', function () {
+                this.emptyPullRightTab();
+                this.activeTab('.tab-menu-stat');
+
+                this.picker = new DatePicker({
+                    timeMode: 'time'
+                });
+                this.list = new MenuStatList();
+                this.$('.bottom-content').empty();
+                this.$('.bottom-content').append(this.picker.el);
+                this.$('.bottom-content').append(this.list.el);
+
+                this.picker.on('dateChanged', function (data) {
+                    this.list.collection.startTime = data.start.getTime();
+                    this.list.collection.endTime = data.end.getTime();
+                    this.list.refresh();
+                }, this);
+                this.picker.render();
+            }, this);
         }
     });
     
