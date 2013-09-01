@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
@@ -104,14 +105,14 @@ public class StatisticsLogic extends BaseLogic {
 
     public List<MenuStat> listMenuStat(EmenuContext context, long startTime, long endTime) {
         List<Dish> dishes = menuLogic.getAllDish(context);
-        HashMap<String, HashMap<Integer, Dish>> cateToDishes = new HashMap<String, HashMap<Integer,Dish>>();
+        Map<String, Map<Integer, Dish>> cateToDishes = new HashMap<String, Map<Integer,Dish>>();
         List<MenuStat> ret = new LinkedList<MenuStat>();
         for (Dish dish : dishes) {
             String name = menuLogic.getCategory(context, dish.getId());
             if (cateToDishes.containsKey(name)) {
                 cateToDishes.get(name).put(dish.getId(),dish);
             } else {
-                HashMap<Integer, Dish> tmpDishMap = new HashMap<Integer, Dish>();
+                Map<Integer, Dish> tmpDishMap = new HashMap<Integer, Dish>();
                 tmpDishMap.put(dish.getId(), dish);
                 cateToDishes.put(name, tmpDishMap);
             }
@@ -119,7 +120,7 @@ public class StatisticsLogic extends BaseLogic {
         Iterator<String> iterator = cateToDishes.keySet().iterator();
         while (iterator.hasNext()) {
             String chapterName = iterator.next();
-            HashMap<Integer, Dish> dishInCate = cateToDishes.get(chapterName);
+            Map<Integer, Dish> dishInCate = cateToDishes.get(chapterName);
             List<MenuStat> menuStats = new MenuStatGetter(context, chapterName, dishInCate).list(
                     startTime, endTime);
             MenuStat stat = null;
@@ -364,11 +365,11 @@ public class StatisticsLogic extends BaseLogic {
     }
 
     private class MenuStatGetter extends StatGetter<MenuStat> {
-        private final HashMap<Integer, Dish> dishes;
+        private final Map<Integer, Dish> dishes;
 
         private final String chapterName;
 
-        public MenuStatGetter(EmenuContext context, String name, HashMap<Integer, Dish> dishes) {
+        public MenuStatGetter(EmenuContext context, String name, Map<Integer, Dish> dishes) {
             super(context);
             this.dishes = dishes;
             this.chapterName = name;
