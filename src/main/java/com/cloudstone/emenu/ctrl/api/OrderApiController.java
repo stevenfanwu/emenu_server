@@ -101,7 +101,7 @@ public class OrderApiController extends BaseApiController {
             HttpServletRequest request,
             HttpServletResponse response) {
         EmenuContext context = newContext(request);
-        Order order = orderLogic.cancelDish(context, orderId, dishId, count);
+        Order order = orderLogic.freeDish(context, orderId, dishId, count);
         return orderWraper.wrap(context, order);
     }
     

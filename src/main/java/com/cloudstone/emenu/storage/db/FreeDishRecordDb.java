@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
-import com.cloudstone.emenu.data.CancelDishRecord;
 import com.cloudstone.emenu.data.FreeDishRecord;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
@@ -24,6 +23,7 @@ import com.cloudstone.emenu.storage.db.util.StatementBinder;
 public class FreeDishRecordDb extends SQLiteDb implements IFreeDishRecordDb {
     @Override
     public void add(EmenuContext context, FreeDishRecord record) {
+        record.setId(genId(context));
         executeSQL(context, SQL_INSERT, new RecordBinder(record));
     }
 

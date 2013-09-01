@@ -26,10 +26,12 @@ define(function (require, exports, module) {
         },
 
         doSubmit: function () {
+            var url = '/api/orders/' + this.model.get('orderId')
+                    + '/dishes/' + this.model.get('id') + '/';
+            url = url + (this.mode === 'cancel' ? 'cancel' : 'free');
             this.ajaxSubmit({
                 type: 'PUT',
-                url: '/api/orders/' + this.model.get('orderId')
-                    + '/dishes/' + this.model.get('id') + '/cancel',
+                url: url,
                 data: {
                     count: this.getFormData().count
                 }

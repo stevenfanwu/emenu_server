@@ -25,13 +25,27 @@ define(function (require, exports, module) {
     });
 
     var CancelDishDialog = FormDialog.extend({
-        header: '退菜',
 
         FormType: require('../form/CancelDishForm'),
 
         formEl: '.form-cancel-dish',
 
-        ContentType: Content
+        ContentType: Content,
+
+        initialize: function () {
+            this.options = this.options || {};
+            this.mode = this.options.mode || 'cancel';
+
+            FormDialog.prototype.initialize.apply(this, arguments);
+
+            this.form.mode = this.mode;
+        },
+
+        getHeader: function () {
+            return this.mode === 'cancel' ? '退菜' : '赠菜';
+        }
+        
+        
     });
     
     return CancelDishDialog;

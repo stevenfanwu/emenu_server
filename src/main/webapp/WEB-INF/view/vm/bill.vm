@@ -104,6 +104,8 @@
                             <td>
                                 #if($order.status==0)
                                     <a href="#" class="btn-cancel-dish">退菜</a>
+                                    |
+                                    <a href="#" class="btn-free-dish">赠菜</a>
                                 #end
                             </td>
                         <tr>
