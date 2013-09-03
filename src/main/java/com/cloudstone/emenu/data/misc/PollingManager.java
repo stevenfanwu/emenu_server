@@ -23,6 +23,14 @@ public class PollingManager {
         map.put(msg.type, msg);
     }
     
+    public synchronized void putMessage(int type) {
+        putMessage(type, null);
+    }
+    
+    public synchronized void putMessage(int type, Object data) {
+        putMessage(new PollingMessage(type, data));
+    }
+    
     public synchronized PollingMessage query() {
         Iterator<PollingMessage> it = map.values().iterator();
         PollingMessage msg = PollingMessage.NULL;
@@ -35,6 +43,7 @@ public class PollingManager {
     
     public static class PollingMessage {
         public static final int TYPE_NEW_ORDER = 1;
+        public static final int TYPE_OCCUPY_TABLE = 2;
         
         public final int type;
         public final Object data;

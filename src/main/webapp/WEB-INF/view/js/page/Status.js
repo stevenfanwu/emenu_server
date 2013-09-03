@@ -6,6 +6,7 @@ define(function (require, exports, module) {
 
     var TabList = require('./TabList');
     var TableModel = require('../model/TableModel');
+    var _ = require('../lib/underscore');
 
     var Status = TabList.extend({
         RouterType: require('../router/StatusRouter'),
@@ -14,11 +15,13 @@ define(function (require, exports, module) {
 
         ListType: require('../list/TableStatusList'),
 
-        onBroadcast: function (type, data) {
-            TabList.prototype.onBroadcast.apply(this, arguments);
+        broadcast: _.union(TabList.prototype.broadcast, [2]),
 
-            if (type === 1) {
+        onBroadcast: function (type, data) {
+            if (type === 1 || type === 2) {
                 window.location.reload(true);
+            } else {
+                TabList.prototype.onBroadcast.apply(this, arguments);
             }
         },
         

@@ -14,6 +14,8 @@ import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
+import com.cloudstone.emenu.data.misc.PollingManager;
+import com.cloudstone.emenu.data.misc.PollingManager.PollingMessage;
 import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.NotFoundException;
@@ -37,6 +39,8 @@ public class TableLogic extends BaseLogic {
     
     @Autowired
     private OrderLogic orderLogic;
+    @Autowired
+    private PollingManager pollingManager;
     
     public void changeTable(EmenuContext context, int fromId, int toId) {
         Table from = get(context, fromId);
@@ -138,6 +142,7 @@ public class TableLogic extends BaseLogic {
         } finally {
             context.closeTransaction(dataSource);
         }
+        pollingManager.putMessage(PollingMessage.TYPE_OCCUPY_TABLE, table);
         return table;
     }
     

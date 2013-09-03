@@ -114,6 +114,8 @@ public class ThriftLogic extends BaseLogic {
         table.setStatus(Const.TableStatus.OCCUPIED);
         tableLogic.update(context, table);
         tableLogic.setCustomerNumber(context, table.getId(), customerNumber);
+        
+        pollingManager.putMessage(new PollingMessage(PollingMessage.TYPE_OCCUPY_TABLE, table));
     }
     
     public void emptyTable(EmenuContext context, String tableName) throws TException {

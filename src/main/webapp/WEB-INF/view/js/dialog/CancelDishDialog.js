@@ -19,6 +19,8 @@ define(function (require, exports, module) {
                 data.countOptions.push(i);
                 i = i + 1;
             }
+            data.mode = this.dialog.mode === 'cancel' ? '退菜' : '赠菜';
+
             return data;
         }
         
