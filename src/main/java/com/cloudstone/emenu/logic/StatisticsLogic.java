@@ -254,7 +254,7 @@ public class StatisticsLogic extends BaseLogic {
                     invoiceAmount += bill.getInvoicePrice();
                 }
                 double originCost = bill.getOrder().getOriginPrice() + bill.getTip();
-                if (bill.getCost() > originCost) {
+                if (bill.getCost() < originCost) {
                     discount += (originCost-bill.getCost());
                 }
                 income += bill.getCost();
@@ -340,7 +340,7 @@ public class StatisticsLogic extends BaseLogic {
                         if (bill.getDiscountDishIds() != null
                                 && ArrayUtils.contains(bill.getDiscountDishIds(), d.getId())
                                 && bill.getDiscount()>0) {
-                            discount += (d.getPrice()*d.getNumber()*(10 - bill.getDiscount()));
+                            discount += (d.getPrice()*d.getNumber()*(10 - bill.getDiscount())/ 10);
                         }
                         discount += d.getPrice()
                                 * recordLogic.getFreeDishCount(context, d.getId(), startTime, endTime);
@@ -407,7 +407,7 @@ public class StatisticsLogic extends BaseLogic {
                         if (bill.getDiscountDishIds() != null
                                 && ArrayUtils.contains(bill.getDiscountDishIds(), d.getId())
                                 && bill.getDiscount() > 0) {
-                            discount += (d.getPrice() * d.getNumber() * (10 - bill.getDiscount()));
+                            discount += (d.getPrice() * d.getNumber() * (10 - bill.getDiscount()) / 10);
                         }
                         discount += d.getPrice()
                                 * recordLogic.getFreeDishCount(context, d.getId(), startTime, endTime);

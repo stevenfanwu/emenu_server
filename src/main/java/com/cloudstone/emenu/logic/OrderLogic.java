@@ -311,17 +311,8 @@ public class OrderLogic extends BaseLogic {
         }
         context.beginTransaction(dataSource);
         try {
-            //update orderDish
-            if (dish.getNumber() > count) {
-                dish.setNumber(dish.getNumber() - count);
-                updateOrderDish(context, dish);
-            } else {
-                deleteOrderDish(context, orderId, dishId);
-            }
-            
             //update order
             order.setPrice(order.getPrice() - count*dish.getPrice());
-            order.setOriginPrice(order.getOriginPrice() - count*dish.getPrice());
             updateOrder(context, order);
             
             FreeDishRecord record = new FreeDishRecord();
