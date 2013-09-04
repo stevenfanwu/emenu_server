@@ -61,12 +61,14 @@ public class PrinterLogic extends BaseLogic {
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
                     "$dish.number*$dish.price" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
-                    "$dish.totalCost\n" + "做法:" +
+                    "$dish.totalCost\n" + 
+                    "#if($dish.remarks && $dish.remarks.size !=0)\n" +
+                    "  做法: " +
                     "#foreach($remark in $dish.remarks)\n" +
                         "$remark" + " " +
-                    "#end" +
-                "#end" +
-            "#end" +
+                    "#end\n" + "\n" +
+                "#end\n" +
+            "#end\n" +
             "\n";
     
     @Autowired
