@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     "use strict";
 
     var BaseItem = require('./BaseItem');
+    var $ = require('../../lib/jquery');
 
     var BillOrders = BaseItem.extend({
         getValue: function () {
@@ -18,9 +19,15 @@ define(function (require, exports, module) {
                 }
             }, this);
             return value;
+        },
+
+        setValue: function (dishIds) {
+            dishIds = dishIds || [];
+            $('.cb-discount').prop('checked', false);
+            dishIds.forEach(function (dishId) {
+                $('#dish-item-' + dishId + ' .cb-discount').prop('checked', true);
+            }, this);
         }
-        
-        
     });
     
     return BillOrders;

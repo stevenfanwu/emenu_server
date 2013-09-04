@@ -44,6 +44,7 @@ public class PollingManager {
     public static class PollingMessage {
         public static final int TYPE_NEW_ORDER = 1;
         public static final int TYPE_OCCUPY_TABLE = 2;
+        public static final int TYPE_CLEAR_TABLE = 3;
         
         public final int type;
         public final Object data;

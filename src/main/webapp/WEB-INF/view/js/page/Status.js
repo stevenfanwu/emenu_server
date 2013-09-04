@@ -15,10 +15,10 @@ define(function (require, exports, module) {
 
         ListType: require('../list/TableStatusList'),
 
-        broadcast: _.union(TabList.prototype.broadcast, [2]),
+        broadcast: _.union(TabList.prototype.broadcast, [2, 3]),
 
         onBroadcast: function (type, data) {
-            if (type === 1 || type === 2) {
+            if (type === 1 || type === 2 || type === 3) {
                 window.location.reload(true);
             } else {
                 TabList.prototype.onBroadcast.apply(this, arguments);

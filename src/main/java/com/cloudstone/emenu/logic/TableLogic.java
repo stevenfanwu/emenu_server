@@ -163,6 +163,8 @@ public class TableLogic extends BaseLogic {
         table.setStatus(Const.TableStatus.EMPTY);
         update(context, table);
         setCustomerNumber(context, table.getId(), 0);
+        
+        pollingManager.putMessage(PollingMessage.TYPE_CLEAR_TABLE, table);
         return table;
     }
     
