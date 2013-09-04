@@ -116,20 +116,22 @@ define(function (require, exports, module) {
         
         onComputeCost: function () {
             var bill = this.model.toJSON();
-            bill.discount = parseFloat(bill.discount, 10);
-            bill.tip = bill.tip === '' ? 0 : parseFloat(bill.tip, 10);
+            if (bill.status === 0) {
+                bill.discount = parseFloat(bill.discount, 10);
+                bill.tip = bill.tip === '' ? 0 : parseFloat(bill.tip, 10);
 
-            var cost = 0;
-            this.dishItems.forEach(function (item) {
-                if (item.isChecked()) {
-                    cost = cost + (item.model.get('totalCost') * bill.discount / 10);
-                } else {
-                    cost = cost + item.model.get('totalCost');
-                }
-            }, this);
-            cost = cost + bill.tip;
-            cost = cost.toMoney();
-            this.model.set('cost', cost);
+                var cost = 0;
+                this.dishItems.forEach(function (item) {
+                    if (item.isChecked()) {
+                        cost = cost + (item.model.get('totalCost') * bill.discount / 10);
+                    } else {
+                        cost = cost + item.model.get('totalCost');
+                    }
+                }, this);
+                cost = cost + bill.tip;
+                cost = cost.toMoney();
+                this.model.set('cost', cost);
+            }
             this.form.findItemByName('cost').setValueFromModel(this.model);
         },
 

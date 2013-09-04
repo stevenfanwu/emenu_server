@@ -52,7 +52,7 @@ define(function (require, exports, module) {
                         addClass: 'btn btn-primary btn-small',
                         text: '查看',
                         onClick: function ($noty) {
-                            window.open('/bill?tableId=' + order.tableId, '_blank');
+                            window.location = '/bill?tableId=' + order.tableId;
                             $noty.close();
                         }
                     }, {
