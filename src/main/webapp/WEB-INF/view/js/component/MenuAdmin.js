@@ -21,6 +21,9 @@ define(function (require, exports, module) {
             if (!this.list) {
                 var List = require('../list/MenuList');
                 this.list = new List();
+                this.list.on('fetched', function (collection) {
+                    this.trigger('fetched', collection);
+                }, this);
                 this.list.collection.on('edit', this.onEditMenu, this);
                 this.list.collection.on('delete', this.onDeleteMenu, this);
             }

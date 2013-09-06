@@ -15,7 +15,9 @@ define(function (require, exports, module) {
             data.ordinals = this.dialog.options.menuPageCollection.map(function (item, index) {
                 return index + 1;
             }, this);
-            data.ordinals.push(data.ordinals.length + 1);
+            if (!this.dialog.isEditing()) {
+                data.ordinals.push(data.ordinals.length + 1);
+            }
             return data;
         }
 

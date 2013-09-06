@@ -88,6 +88,7 @@ define(function (require, exports, module) {
             if (!this.fetched) {
                 this.collection.fetch({
                     success: function () {
+                        this.trigger('fetched', this.collection);
                         this.doRender();
                     }.bind(this)
                 });

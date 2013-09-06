@@ -36,6 +36,9 @@ define(function (require, exports, module) {
                 tab.on('click', function () {
                     menuView.trigger('createMenu');
                 }, this);
+                menuView.on('fetched', function (collection) {
+                    this.emptyPullRightTab();
+                }, this);
             }, this);
             this.on('showDishNote', function () {
                 this.emptyPullRightTab();
