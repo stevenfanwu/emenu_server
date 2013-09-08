@@ -304,13 +304,18 @@ public class ThriftLogic extends BaseLogic {
         } finally {
             context.closeTransaction(dataSource);
         }
-        
-        OrderVO orderVO = orderWraper.wrap(context, orderValue);
-        pollingManager.putMessage(
-                new PollingMessage(PollingMessage.TYPE_NEW_ORDER, orderVO));
+        OrderVO orderVOALL = null;
+        if(oldOrder != null) {
+             orderVOALL = orderWraper.wrap(context, oldOrder);
+        } else {
+            orderVOALL = orderWraper.wrap(context, orderValue);
+        }
+        OrderVO orderVOADD = orderWraper.wrap(context, orderValue);
 
+        pollingManager.putMessage(
+                new PollingMessage(PollingMessage.TYPE_NEW_ORDER, orderVOALL));
         try {
-            printerLogic.printOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
+            printerLogic.printOrder(context, orderVOADD, userLogic.getUser(context, context.getLoginUserId()));
         } catch (Exception e) {
             LOG.error("", e);
         }
