@@ -306,11 +306,32 @@ public class ThriftLogic extends BaseLogic {
         }
         OrderVO orderVOALL = null;
         if(oldOrder != null) {
-             orderVOALL = orderWraper.wrap(context, oldOrder);
+            orderVOALL = orderWraper.wrap(context, oldOrder);
         } else {
             orderVOALL = orderWraper.wrap(context, orderValue);
         }
-        OrderVO orderVOADD = orderWraper.wrap(context, orderValue);
+        
+        List<OrderDish> relationsAdd = new ArrayList<OrderDish>();
+        for (int i=0; i<dishes.size(); i++) {
+            Dish dish = dishes.get(i);
+            GoodsOrder g = order.getGoods().get(i);
+            
+            OrderDish r = new OrderDish();
+            r.setDishId(dish.getId());
+            r.setNumber(g.getNumber());
+            r.setPrice(g.getPrice());
+            if (g.getRemarks() != null) {
+                r.setRemarks(g.getRemarks().toArray(new String[0]));
+            }
+            r.setStatus(ThriftUtils.getOrderDishStatus(g));
+            relationsAdd.add(r);
+        }
+        for (OrderDish r:relationsAdd) {
+            r.setOrderId(orderValue.getId());
+        }
+        orderValue.setCreatedTime(System.currentTimeMillis());
+        orderValue.setUpdateTime(System.currentTimeMillis());
+        OrderVO orderVOADD = orderWraper.wrap(context, orderValue, relationsAdd);
 
         pollingManager.putMessage(
                 new PollingMessage(PollingMessage.TYPE_NEW_ORDER, orderVOALL));

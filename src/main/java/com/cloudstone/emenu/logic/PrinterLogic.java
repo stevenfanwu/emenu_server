@@ -54,7 +54,7 @@ public class PrinterLogic extends BaseLogic {
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
                     "$dish.number*$dish.price" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
                     "$dish.totalCost\n" + 
-                    "#if($dish.remarks && $dish.remarks.size !=0)\n" +
+                    "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
                         "  做法: " +
                         "#foreach($remark in $dish.remarks)\n" +
                             "$remark" + " " +

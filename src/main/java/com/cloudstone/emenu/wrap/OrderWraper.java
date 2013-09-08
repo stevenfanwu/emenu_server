@@ -30,6 +30,18 @@ import com.cloudstone.emenu.data.vo.PayedOrderVO;
 public class OrderWraper extends BaseWraper {
     private static final Logger LOG = LoggerFactory.getLogger(OrderWraper.class);
 
+    public OrderVO wrap(EmenuContext context, Order order, List<OrderDish> relations) {
+        Table table = tableLogic.get(context, order.getTableId());
+        List<Dish> dishes = orderLogic
+                .listDishes(context, order.getId(), relations);
+        User user = userLogic.getUser(context, order.getUserId());
+        OrderVO o = new OrderVO(order, table, relations, dishes, user);
+        if (o.getStatus() == Const.OrderStatus.PAYED) {
+            Bill bill = orderLogic.getBillByOrderId(context, order.getId());
+            o = new PayedOrderVO(o, bill);
+        }
+        return o;
+    }    
     public OrderVO wrap(EmenuContext context, Order order) {
         Table table = tableLogic.get(context, order.getTableId());
         List<OrderDish> relations = orderLogic

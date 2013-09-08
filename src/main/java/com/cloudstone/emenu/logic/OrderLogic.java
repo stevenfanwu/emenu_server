@@ -138,6 +138,19 @@ public class OrderLogic extends BaseLogic {
         return dishes;
     }
 
+    public List<Dish> listDishes(EmenuContext context, int orderId, List<OrderDish> relations) {
+        DataUtils.filterDeleted(relations);
+        List<Dish> dishes = new ArrayList<Dish>();
+        for (OrderDish r : relations) {
+            int dishId = r.getDishId();
+            Dish dish = menuLogic.getDish(context, dishId);
+            if (dish != null) {
+                dishes.add(dish);
+            }
+        }
+        return dishes;
+    }
+
     public List<OrderDish> listOrderDishes(EmenuContext context, int orderId) {
         List<OrderDish> datas = orderDishDb.listOrderDish(context, orderId);
         DataUtils.filterDeleted(datas);
@@ -296,7 +309,9 @@ public class OrderLogic extends BaseLogic {
         cancelDish.setDishId(dishId);
         cancelDish.setNumber(count);
         cancelDish.setPrice(count * dish.getPrice());
-        OrderVO orderVO = orderWraper.wrap(context, cancelOrder);
+        List<OrderDish> relations = new ArrayList<OrderDish>();
+        relations.add(cancelDish);
+        OrderVO orderVO = orderWraper.wrap(context, cancelOrder, relations);
         try {
             printerLogic.printCancelOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
         } catch (Exception e) {
