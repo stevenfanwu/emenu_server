@@ -26,6 +26,13 @@ define(function (require, exports, module) {
             name: 'billTemplateIds',
             type: AjaxCheckboxGroup,
             CollectionType: PrintTemplateCollection
+        }, {
+            name: 'whenCancel',
+            type: Checkbox
+        }, {
+            name: 'cancelTemplateIds',
+            type: AjaxCheckboxGroup,
+            CollectionType: PrintTemplateCollection
         }]
     });
     

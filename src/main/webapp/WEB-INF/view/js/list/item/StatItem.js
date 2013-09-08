@@ -18,6 +18,7 @@ define(function (require, exports, module) {
             data.tableRate = StringUtils.formatPercentage(data.tableRate);
             data.aveOrder = data.aveOrder.toMoney();
             data.avePerson = data.avePerson.toMoney();
+            data.discount = data.discount.toMoney();
             return data;
         }
         
