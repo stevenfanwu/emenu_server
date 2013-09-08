@@ -78,7 +78,7 @@ define(function (require, exports, module) {
 
         onAddPaytype: function (evt) {
             evt.preventDefault();
-            this.addText('$bill.payType');
+            this.addText('$paytype');
             evt.stopPropagation();
         }
 

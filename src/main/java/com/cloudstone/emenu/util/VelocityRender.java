@@ -46,6 +46,26 @@ public class VelocityRender {
             userName = "";
         }
         context.put("userName", userName);
+        int payType = bill.getPayType();
+        String payTypeString = null;
+        switch (payType) {
+            case 1:
+                payTypeString = "现金";
+                break;
+            case 2:
+                payTypeString = "刷卡";
+                break;
+            case 3:
+                payTypeString = "会员卡";
+                break;
+            case 4:
+                payTypeString = "签单";
+                break;
+            default:
+                payTypeString = "现金";
+                break;
+        }
+        context.put("paytype",payTypeString);
         return render(context, template);
     }
     

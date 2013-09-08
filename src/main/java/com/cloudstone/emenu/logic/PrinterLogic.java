@@ -44,14 +44,6 @@ public class PrinterLogic extends BaseLogic {
     private DishWraper dishWraper;
     
     private static final String DIVIDER = "\n---------------------------------------\n";
-    
-//    private static final String DISH_TEMPLATE = "\n" +
-//            "菜品\t数量*单价\t金额\n" +
-//            "#foreach($dish in $dishes)\n" +
-//            "$dish.name\t$dish.number*$dish.price\t$dish.totalCost\n" +
-//            "#end" +
-//            "\n";
-    
 
     private static final String DISH_TEMPLATE = "\n" +
             "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "数量*单价"
@@ -63,10 +55,11 @@ public class PrinterLogic extends BaseLogic {
                     "$dish.number*$dish.price" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
                     "$dish.totalCost\n" + 
                     "#if($dish.remarks && $dish.remarks.size !=0)\n" +
-                    "  做法: " +
-                    "#foreach($remark in $dish.remarks)\n" +
-                        "$remark" + " " +
-                    "#end\n" + "\n" +
+                        "  做法: " +
+                        "#foreach($remark in $dish.remarks)\n" +
+                            "$remark" + " " +
+                        "#end\n" + "\n" +
+                    "#end\n" +
                 "#end\n" +
             "#end\n" +
             "\n";
