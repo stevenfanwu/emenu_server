@@ -17,7 +17,15 @@ public class PrinterConfig {
     private int[] orderedTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
     private boolean whenBill;
     private int[] billTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
-    
+    private boolean whenCancel;
+
+    public boolean isWhenCancel() {
+        return whenCancel;
+    }
+    public void setWhenCancel(boolean whenCancel) {
+        this.whenCancel = whenCancel;
+    }
+
     public boolean isWhenOrdered() {
         return whenOrdered;
     }

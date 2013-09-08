@@ -298,7 +298,7 @@ public class OrderLogic extends BaseLogic {
         cancelDish.setPrice(count * dish.getPrice());
         OrderVO orderVO = orderWraper.wrap(context, cancelOrder);
         try {
-            printerLogic.printOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
+            printerLogic.printCancelOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
         } catch (Exception e) {
             LOG.error("", e);
         }

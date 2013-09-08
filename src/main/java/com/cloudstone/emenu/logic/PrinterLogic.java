@@ -133,7 +133,20 @@ public class PrinterLogic extends BaseLogic {
         }
         return sb.toString();
     }
-    
+
+    public void printCancelOrder(EmenuContext context, OrderVO order, User user) throws Exception {
+        String[] printers = listPrinters();
+        for (String printer:printers) {
+            PrinterConfig config = getPrinterConfig(context, printer);
+            if (config != null && config.isWhenCancel()) {
+                for (int templateId:config.getOrderedTemplateIds()) {
+                    LOG.info("print templateId :" + templateId);
+                    printOrder(context, order, user, printer, templateId);
+                }
+            }
+        }
+    }
+
     public void printOrder(EmenuContext context, OrderVO order, User user) throws Exception {
         String[] printers = listPrinters();
         for (String printer:printers) {
