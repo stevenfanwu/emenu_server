@@ -116,8 +116,9 @@ define(function (require, exports, module) {
         
         onComputeCost: function () {
             var bill = this.model.toJSON();
-            bill.status = bill.status || 0;
-            if (bill.status === 0) {
+            var order = bill.order || {};
+            order.status = order.status || 0;
+            if (order.status === 0) {
                 bill.discount = parseFloat(bill.discount, 10);
                 bill.tip = bill.tip === '' ? 0 : parseFloat(bill.tip, 10);
 
