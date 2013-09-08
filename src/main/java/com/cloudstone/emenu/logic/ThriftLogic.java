@@ -231,7 +231,7 @@ public class ThriftLogic extends BaseLogic {
         if (oldOrder != null) {
             oldOrder.setOriginPrice(orderValue.getOriginPrice() + oldOrder.getOriginPrice());
             oldOrder.setPrice(orderValue.getPrice() + oldOrder.getPrice());
-            orderValue = oldOrder;
+            oldOrder.setUserId(userId);
         }
         orderValue.setUserId(userId);
         
@@ -282,19 +282,23 @@ public class ThriftLogic extends BaseLogic {
             if (oldOrder != null) {
                 oldOrder.setCustomerNumber(customerNumber);
                 orderLogic.updateOrder(context, oldOrder);
-                orderValue = oldOrder;
                 for (OrderDish r:needUpdate) {
                     orderLogic.updateOrderDish(context, r);
                 }
+                for (OrderDish r:needInsert) {
+                    r.setOrderId(oldOrder.getId());
+                    orderLogic.addOrderDish(context, r);
+                }
+                table.setOrderId(oldOrder.getId());
             } else {
                 orderValue.setCustomerNumber(customerNumber);
                 orderLogic.addOrder(context, orderValue);
+                for (OrderDish r:needInsert) {
+                    r.setOrderId(orderValue.getId());
+                    orderLogic.addOrderDish(context, r);
+                }
+                table.setOrderId(orderValue.getId());
             }
-            for (OrderDish r:needInsert) {
-                r.setOrderId(orderValue.getId());
-                orderLogic.addOrderDish(context, r);
-            }
-            table.setOrderId(orderValue.getId());
             tableLogic.update(context, table);
             context.commitTransaction();
         } finally {
