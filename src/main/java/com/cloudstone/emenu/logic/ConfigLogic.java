@@ -24,7 +24,7 @@ public class ConfigLogic extends BaseLogic {
     
     public int getPadNumber() {
         //TODO
-        return 2;
+        return 7;
     }
     
     public int getDbVersion(EmenuContext context) {
