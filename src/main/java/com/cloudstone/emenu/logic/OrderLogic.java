@@ -287,6 +287,22 @@ public class OrderLogic extends BaseLogic {
         } finally {
             context.closeTransaction(dataSource);
         }
+
+        //Print cancel dish
+        Order cancelOrder = getOrder(context, orderId);
+        cancelOrder.setId(-orderId);
+        OrderDish cancelDish = new OrderDish(dish);
+        cancelDish.setOrderId(cancelOrder.getId());
+        cancelDish.setDishId(dishId);
+        cancelDish.setNumber(count);
+        cancelDish.setPrice(count * dish.getPrice());
+        OrderVO orderVO = orderWraper.wrap(context, cancelOrder);
+        try {
+            printerLogic.printOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
+        } catch (Exception e) {
+            LOG.error("", e);
+        }
+
         return order;
     }
     
