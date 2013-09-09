@@ -66,7 +66,7 @@ define(function (require, exports, module) {
 
         onAddPrice: function (evt) {
             evt.preventDefault();
-            this.addText('$bill.order.originPrice');
+            this.addText('$order.originPrice');
             evt.stopPropagation();
         },
 
