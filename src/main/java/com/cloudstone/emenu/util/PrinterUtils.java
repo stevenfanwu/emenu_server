@@ -72,7 +72,7 @@ public class PrinterUtils {
         return printers.toArray(new String[0]);
     }
     
-    public static void print(String printerName, String content) throws Exception {
+    public static void print(String printerName, String content, int fontSize) throws Exception {
         DocFlavor flavor = DocFlavor.BYTE_ARRAY.AUTOSENSE;
         PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
         PrintService printService[] = PrintServiceLookup.lookupPrintServices(flavor, pras);
@@ -91,6 +91,29 @@ public class PrinterUtils {
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         
+        //Font Size
+        switch (fontSize) {
+            case 2:
+                out.write(0x1c);
+                out.write(0x21);
+                out.write(8);
+                out.write(0x1b);
+                out.write(0x21);
+                out.write(8);
+                break;
+            case 3:
+                out.write(0x1c);
+                out.write(0x21);
+                out.write(12);
+                out.write(0x1b);
+                out.write(0x21);
+                out.write(12);
+                break;
+            case 1:
+            default:
+                break;
+        }
+
         out.write(INIT.getBytes());
 //        out.write(select15CPI().getBytes());
 //        out.write(setLeftMargin(1).getBytes());

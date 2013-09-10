@@ -12,7 +12,16 @@ public class PrintTemplate extends IdName {
     private int headerId;
     private int footerId;
     private int cutType;
-    
+
+    private int fontSize = 1;
+
+    public int getFontSize() {
+        return fontSize;
+    }
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
+
     public int getHeaderId() {
         return headerId;
     }

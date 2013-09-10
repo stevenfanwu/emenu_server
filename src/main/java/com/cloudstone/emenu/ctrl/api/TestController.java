@@ -53,7 +53,7 @@ public class TestController extends BaseApiController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String print() throws Exception {
         String p = PrinterUtils.listPrinters()[0];
-        PrinterUtils.print(p, "");
+        PrinterUtils.print(p, "", 1);
         return "test";
     }
 

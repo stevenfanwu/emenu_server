@@ -18,7 +18,7 @@ public class PrinterConfig {
     private boolean whenBill;
     private int[] billTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
     private boolean whenCancel;
-
+    
     public boolean isWhenCancel() {
         return whenCancel;
     }

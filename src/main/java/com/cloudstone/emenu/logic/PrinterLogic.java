@@ -99,13 +99,13 @@ public class PrinterLogic extends BaseLogic {
                     dishes.add(dish);
                     String content = velocityRender.renderBill(bill,
                             user, dishWraper.wrapDishGroup(context, dishes), templateString);
-                    PrinterUtils.print(printer, content);
+                    PrinterUtils.print(printer, content, template.getFontSize());
                 }
             } else {
                 String content = velocityRender.renderBill(bill, user,
                         dishWraper.wrapDishGroup(context, bill.getOrder().getDishes()),
                         templateString);
-                PrinterUtils.print(printer, content);
+                PrinterUtils.print(printer, content, template.getFontSize());
             }
         }
     }
@@ -170,13 +170,13 @@ public class PrinterLogic extends BaseLogic {
                     dishes.add(dish);
                     String content = velocityRender.renderOrder(order, user,
                             dishWraper.wrapDishGroup(context, dishes), templateString);
-                    PrinterUtils.print(printer, content);
+                    PrinterUtils.print(printer, content, template.getFontSize());
                 }
             } else {
                 String content = velocityRender.renderOrder(order, user,
                         dishWraper.wrapDishGroup(context,order.getDishes()),
                         templateString);
-                PrinterUtils.print(printer, content);
+                PrinterUtils.print(printer, content, template.getFontSize());
             }
         }
     }
