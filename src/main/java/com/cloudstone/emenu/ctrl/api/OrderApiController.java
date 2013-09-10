@@ -32,6 +32,15 @@ import com.cloudstone.emenu.util.JsonUtils;
 @Controller
 public class OrderApiController extends BaseApiController {
     
+    @RequestMapping(value="/api/orders/{id:[\\d]+}", method=RequestMethod.DELETE)
+    public void deleteOrder(@PathVariable("id") int orderId,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        orderLogic.deleteOrder(context, orderId);
+        return;
+    }
+
     @RequestMapping(value="/api/orders/{id:[\\d]+}", method=RequestMethod.GET)
     public @ResponseBody OrderVO getOrder(@PathVariable(value="id") int orderId,
             HttpServletRequest request,
