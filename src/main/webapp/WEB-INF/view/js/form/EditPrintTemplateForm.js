@@ -11,6 +11,9 @@ define(function (require, exports, module) {
     var Radio = require('./item/Radio');
     var AjaxSelect = require('./item/AjaxSelect');
 
+    var Integer = require('./validator/Integer');
+    var MoreThan = require('./validator/MoreThan');
+
     var PrintTemplateForm = BaseForm.extend({
 
         itemConfig: [{
@@ -37,6 +40,22 @@ define(function (require, exports, module) {
             name: 'cutType',
             type: Radio,
             el: '.input-cutType'
+        }, {
+            name: 'fontSize',
+            type: Text,
+            el: '.input-fontSize',
+            validators: [{
+                type: Required,
+                errorMessage: '字号不能为空'
+            }, {
+                type: Integer,
+                errorMessage: '请输入整数'
+            }, {
+                type: MoreThan,
+                other: 1,
+                including: true,
+                errorMessage: '不能小于1'
+            }]
         }]
     });
     
