@@ -63,7 +63,26 @@ public class PrinterLogic extends BaseLogic {
                 "#end\n" +
             "#end\n" +
             "\n";
-    
+
+    private static final String DISH_TEMPLATE_ORDER = "\n" +
+            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "数量"
+                + PrinterUtils.absoluteHorizontalPosition(1, 125) + "\n" +
+            "#foreach($group in $dishGroups)\n" +
+                "【$group.category】\n" +
+                "#foreach($dish in $group.dishes)\n" +
+                    "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
+                    "$dish.number" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
+                    "\n" + 
+                    "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
+                        "  做法: " +
+                        "#foreach($remark in $dish.remarks)\n" +
+                            "$remark" + " " +
+                        "#end\n" + "\n" +
+                    "#end\n" +
+                "#end\n" +
+            "#end\n" +
+            "\n";
+
     @Autowired
     private VelocityRender velocityRender;
     @Autowired
@@ -92,7 +111,7 @@ public class PrinterLogic extends BaseLogic {
     public void printBill(EmenuContext context, Bill bill, User user, String printer, int templateId) throws Exception {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
-            String templateString = getTemplateString(context, template);
+            String templateString = getTemplateString(context, template, 0);
             if (template.getCutType() == Const.CutType.PER_DISH && bill.getOrder().getDishes().size()>0) {
                 for (OrderDishVO dish:bill.getOrder().getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
@@ -110,7 +129,7 @@ public class PrinterLogic extends BaseLogic {
         }
     }
     
-    private String getTemplateString(EmenuContext context, PrintTemplate template) {
+    private String getTemplateString(EmenuContext context, PrintTemplate template, int type) {
         StringBuilder sb = new StringBuilder();
         int headerId = template.getHeaderId();
         int footerId = template.getFooterId();
@@ -122,8 +141,11 @@ public class PrinterLogic extends BaseLogic {
                 sb.append(DIVIDER);
             }
         }
-        sb.append(DISH_TEMPLATE);
-        
+        if(type == 0) {//Bill
+            sb.append(DISH_TEMPLATE);
+        } else if(type == 1) {
+            sb.append(DISH_TEMPLATE_ORDER);
+        }
         if (footerId != 0) {
             PrintComponent footer = getComponent(context, footerId);
             if (footer != null) {
@@ -163,7 +185,7 @@ public class PrinterLogic extends BaseLogic {
     public void printOrder(EmenuContext context, OrderVO order, User user, String printer, int templateId) throws Exception {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
-            String templateString = getTemplateString(context, template);
+            String templateString = getTemplateString(context, template, 1);
             if (template.getCutType() == Const.CutType.PER_DISH && order.getDishes().size()>0) {
                 for (OrderDishVO dish:order.getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
