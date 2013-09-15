@@ -10,16 +10,19 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Bill;
+import com.cloudstone.emenu.data.CancelDishRecord;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.CancelDishVO;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.data.vo.PayedOrderVO;
 
@@ -29,32 +32,37 @@ import com.cloudstone.emenu.data.vo.PayedOrderVO;
 @Component
 public class OrderWraper extends BaseWraper {
     private static final Logger LOG = LoggerFactory.getLogger(OrderWraper.class);
+    
+    @Autowired
+    private DishWraper dishWraper;
 
     public OrderVO wrap(EmenuContext context, Order order, List<OrderDish> relations) {
+        //table
         Table table = tableLogic.get(context, order.getTableId());
+        
+        //user
+        User user = userLogic.getUser(context, order.getUserId());
+        
+        //dishes
         List<Dish> dishes = orderLogic
                 .listDishes(context, order.getId(), relations);
-        User user = userLogic.getUser(context, order.getUserId());
-        OrderVO o = new OrderVO(order, table, relations, dishes, user);
+        
+        //cancel dishes
+        List<CancelDishRecord> records = recordLogic.listCancelDishRecords(context, order.getId());
+        List<CancelDishVO> cancelDishes = dishWraper.wrapCancelDish(context, records);
+        
+        OrderVO o = new OrderVO(order, table, relations, dishes, user, cancelDishes);
         if (o.getStatus() == Const.OrderStatus.PAYED) {
             Bill bill = orderLogic.getBillByOrderId(context, order.getId());
             o = new PayedOrderVO(o, bill);
         }
         return o;
-    }    
+    }
+
     public OrderVO wrap(EmenuContext context, Order order) {
-        Table table = tableLogic.get(context, order.getTableId());
         List<OrderDish> relations = orderLogic
                 .listOrderDishes(context, order.getId());
-        List<Dish> dishes = orderLogic
-                .listDishes(context, order.getId());
-        User user = userLogic.getUser(context, order.getUserId());
-        OrderVO o = new OrderVO(order, table, relations, dishes, user);
-        if (o.getStatus() == Const.OrderStatus.PAYED) {
-            Bill bill = orderLogic.getBillByOrderId(context, order.getId());
-            o = new PayedOrderVO(o, bill);
-        }
-        return o;
+        return wrap(context, order, relations);
     }
 
     public List<OrderVO> wrap(EmenuContext context, List<Order> orders) {

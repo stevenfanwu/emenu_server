@@ -76,6 +76,7 @@
             </div>
         </div>
         <div class="span8 well">
+            <span class="label label-info">已点:</span>
             <table class="table table-striped table-hover table-dish">
                 <thead>
                     <tr class='head-row'>
@@ -112,6 +113,25 @@
                     #end
                 </tbody>
             </table>
+            #if($order.cancelDishes.size()>0)
+                <span class="label label-info">退菜:</span>
+                <table class="table table-striped table-hover table-dish">
+                    <thead>
+                        <tr class='head-row'>
+                            <th>菜品</th>
+                            <th>退菜数量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        #foreach($dish in $order.cancelDishes)
+                            <tr>
+                                <td>$dish.name</td>
+                                <td>$dish.count</td>
+                            </tr>
+                        #end
+                    </tbody>
+                </table>
+            #end
             #if($order.status==0)
                 <span class="btn btn-primary btn-submit">结账</span>
             #else

@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.wrap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.EmenuContext;
+import com.cloudstone.emenu.data.CancelDishRecord;
+import com.cloudstone.emenu.data.Dish;
+import com.cloudstone.emenu.data.vo.CancelDishVO;
 import com.cloudstone.emenu.data.vo.DishGroup;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
 
@@ -44,5 +48,19 @@ public class DishWraper extends BaseWraper {
             ret.add(g);
         }
         return ret;
+    }
+    
+    public CancelDishVO wrapCancelDish(EmenuContext context, CancelDishRecord record) {
+        Dish dish = menuLogic.getDish(context, record.getDishId());
+        CancelDishVO vo = new CancelDishVO(dish, record);
+        return vo;
+    }
+    
+    public List<CancelDishVO> wrapCancelDish(EmenuContext context, List<CancelDishRecord> records) {
+        List<CancelDishVO> r = new ArrayList<CancelDishVO>(records.size());
+        for (CancelDishRecord record:records) {
+            r.add(wrapCancelDish(context, record));
+        }
+        return r;
     }
 }
