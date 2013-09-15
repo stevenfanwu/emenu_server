@@ -102,7 +102,12 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             data.setNumber(stmt.columnDouble(2));
             data.setPrice(stmt.columnDouble(3));
             String strRemarks = stmt.columnString(4);
-            data.setRemarks(strRemarks.split(SPLIT_REMARKS));
+            String[] remarks = strRemarks.split(SPLIT_REMARKS);
+            if(remarks == null || remarks.length == 0 || (remarks.length == 1 && remarks[0].equals(""))) {
+                data.setRemarks(new String[0]);
+            } else {
+                data.setRemarks(remarks);
+            }
             data.setStatus(stmt.columnInt(5));
             data.setCreatedTime(stmt.columnLong(6));
             data.setUpdateTime(stmt.columnLong(7));
