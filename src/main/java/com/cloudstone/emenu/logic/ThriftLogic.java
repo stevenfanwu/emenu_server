@@ -185,6 +185,19 @@ public class ThriftLogic extends BaseLogic {
         UnderMinChargeException, TException {
         String tableName = order.getTableId();
         
+        
+        //check goods
+        List<Dish> dishes = new ArrayList<Dish>();
+        for (GoodsOrder g:order.getGoods()) {
+            int dishId = g.getId();
+            Dish dish = menuLogic.getDish(context, dishId, false);
+            if (dish == null || dish.isDeleted()) {
+                throw new HasInvalidGoodsException();
+            }
+            g.setPrice(dish.getPrice());
+            dishes.add(dish);
+        }
+        
         double price = 0;
         for (GoodsOrder o:order.getGoods()) {
             price += o.getPrice()*o.getNumber();
@@ -203,17 +216,6 @@ public class ThriftLogic extends BaseLogic {
         }
         if (order.getOriginalPrice() < table.getMinCharge()) {
             throw new UnderMinChargeException();
-        }
-        
-        //check goods
-        List<Dish> dishes = new ArrayList<Dish>();
-        for (GoodsOrder g:order.getGoods()) {
-            int dishId = g.getId();
-            Dish dish = menuLogic.getDish(context, dishId, false);
-            if (dish == null || dish.isDeleted()) {
-                throw new HasInvalidGoodsException();
-            }
-            dishes.add(dish);
         }
         
         com.cloudstone.emenu.data.Order orderValue = new com.cloudstone.emenu.data.Order();
