@@ -90,35 +90,20 @@ public class PrinterUtils {
         }
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
-        //Font Size
-        switch (fontSize) {
-            case 2:
-                out.write(0x1c);
-                out.write(0x21);
-                out.write(8);
-                out.write(0x1b);
-                out.write(0x21);
-                out.write(8);
-                break;
-            case 3:
-                out.write(0x1c);
-                out.write(0x21);
-                out.write(12);
-                out.write(0x1b);
-                out.write(0x21);
-                out.write(12);
-                break;
-            case 1:
-            default:
-                break;
-        }
 
         out.write(INIT.getBytes());
 //        out.write(select15CPI().getBytes());
 //        out.write(setLeftMargin(1).getBytes());
         out.write(setRightMargin(10).getBytes());
-        
+
+        //Font Size
+        out.write(0x1b);
+        out.write(0x21);
+        out.write(String.valueOf((char)(fontSize)).getBytes());
+        out.write(0x1d);
+        out.write(0x21);
+        out.write(String.valueOf((char)(fontSize)).getBytes());
+
         content = content.replace("\n", LINE_FIELD);
         content = content.replace("\t", TAB);
         out.write(content.getBytes());

@@ -99,7 +99,7 @@ public class PrinterLogic extends BaseLogic {
                     dishes.add(dish);
                     String content = velocityRender.renderBill(bill,
                             user, dishWraper.wrapDishGroup(context, dishes), templateString);
-                    PrinterUtils.print(printer, content, 2/*template.getFontSize()*/);
+                    PrinterUtils.print(printer, content, template.getFontSize());
                 }
             } else {
                 String content = velocityRender.renderBill(bill, user,
@@ -170,7 +170,7 @@ public class PrinterLogic extends BaseLogic {
                     dishes.add(dish);
                     String content = velocityRender.renderOrder(order, user,
                             dishWraper.wrapDishGroup(context, dishes), templateString);
-                    PrinterUtils.print(printer, content, 3/*template.getFontSize()*/);
+                    PrinterUtils.print(printer, content, template.getFontSize());
                 }
             } else {
                 String content = velocityRender.renderOrder(order, user,
