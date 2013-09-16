@@ -161,7 +161,7 @@ public class PrinterLogic extends BaseLogic {
         for (String printer:printers) {
             PrinterConfig config = getPrinterConfig(context, printer);
             if (config != null && config.isWhenCancel()) {
-                for (int templateId:config.getOrderedTemplateIds()) {
+                for (int templateId:config.getCancelTemplateIds()) {
                     LOG.info("print templateId :" + templateId);
                     printOrder(context, order, user, printer, templateId);
                 }
