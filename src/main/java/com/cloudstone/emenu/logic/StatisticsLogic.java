@@ -86,6 +86,8 @@ public class StatisticsLogic extends BaseLogic {
                 stat.setDishName(dish.getName());
                 stat.setPrice(dish.getPrice());
             }
+            //TODO remove the dishClass in db
+            stat.setDishClass(menuLogic.getCategory(context, dish.getId()));
             ret.add(stat);
         }
         for (int i=0; i<ret.size(); i++) {

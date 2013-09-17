@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class StatisticsController extends BaseWebController {
     
-    @RequestMapping("/statistics")
+    @RequestMapping("/stat")
     public String statistics(HttpServletRequest req, HttpServletResponse resp,
             ModelMap model) {
         return sendView("statistics", req, resp, model);

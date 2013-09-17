@@ -97,11 +97,13 @@ public class MenuLogic extends BaseLogic {
         }
         dishPageDb.add(context, menuPageId, dishId, pos);
         checkDishInMenu(context, dishId);
+        commonCache.resetCategoryCache(dishId);
     }
     
     public void unbindDish(EmenuContext context, int menuPageId, int dishId, int pos) {
         dishPageDb.delete(context, menuPageId, pos);
         checkDishInMenu(context, dishId);
+        commonCache.resetCategoryCache(dishId);
     }
     
     public Menu getMenu(EmenuContext context, int id) {

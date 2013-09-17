@@ -61,5 +61,9 @@ public class CommonCache extends BaseCache {
         }
         return currentMenuId;
     }
+    
+    public void resetCategoryCache(int dishId) {
+        categoryMap.remove(dishId);
+    }
 
 }
