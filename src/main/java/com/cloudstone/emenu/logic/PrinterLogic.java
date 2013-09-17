@@ -47,13 +47,13 @@ public class PrinterLogic extends BaseLogic {
 
     private static final String DISH_TEMPLATE = "\n" +
             "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "数量*单价"
-                + PrinterUtils.absoluteHorizontalPosition(1, 125) + "金额\n" +
+                + PrinterUtils.absoluteHorizontalPosition(1, 125) + "    金额\n" +
             "#foreach($group in $dishGroups)\n" +
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
                     "$dish.number*$dish.price" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
-                    "$dish.totalCost\n" + 
+                    "    $dish.totalCost\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
                         "  做法: " +
                         "#foreach($remark in $dish.remarks)\n" +
@@ -65,14 +65,12 @@ public class PrinterLogic extends BaseLogic {
             "\n";
 
     private static final String DISH_TEMPLATE_ORDER = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "数量"
-                + PrinterUtils.absoluteHorizontalPosition(1, 125) + "\n" +
+            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "      数量" + "\n" +
             "#foreach($group in $dishGroups)\n" +
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "$dish.number" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
-                    "\n" + 
+                    "      $dish.number" + "\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
                         "  做法: " +
                         "#foreach($remark in $dish.remarks)\n" +
