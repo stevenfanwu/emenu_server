@@ -378,10 +378,10 @@ public class MenuLogic extends BaseLogic {
     }
     
     private void innnerUpdateMenuPage(EmenuContext context, MenuPage p) {
-        List<DishPage> relation = dishPageDb.getByMenuPageId(context, p.getId());
-        if(p.getDishCount() < relation.size()) {
-            throw new DataConflictException("已有菜数大于该页能容纳菜数");
-        }
+//        List<DishPage> relation = dishPageDb.getByMenuPageId(context, p.getId());
+//        if(p.getDishCount() < relation.size()) {
+//            throw new DataConflictException("已有菜数大于该页能容纳菜数");
+//        }
         p.setUpdateTime(System.currentTimeMillis());
         menuPageDb.updateMenuPage(context, p);
     }
