@@ -109,7 +109,7 @@ public class PrinterLogic extends BaseLogic {
     public void printBill(EmenuContext context, Bill bill, User user, String printer, int templateId) throws Exception {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
-            String templateString = getTemplateString(context, template, 0);
+            String templateString = getTemplateString(context, template, 0, template.getCutType());
             if (template.getCutType() == Const.CutType.PER_DISH && bill.getOrder().getDishes().size()>0) {
                 for (OrderDishVO dish:bill.getOrder().getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
@@ -127,7 +127,7 @@ public class PrinterLogic extends BaseLogic {
         }
     }
     
-    private String getTemplateString(EmenuContext context, PrintTemplate template, int type) {
+    private String getTemplateString(EmenuContext context, PrintTemplate template, int type, int cutType) {
         StringBuilder sb = new StringBuilder();
         int headerId = template.getHeaderId();
         int footerId = template.getFooterId();
@@ -139,10 +139,13 @@ public class PrinterLogic extends BaseLogic {
                 sb.append(DIVIDER);
             }
         }
-        if(type == 0) {//Bill
+        if (type == 0) {// Bill
             sb.append(DISH_TEMPLATE);
-        } else if(type == 1) {
-            sb.append(DISH_TEMPLATE_ORDER);
+        } else if (type == 1) {
+            if (cutType == Const.CutType.PER_DISH)
+                sb.append(DISH_TEMPLATE_ORDER);
+            else if (cutType == Const.CutType.PER_DISH)
+                sb.append(DISH_TEMPLATE);
         }
         if (footerId != 0) {
             PrintComponent footer = getComponent(context, footerId);
@@ -183,7 +186,7 @@ public class PrinterLogic extends BaseLogic {
     public void printOrder(EmenuContext context, OrderVO order, User user, String printer, int templateId) throws Exception {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
-            String templateString = getTemplateString(context, template, 1);
+            String templateString = getTemplateString(context, template, 1, template.getCutType());
             if (template.getCutType() == Const.CutType.PER_DISH && order.getDishes().size()>0) {
                 for (OrderDishVO dish:order.getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();

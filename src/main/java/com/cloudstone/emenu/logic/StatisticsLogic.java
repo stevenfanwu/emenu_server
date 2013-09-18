@@ -344,17 +344,17 @@ public class StatisticsLogic extends BaseLogic {
                                 && bill.getDiscount()>0) {
                             discount += (d.getPrice()*d.getNumber()*(10 - bill.getDiscount())/ 10);
                         }
-                        discount += d.getPrice()
-                                * recordLogic.getFreeDishCount(context, d.getId(), startTime, endTime);
                     }
                 }
             }
 
+            discount += dish.getPrice()
+                    * recordLogic.getFreeDishCount(context, dish.getId(), startTime, endTime);
             int backCount = recordLogic.getCancelDishCount(context,
                     dish.getId(), startTime, endTime);
             String category = menuLogic.getCategory(context, dish.getId());
             
-            stat.setIncome(income);
+            stat.setIncome(income-discount);
             stat.setCount(count);
             stat.setBackCount(backCount);
             stat.setDishName(dish.getName());
