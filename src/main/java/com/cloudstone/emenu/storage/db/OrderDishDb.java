@@ -61,6 +61,11 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
     }
     
     @Override
+    public OrderDish getOrderDish(EmenuContext context, int orderId, int dishId) {
+        return super.get(context, orderId, dishId);
+    }
+    
+    @Override
     public void update(EmenuContext context, OrderDish data) {
         executeSQL(context, SQL_UPDATE, new UpdateBinder(data));
     }

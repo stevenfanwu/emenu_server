@@ -18,4 +18,5 @@ public interface IOrderDishDb {
     public void update(EmenuContext context, OrderDish data);
     public void delete(EmenuContext context, int orderId, int dishId);
     public List<OrderDish> listOrderDish(EmenuContext context, int orderId) ;
+    public OrderDish getOrderDish(EmenuContext context, int orderId, int dishId);
 }

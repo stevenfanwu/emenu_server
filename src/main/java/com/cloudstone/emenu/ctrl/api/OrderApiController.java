@@ -121,4 +121,15 @@ public class OrderApiController extends BaseApiController {
         EmenuContext context = newContext(request);
         return orderLogic.submit(context, order, order.getDishes());
     }
+    
+    @RequestMapping(value="/api/orders/{id:[\\d]+}", method=RequestMethod.PUT)
+    public @ResponseBody OrderVO update(HttpServletRequest request
+            , HttpServletResponse response
+            , @PathVariable("id") int orderId
+            , @RequestBody String body) {
+        EmenuContext context = newContext(request);
+        OrderVO order = JsonUtils.fromJson(body, OrderVO.class);
+        return orderLogic.incrUpdate(context, orderId, order.getDishes());
+    }
+    
 }

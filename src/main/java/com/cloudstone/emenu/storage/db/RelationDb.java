@@ -87,6 +87,21 @@ public abstract class RelationDb<T extends Relation> extends SQLiteDb {
         });
     }
     
+    private final String SQL_SELECT_ONE = new SelectSqlBuilder(config.tableName)
+        .appendWhere(ID1)
+        .appendWhere(ID2)
+        .build();
+    protected T get(EmenuContext context, final int id1, final int id2) {
+        StatementBinder binder = new StatementBinder() {
+            @Override
+            public void onBind(SQLiteStatement stmt) throws SQLiteException {
+                stmt.bind(1, id1);
+                stmt.bind(2, id2);
+            }
+        };
+        return queryOne(context, SQL_SELECT_ONE, binder, rowMapper);
+    }
+    
     protected List<T> listById1(EmenuContext context, int id1) {
         return listById(context, ID1, id1);
     }
