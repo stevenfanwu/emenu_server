@@ -406,6 +406,7 @@ public class OrderLogic extends BaseLogic {
             order.setOriginPrice(originPrice);
             order.setUserId(context.getLoginUserId());
             updateOrder(context, order);
+            context.commitTransaction();
         } finally {
             context.closeTransaction(dataSource);
         }
