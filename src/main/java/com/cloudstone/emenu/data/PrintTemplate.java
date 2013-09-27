@@ -12,8 +12,8 @@ public class PrintTemplate extends IdName {
     private int headerId;
     private int footerId;
     private int cutType;
-
     private int fontSize = 1;
+    private int[] chapterIds;
 
     public int getFontSize() {
         return fontSize;
@@ -39,5 +39,11 @@ public class PrintTemplate extends IdName {
     }
     public void setCutType(int cutType) {
         this.cutType = cutType;
+    }
+    public int[] getChapterIds() {
+        return chapterIds;
+    }
+    public void setChapterIds(int[] chapterIds) {
+        this.chapterIds = chapterIds;
     }
 }

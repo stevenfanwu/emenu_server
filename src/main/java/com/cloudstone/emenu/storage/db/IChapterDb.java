@@ -24,4 +24,5 @@ public interface IChapterDb extends IDb {
     public List<Chapter> listChapters(EmenuContext context, int[] ids) ;
     public Chapter getChapter(EmenuContext context, int id) ;
     public Chapter getChapterByName(EmenuContext context, String name) ;
+    public int[] getAllChapterIds(EmenuContext context);
 }

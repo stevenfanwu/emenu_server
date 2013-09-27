@@ -263,6 +263,10 @@ public class MenuLogic extends BaseLogic {
     }
 
     /* ---------- chapter ---------- */
+    public int[] getChapterIds(EmenuContext context) {
+        return chapterDb.getAllChapterIds(context);
+    }
+
     public Chapter addChapter(EmenuContext context, Chapter chapter) {
         Chapter old = chapterDb.getChapterByName(context, chapter.getName());
         if (old!= null && old.getMenuId()==chapter.getMenuId() && !old.isDeleted()) {

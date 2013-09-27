@@ -22,11 +22,13 @@ import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.BaseStorage;
 import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
+import com.cloudstone.emenu.storage.db.util.IntRowMapper;
 import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
 import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
+import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.IdGenerator;
 
 /**
@@ -147,6 +149,11 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     protected int queryInt(EmenuContext context, String sql, StatementBinder binder) {
         return new QueryIntGetter().exec(context, sql, binder);
+    }
+    
+    protected int[] queryIntArray(EmenuContext context, String sql, StatementBinder binder) {
+        List<Integer> list = query(context, sql, binder, new IntRowMapper());
+        return CollectionUtils.toIntArray(list);
     }
     
     protected <T> T queryOne(EmenuContext context, String sql, StatementBinder binder, RowMapper<T> rowMapper) {
