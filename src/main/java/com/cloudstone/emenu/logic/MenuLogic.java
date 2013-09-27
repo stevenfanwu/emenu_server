@@ -299,6 +299,12 @@ public class MenuLogic extends BaseLogic {
         return chapters;
     }
     
+    public List<Chapter> listChapters(EmenuContext context, int[] ids) {
+        List<Chapter> chapters = chapterDb.listChapters(context, ids);
+        DataUtils.filterDeleted(chapters);
+        return chapters;
+    }
+    
     public boolean isDishInChapter(EmenuContext context, int dishId, int chapterId) {
         List<MenuPage> pages = listMenuPageByChapterId(context, chapterId);
         List<MenuPage> relations = listMenuPageByDishId(context, dishId);

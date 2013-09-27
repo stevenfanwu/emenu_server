@@ -5,6 +5,7 @@
 package com.cloudstone.emenu.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.storage.db.IPrintComponentDb;
 import com.cloudstone.emenu.storage.db.IPrintTemplateDb;
 import com.cloudstone.emenu.storage.db.IPrinterConfigDb;
+import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.PrinterUtils;
 import com.cloudstone.emenu.util.VelocityRender;
@@ -42,6 +44,8 @@ public class PrinterLogic extends BaseLogic {
     
     @Autowired
     private DishWraper dishWraper;
+    @Autowired
+    private MenuLogic menuLogic;
     
     private static final String DIVIDER = "\n---------------------------------------\n";
 
@@ -115,12 +119,12 @@ public class PrinterLogic extends BaseLogic {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
                     String content = velocityRender.renderBill(bill,
-                            user, dishWraper.wrapDishGroup(context, dishes), templateString);
+                            user, dishWraper.wrapDishGroup(context, dishes, template.getChapterIds()), templateString);
                     PrinterUtils.print(printer, content, template.getFontSize());
                 }
             } else {
                 String content = velocityRender.renderBill(bill, user,
-                        dishWraper.wrapDishGroup(context, bill.getOrder().getDishes()),
+                        dishWraper.wrapDishGroup(context, bill.getOrder().getDishes(), template.getChapterIds()),
                         templateString);
                 PrinterUtils.print(printer, content, template.getFontSize());
             }
@@ -192,12 +196,12 @@ public class PrinterLogic extends BaseLogic {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
                     String content = velocityRender.renderOrder(order, user,
-                            dishWraper.wrapDishGroup(context, dishes), templateString);
+                            dishWraper.wrapDishGroup(context, dishes, template.getChapterIds()), templateString);
                     PrinterUtils.print(printer, content, template.getFontSize());
                 }
             } else {
                 String content = velocityRender.renderOrder(order, user,
-                        dishWraper.wrapDishGroup(context,order.getDishes()),
+                        dishWraper.wrapDishGroup(context,order.getDishes(), template.getChapterIds()),
                         templateString);
                 PrinterUtils.print(printer, content, template.getFontSize());
             }
@@ -205,7 +209,9 @@ public class PrinterLogic extends BaseLogic {
     }
     
     public PrintTemplate getTemplate(EmenuContext context, int id) {
-        return printTemplateDb.get(context, id);
+        PrintTemplate template = printTemplateDb.get(context, id);
+        checkChapterIds(context, template);
+        return template;
     }
     
     public List<PrintComponent> listComponents(EmenuContext context) {
@@ -244,7 +250,35 @@ public class PrinterLogic extends BaseLogic {
     public List<PrintTemplate> listTemplate(EmenuContext context) {
         List<PrintTemplate> list = printTemplateDb.listAll(context);
         DataUtils.filterDeleted(list);
+        checkChapterIds(context, list);
         return list;
+    }
+    
+    private void checkChapterIds(EmenuContext context, List<PrintTemplate> templates) {
+        for (PrintTemplate template:templates) {
+            checkChapterIds(context, template);
+        }
+    }
+    
+    private void checkChapterIds(EmenuContext context, PrintTemplate template) {
+        //check chapterId exists
+        if (!CollectionUtils.isEmpty(template.getChapterIds())) {
+            int[] chapterIds = menuLogic.getChapterIds(context);
+            Arrays.sort(chapterIds);
+            List<Integer> newIds = new LinkedList<Integer>();
+            boolean needUpdate = false;
+            for (int oldId:template.getChapterIds()) {
+                if (Arrays.binarySearch(chapterIds, oldId) < 0) {
+                    needUpdate = true;
+                } else {
+                    newIds.add(oldId);
+                }
+            }
+            if (needUpdate) {
+                template.setChapterIds(CollectionUtils.toIntArray(newIds));
+                updateTemplate(context, template);
+            }
+        }
     }
     
     public PrintTemplate addTemplate(EmenuContext context, PrintTemplate template) {
