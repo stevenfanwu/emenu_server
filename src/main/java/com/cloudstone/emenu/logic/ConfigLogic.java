@@ -30,7 +30,7 @@ public class ConfigLogic extends BaseLogic {
     public int getDbVersion(EmenuContext context) {
         Integer v = configDb.get(context, JsonKeyConst.DB_VERSION, Integer.class);
         if (v == null) {
-            return 1;
+            return ServerConfig.DB_VERSION;
         }
         return v;
     }

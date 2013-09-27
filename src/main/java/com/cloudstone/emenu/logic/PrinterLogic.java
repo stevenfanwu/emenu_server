@@ -146,10 +146,11 @@ public class PrinterLogic extends BaseLogic {
         if (type == 0) {// Bill
             sb.append(DISH_TEMPLATE);
         } else if (type == 1) {
-            if (cutType == Const.CutType.PER_DISH)
+            if (cutType == Const.CutType.PER_DISH) {
                 sb.append(DISH_TEMPLATE_ORDER);
-            else if (cutType == Const.CutType.PER_DISH)
+            } else {
                 sb.append(DISH_TEMPLATE);
+            }
         }
         if (footerId != 0) {
             PrintComponent footer = getComponent(context, footerId);

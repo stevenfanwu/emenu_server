@@ -48,6 +48,7 @@ public class DishWraper extends BaseWraper {
         for (OrderDishVO dish:dishes) {
             String category = menuLogic.getCategory(context, dish.getId());
             if (!categories.contains(category)) {
+                LOG.info("ignore category:" + category);
                 continue;
             }
             LOG.info("dishId=" + dish.getId() + ", category=" + category);
@@ -61,6 +62,7 @@ public class DishWraper extends BaseWraper {
         }
         List<DishGroup> ret = new LinkedList<DishGroup>();
         for (DishGroup g:map.values()) {
+            LOG.info(String.format("Group:%s  dishes.size=%d", g.getCategory(), g.getDishes().size()));
             ret.add(g);
         }
         return ret;
