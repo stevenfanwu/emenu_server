@@ -94,6 +94,26 @@ define(function (require, exports, module) {
         FEN: {
             value: 1,
             label: '斤'
+        },
+        GE: {
+            value: 2,
+            label: '个'
+        },
+        ZHI: {
+            value: 3,
+            label: '只'
+        },
+        PAN: {
+            value: 4,
+            label: '盘'
+        },
+        PING: {
+            value: 5,
+            label: '瓶'
+        },
+        BEI: {
+            value: 6,
+            label: '杯'
         }
     });
 

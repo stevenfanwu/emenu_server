@@ -161,30 +161,30 @@ public class StatisticsLogic extends BaseLogic {
         }
         
         public List<T> list(long startTime, long endTime) {
-        List<T> ret = new LinkedList<T>();
-        long p = startTime;
-        if ((p-8*UnitUtils.HOUR) % UnitUtils.DAY != 0) {
-            p = UnitUtils.getDayStart(p + UnitUtils.DAY);
-        }
-        if (p != startTime) {
-            ret.add(getOne(startTime, p));
-        }
-        while (p < endTime) {
-            long end = p + UnitUtils.DAY;
-            if (end > endTime) {
-                end = endTime;
+            List<T> ret = new LinkedList<T>();
+            long p = startTime;
+            if ((p-8*UnitUtils.HOUR) % UnitUtils.DAY != 0) {
+                p = UnitUtils.getDayStart(p + UnitUtils.DAY);
             }
-            ret.add(getOne(p, end));
-            p += UnitUtils.DAY;
-        }
-        for (int i=0; i<ret.size(); i++) {
-            T stat = ret.get(i);
-            if (stat.getId() == 0) {
-                //mock id
-                stat.setId(0 - i);
+            if (p != startTime) {
+                ret.add(getOne(startTime, p));
             }
-        }
-        return ret;
+            while (p < endTime) {
+                long end = p + UnitUtils.DAY;
+                if (end > endTime) {
+                    end = endTime;
+                }
+                ret.add(getOne(p, end));
+                p += UnitUtils.DAY;
+            }
+            for (int i=0; i<ret.size(); i++) {
+                T stat = ret.get(i);
+                if (stat.getId() == 0) {
+                    //mock id
+                    stat.setId(0 - i);
+                }
+            }
+            return ret;
         }
 
         private T getOne(long startTime, long endTime) {

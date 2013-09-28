@@ -21,6 +21,7 @@ import com.cloudstone.emenu.data.PrintComponent;
 import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.data.PrinterConfig;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.DishGroup;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.NotFoundException;
@@ -50,13 +51,13 @@ public class PrinterLogic extends BaseLogic {
     private static final String DIVIDER = "\n---------------------------------------\n";
 
     private static final String DISH_TEMPLATE = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "数量*单价"
+            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "单价*数量"
                 + PrinterUtils.absoluteHorizontalPosition(1, 125) + "    金额\n" +
             "#foreach($group in $dishGroups)\n" +
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "$dish.number*$dish.price" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
+                    "$dish.price*$dish.number$dish.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
                     "    $dish.totalCost\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
                         "  做法: " +
@@ -74,7 +75,7 @@ public class PrinterLogic extends BaseLogic {
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "      $dish.number" + "\n" + 
+                    "      $dish.number$dish.unitLabel" + "\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
                         "  做法: " +
                         "#foreach($remark in $dish.remarks)\n" +
@@ -118,15 +119,18 @@ public class PrinterLogic extends BaseLogic {
                 for (OrderDishVO dish:bill.getOrder().getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    String content = velocityRender.renderBill(bill,
-                            user, dishWraper.wrapDishGroup(context, dishes, template.getChapterIds()), templateString);
-                    PrinterUtils.print(printer, content, template.getFontSize());
+                    List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds());
+                    if (!CollectionUtils.isEmpty(dishGroups)) {
+                        String content = velocityRender.renderBill(bill, user, dishGroups, templateString);
+                        PrinterUtils.print(printer, content, template.getFontSize());
+                    }
                 }
             } else {
-                String content = velocityRender.renderBill(bill, user,
-                        dishWraper.wrapDishGroup(context, bill.getOrder().getDishes(), template.getChapterIds()),
-                        templateString);
-                PrinterUtils.print(printer, content, template.getFontSize());
+                List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, bill.getOrder().getDishes(), template.getChapterIds());
+                if (!CollectionUtils.isEmpty(dishGroups)) {
+                    String content = velocityRender.renderBill(bill, user, dishGroups, templateString);
+                    PrinterUtils.print(printer, content, template.getFontSize());
+                }
             }
         }
     }
@@ -196,15 +200,19 @@ public class PrinterLogic extends BaseLogic {
                 for (OrderDishVO dish:order.getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    String content = velocityRender.renderOrder(order, user,
-                            dishWraper.wrapDishGroup(context, dishes, template.getChapterIds()), templateString);
-                    PrinterUtils.print(printer, content, template.getFontSize());
+                    List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds());
+                    if (!CollectionUtils.isEmpty(dishGroups)) {
+                        String content = velocityRender.renderOrder(order, user,
+                                dishWraper.wrapDishGroup(context, dishes, template.getChapterIds()), templateString);
+                        PrinterUtils.print(printer, content, template.getFontSize());
+                    }
                 }
             } else {
-                String content = velocityRender.renderOrder(order, user,
-                        dishWraper.wrapDishGroup(context,order.getDishes(), template.getChapterIds()),
-                        templateString);
-                PrinterUtils.print(printer, content, template.getFontSize());
+                List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, order.getDishes(), template.getChapterIds());
+                if (!CollectionUtils.isEmpty(dishGroups)) {
+                    String content = velocityRender.renderOrder(order, user, dishGroups, templateString);
+                    PrinterUtils.print(printer, content, template.getFontSize());
+                }
             }
         }
     }
