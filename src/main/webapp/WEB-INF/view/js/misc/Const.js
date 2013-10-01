@@ -114,6 +114,14 @@ define(function (require, exports, module) {
         BEI: {
             value: 6,
             label: '杯'
+        },
+        LI: {
+            value: 7,
+            label: '粒'
+        },
+        WEI: {
+            value: 8,
+            label: '位'
         }
     });
 

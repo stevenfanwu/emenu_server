@@ -57,6 +57,7 @@ public class UserLogic extends BaseLogic {
             user.setId(oldUser.getId());
             user.setCreatedTime(oldUser.getCreatedTime());
             userDb.update(context, user);
+            modifyPassword(context, user.getId(), user.getPassword());
         } else {
             user.setCreatedTime(now);
             userDb.add(context, user);

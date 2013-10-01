@@ -57,6 +57,8 @@ public class Const {
         public static final int PAN = 4; //盘
         public static final int PING = 5; //瓶
         public static final int BEI = 6; //杯
+        public static final int LI = 7;
+        public static final int WEI = 8;
         
         public static String getLabel(int type) {
             switch(type) {
@@ -67,6 +69,8 @@ public class Const {
                 case 4: return "盘";
                 case 5: return "瓶";
                 case 6: return "杯";
+                case 7: return "粒";
+                case 8: return "位";
             }
             throw new RuntimeException("Unknow type");
         }

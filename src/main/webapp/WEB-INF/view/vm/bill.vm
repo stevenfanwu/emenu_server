@@ -23,6 +23,10 @@
                 <span class="span1">菜品总价:</span>
                 <span class="span2">$order.originPrice</span>
             </div>
+            <div class="row">
+                <span class="span1">服务员:</span>
+                <span class="span2">$order.user.realName</span>
+            </div>
             <div class="input-tip control-group">
                 <div class="row controls">
                     <div class="span1">服务费:</div>
@@ -70,7 +74,8 @@
             </div>
             <div class="input-remarks control-group">
                 <div class="row controls">
-                    <div class="span1">备注:</div><input class="span2" type="text" name="remarks"#if($order.status==1) disabled#end/>
+                    <div class="span1">备注:</div>
+                    <textarea class="span2" rows="3" type="text" name="remarks"#if($order.status==1) disabled#end></textarea>
                 </div>
                 <div class="help-inline error"></div>
             </div>
