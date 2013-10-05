@@ -427,4 +427,24 @@ public class ThriftLogic extends BaseLogic {
         pad.setBatteryLevel(info.getBatteryLevel());
         deviceLogic.updatePad(context, pad);
     }
+    
+    public void changeTable(EmenuContext context, String oldTablename, String newTableName)
+            throws TableOccupiedException, TException {
+        Table from = tableLogic.getByName(context, oldTablename);
+        if (from==null || from.isDeleted()) {
+            throw new TException("桌子不存在: + " + oldTablename);
+        }
+        Table to = tableLogic.getByName(context, newTableName);
+        if (to==null || to.isDeleted()) {
+            throw new TException("桌子不存在: + " + newTableName);
+        }
+        if (to.getStatus() != Const.TableStatus.EMPTY) {
+            throw new TableOccupiedException();
+        }
+        try {
+            tableLogic.changeTable(context, from.getId(), to.getId());
+        } catch (Throwable e) {
+            throw new TException(e.getMessage());
+        }
+    }
 }

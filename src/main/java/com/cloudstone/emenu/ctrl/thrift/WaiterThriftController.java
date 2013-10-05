@@ -78,8 +78,10 @@ public class WaiterThriftController extends BaseThriftController {
                 String newTableId) throws UserNotLoginException,
                 PermissionDenyExcpetion, TableOccupiedException, TException {
             LOG.info("changeTable");
-            //TODO
-            return false;
+            EmenuContext context = new EmenuContext();
+            authorize(context, sessionId);
+            thriftLogic.changeTable(context, oldTableId, newTableId);
+            return true;
         }
 
         @Override
