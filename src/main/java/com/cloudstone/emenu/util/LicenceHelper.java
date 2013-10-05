@@ -153,7 +153,7 @@ public class LicenceHelper {
                     byte[] mac = ni.getHardwareAddress();
                     if (mac != null) {
                         for (int i = 0; i < mac.length; i++) {
-                            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
+                            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
                         }
                         list.add(sb.toString());
                     }
