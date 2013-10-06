@@ -16,6 +16,7 @@ define(function (require, exports, module) {
     var BillOrders = require('./item/BillOrders');
     var Invoice = require('./item/Invoice');
     var InvoiceValidator = require('./validator/InvoiceValidator');
+    var Textarea = require('./item/Textarea');
 
     var BillForm = BaseForm.extend({
         url: '/api/bills',
@@ -91,7 +92,7 @@ define(function (require, exports, module) {
             }]
         }, {
             name: 'remarks',
-            type: Text,
+            type: Textarea,
             el: '.input-remarks'
         }, {
             name: 'discountDishIds',

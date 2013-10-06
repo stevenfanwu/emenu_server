@@ -18,6 +18,7 @@ public class PrinterConfig {
     private boolean whenBill;
     private int[] billTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
     private boolean whenCancel;
+    private int[] cancelTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
     
     public boolean isWhenCancel() {
         return whenCancel;
@@ -25,7 +26,12 @@ public class PrinterConfig {
     public void setWhenCancel(boolean whenCancel) {
         this.whenCancel = whenCancel;
     }
-
+    public int[] getCancelTemplateIds() {
+        return cancelTemplateIds;
+    }
+    public void setCancelTemplateIds(int[] cancelTemplateIds) {
+        this.cancelTemplateIds = cancelTemplateIds;
+    }
     public boolean isWhenOrdered() {
         return whenOrdered;
     }

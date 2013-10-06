@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.User;
-import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -120,9 +119,8 @@ public class UserApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/public/user-names", method=RequestMethod.GET)
-    public @ResponseBody String getUserNames(HttpServletRequest request) {
+    public @ResponseBody List<String> getUserNames(HttpServletRequest request) {
         EmenuContext context = newContext(request);
-        List<String> names = userLogic.listUserNames(context);
-        return CollectionUtils.join(names, ",");
+        return userLogic.listUserNames(context);
     }
 }

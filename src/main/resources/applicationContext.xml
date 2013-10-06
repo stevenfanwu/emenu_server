@@ -63,6 +63,8 @@
         <property name="maxUploadSize" value="100000000" />
     </bean>
 
+    <bean id="licenceFilter" class="com.cloudstone.emenu.web.filter.LicenceFilter">
+    </bean>
     <bean id="upgradingFilter" class="com.cloudstone.emenu.web.filter.UpgradingFilter">
     </bean>
     <bean id="authFilter" class="com.cloudstone.emenu.web.filter.AuthFilter">
@@ -72,6 +74,7 @@
                 <value>/test</value>
                 <value>/api/test</value>
                 <value>/upgrading</value>
+                <value>/licence</value>
                 <value>/login</value>
                 <value>/api/login</value>
                 <value>/static/.*</value>

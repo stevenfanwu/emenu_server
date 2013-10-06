@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cloudstone.emenu.logic.MenuLogic;
 import com.cloudstone.emenu.logic.OrderLogic;
+import com.cloudstone.emenu.logic.RecordLogic;
 import com.cloudstone.emenu.logic.TableLogic;
 import com.cloudstone.emenu.logic.UserLogic;
 
@@ -24,5 +25,7 @@ public class BaseWraper {
     protected MenuLogic menuLogic;
     @Autowired
     protected OrderLogic orderLogic;
+    @Autowired
+    protected RecordLogic recordLogic;
 
 }

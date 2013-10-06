@@ -185,6 +185,19 @@ public class ThriftLogic extends BaseLogic {
         UnderMinChargeException, TException {
         String tableName = order.getTableId();
         
+        
+        //check goods
+        List<Dish> dishes = new ArrayList<Dish>();
+        for (GoodsOrder g:order.getGoods()) {
+            int dishId = g.getId();
+            Dish dish = menuLogic.getDish(context, dishId, false);
+            if (dish == null || dish.isDeleted()) {
+                throw new HasInvalidGoodsException();
+            }
+            g.setPrice(dish.getPrice());
+            dishes.add(dish);
+        }
+        
         double price = 0;
         for (GoodsOrder o:order.getGoods()) {
             price += o.getPrice()*o.getNumber();
@@ -203,17 +216,6 @@ public class ThriftLogic extends BaseLogic {
         }
         if (order.getOriginalPrice() < table.getMinCharge()) {
             throw new UnderMinChargeException();
-        }
-        
-        //check goods
-        List<Dish> dishes = new ArrayList<Dish>();
-        for (GoodsOrder g:order.getGoods()) {
-            int dishId = g.getId();
-            Dish dish = menuLogic.getDish(context, dishId, false);
-            if (dish == null || dish.isDeleted()) {
-                throw new HasInvalidGoodsException();
-            }
-            dishes.add(dish);
         }
         
         com.cloudstone.emenu.data.Order orderValue = new com.cloudstone.emenu.data.Order();
@@ -424,5 +426,25 @@ public class ThriftLogic extends BaseLogic {
         }
         pad.setBatteryLevel(info.getBatteryLevel());
         deviceLogic.updatePad(context, pad);
+    }
+    
+    public void changeTable(EmenuContext context, String oldTablename, String newTableName)
+            throws TableOccupiedException, TException {
+        Table from = tableLogic.getByName(context, oldTablename);
+        if (from==null || from.isDeleted()) {
+            throw new TException("桌子不存在: + " + oldTablename);
+        }
+        Table to = tableLogic.getByName(context, newTableName);
+        if (to==null || to.isDeleted()) {
+            throw new TException("桌子不存在: + " + newTableName);
+        }
+        if (to.getStatus() != Const.TableStatus.EMPTY) {
+            throw new TableOccupiedException();
+        }
+        try {
+            tableLogic.changeTable(context, from.getId(), to.getId());
+        } catch (Throwable e) {
+            throw new TException(e.getMessage());
+        }
     }
 }

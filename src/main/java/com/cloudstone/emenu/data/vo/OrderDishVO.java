@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.data.vo;
 
+import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.OrderDish;
 
@@ -17,6 +18,7 @@ public class OrderDishVO extends Dish {
     private int orderStatus;
     private double totalCost;
     private int orderId;
+    private String unitLabel;
 
     public OrderDishVO() {
         super();
@@ -24,6 +26,7 @@ public class OrderDishVO extends Dish {
 
     public OrderDishVO(Dish dish) {
         super(dish);
+        setUnitLabel(Const.DishUnit.getLabel(dish.getUnit()));
     }
     
     public static OrderDishVO create(OrderDish r, Dish dish, int orderId) {
@@ -34,6 +37,7 @@ public class OrderDishVO extends Dish {
         //TODO round
         o.setTotalCost(o.getNumber()*o.getPrice());
         o.setOrderId(orderId);
+        o.setUnitLabel(Const.DishUnit.getLabel(dish.getUnit()));
         return o;
     }
     
@@ -85,5 +89,13 @@ public class OrderDishVO extends Dish {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public String getUnitLabel() {
+        return unitLabel;
+    }
+
+    public void setUnitLabel(String unitLabel) {
+        this.unitLabel = unitLabel;
     }
 }

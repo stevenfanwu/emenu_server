@@ -10,6 +10,10 @@ define(function (require, exports, module) {
     var Text = require('./item/Text');
     var Radio = require('./item/Radio');
     var AjaxSelect = require('./item/AjaxSelect');
+    var AjaxCheckboxGroup = require('./item/AjaxCheckboxGroup');
+
+    var Integer = require('./validator/Integer');
+    var MoreThan = require('./validator/MoreThan');
 
     var PrintTemplateForm = BaseForm.extend({
 
@@ -37,6 +41,26 @@ define(function (require, exports, module) {
             name: 'cutType',
             type: Radio,
             el: '.input-cutType'
+        }, {
+            name: 'fontSize',
+            type: Text,
+            el: '.input-fontSize',
+            validators: [{
+                type: Required,
+                errorMessage: '字号不能为空'
+            }, {
+                type: Integer,
+                errorMessage: '请输入整数'
+            }, {
+                type: MoreThan,
+                other: 1,
+                including: true,
+                errorMessage: '不能小于1'
+            }]
+        }, {
+            name: 'chapterIds',
+            type: AjaxCheckboxGroup,
+            CollectionType: require('../collection/ChapterCollection')
         }]
     });
     

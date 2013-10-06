@@ -5,6 +5,7 @@
 package com.cloudstone.emenu.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,12 +21,14 @@ import com.cloudstone.emenu.data.PrintComponent;
 import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.data.PrinterConfig;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.DishGroup;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.storage.db.IPrintComponentDb;
 import com.cloudstone.emenu.storage.db.IPrintTemplateDb;
 import com.cloudstone.emenu.storage.db.IPrinterConfigDb;
+import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.PrinterUtils;
 import com.cloudstone.emenu.util.VelocityRender;
@@ -42,18 +45,20 @@ public class PrinterLogic extends BaseLogic {
     
     @Autowired
     private DishWraper dishWraper;
+    @Autowired
+    private MenuLogic menuLogic;
     
     private static final String DIVIDER = "\n---------------------------------------\n";
 
     private static final String DISH_TEMPLATE = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "数量*单价"
-                + PrinterUtils.absoluteHorizontalPosition(1, 125) + "金额\n" +
+            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "单价*数量"
+                + PrinterUtils.absoluteHorizontalPosition(1, 125) + "    金额\n" +
             "#foreach($group in $dishGroups)\n" +
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "$dish.number*$dish.price" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
-                    "$dish.totalCost\n" + 
+                    "$dish.price*$dish.number$dish.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
+                    "    $dish.totalCost\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
                         "  做法: " +
                         "#foreach($remark in $dish.remarks)\n" +
@@ -63,7 +68,24 @@ public class PrinterLogic extends BaseLogic {
                 "#end\n" +
             "#end\n" +
             "\n";
-    
+
+    private static final String DISH_TEMPLATE_ORDER = "\n" +
+            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "      数量" + "\n" +
+            "#foreach($group in $dishGroups)\n" +
+                "【$group.category】\n" +
+                "#foreach($dish in $group.dishes)\n" +
+                    "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
+                    "      $dish.number$dish.unitLabel" + "\n" + 
+                    "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
+                        "  做法: " +
+                        "#foreach($remark in $dish.remarks)\n" +
+                            "$remark" + " " +
+                        "#end\n" + "\n" +
+                    "#end\n" +
+                "#end\n" +
+            "#end\n" +
+            "\n";
+
     @Autowired
     private VelocityRender velocityRender;
     @Autowired
@@ -92,25 +114,28 @@ public class PrinterLogic extends BaseLogic {
     public void printBill(EmenuContext context, Bill bill, User user, String printer, int templateId) throws Exception {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
-            String templateString = getTemplateString(context, template);
+            String templateString = getTemplateString(context, template, 0, template.getCutType());
             if (template.getCutType() == Const.CutType.PER_DISH && bill.getOrder().getDishes().size()>0) {
                 for (OrderDishVO dish:bill.getOrder().getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    String content = velocityRender.renderBill(bill,
-                            user, dishWraper.wrapDishGroup(context, dishes), templateString);
-                    PrinterUtils.print(printer, content, template.getFontSize());
+                    List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds());
+                    if (!CollectionUtils.isEmpty(dishGroups)) {
+                        String content = velocityRender.renderBill(bill, user, dishGroups, templateString);
+                        PrinterUtils.print(printer, content, template.getFontSize());
+                    }
                 }
             } else {
-                String content = velocityRender.renderBill(bill, user,
-                        dishWraper.wrapDishGroup(context, bill.getOrder().getDishes()),
-                        templateString);
-                PrinterUtils.print(printer, content, template.getFontSize());
+                List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, bill.getOrder().getDishes(), template.getChapterIds());
+                if (!CollectionUtils.isEmpty(dishGroups)) {
+                    String content = velocityRender.renderBill(bill, user, dishGroups, templateString);
+                    PrinterUtils.print(printer, content, template.getFontSize());
+                }
             }
         }
     }
     
-    private String getTemplateString(EmenuContext context, PrintTemplate template) {
+    private String getTemplateString(EmenuContext context, PrintTemplate template, int type, int cutType) {
         StringBuilder sb = new StringBuilder();
         int headerId = template.getHeaderId();
         int footerId = template.getFooterId();
@@ -122,8 +147,15 @@ public class PrinterLogic extends BaseLogic {
                 sb.append(DIVIDER);
             }
         }
-        sb.append(DISH_TEMPLATE);
-        
+        if (type == 0) {// Bill
+            sb.append(DISH_TEMPLATE);
+        } else if (type == 1) {
+            if (cutType == Const.CutType.PER_DISH) {
+                sb.append(DISH_TEMPLATE_ORDER);
+            } else {
+                sb.append(DISH_TEMPLATE);
+            }
+        }
         if (footerId != 0) {
             PrintComponent footer = getComponent(context, footerId);
             if (footer != null) {
@@ -139,7 +171,7 @@ public class PrinterLogic extends BaseLogic {
         for (String printer:printers) {
             PrinterConfig config = getPrinterConfig(context, printer);
             if (config != null && config.isWhenCancel()) {
-                for (int templateId:config.getOrderedTemplateIds()) {
+                for (int templateId:config.getCancelTemplateIds()) {
                     LOG.info("print templateId :" + templateId);
                     printOrder(context, order, user, printer, templateId);
                 }
@@ -163,26 +195,32 @@ public class PrinterLogic extends BaseLogic {
     public void printOrder(EmenuContext context, OrderVO order, User user, String printer, int templateId) throws Exception {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
-            String templateString = getTemplateString(context, template);
+            String templateString = getTemplateString(context, template, 1, template.getCutType());
             if (template.getCutType() == Const.CutType.PER_DISH && order.getDishes().size()>0) {
                 for (OrderDishVO dish:order.getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    String content = velocityRender.renderOrder(order, user,
-                            dishWraper.wrapDishGroup(context, dishes), templateString);
-                    PrinterUtils.print(printer, content, template.getFontSize());
+                    List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds());
+                    if (!CollectionUtils.isEmpty(dishGroups)) {
+                        String content = velocityRender.renderOrder(order, user,
+                                dishWraper.wrapDishGroup(context, dishes, template.getChapterIds()), templateString);
+                        PrinterUtils.print(printer, content, template.getFontSize());
+                    }
                 }
             } else {
-                String content = velocityRender.renderOrder(order, user,
-                        dishWraper.wrapDishGroup(context,order.getDishes()),
-                        templateString);
-                PrinterUtils.print(printer, content, template.getFontSize());
+                List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, order.getDishes(), template.getChapterIds());
+                if (!CollectionUtils.isEmpty(dishGroups)) {
+                    String content = velocityRender.renderOrder(order, user, dishGroups, templateString);
+                    PrinterUtils.print(printer, content, template.getFontSize());
+                }
             }
         }
     }
     
     public PrintTemplate getTemplate(EmenuContext context, int id) {
-        return printTemplateDb.get(context, id);
+        PrintTemplate template = printTemplateDb.get(context, id);
+        checkChapterIds(context, template);
+        return template;
     }
     
     public List<PrintComponent> listComponents(EmenuContext context) {
@@ -221,7 +259,35 @@ public class PrinterLogic extends BaseLogic {
     public List<PrintTemplate> listTemplate(EmenuContext context) {
         List<PrintTemplate> list = printTemplateDb.listAll(context);
         DataUtils.filterDeleted(list);
+        checkChapterIds(context, list);
         return list;
+    }
+    
+    private void checkChapterIds(EmenuContext context, List<PrintTemplate> templates) {
+        for (PrintTemplate template:templates) {
+            checkChapterIds(context, template);
+        }
+    }
+    
+    private void checkChapterIds(EmenuContext context, PrintTemplate template) {
+        //check chapterId exists
+        if (!CollectionUtils.isEmpty(template.getChapterIds())) {
+            int[] chapterIds = menuLogic.getChapterIds(context);
+            Arrays.sort(chapterIds);
+            List<Integer> newIds = new LinkedList<Integer>();
+            boolean needUpdate = false;
+            for (int oldId:template.getChapterIds()) {
+                if (Arrays.binarySearch(chapterIds, oldId) < 0) {
+                    needUpdate = true;
+                } else {
+                    newIds.add(oldId);
+                }
+            }
+            if (needUpdate) {
+                template.setChapterIds(CollectionUtils.toIntArray(newIds));
+                updateTemplate(context, template);
+            }
+        }
     }
     
     public PrintTemplate addTemplate(EmenuContext context, PrintTemplate template) {

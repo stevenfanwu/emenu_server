@@ -163,10 +163,13 @@ public class MenuApiController extends BaseApiController {
     }
     
     @RequestMapping(value="/api/chapters", method=RequestMethod.GET)
-    public @ResponseBody List<Chapter> getChapterByMenuId(
+    public @ResponseBody List<Chapter> getChapters(
             HttpServletRequest request,
-            @RequestParam("menuId") int menuId) {
+            @RequestParam(value="menuId", defaultValue="0") int menuId) {
         EmenuContext context = newContext(request);
+        if (menuId == 0) {
+            return menuLogic.getAllChapter(context);
+        }
         return menuLogic.listChapterByMenuId(context, menuId);
     }
     

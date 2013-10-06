@@ -52,6 +52,28 @@ public class Const {
     public static class DishUnit {
         public static final int FEN = 0; // 份
         public static final int JIN = 1; // 斤
+        public static final int GE = 2; //个
+        public static final int ZHI = 3; //只
+        public static final int PAN = 4; //盘
+        public static final int PING = 5; //瓶
+        public static final int BEI = 6; //杯
+        public static final int LI = 7;
+        public static final int WEI = 8;
+        
+        public static String getLabel(int type) {
+            switch(type) {
+                case 0: return "份";
+                case 1: return "斤";
+                case 2: return "个";
+                case 3: return "只";
+                case 4: return "盘";
+                case 5: return "瓶";
+                case 6: return "杯";
+                case 7: return "粒";
+                case 8: return "位";
+            }
+            throw new RuntimeException("Unknow type");
+        }
     }
     
     public static class DishStatus {

@@ -16,9 +16,9 @@ import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.misc.PollingManager;
 import com.cloudstone.emenu.data.misc.PollingManager.PollingMessage;
-import com.cloudstone.emenu.exception.BadRequestError;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.NotFoundException;
+import com.cloudstone.emenu.exception.PreconditionFailedException;
 import com.cloudstone.emenu.storage.db.ITableDb;
 import com.cloudstone.emenu.storage.db.MiscStorage;
 import com.cloudstone.emenu.util.CollectionUtils;
@@ -44,18 +44,24 @@ public class TableLogic extends BaseLogic {
     
     public void changeTable(EmenuContext context, int fromId, int toId) {
         Table from = get(context, fromId);
-        if (from == null || from.getStatus() == TableStatus.EMPTY) {
-            throw new BadRequestError();
+        if (from == null || from.isDeleted()) {
+            throw new NotFoundException("桌子不存在, tableId=" + fromId);
+        }
+        if (from.getStatus() == TableStatus.EMPTY) {
+            throw new PreconditionFailedException("桌子未开台, tableId=" + fromId);
         }
         Table to = get(context, toId);
-        if (to == null || to.getStatus() != TableStatus.EMPTY) {
-            throw new BadRequestError();
+        if (to==null || to.isDeleted()) {
+            throw new NotFoundException("桌子不存在, tableId=" + toId);
+        }
+        if (to.getStatus() != TableStatus.EMPTY) {
+            throw new PreconditionFailedException("桌子不是空闲状态, tableId=" + toId);
         }
         Order order = null;
         if (from.getOrderId() != 0) {
             order = orderLogic.getOrder(context, from.getOrderId());
-            if (order == null) {
-                throw new BadRequestError();
+            if (order == null || order.isDeleted()) {
+                throw new NotFoundException("订单不存在, orderId=" + from.getOrderId());
             }
         }
 

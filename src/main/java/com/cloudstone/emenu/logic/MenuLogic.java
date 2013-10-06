@@ -97,11 +97,13 @@ public class MenuLogic extends BaseLogic {
         }
         dishPageDb.add(context, menuPageId, dishId, pos);
         checkDishInMenu(context, dishId);
+        commonCache.resetCategoryCache(dishId);
     }
     
     public void unbindDish(EmenuContext context, int menuPageId, int dishId, int pos) {
         dishPageDb.delete(context, menuPageId, pos);
         checkDishInMenu(context, dishId);
+        commonCache.resetCategoryCache(dishId);
     }
     
     public Menu getMenu(EmenuContext context, int id) {
@@ -261,6 +263,10 @@ public class MenuLogic extends BaseLogic {
     }
 
     /* ---------- chapter ---------- */
+    public int[] getChapterIds(EmenuContext context) {
+        return chapterDb.getAllChapterIds(context);
+    }
+
     public Chapter addChapter(EmenuContext context, Chapter chapter) {
         Chapter old = chapterDb.getChapterByName(context, chapter.getName());
         if (old!= null && old.getMenuId()==chapter.getMenuId() && !old.isDeleted()) {
@@ -289,6 +295,12 @@ public class MenuLogic extends BaseLogic {
     
     public List<Chapter> listChapters(EmenuContext context, final int menuId, int dishId) {
         List<Chapter> chapters = chapterDb.listChapters(context, menuId, dishId);
+        DataUtils.filterDeleted(chapters);
+        return chapters;
+    }
+    
+    public List<Chapter> listChapters(EmenuContext context, int[] ids) {
+        List<Chapter> chapters = chapterDb.listChapters(context, ids);
         DataUtils.filterDeleted(chapters);
         return chapters;
     }
@@ -378,10 +390,10 @@ public class MenuLogic extends BaseLogic {
     }
     
     private void innnerUpdateMenuPage(EmenuContext context, MenuPage p) {
-        List<DishPage> relation = dishPageDb.getByMenuPageId(context, p.getId());
-        if(p.getDishCount() < relation.size()) {
-            throw new DataConflictException("已有菜数大于该页能容纳菜数");
-        }
+//        List<DishPage> relation = dishPageDb.getByMenuPageId(context, p.getId());
+//        if(p.getDishCount() < relation.size()) {
+//            throw new DataConflictException("已有菜数大于该页能容纳菜数");
+//        }
         p.setUpdateTime(System.currentTimeMillis());
         menuPageDb.updateMenuPage(context, p);
     }

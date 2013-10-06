@@ -21,6 +21,7 @@ public class OrderVO extends Order {
     private Table table;
     private List<OrderDishVO> dishes;
     private User user;
+    private List<CancelDishVO> cancelDishes;
     
     public OrderVO() {
         super();
@@ -31,10 +32,11 @@ public class OrderVO extends Order {
         table = order.table;
         user = order.user;
         dishes = order.dishes;
+        cancelDishes = order.cancelDishes;
     }
     
     public OrderVO(Order order, Table table, List<OrderDish> relations,
-            List<Dish> dishes, User user) {
+            List<Dish> dishes, User user, List<CancelDishVO> cancelDishes) {
         super(order);
         setTable(table);
         List<OrderDishVO> dishVOs = new ArrayList<OrderDishVO>();
@@ -44,6 +46,7 @@ public class OrderVO extends Order {
         }
         setDishes(dishVOs);
         setUser(user);
+        this.cancelDishes = cancelDishes;
     }
 
     public Table getTable() {
@@ -68,5 +71,13 @@ public class OrderVO extends Order {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<CancelDishVO> getCancelDishes() {
+        return cancelDishes;
+    }
+
+    public void setCancelDishes(List<CancelDishVO> cancelDishes) {
+        this.cancelDishes = cancelDishes;
     }
 }

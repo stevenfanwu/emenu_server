@@ -1,0 +1,30 @@
+#set( $layout="layout/empty.vm")
+#set($pageName="Licence")
+
+#if (! $licence)
+<div class="alert">
+    <span>$result.message</span>
+</div>
+#else
+    #if (! $result.success)
+        <div class="alert">
+            <span>$result.message</span>
+        </div>
+    #end
+<div class="well container">
+    <div class="row">
+        <span class="badge badge-info offset1">证书类型</span>
+        <span>
+        #if ($licence.type == 1)
+            正式版
+        #else
+            测试版
+        #end
+        </span>
+    </div>
+    <div class="row">
+        <span class="badge badge-info offset1">平板个数限制</span>
+        <span>$licence.padCount</span>
+    </div>
+</div>
+#end

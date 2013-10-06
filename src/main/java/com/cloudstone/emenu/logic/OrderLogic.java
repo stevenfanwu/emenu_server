@@ -39,6 +39,7 @@ import com.cloudstone.emenu.storage.db.IBillDb;
 import com.cloudstone.emenu.storage.db.IOrderDb;
 import com.cloudstone.emenu.storage.db.IOrderDishDb;
 import com.cloudstone.emenu.storage.db.IPayTypeDb;
+import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.UnitUtils;
 import com.cloudstone.emenu.wrap.OrderWraper;
@@ -87,6 +88,11 @@ public class OrderLogic extends BaseLogic {
         orderDish.setCreatedTime(now);
         orderDish.setUpdateTime(now);
         orderDishDb.add(context, orderDish);
+    }
+    
+    
+    public OrderDish getOrderDish(EmenuContext context, int orderId, int dishId) {
+        return orderDishDb.getOrderDish(context, orderId, dishId);
     }
 
     public void updateOrderDish(EmenuContext context, OrderDish orderDish) {
@@ -358,6 +364,54 @@ public class OrderLogic extends BaseLogic {
             context.closeTransaction(dataSource);
         }
         return order;
+    }
+    
+    public OrderVO incrUpdate(EmenuContext context, int orderId, List<OrderDishVO> dishes) {
+        Order order = getOrder(context, orderId);
+        if (order == null || order.isDeleted()) {
+            throw new NotFoundException("订单不存在");
+        }
+        if (order.getStatus() == Const.OrderStatus.PAYED) {
+            throw new DataConflictException("该订单已结账");
+        }
+        context.beginTransaction(dataSource);
+        try {
+            double originPrice = order.getOriginPrice();
+            for (OrderDishVO r:dishes) {
+                Dish dish = menuLogic.getDish(context, r.getId());
+                if (dish == null || dish.isDeleted()) {
+                    throw new NotFoundException("存在非法菜品");
+                }
+                originPrice += dish.getPrice() * r.getNumber();
+                r.setPrice(dish.getPrice());
+            }
+            
+            //save order dish
+            for (OrderDishVO vo:dishes) {
+                OrderDish r = vo.toOrderDish();
+                OrderDish old = getOrderDish(context, orderId, r.getDishId());
+                if (old != null) {
+                    old.setNumber(old.getNumber() + r.getNumber());
+                    //TODO merge marks
+                    if (!CollectionUtils.isEmpty(r.getRemarks())) {
+                        old.setRemarks(r.getRemarks());
+                    }
+                    updateOrderDish(context, old);
+                } else {
+                    r.setOrderId(order.getId());
+                    r.setStatus(Const.OrderDishStatus.ORDERED);
+                    addOrderDish(context, r);
+                }
+            }
+            order.setOriginPrice(originPrice);
+            order.setUserId(context.getLoginUserId());
+            updateOrder(context, order);
+            context.commitTransaction();
+        } finally {
+            context.closeTransaction(dataSource);
+        }
+        order = getOrder(context, orderId);
+        return orderWraper.wrap(context, order);
     }
     
     public OrderVO submit(EmenuContext context, Order order, List<OrderDishVO> dishes) {

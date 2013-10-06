@@ -86,6 +86,8 @@ public class StatisticsLogic extends BaseLogic {
                 stat.setDishName(dish.getName());
                 stat.setPrice(dish.getPrice());
             }
+            //TODO remove the dishClass in db
+            stat.setDishClass(menuLogic.getCategory(context, dish.getId()));
             ret.add(stat);
         }
         for (int i=0; i<ret.size(); i++) {
@@ -159,30 +161,30 @@ public class StatisticsLogic extends BaseLogic {
         }
         
         public List<T> list(long startTime, long endTime) {
-        List<T> ret = new LinkedList<T>();
-        long p = startTime;
-        if ((p-8*UnitUtils.HOUR) % UnitUtils.DAY != 0) {
-            p = UnitUtils.getDayStart(p + UnitUtils.DAY);
-        }
-        if (p != startTime) {
-            ret.add(getOne(startTime, p));
-        }
-        while (p < endTime) {
-            long end = p + UnitUtils.DAY;
-            if (end > endTime) {
-                end = endTime;
+            List<T> ret = new LinkedList<T>();
+            long p = startTime;
+            if ((p-8*UnitUtils.HOUR) % UnitUtils.DAY != 0) {
+                p = UnitUtils.getDayStart(p + UnitUtils.DAY);
             }
-            ret.add(getOne(p, end));
-            p += UnitUtils.DAY;
-        }
-        for (int i=0; i<ret.size(); i++) {
-            T stat = ret.get(i);
-            if (stat.getId() == 0) {
-                //mock id
-                stat.setId(0 - i);
+            if (p != startTime) {
+                ret.add(getOne(startTime, p));
             }
-        }
-        return ret;
+            while (p < endTime) {
+                long end = p + UnitUtils.DAY;
+                if (end > endTime) {
+                    end = endTime;
+                }
+                ret.add(getOne(p, end));
+                p += UnitUtils.DAY;
+            }
+            for (int i=0; i<ret.size(); i++) {
+                T stat = ret.get(i);
+                if (stat.getId() == 0) {
+                    //mock id
+                    stat.setId(0 - i);
+                }
+            }
+            return ret;
         }
 
         private T getOne(long startTime, long endTime) {
@@ -342,17 +344,17 @@ public class StatisticsLogic extends BaseLogic {
                                 && bill.getDiscount()>0) {
                             discount += (d.getPrice()*d.getNumber()*(10 - bill.getDiscount())/ 10);
                         }
-                        discount += d.getPrice()
-                                * recordLogic.getFreeDishCount(context, d.getId(), startTime, endTime);
                     }
                 }
             }
 
+            discount += dish.getPrice()
+                    * recordLogic.getFreeDishCount(context, dish.getId(), startTime, endTime);
             int backCount = recordLogic.getCancelDishCount(context,
                     dish.getId(), startTime, endTime);
             String category = menuLogic.getCategory(context, dish.getId());
             
-            stat.setIncome(income);
+            stat.setIncome(income-discount);
             stat.setCount(count);
             stat.setBackCount(backCount);
             stat.setDishName(dish.getName());

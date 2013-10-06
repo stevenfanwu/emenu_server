@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.storage.db.util;
 
+import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.StringUtils;
 
 /**
@@ -34,6 +35,9 @@ public class SqlUtils {
     }
     
     public static String idsToStr(int[] ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (int id:ids) {

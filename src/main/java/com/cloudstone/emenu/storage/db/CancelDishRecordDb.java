@@ -4,15 +4,20 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.CancelDishRecord;
+import com.cloudstone.emenu.storage.db.BillDb.OrderIdBinder;
 import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
 import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
+import com.cloudstone.emenu.storage.db.util.RowMapper;
 import com.cloudstone.emenu.storage.db.util.SQLBuilder;
+import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 
 /**
@@ -47,10 +52,19 @@ public class CancelDishRecordDb extends SQLiteDb implements ICancelDishRecordDb 
         });
     }
     
+    @Override
+    public List<CancelDishRecord> listByOrderId(EmenuContext context,
+            int orderId) {
+        return query(context, SQL_SELECT_BY_ORDER, new OrderIdBinder(orderId), ROW_MAPPER);
+    }
+    
     /* ---------------------- */
     
 
     private static final String TABLE_NAME = "cancelDishRecord";
+    
+    private static final String SQL_SELECT_BY_ORDER = new SelectSqlBuilder(TABLE_NAME)
+        .appendWhere(Column.ORDER_ID).build();
 
     @Override
     public String getTableName() {
@@ -111,4 +125,21 @@ public class CancelDishRecordDb extends SQLiteDb implements ICancelDishRecordDb 
             stmt.bind(8, record.isDeleted() ? 1 : 0);
         }
     }
+    
+    private static final RowMapper<CancelDishRecord> ROW_MAPPER = new RowMapper<CancelDishRecord>() {
+        @Override
+        public CancelDishRecord map(SQLiteStatement stmt)
+                throws SQLiteException {
+            CancelDishRecord record = new CancelDishRecord();
+            record.setId(stmt.columnInt(0));
+            record.setTime(stmt.columnLong(1));
+            record.setDishId(stmt.columnInt(2));
+            record.setCount(stmt.columnInt(3));
+            record.setOrderId(stmt.columnInt(4));
+            record.setCreatedTime(stmt.columnLong(5));
+            record.setUpdateTime(stmt.columnLong(6));
+            record.setDeleted(stmt.columnInt(7) == 1);
+            return record;
+        }
+    };
 }

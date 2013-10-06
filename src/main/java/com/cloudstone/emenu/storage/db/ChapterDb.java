@@ -47,6 +47,12 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     }
     
     @Override
+    public int[] getAllChapterIds(EmenuContext context) {
+        String sql = "SELECT id FROM " + TABLE_NAME + " WHERE deleted=0";
+        return queryIntArray(context, sql, StatementBinder.NULL);
+    }
+    
+    @Override
     public Chapter getChapterByName(EmenuContext context, String name) {
         return getByName(context, name, rowMapper);
     }
