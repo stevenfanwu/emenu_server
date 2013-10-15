@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
@@ -49,6 +51,9 @@ public class JsonDb extends SQLiteDb {
     }
     
     public void remove(EmenuContext context, String key) {
+        if (!StringUtils.isBlank(key)) {
+            return;
+        }
         executeSQL(context, SQL_DELETE, new KeyBinder(key));
         cache.remove(key);
     }

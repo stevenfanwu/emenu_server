@@ -4,15 +4,21 @@
  */
 package com.cloudstone.emenu.data.vo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.OrderDish;
+import com.cloudstone.emenu.util.DataUtils;
 
 /**
  * @author xuhongfeng
  *
  */
 public class OrderDishVO extends Dish {
+//    private static final Logger LOG = LoggerFactory.getLogger(OrderDishVO.class);
+    
     private double number;
     private String[] remarks;
     private int orderStatus;
@@ -31,11 +37,10 @@ public class OrderDishVO extends Dish {
     
     public static OrderDishVO create(OrderDish r, Dish dish, int orderId) {
         OrderDishVO o = new OrderDishVO(dish);
-        o.setNumber(r.getNumber());
+        o.setNumber(DataUtils.round(r.getNumber(), 1));
         o.setRemarks(r.getRemarks());
         o.setOrderStatus(r.getStatus());
-        //TODO round
-        o.setTotalCost(o.getNumber()*o.getPrice());
+        o.setTotalCost(DataUtils.calMoney(o.getNumber()*o.getPrice()));
         o.setOrderId(orderId);
         o.setUnitLabel(Const.DishUnit.getLabel(dish.getUnit()));
         return o;

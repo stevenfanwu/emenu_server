@@ -4,6 +4,8 @@
  */
 package com.cloudstone.emenu.data;
 
+import com.cloudstone.emenu.util.DataUtils;
+
 /**
  * @author xuhongfeng
  *
@@ -23,8 +25,8 @@ public class Order extends IEntity {
     public Order(Order order) {
         super(order);
         setId(order.getId());
-        setOriginPrice(order.getOriginPrice());
-        setPrice(order.getPrice());
+        setOriginPrice(DataUtils.calMoney(order.getOriginPrice()));
+        setPrice(DataUtils.calMoney(order.getPrice()));
         setTableId(order.getTableId());
         setCustomerNumber(order.getCustomerNumber());
         setStatus(order.getStatus());

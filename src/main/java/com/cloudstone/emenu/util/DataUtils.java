@@ -37,7 +37,13 @@ public class DataUtils {
     
     public static double calMoney(double a) {
         BigDecimal d = new BigDecimal(a);
-        d.setScale(2, BigDecimal.ROUND_HALF_UP);
+        d = d.setScale(2, BigDecimal.ROUND_HALF_UP);
+        return d.doubleValue();
+    }
+    
+    public static double round(double a, int digits) {
+        BigDecimal d = new BigDecimal(a);
+        d = d.setScale(digits, BigDecimal.ROUND_HALF_UP);
         return d.doubleValue();
     }
 }
