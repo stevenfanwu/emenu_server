@@ -179,6 +179,19 @@ public class PrinterLogic extends BaseLogic {
         }
     }
 
+    public void printAddOrder(EmenuContext context, OrderVO order, User user) throws Exception {
+        String[] printers = listPrinters();
+        for (String printer:printers) {
+            PrinterConfig config = getPrinterConfig(context, printer);
+            if (config != null && config.isWhenAdd()) {
+                for (int templateId:config.getAddTemplateIds()) {
+                    LOG.info("print templateId :" + templateId);
+                    printOrder(context, order, user, printer, templateId);
+                }
+            }
+        }
+    }
+
     public void printOrder(EmenuContext context, OrderVO order, User user) throws Exception {
         String[] printers = listPrinters();
         for (String printer:printers) {

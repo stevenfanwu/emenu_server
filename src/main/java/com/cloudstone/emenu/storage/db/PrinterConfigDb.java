@@ -53,6 +53,18 @@ public class PrinterConfigDb extends JsonDb implements IPrinterConfigDb {
                 config.setBillTemplateIds(a);
                 needUpdate = true;
             }
+            if (ArrayUtils.contains(config.getCancelTemplateIds(), templateId)) {
+                int idx = ArrayUtils.indexOf(config.getCancelTemplateIds(), templateId);
+                int[] a = ArrayUtils.remove(config.getCancelTemplateIds(), idx);
+                config.setCancelTemplateIds(a);
+                needUpdate = true;
+            }
+            if (ArrayUtils.contains(config.getAddTemplateIds(), templateId)) {
+                int idx = ArrayUtils.indexOf(config.getAddTemplateIds(), templateId);
+                int[] a = ArrayUtils.remove(config.getAddTemplateIds(), idx);
+                config.setAddTemplateIds(a);
+                needUpdate = true;
+            }
             if (needUpdate) {
                 update(context, config);
             }

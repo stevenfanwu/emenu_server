@@ -184,7 +184,7 @@ public class ThriftLogic extends BaseLogic {
     public void submitOrder(EmenuContext context, Order order) throws TableEmptyException, HasInvalidGoodsException,
         UnderMinChargeException, TException {
         String tableName = order.getTableId();
-        
+        boolean isAddOrder = false;
         
         //check goods
         List<Dish> dishes = new ArrayList<Dish>();
@@ -231,6 +231,7 @@ public class ThriftLogic extends BaseLogic {
             oldOrder = orderLogic.getOrder(context, table.getOrderId());
         }
         if (oldOrder != null) {
+            isAddOrder = true;
             oldOrder.setOriginPrice(orderValue.getOriginPrice() + oldOrder.getOriginPrice());
             oldOrder.setPrice(orderValue.getPrice() + oldOrder.getPrice());
             oldOrder.setUserId(userId);
@@ -338,7 +339,12 @@ public class ThriftLogic extends BaseLogic {
         pollingManager.putMessage(
                 new PollingMessage(PollingMessage.TYPE_NEW_ORDER, orderVOALL));
         try {
-            printerLogic.printOrder(context, orderVOADD, userLogic.getUser(context, context.getLoginUserId()));
+            if (!isAddOrder)
+                printerLogic.printOrder(context, orderVOADD,
+                        userLogic.getUser(context, context.getLoginUserId()));
+            else
+                printerLogic.printAddOrder(context, orderVOADD,
+                        userLogic.getUser(context, context.getLoginUserId()));
         } catch (Exception e) {
             LOG.error("", e);
         }

@@ -19,7 +19,22 @@ public class PrinterConfig {
     private int[] billTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
     private boolean whenCancel;
     private int[] cancelTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
+    private boolean whenAdd = true;
+    private int[] addTemplateIds = EmptyConst.EMPTY_INT_ARRAY;
     
+    public boolean isWhenAdd() {
+        return whenAdd;
+    }
+    public void setWhenAdd(boolean whenAdd) {
+        this.whenAdd = whenAdd;
+    }
+    public int[] getAddTemplateIds() {
+        return addTemplateIds;
+    }
+    public void setAddTemplateIds(int[] addTemplateIds) {
+        this.addTemplateIds = addTemplateIds;
+    }
+
     public boolean isWhenCancel() {
         return whenCancel;
     }
