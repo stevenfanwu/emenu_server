@@ -411,7 +411,13 @@ public class OrderLogic extends BaseLogic {
             context.closeTransaction(dataSource);
         }
         order = getOrder(context, orderId);
-        return orderWraper.wrap(context, order);
+        OrderVO orderVO =  orderWraper.wrap(context, order);
+        try {
+            printerLogic.printAddOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
+        } catch (Exception e) {
+            LOG.error("", e);
+        }
+        return orderVO;
     }
     
     public OrderVO submit(EmenuContext context, Order order, List<OrderDishVO> dishes) {
