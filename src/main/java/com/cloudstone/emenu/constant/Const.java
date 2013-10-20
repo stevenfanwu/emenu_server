@@ -69,7 +69,7 @@ public class Const {
                 case 4: return "盘";
                 case 5: return "瓶";
                 case 6: return "杯";
-                case 7: return "粒";
+                case 7: return "例";
                 case 8: return "位";
             }
             throw new RuntimeException("Unknow type");
