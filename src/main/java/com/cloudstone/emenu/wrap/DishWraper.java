@@ -37,7 +37,7 @@ public class DishWraper extends BaseWraper {
     private MenuLogic menuLogic;
 
     public List<DishGroup> wrapDishGroup(EmenuContext context,
-            List<OrderDishVO> dishes, int[] chapterIds) {
+            List<OrderDishVO> dishes, int[] chapterIds, boolean isBill) {
         Map<String, DishGroup> map = new HashMap<String, DishGroup>();
         List<Chapter> chapters = menuLogic.listChapters(context, chapterIds);
         Set<String> categories = new HashSet<String>();
@@ -52,6 +52,14 @@ public class DishWraper extends BaseWraper {
                 continue;
             }
             LOG.info("dishId=" + dish.getId() + ", category=" + category);
+            int requireLength = isBill ? 10 : 7;
+            if (dish.getName().length() > requireLength) {
+                String name = dish.getName();
+                String first = name.substring(0, requireLength);
+                String second = name.substring(requireLength, name.length());
+                StringBuilder finalName = new StringBuilder();
+                dish.setName(finalName.append(first).append("\n").append(second).toString());
+            }
             DishGroup group = map.get(category);
             if (group == null) {
                 group = new DishGroup();

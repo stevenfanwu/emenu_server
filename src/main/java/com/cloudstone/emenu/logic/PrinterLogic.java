@@ -51,13 +51,13 @@ public class PrinterLogic extends BaseLogic {
     private static final String DIVIDER = "\n---------------------------------------\n";
 
     private static final String DISH_TEMPLATE = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "单价*数量"
+            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "单价    数量"
                 + PrinterUtils.absoluteHorizontalPosition(1, 125) + "    金额\n" +
             "#foreach($group in $dishGroups)\n" +
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "$dish.price*$dish.number$dish.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
+                    "$dish.price    $dish.number$dish.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
                     "    $dish.totalCost\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
                         "  做法: " +
@@ -119,14 +119,14 @@ public class PrinterLogic extends BaseLogic {
                 for (OrderDishVO dish:bill.getOrder().getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds());
+                    List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds(), true);
                     if (!CollectionUtils.isEmpty(dishGroups)) {
                         String content = velocityRender.renderBill(bill, user, dishGroups, templateString);
                         PrinterUtils.print(printer, content, template.getFontSize());
                     }
                 }
             } else {
-                List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, bill.getOrder().getDishes(), template.getChapterIds());
+                List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, bill.getOrder().getDishes(), template.getChapterIds(), true);
                 if (!CollectionUtils.isEmpty(dishGroups)) {
                     String content = velocityRender.renderBill(bill, user, dishGroups, templateString);
                     PrinterUtils.print(printer, content, template.getFontSize());
@@ -200,15 +200,15 @@ public class PrinterLogic extends BaseLogic {
                 for (OrderDishVO dish:order.getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
-                    List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds());
+                    List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds(), false);
                     if (!CollectionUtils.isEmpty(dishGroups)) {
                         String content = velocityRender.renderOrder(order, user,
-                                dishWraper.wrapDishGroup(context, dishes, template.getChapterIds()), templateString);
+                                dishWraper.wrapDishGroup(context, dishes, template.getChapterIds(), false), templateString);
                         PrinterUtils.print(printer, content, template.getFontSize());
                     }
                 }
             } else {
-                List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, order.getDishes(), template.getChapterIds());
+                List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, order.getDishes(), template.getChapterIds(), false);
                 if (!CollectionUtils.isEmpty(dishGroups)) {
                     String content = velocityRender.renderOrder(order, user, dishGroups, templateString);
                     PrinterUtils.print(printer, content, template.getFontSize());
