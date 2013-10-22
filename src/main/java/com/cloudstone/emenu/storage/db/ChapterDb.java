@@ -35,7 +35,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     public List<Chapter> listChapters(EmenuContext context, final int menuId,
             final int dishId) {
         String sql = "SELECT c.* FROM chapter c JOIN menuPage m ON c.id=m.chapterId" +
-                " AND m.deleted=0 JOIN dishPage dp ON m.id=dp.id1 AND dp.deleted=0" +
+                " AND m.deleted=0 and c.deleted=0 JOIN dishPage dp ON m.id=dp.id1 AND dp.deleted=0" +
                 " AND dp.id2=? WHERE c.menuId=?";
         return query(context, sql, new StatementBinder() {
             @Override
