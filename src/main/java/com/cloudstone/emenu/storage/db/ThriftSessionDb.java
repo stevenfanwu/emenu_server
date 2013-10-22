@@ -6,8 +6,10 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,38 @@ public class ThriftSessionDb extends JsonDb {
     public ThriftSessionDb() {
         super(TABLE_NAME);
     }
+    
+    @Override
+    protected void init(EmenuContext context) {
+        super.init(context);
+        clearExpired(context);
+    }
+    
+    public Map<String, ThriftSession> dumpSessions(EmenuContext context) {
+        Map<String, String> data = super.dump(context);
+        Map<String, ThriftSession> map = new HashMap<String, ThriftSession>();
+        
+        for (java.util.Map.Entry<String, String> e:data.entrySet()) {
+            String sessionId = e.getKey();
+            String json = e.getValue();
+            ThriftSession session = JsonUtils.fromJson(json, ThriftSession.class);
+            map.put(sessionId, session);
+        }
+        
+        return map;
+    }
+    
+    public void clearExpired(EmenuContext context) {
+        Map<String, ThriftSession> map = dumpSessions(context);
+        long now = System.currentTimeMillis();
+        for (java.util.Map.Entry<String, ThriftSession> e:map.entrySet()) {
+            String sessionId = e.getKey();
+            ThriftSession session = e.getValue();
+            if (now - session.getActivateTime() > EXPIRE_TIME || !sessionId.equals(session.getSessionId())) {
+                remove(context, sessionId);
+            }
+        }
+    }
 
     public ThriftSession get(EmenuContext context, String sessionId) {
         return get(context, sessionId, ThriftSession.class);
@@ -53,6 +87,7 @@ public class ThriftSessionDb extends JsonDb {
     }
     
     public ThriftSession getLatest(EmenuContext context, String imei) {
+        
         List<ThriftSession> list = getAllSession(context);
         for (ThriftSession s:list) {
             if (System.currentTimeMillis() - s.getActivateTime() > EXPIRE_TIME) {

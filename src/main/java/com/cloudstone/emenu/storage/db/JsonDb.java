@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.storage.db;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,12 +47,22 @@ public class JsonDb extends SQLiteDb {
         return json == null ? null : JsonUtils.fromJson(json, clazz);
     }
     
+    public Map<String, String> dump(EmenuContext context) {
+        String sql = "SELECT key, value FROM " + TABLE_NAME;
+        List<Entry> entries = query(context, sql, StatementBinder.NULL, EntryMapper);
+        Map<String, String> map = new HashMap<String, String>();
+        for (Entry entry:entries) {
+            map.put(entry.key, entry.value);
+        }
+        return map;
+    }
+    
     public List<String> getAll(EmenuContext context) {
         return query(context, SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
     }
     
     public void remove(EmenuContext context, String key) {
-        if (!StringUtils.isBlank(key)) {
+        if (StringUtils.isBlank(key)) {
             return;
         }
         executeSQL(context, SQL_DELETE, new KeyBinder(key));
@@ -144,11 +155,40 @@ public class JsonDb extends SQLiteDb {
         }
     }
     
-    private RowMapper<String> rowMapper = new RowMapper<String>() {
+    private static final RowMapper<String> rowMapper = new RowMapper<String>() {
         
         @Override
         public String map(SQLiteStatement stmt) throws SQLiteException {
             return stmt.columnString(0);
         }
     };
+    
+    private static final RowMapper<Entry> EntryMapper = new RowMapper<Entry>() {
+
+        @Override
+        public Entry map(SQLiteStatement stmt) throws SQLiteException {
+            Entry entry = new Entry();
+            entry.setKey(stmt.columnString(0));
+            entry.setValue(stmt.columnString(1));
+            return entry;
+        }
+    };
+    
+    public static class Entry {
+        private String key;
+        private String value;
+        
+        public String getKey() {
+            return key;
+        }
+        public void setKey(String key) {
+            this.key = key;
+        }
+        public String getValue() {
+            return value;
+        }
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 }
