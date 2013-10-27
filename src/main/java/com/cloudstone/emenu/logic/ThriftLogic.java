@@ -32,6 +32,7 @@ import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.DishNote;
+import com.cloudstone.emenu.data.DishRecord;
 import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.Pad;
 import com.cloudstone.emenu.data.Table;
@@ -68,6 +69,8 @@ public class ThriftLogic extends BaseLogic {
     private PrinterLogic printerLogic;
     @Autowired
     private UserLogic userLogic;
+    @Autowired
+    private RecordLogic recordLogic;
     @Autowired
     private ThriftCache thriftCache;
     @Autowired
@@ -188,7 +191,7 @@ public class ThriftLogic extends BaseLogic {
         
         //check goods
         List<Dish> dishes = new ArrayList<Dish>();
-        for (GoodsOrder g:order.getGoods()) {
+        for (GoodsOrder g : order.getGoods()) {
             int dishId = g.getId();
             Dish dish = menuLogic.getDish(context, dishId, false);
             if (dish == null || dish.isDeleted()) {
@@ -196,6 +199,14 @@ public class ThriftLogic extends BaseLogic {
             }
             g.setPrice(dish.getPrice());
             dishes.add(dish);
+
+            // Add To DB
+            DishRecord record = new DishRecord();
+            record.setTime(System.currentTimeMillis());
+            record.setDishId(dish.getId());
+            record.setCount((int) g.getNumber());
+            record.setOrderId(g.getOrderid());
+            recordLogic.addAddDishRecord(context, record);
         }
         
         double price = 0;
@@ -252,6 +263,8 @@ public class ThriftLogic extends BaseLogic {
             }
             r.setStatus(ThriftUtils.getOrderDishStatus(g));
             relations.add(r);
+            
+            
         }
         List<OrderDish> needUpdate = new ArrayList<OrderDish>();
         List<OrderDish> needInsert = new ArrayList<OrderDish>();

@@ -76,6 +76,23 @@ public class Const {
         }
     }
     
+    public static class TypeUnit {
+        public static final int NORMAL = 0; //正常
+        public static final int CANCEL = 1; //退
+        public static final int ADD = 2; //加
+        public static final int FREE = 3; //赠
+        
+        public static String getLabel(int type) {
+            switch(type) {
+                case 0: return "";
+                case 1: return "退";
+                case 2: return "加";
+                case 3: return "赠";
+            }
+            throw new RuntimeException("Unknow type");
+        }
+    }
+    
     public static class DishStatus {
         public static final int STATUS_INIT = 0;
         public static final int STATUS_IN_MENU = 1;

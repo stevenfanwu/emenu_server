@@ -4,6 +4,7 @@
  */
 package com.cloudstone.emenu.ctrl.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,13 +20,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Bill;
+import com.cloudstone.emenu.data.DishRecord;
 import com.cloudstone.emenu.data.Order;
+import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.PrintComponent;
 import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.data.PrinterConfig;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.vo.OrderVO;
+import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.exception.ServerError;
+import com.cloudstone.emenu.logic.RecordLogic;
 import com.cloudstone.emenu.util.JsonUtils;
 
 /**
@@ -117,6 +123,37 @@ public class PrinterApiController extends BaseApiController {
         EmenuContext context = newContext(request);
         PrinterConfig data = JsonUtils.fromJson(body, PrinterConfig.class);
         return printerLogic.updatePrinterConfig(context, data);
+    }
+    
+    @RequestMapping(value="/api/printers/printpre", method=RequestMethod.POST)
+    public void printPreBill(@RequestParam("orderId") int orderId,
+            @RequestParam("printerId") int printerId,
+            @RequestParam("templateId") int templateId,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        Order order = orderLogic.getOrder(context, orderId);
+        if (order == null) {
+            throw new NotFoundException("该订单不存在");
+        }
+        List<DishRecord> cancelRecords = recordLogic.listCancelDishRecords(context, orderId);
+        List<DishRecord> addRecords = recordLogic.listAddDishRecords(context, orderId);
+        
+        PrinterConfig config = printerLogic.getPrinterConfig(context, printerId);
+        if (config == null) {
+            throw new NotFoundException("该打印机不存在");
+        }
+        User user = getLoginUser(request);
+        if (order.getStatus() == 0) {
+            try {
+                printerLogic.printPreBill(context, orderWraper.wrap(context, order), cancelRecords,
+                        addRecords, user, config.getName(), templateId);
+            } catch (Exception e) {
+                throw new ServerError("打印失败");
+            }
+        } else {
+            throw new ServerError("订单已经结帐完成");
+        }
     }
     
     @RequestMapping(value="/api/printers/print", method=RequestMethod.POST)

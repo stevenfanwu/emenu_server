@@ -25,10 +25,12 @@ import com.cloudstone.emenu.logic.DeviceLogic;
 import com.cloudstone.emenu.logic.MenuLogic;
 import com.cloudstone.emenu.logic.OrderLogic;
 import com.cloudstone.emenu.logic.PrinterLogic;
+import com.cloudstone.emenu.logic.RecordLogic;
 import com.cloudstone.emenu.logic.TableLogic;
 import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.util.AuthHelper;
 import com.cloudstone.emenu.wrap.OrderWraper;
+import com.cloudstone.emenu.wrap.RecordWraper;
 
 /**
  * @author xuhongfeng
@@ -51,9 +53,13 @@ public class BaseController {
     protected DeviceLogic deviceLogic;
     @Autowired
     protected PrinterLogic printerLogic;
+    @Autowired
+    protected RecordLogic recordLogic;
     
     @Autowired
     protected OrderWraper orderWraper;
+    @Autowired
+    protected RecordWraper recordWraper;
 
     protected void sendError(HttpServletResponse response, int statusCode) {
         try {

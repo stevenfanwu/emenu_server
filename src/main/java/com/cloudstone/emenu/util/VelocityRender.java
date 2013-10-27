@@ -21,6 +21,7 @@ import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.DishGroup;
 import com.cloudstone.emenu.data.vo.OrderVO;
+import com.cloudstone.emenu.data.vo.RecordVO;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.web.velocitytool.Utils;
 
@@ -81,6 +82,22 @@ public class VelocityRender {
         }
         context.put("userName", userName);
         return render(context, template);
+    }
+    
+    public String renderPreBill(OrderVO order, List<RecordVO> cancelRecord, List<RecordVO> addRecord, User user, List<DishGroup> dishGroups, String template) {
+        VelocityContext context = new VelocityContext();
+        context.put("dishGroups", dishGroups);
+        context.put("order", order);
+        context.put("cancelrecord", cancelRecord);
+        context.put("addrecord", addRecord);
+        context.put("table", order.getTable());
+        context.put("time", utils.formatDate(order.getUpdateTime()));
+        String userName = user.getRealName();
+        if (userName == null) {
+            userName = "";
+        }
+        context.put("userName", userName);
+        return render(context, template);        
     }
     
     private String render(VelocityContext context, String template) {

@@ -8,7 +8,7 @@ package com.cloudstone.emenu.data;
  * @author xuhongfeng
  *
  */
-public class CancelDishRecord extends IEntity {
+public class DishRecord extends IEntity {
     private long time;
     private int dishId;
     private int count;

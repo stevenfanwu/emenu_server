@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.CancelDishRecord;
+import com.cloudstone.emenu.data.DishRecord;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.Order;
 import com.cloudstone.emenu.data.OrderDish;
@@ -46,7 +46,7 @@ public class OrderWraper extends BaseWraper {
                 .listDishes(context, order.getId(), relations);
         
         //cancel dishes
-        List<CancelDishRecord> records = recordLogic.listCancelDishRecords(context, order.getId());
+        List<DishRecord> records = recordLogic.listCancelDishRecords(context, order.getId());
         List<CancelDishVO> cancelDishes = dishWraper.wrapCancelDish(context, records);
         
         OrderVO o = new OrderVO(order, table, relations, dishes, user, cancelDishes);

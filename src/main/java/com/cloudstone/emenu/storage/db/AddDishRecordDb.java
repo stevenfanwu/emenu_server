@@ -21,11 +21,12 @@ import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
 import com.cloudstone.emenu.storage.db.util.StatementBinder;
 
 /**
- * @author xuhongfeng
+ * 
+ * @author carelife
  *
  */
 @Repository
-public class CancelDishRecordDb extends SQLiteDb implements ICancelDishRecordDb {
+public class AddDishRecordDb extends SQLiteDb implements ICancelDishRecordDb {
     @Override
     public void add(EmenuContext context, DishRecord record) {
         record.setId(genId(context));
@@ -61,7 +62,7 @@ public class CancelDishRecordDb extends SQLiteDb implements ICancelDishRecordDb 
     /* ---------------------- */
     
 
-    private static final String TABLE_NAME = "cancelDishRecord";
+    private static final String TABLE_NAME = "addDishRecord";
     
     private static final String SQL_SELECT_BY_ORDER = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ORDER_ID).build();

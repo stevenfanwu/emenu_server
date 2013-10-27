@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Bill;
+import com.cloudstone.emenu.data.DishRecord;
 import com.cloudstone.emenu.data.PrintComponent;
 import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.data.PrinterConfig;
@@ -24,6 +25,7 @@ import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.vo.DishGroup;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.data.vo.OrderVO;
+import com.cloudstone.emenu.data.vo.RecordVO;
 import com.cloudstone.emenu.exception.NotFoundException;
 import com.cloudstone.emenu.storage.db.IPrintComponentDb;
 import com.cloudstone.emenu.storage.db.IPrintTemplateDb;
@@ -33,6 +35,7 @@ import com.cloudstone.emenu.util.DataUtils;
 import com.cloudstone.emenu.util.PrinterUtils;
 import com.cloudstone.emenu.util.VelocityRender;
 import com.cloudstone.emenu.wrap.DishWraper;
+import com.cloudstone.emenu.wrap.RecordWraper;
 
 /**
  * @author xuhongfeng
@@ -45,6 +48,8 @@ public class PrinterLogic extends BaseLogic {
     
     @Autowired
     private DishWraper dishWraper;
+    @Autowired
+    private RecordWraper recordWraper;
     @Autowired
     private MenuLogic menuLogic;
     
@@ -66,6 +71,28 @@ public class PrinterLogic extends BaseLogic {
                         "#end\n" + "\n" +
                     "#end\n" +
                 "#end\n" +
+            "#end\n" +
+            "\n";
+
+    private static final String DISH_TEMPLATE_PREBILL = "\n" +
+            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "    数量" +
+                
+            "【下单菜品】\n" +
+            "#foreach($group in $dishGroups)\n" +
+                "#foreach($dish in $group.dishes)\n" +
+                    "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
+                    "    $dish.number$dish.unitLabel" +
+                "#end\n" +
+            "#end\n" +
+            "【退菜】\n" +
+            "#foreach($rec in $cancelrecord)\n" +
+                "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
+                "$    $rec.count$rec.unitLabel" + 
+            "#end\n" +
+            "【加菜】\n" +
+            "#foreach($rec in $addrecord)\n" +
+                "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
+                "$    $rec.count$rec.unitLabel" + 
             "#end\n" +
             "\n";
 
@@ -149,13 +176,16 @@ public class PrinterLogic extends BaseLogic {
         }
         if (type == 0) {// Bill
             sb.append(DISH_TEMPLATE);
-        } else if (type == 1) {
+        } else if (type == 1) {// Order
             if (cutType == Const.CutType.PER_DISH) {
                 sb.append(DISH_TEMPLATE_ORDER);
             } else {
                 sb.append(DISH_TEMPLATE);
             }
+        } else if (type == 2) {// PreBill
+            sb.append(DISH_TEMPLATE_PREBILL);
         }
+        
         if (footerId != 0) {
             PrintComponent footer = getComponent(context, footerId);
             if (footer != null) {
@@ -226,6 +256,25 @@ public class PrinterLogic extends BaseLogic {
                     String content = velocityRender.renderOrder(order, user, dishGroups, templateString);
                     PrinterUtils.print(printer, content, template.getFontSize());
                 }
+            }
+        }
+    }
+    
+    public void printPreBill(EmenuContext context, OrderVO order, List<DishRecord> cancelRecords,
+            List<DishRecord> addRecords, User user, String printer, int templateId)
+            throws Exception {
+        PrintTemplate template = getTemplate(context, templateId);
+        if (template != null) {
+            String templateString = getTemplateString(context, template, 2, template.getCutType());
+            List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, order.getDishes(),
+                    template.getChapterIds(), false);
+            List<RecordVO> cancelRecordVOs = recordWraper.wrapRecord(context, cancelRecords);
+            List<RecordVO> addRecordVOs = recordWraper.wrapRecord(context, addRecords);
+
+            if (!CollectionUtils.isEmpty(dishGroups)) {
+                String content = velocityRender.renderPreBill(order, cancelRecordVOs, addRecordVOs,
+                        user, dishGroups, templateString);
+                PrinterUtils.print(printer, content, template.getFontSize());
             }
         }
     }

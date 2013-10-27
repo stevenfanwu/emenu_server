@@ -4,7 +4,7 @@
  */
 package com.cloudstone.emenu.data.vo;
 
-import com.cloudstone.emenu.data.CancelDishRecord;
+import com.cloudstone.emenu.data.DishRecord;
 import com.cloudstone.emenu.data.Dish;
 
 /**
@@ -24,7 +24,7 @@ public class CancelDishVO extends Dish {
         super(dish);
     }
     
-    public CancelDishVO(Dish dish, CancelDishRecord record) {
+    public CancelDishVO(Dish dish, DishRecord record) {
         this(dish, record.getOrderId(), record.getTime(), record.getCount());
     }
 

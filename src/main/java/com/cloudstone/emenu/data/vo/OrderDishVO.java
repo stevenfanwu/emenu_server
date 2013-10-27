@@ -25,6 +25,7 @@ public class OrderDishVO extends Dish {
     private double totalCost;
     private int orderId;
     private String unitLabel;
+    private String typeLabel;//赠，加，退，空
 
     public OrderDishVO() {
         super();
@@ -43,6 +44,7 @@ public class OrderDishVO extends Dish {
         o.setTotalCost(DataUtils.calMoney(o.getNumber()*o.getPrice()));
         o.setOrderId(orderId);
         o.setUnitLabel(Const.DishUnit.getLabel(dish.getUnit()));
+        o.setTypeLabel(Const.TypeUnit.getLabel(r.getType()));
         return o;
     }
     
@@ -103,4 +105,13 @@ public class OrderDishVO extends Dish {
     public void setUnitLabel(String unitLabel) {
         this.unitLabel = unitLabel;
     }
+
+    public String getTypeLabel() {
+        return typeLabel;
+    }
+
+    public void setTypeLabel(String typeLabel) {
+        this.typeLabel = typeLabel;
+    }
+
 }

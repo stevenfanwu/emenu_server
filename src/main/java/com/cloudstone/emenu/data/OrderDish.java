@@ -15,7 +15,8 @@ public class OrderDish extends Relation {
     private double price;
     private String[] remarks;
     private int status;
-    
+    private int type = 0;
+
     public OrderDish() {
         super();
     }
@@ -28,6 +29,7 @@ public class OrderDish extends Relation {
         setPrice(r.getPrice());
         setRemarks(r.getRemarks());
         setStatus(r.getStatus());
+        setType(r.getType());
     }
     
     public int getOrderId() {
@@ -65,5 +67,11 @@ public class OrderDish extends Relation {
     }
     public void setStatus(int status) {
         this.status = status;
+    }
+    public int getType() {
+        return type;
+    }
+    public void setType(int type) {
+        this.type = type;
     }
 }

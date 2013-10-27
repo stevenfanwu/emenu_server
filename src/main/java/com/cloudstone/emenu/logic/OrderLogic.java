@@ -19,7 +19,7 @@ import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.Const.TableStatus;
 import com.cloudstone.emenu.data.Bill;
-import com.cloudstone.emenu.data.CancelDishRecord;
+import com.cloudstone.emenu.data.DishRecord;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.FreeDishRecord;
 import com.cloudstone.emenu.data.Order;
@@ -295,7 +295,7 @@ public class OrderLogic extends BaseLogic {
             order.setOriginPrice(order.getOriginPrice() - count*dish.getPrice());
             updateOrder(context, order);
             
-            CancelDishRecord record = new CancelDishRecord();
+            DishRecord record = new DishRecord();
             record.setTime(System.currentTimeMillis());
             record.setDishId(dishId);
             record.setCount(count);

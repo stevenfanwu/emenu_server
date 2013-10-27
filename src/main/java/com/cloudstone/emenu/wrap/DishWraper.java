@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.EmenuContext;
-import com.cloudstone.emenu.data.CancelDishRecord;
+import com.cloudstone.emenu.data.DishRecord;
 import com.cloudstone.emenu.data.Chapter;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.vo.CancelDishVO;
@@ -76,15 +76,15 @@ public class DishWraper extends BaseWraper {
         return ret;
     }
     
-    public CancelDishVO wrapCancelDish(EmenuContext context, CancelDishRecord record) {
+    public CancelDishVO wrapCancelDish(EmenuContext context, DishRecord record) {
         Dish dish = menuLogic.getDish(context, record.getDishId());
         CancelDishVO vo = new CancelDishVO(dish, record);
         return vo;
     }
     
-    public List<CancelDishVO> wrapCancelDish(EmenuContext context, List<CancelDishRecord> records) {
+    public List<CancelDishVO> wrapCancelDish(EmenuContext context, List<DishRecord> records) {
         List<CancelDishVO> r = new ArrayList<CancelDishVO>(records.size());
-        for (CancelDishRecord record:records) {
+        for (DishRecord record:records) {
             r.add(wrapCancelDish(context, record));
         }
         return r;
