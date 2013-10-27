@@ -75,6 +75,7 @@ public class ProfileThriftController extends BaseThriftController {
             session.setActivateTime(System.currentTimeMillis());
             session.setImei(imei);
             session.setUser(user);
+            session.setSessionId(sessionId);
             thriftSessionDb.put(context, sessionId, session);
             
             //build Login
