@@ -27,6 +27,13 @@ define(function (require, exports, module) {
             type: AjaxCheckboxGroup,
             CollectionType: PrintTemplateCollection
         }, {
+            name: 'whenAdd',
+            type: Checkbox
+        }, {
+            name: 'addTemplateIds',
+            type: AjaxCheckboxGroup,
+            CollectionType: PrintTemplateCollection
+        }, {
             name: 'whenCancel',
             type: Checkbox
         }, {

@@ -26,7 +26,7 @@ import com.cloudstone.emenu.storage.db.util.StatementBinder;
  *
  */
 @Repository
-public class AddDishRecordDb extends SQLiteDb implements ICancelDishRecordDb {
+public class AddDishRecordDb extends SQLiteDb implements IAddDishRecordDb {
     @Override
     public void add(EmenuContext context, DishRecord record) {
         record.setId(genId(context));

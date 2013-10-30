@@ -17,6 +17,7 @@ define(function (require, exports, module) {
             'click .btn-add-order-id': 'onAddOrderId',
             'click .btn-add-waiter-name': 'onAddWaiterName',
             'click .btn-add-cost': 'onAddCost',
+            'click .btn-add-tip': 'onAddTip',
             'click .btn-add-price': 'onAddPrice',
             'click .btn-add-discount': 'onAddDiscount',
             'click .btn-add-paytype': 'onAddPaytype'
@@ -67,6 +68,12 @@ define(function (require, exports, module) {
         onAddPrice: function (evt) {
             evt.preventDefault();
             this.addText('$order.originPrice');
+            evt.stopPropagation();
+        },
+
+        onAddTip: function (evt) {
+            evt.preventDefault();
+            this.addText('$bill.tip');
             evt.stopPropagation();
         },
 
