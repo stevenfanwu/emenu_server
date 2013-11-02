@@ -4,11 +4,14 @@ package com.cloudstone.emenu.wrap;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.DishRecord;
 import com.cloudstone.emenu.data.vo.RecordVO;
 
+@Service
 public class RecordWraper extends BaseWraper {
 
     public List<RecordVO> wrapRecord(EmenuContext context, List<DishRecord> records) {
