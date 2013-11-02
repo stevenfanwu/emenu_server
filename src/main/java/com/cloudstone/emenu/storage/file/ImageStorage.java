@@ -49,6 +49,11 @@ public class ImageStorage extends FileStorage {
         LOG.info("ttt = " + prefix.substring(end, end+8));
         String base64 = uriData.substring(end + 8, uriData.length());
         byte[] bytes = Base64.decodeBase64(base64);
+//        try {
+//            ImageUtils.resize(bytes, 1024, extension);
+//        } catch (IOException e) {
+//            throw new ServerError(e);
+//        }
         return saveImage(bytes, extension);
     }
     

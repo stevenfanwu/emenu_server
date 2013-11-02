@@ -50,6 +50,22 @@ public class ImageUtils {
         return output.toByteArray();
     }
     
+    public static byte[] resize(byte[] origin, int width, String extension) throws IOException {
+        if (width == 0) {
+            return origin;
+        }
+        InputStream input = new ByteArrayInputStream(origin);
+        BufferedImage src = ImageIO.read(input);
+        if (src.getWidth() <= width)
+            return origin;
+        int height = (int) (src.getHeight() / (src.getWidth() / (double) width));
+        BufferedImage dest = Scalr.resize(src, width, height);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ImageIO.write(dest, extension, output);
+        output.flush();
+        return output.toByteArray();
+    }
+    
     public static String toUriData(byte[] bytes, String imageId) {
         String base64 = Base64.encodeBase64String(bytes);
         String extension = FilenameUtils.getExtension(imageId);
