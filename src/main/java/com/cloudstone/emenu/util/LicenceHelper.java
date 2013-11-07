@@ -4,6 +4,8 @@
 package com.cloudstone.emenu.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.NetworkInterface;
 import java.security.KeyFactory;
@@ -105,15 +107,13 @@ public class LicenceHelper {
         if (licence != null) {
             return licence;
         }
-        String dirPath = System.getProperty(Const.PARAM_CLOUDSTONE_DATA_DIR);
-        File dir = new File(dirPath);
-        File licenceFile = new File(dir, "emenu.licence");
+        
+        File licenceFile = lisenceFile();
 
         if (!licenceFile.exists()) {
             LOG.error("licence file not found");
             return null;
         }
-        
         try {
             byte[] encrypted = FileUtils.readFileToByteArray(licenceFile);
             byte[] plain = decrypt(encrypted);
@@ -124,6 +124,27 @@ public class LicenceHelper {
             LOG.error("", e);
             return null;
         }
+    }
+    
+    private File lisenceFile() {
+        String dirPath = System.getProperty(Const.PARAM_CLOUDSTONE_DATA_DIR);
+        File dir = new File(dirPath);
+        File licenceFile = new File(dir, "emenu.licence");
+        
+        return licenceFile;
+    }
+    
+    public void saveLisence(InputStream in) throws IOException {
+        byte[] buf = new byte[4096];
+        int read = -1;
+        File file = lisenceFile();
+        FileOutputStream out = new FileOutputStream(file);
+        while ( (read = in.read(buf)) != -1) {
+            out.write(buf, 0, read);
+        }
+        out.close();
+        
+        this.licence = null;
     }
     
     private byte[] decrypt(byte[] encrypted) throws Exception {
