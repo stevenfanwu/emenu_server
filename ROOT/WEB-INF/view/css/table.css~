@@ -1,0 +1,19 @@
+/*!
+ * set words auto wrap in table
+ */
+
+tbody
+{
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all
+	/*word-break: normal break-all*/
+}
+
+td
+{
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all
+	/*word-break: normal break-all*/
+}

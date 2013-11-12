@@ -1,0 +1,10 @@
+<div>{{name}}</div>
+<div>
+    <span class="label label-{{#if empty}}success{{else}}important{{/if}}">
+        状态:{{#if empty}}空闲{{else}}已用{{/if}}
+    </span>
+</div>
+<div class='btn-wrap'>
+    <span class="btn btn-primary btn-mini btn-select {{#unless empty}}disabled{{/unless}}">选择</span>
+</div>
+

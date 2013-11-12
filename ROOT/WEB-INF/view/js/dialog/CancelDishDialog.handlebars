@@ -1,0 +1,14 @@
+<form class="form-cancel-dish form-horizontal">
+    <div class="control-group input-count">
+        <label class="control-label">{{mode}}份数:</label>
+        <div class="controls">
+            <select>
+                {{#each countOptions}}
+                    <option>{{this}}</option>
+                {{/each}}
+            </select>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+</form>
+

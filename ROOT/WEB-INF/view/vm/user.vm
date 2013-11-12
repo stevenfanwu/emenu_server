@@ -1,0 +1,20 @@
+#set($mode="admin")
+#set($pageName="User")
+
+#macro (user_nav_item, $tab_name)
+  <li class="tab-$tab_name">
+    <a href="#$tab_name" class="link-$tab_name">$!bodyContent</a>
+  </li>
+#end
+<ul class="nav nav-tabs">
+    #@user_nav_item("all")所有角色#end
+    #@user_nav_item("admin")管理员#end
+    #@user_nav_item("user")服务员#end
+    #if($loginUser.type>$UserType.USER)
+        <li class="pull-right">
+            <a href="" class="btn-create-user">新建用户</a>
+        </li>
+    #end
+</ul>
+<div class="wrap-list">
+</div>

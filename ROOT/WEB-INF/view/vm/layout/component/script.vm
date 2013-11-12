@@ -1,0 +1,26 @@
+<script type="text/javascript" src="/static/vendor/sea.js"></script>
+<script type="text/javascript" src="/static/vendor/jquery.js"></script>
+<script type="text/javascript" src="/static/vendor/jquery.form.js"></script>
+
+<script type="text/javascript" src="/static/vendor/jquery.noty.js"></script>
+<script type="text/javascript" src="/static/vendor/layouts/top.js"></script>
+<script type="text/javascript" src="/static/vendor/themes/default.js"></script>
+
+<script type="text/javascript" src="/static//vendor/underscore.js"></script>
+<script type="text/javascript" src="/static/vendor/bootstrap.js"></script>
+<script type="text/javascript" src="/static/vendor/bootstrap-fileupload.js"></script>
+<script type="text/javascript" src="/static/vendor/bootstrap-switch.js"></script>
+<script type="text/javascript" src="/static/vendor/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="/static/vendor/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="/static/vendor/backbone.js"></script>
+<script type="text/javascript" src="/static//vendor/less.js"></script>
+<script type="text/javascript" src="/static/vendor/handlebars.js"></script>
+<script type="text/javascript">
+    seajs.config({
+        base: '/static/'
+    });
+    seajs.use(['main']);
+</script>
+
+#pageData("pageConfig", $Utils.buildPageConfig($pageName))
+#pageData("loginUser", $Utils.toJson($loginUser))

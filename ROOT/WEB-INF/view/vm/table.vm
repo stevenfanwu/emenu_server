@@ -1,0 +1,19 @@
+#set($mode="admin")
+#set($pageName="Table")
+
+#macro (table_nav_item, $tab_name)
+  <li class="tab-$tab_name">
+    <a href="#$tab_name" class="link-$tab_name">$!bodyContent</a>
+  </li>
+#end
+<ul class="nav nav-tabs">
+    #@table_nav_item("all")所有类别#end
+    #@table_nav_item("room")包间#end
+    #@table_nav_item("hall")散台#end
+    #@table_nav_item("booth")卡座#end
+    <li class="pull-right">
+        <a href="" class="btn-create-table">添加餐桌</a>
+    </li>
+</ul>
+<div class="wrap-list">
+</div>
