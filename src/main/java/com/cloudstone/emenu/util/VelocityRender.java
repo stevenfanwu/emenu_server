@@ -34,13 +34,15 @@ public class VelocityRender {
     @Autowired
     private Utils utils;
     
-    public String renderBill(Bill bill, User user, List<DishGroup> dishGroups, String template) {
+    public String renderBill(Bill bill, User user, List<DishGroup> dishGroups, List<RecordVO> cancelRecord, List<RecordVO> addRecord, String template) {
         
         VelocityContext context = new VelocityContext();
         context.put("bill", bill);
         context.put("dishGroups", dishGroups);
         context.put("order", bill.getOrder());
         context.put("table", bill.getOrder().getTable());
+        context.put("cancelrecord", cancelRecord);
+        context.put("addrecord", addRecord);
         context.put("time", utils.formatDate(bill.getCreatedTime()));
         String userName = user.getRealName();
         if (userName == null) {
@@ -82,22 +84,6 @@ public class VelocityRender {
         }
         context.put("userName", userName);
         return render(context, template);
-    }
-    
-    public String renderPreBill(OrderVO order, List<RecordVO> cancelRecord, List<RecordVO> addRecord, User user, List<DishGroup> dishGroups, String template) {
-        VelocityContext context = new VelocityContext();
-        context.put("dishGroups", dishGroups);
-        context.put("order", order);
-        context.put("cancelrecord", cancelRecord);
-        context.put("addrecord", addRecord);
-        context.put("table", order.getTable());
-        context.put("time", utils.formatDate(order.getUpdateTime()));
-        String userName = user.getRealName();
-        if (userName == null) {
-            userName = "";
-        }
-        context.put("userName", userName);
-        return render(context, template);        
     }
     
     private String render(VelocityContext context, String template) {

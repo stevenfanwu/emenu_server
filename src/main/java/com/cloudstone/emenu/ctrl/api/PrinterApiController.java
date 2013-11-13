@@ -124,38 +124,7 @@ public class PrinterApiController extends BaseApiController {
         PrinterConfig data = JsonUtils.fromJson(body, PrinterConfig.class);
         return printerLogic.updatePrinterConfig(context, data);
     }
-    
-    @RequestMapping(value="/api/printers/printpre", method=RequestMethod.POST)
-    public void printPreBill(@RequestParam("orderId") int orderId,
-            @RequestParam("printerId") int printerId,
-            @RequestParam("templateId") int templateId,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        EmenuContext context = newContext(request);
-        Order order = orderLogic.getOrder(context, orderId);
-        if (order == null) {
-            throw new NotFoundException("该订单不存在");
-        }
-        List<DishRecord> cancelRecords = recordLogic.listCancelDishRecords(context, orderId);
-        List<DishRecord> addRecords = recordLogic.listAddDishRecords(context, orderId);
-        
-        PrinterConfig config = printerLogic.getPrinterConfig(context, printerId);
-        if (config == null) {
-            throw new NotFoundException("该打印机不存在");
-        }
-        User user = getLoginUser(request);
-        if (order.getStatus() == 0) {
-            try {
-                printerLogic.printPreBill(context, orderWraper.wrap(context, order), cancelRecords,
-                        addRecords, user, config.getName(), templateId);
-            } catch (Exception e) {
-                throw new ServerError("打印失败");
-            }
-        } else {
-            throw new ServerError("订单已经结帐完成");
-        }
-    }
-    
+
     @RequestMapping(value="/api/printers/print", method=RequestMethod.POST)
     public void print(@RequestParam("orderId") int orderId,
             @RequestParam("printerId") int printerId,

@@ -52,67 +52,8 @@ public class PrinterLogic extends BaseLogic {
     private RecordWraper recordWraper;
     @Autowired
     private MenuLogic menuLogic;
-    
-    private static final String DIVIDER = "\n---------------------------------------\n";
-
-    private static final String DISH_TEMPLATE = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "单价    数量"
-                + PrinterUtils.absoluteHorizontalPosition(1, 125) + "    金额\n" +
-            "#foreach($group in $dishGroups)\n" +
-                "【$group.category】\n" +
-                "#foreach($dish in $group.dishes)\n" +
-                    "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "$dish.price    $dish.number$dish.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 125) + 
-                    "    $dish.totalCost\n" + 
-                    "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
-                        "  做法: " +
-                        "#foreach($remark in $dish.remarks)\n" +
-                            "$remark" + " " +
-                        "#end\n" + "\n" +
-                    "#end\n" +
-                "#end\n" +
-            "#end\n" +
-            "\n";
-
-    private static final String DISH_TEMPLATE_PREBILL = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "    数量" +
-                
-            "【下单菜品】\n" +
-            "#foreach($group in $dishGroups)\n" +
-                "#foreach($dish in $group.dishes)\n" +
-                    "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "    $dish.number$dish.unitLabel" +
-                "#end\n" +
-            "#end\n" +
-            "【退菜】\n" +
-            "#foreach($rec in $cancelrecord)\n" +
-                "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
-                "$    $rec.count$rec.unitLabel" + 
-            "#end\n" +
-            "【加菜】\n" +
-            "#foreach($rec in $addrecord)\n" +
-                "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
-                "$    $rec.count$rec.unitLabel" + 
-            "#end\n" +
-            "\n";
-
-    private static final String DISH_TEMPLATE_ORDER = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "      数量" + "\n" +
-            "#foreach($group in $dishGroups)\n" +
-                "【$group.category】\n" +
-                "#foreach($dish in $group.dishes)\n" +
-                    "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "      $dish.number$dish.unitLabel" + "\n" + 
-                    "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
-                        "  做法: " +
-                        "#foreach($remark in $dish.remarks)\n" +
-                            "$remark" + " " +
-                        "#end\n" + "\n" +
-                    "#end\n" +
-                "#end\n" +
-            "#end\n" +
-            "\n";
-
+    @Autowired
+    private RecordLogic recordLogic;
     @Autowired
     private VelocityRender velocityRender;
     @Autowired
@@ -142,20 +83,26 @@ public class PrinterLogic extends BaseLogic {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
             String templateString = getTemplateString(context, template, 0, template.getCutType());
+            List<DishRecord> cancelRecords = recordLogic.listCancelDishRecords(context, bill.getOrderId());
+            List<DishRecord> addRecords = recordLogic.listAddDishRecords(context, bill.getOrderId());
+            List<RecordVO> cancelRecordVOs = recordWraper.wrapRecord(context, cancelRecords);
+            List<RecordVO> addRecordVOs = recordWraper.wrapRecord(context, addRecords);
+
+            
             if (template.getCutType() == Const.CutType.PER_DISH && bill.getOrder().getDishes().size()>0) {
                 for (OrderDishVO dish:bill.getOrder().getDishes()) {
                     List<OrderDishVO> dishes = new LinkedList<OrderDishVO>();
                     dishes.add(dish);
                     List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes, template.getChapterIds(), true);
                     if (!CollectionUtils.isEmpty(dishGroups)) {
-                        String content = velocityRender.renderBill(bill, user, dishGroups, templateString);
+                        String content = velocityRender.renderBill(bill, user, dishGroups, cancelRecordVOs, addRecordVOs, templateString);
                         PrinterUtils.print(printer, content, template.getFontSize());
                     }
                 }
             } else {
                 List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, bill.getOrder().getDishes(), template.getChapterIds(), true);
                 if (!CollectionUtils.isEmpty(dishGroups)) {
-                    String content = velocityRender.renderBill(bill, user, dishGroups, templateString);
+                    String content = velocityRender.renderBill(bill, user, dishGroups, cancelRecordVOs, addRecordVOs, templateString);
                     PrinterUtils.print(printer, content, template.getFontSize());
                 }
             }
@@ -171,25 +118,23 @@ public class PrinterLogic extends BaseLogic {
             PrintComponent header = getComponent(context, headerId);
             if (header != null) {
                 sb.append(header.getContent());
-                sb.append(DIVIDER);
+                sb.append(Const.DIVIDER);
             }
         }
         if (type == 0) {// Bill
-            sb.append(DISH_TEMPLATE);
+            sb.append(Const.DISH_TEMPLATE);
         } else if (type == 1) {// Order
             if (cutType == Const.CutType.PER_DISH) {
-                sb.append(DISH_TEMPLATE_ORDER);
+                sb.append(Const.DISH_TEMPLATE_ORDER);
             } else {
-                sb.append(DISH_TEMPLATE);
+                sb.append(Const.DISH_TEMPLATE);
             }
-        } else if (type == 2) {// PreBill
-            sb.append(DISH_TEMPLATE_PREBILL);
         }
-        
+
         if (footerId != 0) {
             PrintComponent footer = getComponent(context, footerId);
             if (footer != null) {
-                sb.append(DIVIDER);
+                sb.append(Const.DIVIDER);
                 sb.append(footer.getContent());
             }
         }
@@ -259,26 +204,7 @@ public class PrinterLogic extends BaseLogic {
             }
         }
     }
-    
-    public void printPreBill(EmenuContext context, OrderVO order, List<DishRecord> cancelRecords,
-            List<DishRecord> addRecords, User user, String printer, int templateId)
-            throws Exception {
-        PrintTemplate template = getTemplate(context, templateId);
-        if (template != null) {
-            String templateString = getTemplateString(context, template, 2, template.getCutType());
-            List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, order.getDishes(),
-                    template.getChapterIds(), false);
-            List<RecordVO> cancelRecordVOs = recordWraper.wrapRecord(context, cancelRecords);
-            List<RecordVO> addRecordVOs = recordWraper.wrapRecord(context, addRecords);
 
-            if (!CollectionUtils.isEmpty(dishGroups)) {
-                String content = velocityRender.renderPreBill(order, cancelRecordVOs, addRecordVOs,
-                        user, dishGroups, templateString);
-                PrinterUtils.print(printer, content, template.getFontSize());
-            }
-        }
-    }
-    
     public PrintTemplate getTemplate(EmenuContext context, int id) {
         PrintTemplate template = printTemplateDb.get(context, id);
         checkChapterIds(context, template);

@@ -7,6 +7,10 @@ public class RecordVO {
 
     private int count;
     
+    private double price;
+    
+    private double total;
+    
     private String unitLabel;
 
     public void setName(String name) {
@@ -31,5 +35,21 @@ public class RecordVO {
 
     public int getCount() {
         return count;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public double getTotal() {
+        return total;
     }
 }
