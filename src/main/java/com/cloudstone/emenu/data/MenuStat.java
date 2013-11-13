@@ -12,8 +12,18 @@ public class MenuStat extends BaseStat {
     //
     private String chapterName;
     
+    private double count;
+    
     public MenuStat() {
         super();
+    }
+
+    public void setCount(double count) {
+        this.count = count;
+    }
+
+    public double getCount() {
+        return count;
     }
 
     public String getChapterName() {

@@ -63,7 +63,7 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
             .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
             .append(Column.DAY, DataType.INTEGER, "NOT NULL")
             .append(Column.INCOME, DataType.REAL, "NOT NULL")
-            .append(Column.COUNT, DataType.INTEGER, "NOT NULL")
+            .append(Column.COUNT, DataType.REAL, "NOT NULL")
             .append(Column.DISCOUNT, DataType.REAL, "NOT NULL")
             .append(Column.CHAPTER_NAME, DataType.TEXT, "NOT NULL")
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
@@ -106,7 +106,7 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
             stat.setId(stmt.columnInt(0));
             stat.setDay(stmt.columnLong(1));
             stat.setIncome(stmt.columnDouble(2));
-            stat.setCount(stmt.columnInt(3));
+            stat.setCount(stmt.columnDouble(3));
             stat.setDiscount(stmt.columnDouble(4));
             stat.setChapterName(stmt.columnString(5));
             stat.setCreatedTime(stmt.columnLong(6));

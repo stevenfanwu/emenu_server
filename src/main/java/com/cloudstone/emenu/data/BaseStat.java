@@ -17,9 +17,6 @@ public class BaseStat extends BaseData {
     // 总收入
     private double income;
 
-    // 总单数 or 翻桌次数 or 总份数
-    private int count;
-
     // 优惠总额
     private double discount;
 
@@ -49,14 +46,6 @@ public class BaseStat extends BaseData {
 
     public double getIncome() {
         return income;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public int getCount() {
-        return count;
     }
 
     public void setDiscount(double discount) {

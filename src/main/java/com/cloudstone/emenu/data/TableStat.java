@@ -18,8 +18,18 @@ public class TableStat extends AveStat {
     // 服务费总额
     private double tips;
 
+    private int count;
+    
     public TableStat() {
         super();
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public String getTableName() {

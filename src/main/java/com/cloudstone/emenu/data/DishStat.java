@@ -16,7 +16,10 @@ public class DishStat extends BaseStat {
     private String dishClass;
 
     // 退菜数量
-    private int backCount;
+    private double backCount;
+    
+    // 份数
+    private double count;
     
     // 单价
     private double price;
@@ -41,12 +44,20 @@ public class DishStat extends BaseStat {
         this.dishClass = dishClass;
     }
     
-    public int getBackCount() {
+    public double getBackCount() {
         return backCount;
     }
 
-    public void setBackCount(int backCount) {
+    public void setBackCount(double backCount) {
         this.backCount = backCount;
+    }
+
+    public double getCount() {
+        return count;
+    }
+
+    public void setCount(double dishCount) {
+        this.count = backCount;
     }
 
     public double getPrice() {

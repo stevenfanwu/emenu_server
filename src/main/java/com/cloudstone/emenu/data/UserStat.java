@@ -15,8 +15,18 @@ public class UserStat extends AveStat {
     // 当天客流量
     private int customerCount;
 
+    private int count;
+    
     public UserStat() {
         super();
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public String getUserName() {

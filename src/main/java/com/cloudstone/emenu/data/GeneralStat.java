@@ -24,8 +24,18 @@ public class GeneralStat extends AveStat {
     // 服务费总额
     private double tips;
 
+    private int count;
+    
     public GeneralStat() {
         super();
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public int getInvoiceCount() {

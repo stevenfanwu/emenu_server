@@ -63,11 +63,11 @@ public class DishStatDb extends SQLiteDb implements IDishStatDb {
             .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
             .append(Column.DAY, DataType.INTEGER, "NOT NULL")
             .append(Column.INCOME, DataType.REAL, "NOT NULL")
-            .append(Column.COUNT, DataType.INTEGER, "NOT NULL")
+            .append(Column.COUNT, DataType.REAL, "NOT NULL")
             .append(Column.DISCOUNT, DataType.REAL, "NOT NULL")
             .append(Column.DISH_NAME, DataType.TEXT, "NOT NULL")
             .append(Column.DISH_CLASS, DataType.TEXT, "NOT NULL")
-            .append(Column.BACK_COUNT, DataType.INTEGER, "NOT NULL")
+            .append(Column.BACK_COUNT, DataType.REAL, "NOT NULL")
             .append(Column.PRICE, DataType.REAL, "NOT NULL")
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
@@ -112,11 +112,11 @@ public class DishStatDb extends SQLiteDb implements IDishStatDb {
             stat.setId(stmt.columnInt(0));
             stat.setDay(stmt.columnLong(1));
             stat.setIncome(stmt.columnDouble(2));
-            stat.setCount(stmt.columnInt(3));
+            stat.setCount(stmt.columnDouble(3));
             stat.setDiscount(stmt.columnDouble(4));
             stat.setDishName(stmt.columnString(5));
             stat.setDishClass(stmt.columnString(6));
-            stat.setBackCount(stmt.columnInt(7));
+            stat.setBackCount(stmt.columnDouble(7));
             stat.setPrice(stmt.columnDouble(8));
             stat.setCreatedTime(stmt.columnLong(9));
             stat.setUpdateTime(stmt.columnLong(10));
