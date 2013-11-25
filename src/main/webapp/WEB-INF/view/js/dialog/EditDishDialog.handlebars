@@ -1,0 +1,141 @@
+<form class="form-edit-dish form-horizontal">
+    <div class="control-group input-name">
+        <label class="control-label">名称:</label>
+        <div class="controls">
+            <input type="text" name="name"/>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-price">
+        <label class="control-label">价格:</label>
+        <div class="controls">
+            <input type="text" name="price"/>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-memberPrice">
+        <label class="control-label">会员价:</label>
+        <div class="controls">
+            <input type="text" name="memberPrice"/>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-unit">
+        <label class="control-label">单位:</label>
+        <div class="controls">
+            <label class="radio inline">
+                <input type="radio" name="unit" value="0" checked="true"/>
+                份
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="unit" value="1"/>
+                斤
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="unit" value="2"/>
+                个
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="unit" value="3"/>
+                只
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="unit" value="4"/>
+                盘
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="unit" value="5"/>
+                瓶
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="unit" value="6"/>
+                杯
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="unit" value="7"/>
+                粒
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="unit" value="8"/>
+                位
+            </label>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-spicy">
+        <label class="control-label">辣度:</label>
+        <div class="controls">
+            <label class="radio inline">
+                <input type="radio" name="spicy" value="0" checked="true"/>
+                不辣
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="spicy" value="1"/>
+                微辣
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="spicy" value="2"/>
+                中辣
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="spicy" value="3"/>
+                特辣
+            </label>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-specialPrice">
+        <label class="control-label">特价:</label>
+        <div class="controls">
+            <label class="radio inline">
+                <input type="radio" name="specialPrice" value="false" checked="true"/>
+                否
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="specialPrice" value="true"/>
+                是
+            </label>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-nonInt">
+        <label class="control-label">允许小数份:</label>
+        <div class="controls">
+            <label class="radio inline">
+                <input type="radio" name="nonInt" value="false" checked="true"/>
+                否
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="nonInt" value="true"/>
+                是
+            </label>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-desc">
+        <label class="control-label">描述:</label>
+        <div class="controls">
+            <textarea rows="3"  name="desc"></textarea>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-uriData">
+        <label class="control-label">图片:</label>
+        <div class="controls">
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+                <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+                    <img src="/static/placeholder-200-150.png" />
+                </div>
+                <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
+                <div>
+                    <span class="btn btn-file">
+                        <span class="fileupload-new">选择图片</span>
+                        <span class="fileupload-exists">替换图片</span>
+                        <input type="file" />
+                    </span>
+                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">删除图片</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

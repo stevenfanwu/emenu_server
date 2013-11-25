@@ -1,0 +1,28 @@
+<form class="form-edit-menu-page form-horizontal">
+    <div class="control-group input-ordinal info">
+        <label class="control-label">位置:</label>
+        <div class="controls">
+            <select name="ordinal">
+                {{#each ordinals}}
+                    <option value="{{this}}">第{{this}}页</option>
+                {{/each}}
+            </select>
+            <span class="help-inline info">在分类页中的位置</span>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+    <div class="control-group input-dishCount info">
+        <label class="control-label">菜单排版:</label>
+        <div class="controls">
+            <select name="dishCount">
+                <option value="1">一页一菜</option>
+                <option value="2">一页两菜</option>
+                <option value="3">一页三菜</option>
+                <option value="4" selected="true">一页四菜</option>
+                <option value="6">一页六菜</option>
+            </select>
+            <span class="help-inline error"></span>
+        </div>
+    </div>
+</form>
+
