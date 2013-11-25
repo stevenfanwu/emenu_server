@@ -1,4 +1,0 @@
-#set( $layout = "layout/empty.vm" )
-<div class="alert">
-    $message
-</div>

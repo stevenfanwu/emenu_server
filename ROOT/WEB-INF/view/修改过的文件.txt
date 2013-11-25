@@ -1,3 +1,0 @@
-新建 view/css/table.css
-编辑 view/css/main.less 
-编辑 view/js/list/item/DIshItem.handlebars

@@ -1,3 +1,0 @@
-#set( $layout = "layout/empty.vm" )
-#set($pageName="Test")
-
