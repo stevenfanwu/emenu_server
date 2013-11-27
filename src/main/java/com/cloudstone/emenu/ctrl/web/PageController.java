@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudstone.emenu.EmenuContext;
+import com.cloudstone.emenu.constant.ServerConfig;
 import com.cloudstone.emenu.data.Licence;
 import com.cloudstone.emenu.logic.ConfigLogic;
 import com.cloudstone.emenu.util.LicenceHelper;
@@ -58,6 +59,13 @@ public class PageController extends BaseWebController {
         
         model.put("result", r);
         model.put("licence", licence);
+        try {
+            model.put("serial", licenceHelper.getSerial());
+        } catch (Exception e) {
+            LOG.error("", e);
+        }
+        model.put("serverVersion", ServerConfig.VERSION);
+        model.put("dbVersion", ServerConfig.DB_VERSION);
         return sendView("licence", req, resp, model);
     }
 
