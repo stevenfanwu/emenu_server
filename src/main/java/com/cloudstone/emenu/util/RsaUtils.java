@@ -23,6 +23,10 @@ public class RsaUtils {
     public static byte[] decrypt(byte[] encrypted, PublicKey key) throws Exception {
         return blockCipher(encrypted, Cipher.DECRYPT_MODE, key);
     }
+    
+    public static byte[] encrypt(byte[] plain, PublicKey key) throws Exception {
+        return blockCipher(plain, Cipher.ENCRYPT_MODE, key);
+    }
 
     private static byte[] blockCipher(byte[] bytes, int mode, Key key)
             throws Exception {
