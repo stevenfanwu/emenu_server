@@ -24,6 +24,12 @@
     <button type="submit" class="btn btn-primary">提交</button>
 </form>
 
+<ul>
+    <li> 硬件随机码: <span class="alert alert-info">$serial</span> (用于生成证书)</li>
+    <li> 软件版本: $serverVersion </li>
+    <li> 数据库版本: $dbVersion </li>
+</ul>
+
 #else
     #if (! $result.success)
         <div class="alert">

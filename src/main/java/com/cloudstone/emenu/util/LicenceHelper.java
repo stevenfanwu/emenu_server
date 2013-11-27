@@ -15,7 +15,9 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -152,6 +154,11 @@ public class LicenceHelper {
         return RsaUtils.decrypt(encrypted, publicKey);
     }
     
+    private byte[] encrypt(byte[] plain) throws Exception {
+        PublicKey publicKey = getPublicKey();
+        return RsaUtils.encrypt(plain, publicKey);
+    }
+    
     private PublicKey getPublicKey() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("emenu.pub");
         byte[] bytes = new byte[is.available()];
@@ -184,5 +191,16 @@ public class LicenceHelper {
             LOG.error("", e);
         }
         return list;
+    }
+    
+    public String getSerial() throws Exception {
+        List<String> list = getMacList();
+        if (list.size() == 0) {
+            return null;
+        }
+        String mac = list.get(0);
+        BasicTextEncryptor encryptor = new BasicTextEncryptor();
+        encryptor.setPassword("cloudstone");
+        return encryptor.encrypt(mac);
     }
 }
