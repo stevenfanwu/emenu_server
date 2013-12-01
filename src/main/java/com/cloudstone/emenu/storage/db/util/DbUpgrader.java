@@ -20,6 +20,8 @@ import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.ServerConfig;
 import com.cloudstone.emenu.logic.ConfigLogic;
 import com.cloudstone.emenu.logic.MenuLogic;
+import com.cloudstone.emenu.storage.db.IDishStatDb;
+import com.cloudstone.emenu.storage.db.IMenuStatDb;
 import com.cloudstone.emenu.storage.db.IUserDb;
 
 /**
@@ -46,6 +48,10 @@ public class DbUpgrader {
     
     @Autowired
     private IUserDb userDb;
+    @Autowired
+    private IDishStatDb dishStatDb;
+    @Autowired
+    private IMenuStatDb menuStatDb;
     
     public void checkUpgrade(final EmenuContext context) {
         if (upgrading) {
@@ -102,6 +108,17 @@ public class DbUpgrader {
             conn.exec("ALTER TABLE printTemplate ADD COLUMN chapterIds TEXT DEFAULT ''");
             conn.exec(String.format("UPDATE printTemplate set chapterIds='%s'", SqlUtils.idsToStr(chapterIds)));
             conn.dispose();
+        } else if (oldVersion==2 && newVersion==3) {
+            SQLiteConnection conn = dataSource.open();
+            conn.exec("DROP TABLE dishstat");
+            conn.exec("DROP TABLE menustat");
+            conn.dispose();
+            
+            /**
+             * re-create tables
+             */
+            dishStatDb.init();
+            menuStatDb.init();
         }
     }
 }

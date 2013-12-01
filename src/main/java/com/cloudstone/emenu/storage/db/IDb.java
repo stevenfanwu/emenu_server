@@ -16,4 +16,5 @@ public interface IDb {
     public void delete(EmenuContext context, int id) ;
     public String getTableName();
     public int count(EmenuContext context);
+    public void init();
 }
