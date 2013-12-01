@@ -71,6 +71,25 @@ define(function (require, exports, module) {
             }).done(function () {
                 options.success.apply(this, arguments);
             });
+        },
+
+        moveDownChapter: function (options) {
+            this.moveChapter(options, false);
+        },
+
+        moveUpChapter: function (options) {
+            this.moveChapter(options, true);
+        },
+
+        moveChapter: function (options, up) {
+            var url = '/api/chapters/' + options.chapterId + '/'
+                + (up ? 'up' : 'down');
+            $.ajax({
+                url: url,
+                type: 'PUT'
+            }).done(function () {
+                options.success.apply(this, arguments);
+            });
         }
     });
 

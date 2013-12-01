@@ -1,6 +1,16 @@
 <div class="accordion-heading second-item">
     <a href="" class="toggle-botton hover-tip" title="展开分类">{{name}}</a>
     <span class="pull-right">
+        {{#unless isFirst}}
+        <a href="" class="btn-move-up-chapter hover-tip" title="上移">
+            <i class="icon-arrow-up"></i>
+        </a>
+        {{/unless}}
+        {{#unless isLast}}
+        <a href="" class="btn-move-down-chapter hover-tip" title="下移">
+            <i class="icon-arrow-down"></i>
+        </a>
+        {{/unless}}
         <a href="" class="btn-edit-chapter hover-tip" title="编辑分类">
             <i class="icon-edit"></i>
         </a>

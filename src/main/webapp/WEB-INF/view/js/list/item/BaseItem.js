@@ -7,7 +7,9 @@ define(function (require, exports, module) {
     var BaseView = require('../../BaseView');
 
     var BaseItem = BaseView.extend({
-        index: null
+        index: null,
+        isFirst: false,
+        isLast: false
     });
     
     return BaseItem;

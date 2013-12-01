@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +47,8 @@ import com.cloudstone.emenu.util.StringUtils;
  */
 @Component
 public class MenuLogic extends BaseLogic {
+    private static final Logger LOG = Logger.getLogger(MenuLogic.class);
+    
     @Autowired
     private IMenuDb menuDb;
     @Autowired
@@ -272,6 +275,19 @@ public class MenuLogic extends BaseLogic {
         if (old!= null && old.getMenuId()==chapter.getMenuId() && !old.isDeleted()) {
             throw new DataConflictException("该分类已存在");
         }
+        
+        List<Chapter> chapters = listChapterByMenuId(context, chapter.getMenuId());
+        LOG.info(chapter.getOrdinal() +  " ------- " ); 
+        if (chapter.getOrdinal() == 0) {
+            chapter.setOrdinal(chapters.size()+1);
+        }
+        LOG.info(chapter.getOrdinal() +  " ------- " ); 
+        for (int i=chapter.getOrdinal(); i<chapters.size(); i++) {
+            Chapter c = chapters.get(i);
+            c.setOrdinal(i+1);
+            innerUpdateChapter(context, c);
+        }
+        
         long now = System.currentTimeMillis();
         chapter.setUpdateTime(now);
         if (old != null && old.getMenuId()==chapter.getMenuId()) {
@@ -336,12 +352,72 @@ public class MenuLogic extends BaseLogic {
                 && !old.isDeleted()) {
             throw new DataConflictException("该分类已存在");
         }
+        
+        old = chapterDb.getChapter(context, chapter.getId());
+        if (old==null || old.isDeleted()) {
+            throw new BadRequestError();
+        }
+        
+        if (old.getOrdinal() != chapter.getOrdinal()) {
+            List<Chapter> chapters= listChapterByMenuId(context, chapter.getMenuId());
+            if (chapter.getOrdinal() < old.getOrdinal()) {
+                for (int i=chapter.getOrdinal(); i<=old.getOrdinal()-1; i++) {
+                    Chapter c = chapters.get(i-1);
+                    c.setOrdinal(c.getOrdinal()+1);
+                    innerUpdateChapter(context, c);
+                }
+            } else {
+                for (int i=old.getOrdinal()+1; i<=chapter.getOrdinal(); i++) {
+                    Chapter c = chapters.get(i-1);
+                    c.setOrdinal(c.getOrdinal()-1);
+                    innerUpdateChapter(context, c);
+                }
+            }
+        }
+        return innerUpdateChapter(context, chapter);
+    }
+    
+    private Chapter innerUpdateChapter(EmenuContext context, Chapter chapter) {
         chapter.setUpdateTime(System.currentTimeMillis());
         chapterDb.updateChapter(context, chapter);
         return chapterDb.getChapter(context, chapter.getId());
     }
     
+    public void move(EmenuContext context, int chapterId, boolean up) {
+        Chapter chapter = getChapter(context, chapterId);
+        if (chapter == null || chapter.isDeleted()) {
+            throw new NotFoundException("菜品分类不存在, id=" + chapterId);
+        }
+        if (up && chapter.getOrdinal() == 1) {
+            throw new BadRequestError();
+        }
+        if (up) {
+            chapter.setOrdinal(chapter.getOrdinal()-1);
+            updateChapter(context, chapter);
+        } else {
+            chapter.setOrdinal(chapter.getOrdinal()+1);
+            updateChapter(context, chapter);
+            fixChapterOrdinal(context);
+        }
+    }
+    
     public void deleteChapter(EmenuContext context, final int id) {
+        innerDeleteChapter(context, id, true);
+    }
+    
+    private void innerDeleteChapter(EmenuContext context, final int id, boolean updateOrdinal) {
+        if (updateOrdinal) {
+            Chapter old = getChapter(context, id);
+            if (old != null) {
+                List<Chapter> chapters = listChapterByMenuId(context, old.getMenuId());
+                for (int i=old.getOrdinal()+1; i<=chapters.size(); i++) {
+                    Chapter c = chapters.get(i-1);
+                    c.setOrdinal(c.getOrdinal()-1);
+                    innerUpdateChapter(context, c);
+                }
+            }
+        }
+        
         chapterDb.deleteChapter(context, id);
         List<MenuPage> pages = listMenuPageByChapterId(context, id);
         for (MenuPage page:pages) {
@@ -352,7 +428,7 @@ public class MenuLogic extends BaseLogic {
     public void deleteChaptersByMenuId(EmenuContext context, int menuId) {
         List<Chapter> chapters = listChapterByMenuId(context, menuId);
         for(Chapter chapter:chapters) {
-            deleteChapter(context, chapter.getId());
+            innerDeleteChapter(context, chapter.getId(), false);
         }
     }
     
@@ -360,6 +436,19 @@ public class MenuLogic extends BaseLogic {
         List<Chapter> chapters = chapterDb.listChapters(context, menuId);
         DataUtils.filterDeleted(chapters);
         return chapters;
+    }
+    
+    public void fixChapterOrdinal(EmenuContext context) {
+        List<Menu> menus = getAllMenu(context);
+        for (Menu menu:menus) {
+            int menuId = menu.getId();
+            List<Chapter> chapters = listChapterByMenuId(context, menuId);
+            for (int i=0; i<chapters.size(); i++) {
+                Chapter c = chapters.get(i);
+                c.setOrdinal(i+1);
+                innerUpdateChapter(context, c);
+            }
+        }
     }
     
     /* ---------- MenuPage ---------- */
@@ -383,13 +472,13 @@ public class MenuLogic extends BaseLogic {
             MenuPage p = datas.get(i-1);
             if (p.getOrdinal() != i) {
                 p.setOrdinal(i);
-                innnerUpdateMenuPage(context, p);
+                innerUpdateMenuPage(context, p);
             }
         }
         return datas;
     }
     
-    private void innnerUpdateMenuPage(EmenuContext context, MenuPage p) {
+    private void innerUpdateMenuPage(EmenuContext context, MenuPage p) {
 //        List<DishPage> relation = dishPageDb.getByMenuPageId(context, p.getId());
 //        if(p.getDishCount() < relation.size()) {
 //            throw new DataConflictException("已有菜数大于该页能容纳菜数");
@@ -403,7 +492,7 @@ public class MenuLogic extends BaseLogic {
         for (int i=page.getOrdinal(); i<=pages.size(); i++) {
             MenuPage p = pages.get(i-1);
             p.setOrdinal(i+1);
-            innnerUpdateMenuPage(context, p);
+            innerUpdateMenuPage(context, p);
         }
         long now = System.currentTimeMillis();
         page.setCreatedTime(now);
@@ -421,16 +510,16 @@ public class MenuLogic extends BaseLogic {
         for (int i=old.getOrdinal()+1; i<=pages.size(); i++) {
             MenuPage p = pages.get(i-1);
             p.setOrdinal(p.getOrdinal()-1);
-            innnerUpdateMenuPage(context, p);
+            innerUpdateMenuPage(context, p);
         }
-            //delete page
-            menuPageDb.deleteMenuPage(context, id);
-            List<DishPage> relation = dishPageDb.getByMenuPageId(context, id);
-            dishPageDb.deleteByMenuPageId(context, id);
-            for (DishPage r:relation) {
-                int dishId = r.getDishId();
-                checkDishInMenu(context, dishId);
-            }
+        //delete page
+        menuPageDb.deleteMenuPage(context, id);
+        List<DishPage> relation = dishPageDb.getByMenuPageId(context, id);
+        dishPageDb.deleteByMenuPageId(context, id);
+        for (DishPage r:relation) {
+            int dishId = r.getDishId();
+            checkDishInMenu(context, dishId);
+        }
     }
     
     public MenuPage getMenuPage(EmenuContext context, int id) {
@@ -439,7 +528,7 @@ public class MenuLogic extends BaseLogic {
     
     public MenuPage updateMenuPage(EmenuContext context, MenuPage page) {
         MenuPage old = getMenuPage(context, page.getId());
-        if (old == null) {
+        if (old == null || old.isDeleted()) {
             throw new BadRequestError();
         }
         if (old.getOrdinal() != page.getOrdinal()) {
@@ -448,17 +537,17 @@ public class MenuLogic extends BaseLogic {
                 for (int i=page.getOrdinal(); i<=old.getOrdinal()-1; i++) {
                     MenuPage p = pages.get(i-1);
                     p.setOrdinal(p.getOrdinal()+1);
-                    innnerUpdateMenuPage(context, p);
+                    innerUpdateMenuPage(context, p);
                 }
             } else {
                 for (int i=old.getOrdinal()+1; i<=page.getOrdinal(); i++) {
                     MenuPage p = pages.get(i-1);
                     p.setOrdinal(p.getOrdinal()-1);
-                    innnerUpdateMenuPage(context, p);
+                    innerUpdateMenuPage(context, p);
                 }
             }
         }
-        innnerUpdateMenuPage(context, page);
+        innerUpdateMenuPage(context, page);
         return menuPageDb.getMenuPage(context, page.getId());
     }
     

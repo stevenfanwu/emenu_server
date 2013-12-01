@@ -10,6 +10,15 @@ package com.cloudstone.emenu.data;
  */
 public class Chapter extends IdName {
     private int menuId;
+    private int ordinal;
+    
+    public int getOrdinal() {
+        return ordinal;
+    }
+
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
+    }
 
     public int getMenuId() {
         return menuId;

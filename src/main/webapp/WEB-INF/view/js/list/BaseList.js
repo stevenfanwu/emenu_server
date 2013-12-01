@@ -31,7 +31,11 @@ define(function (require, exports, module) {
             var item = new Item({
                 model: model
             });
+
             item.index = this.collection.indexOf(model);
+            item.isFirst = (item.index === 0);
+            item.isLast = (item.index === this.collection.length - 1);
+
             item.render();
             this.initItem(model, item);
             this.appendItem(item);

@@ -7,13 +7,16 @@ define(function (require, exports, module) {
     var AccordionItem = require('./AccordionItem');
     var MenuPage = require('../../component/MenuPage');
     var MenuPageCollection = require('../../collection/MenuPageCollection');
+    var MenuUtils = require('../../util/MenuUtils');
 
     var ChapterItem = AccordionItem.extend({
 
         events: {
             'click .btn-edit-chapter': 'onEditChapter',
             'click .btn-delete-chapter': 'onDeleteChapter',
-            'click .btn-add-page': 'onAddPage'
+            'click .btn-add-page': 'onAddPage',
+            'click .btn-move-up-chapter': 'onMoveUp',
+            'click .btn-move-down-chapter': 'onMoveDown'
         },
 
         tmpl: require('./ChapterItem.handlebars'),
@@ -38,6 +41,14 @@ define(function (require, exports, module) {
                 this.menuPage.on('deletePage', this.onDeletePage, this);
             }
         },
+
+        getRenderData: function () {
+            var data = AccordionItem.prototype.getRenderData.apply(this, arguments);
+            data.isFirst = this.isFirst;
+            data.isLast = this.isLast;
+            return data;
+        },
+        
 
         showDialog: function (pageModel) {
             var Dialog = require('../../dialog/EditMenuPageDialog');
@@ -100,8 +111,33 @@ define(function (require, exports, module) {
         onToggle: function () {
             AccordionItem.prototype.onToggle.apply(this, arguments);
             this.renderPage();
+        },
+
+        onMoveUp: function (evt) {
+            evt.preventDefault();
+
+            MenuUtils.moveUpChapter({
+                chapterId: this.model.get('id'),
+                success: function () {
+                    this.trigger('refreshList');
+                }.bind(this)
+            });
+
+            evt.stopPropagation();
+        },
+
+        onMoveDown: function (evt) {
+            evt.preventDefault();
+            
+            MenuUtils.moveDownChapter({
+                chapterId: this.model.get('id'),
+                success: function () {
+                    this.trigger('refreshList');
+                }.bind(this)
+            });
+
+            evt.stopPropagation();
         }
-        
         
     });
     

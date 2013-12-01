@@ -106,7 +106,8 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     private static final String TABLE_NAME = "chapter";
     private static enum Column {
         ID("id"), NAME("name"), MENU_ID("menuId"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        ORDINAL("ordinal");
         
         private final String str;
         private Column(String str) {
@@ -126,9 +127,10 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+        .append(Column.ORDINAL, DataType.INTEGER, "NOT NULL")
         .build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME).appendSetValue(Column.MENU_ID)
+        .appendSetValue(Column.NAME).appendSetValue(Column.MENU_ID).appendSetValue(Column.ORDINAL)
         .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
         .appendSetValue(Column.DELETED)
         .appendWhereId().build();
@@ -136,8 +138,8 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_SELECT_BY_MENU_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.MENU_ID).build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 6).build();
+        .appendWhere(Column.MENU_ID).appendOrderBy(Column.ORDINAL, false).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 7).build();
     
     private static final RowMapper<Chapter> rowMapper = new RowMapper<Chapter>() {
 
@@ -150,6 +152,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             chapter.setCreatedTime(stmt.columnLong(3));
             chapter.setUpdateTime(stmt.columnLong(4));
             chapter.setDeleted(stmt.columnInt(5) == 1);
+            chapter.setOrdinal(stmt.columnInt(6));
             return chapter;
         }
     };
@@ -169,6 +172,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             stmt.bind(4, chapter.getCreatedTime());
             stmt.bind(5, chapter.getUpdateTime());
             stmt.bind(6, chapter.isDeleted() ? 1 : 0);
+            stmt.bind(7, chapter.getOrdinal());
         }
     }
     private static class UpdateBinder implements StatementBinder {
@@ -183,10 +187,11 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, chapter.getName());
             stmt.bind(2, chapter.getMenuId());
-            stmt.bind(3, chapter.getCreatedTime());
-            stmt.bind(4, chapter.getUpdateTime());
-            stmt.bind(5, chapter.isDeleted() ? 1 : 0);
-            stmt.bind(6, chapter.getId());
+            stmt.bind(3, chapter.getOrdinal());
+            stmt.bind(4, chapter.getCreatedTime());
+            stmt.bind(5, chapter.getUpdateTime());
+            stmt.bind(6, chapter.isDeleted() ? 1 : 0);
+            stmt.bind(7, chapter.getId());
         }
     }
     

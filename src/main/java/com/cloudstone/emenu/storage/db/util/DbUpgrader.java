@@ -110,6 +110,7 @@ public class DbUpgrader {
             conn.dispose();
         } else if (oldVersion==2 && newVersion==3) {
             SQLiteConnection conn = dataSource.open();
+            conn.exec("ALTER TABLE chapter ADD COLUMN ordinal INTEGER DEFAULT 0");
             conn.exec("DROP TABLE dishstat");
             conn.exec("DROP TABLE menustat");
             conn.dispose();
@@ -119,6 +120,8 @@ public class DbUpgrader {
              */
             dishStatDb.init();
             menuStatDb.init();
+            
+            menuLogic.fixChapterOrdinal(context);
         }
     }
 }

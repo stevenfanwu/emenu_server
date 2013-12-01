@@ -187,6 +187,21 @@ public class MenuApiController extends BaseApiController {
         return menuLogic.updateChapter(context, chapter);
     }
     
+    @RequestMapping(value="/api/chapters/{id:[\\d]+}/up", method=RequestMethod.PUT)
+    public void moveUpChapter(@PathVariable(value="id") int id,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        menuLogic.move(context, id, true);
+    }
+    
+    @RequestMapping(value="/api/chapters/{id:[\\d]+}/down", method=RequestMethod.PUT)
+    public void moveDownChapter(@PathVariable(value="id") int id,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        EmenuContext context = newContext(request);
+        menuLogic.move(context, id, false);
+    }
     
     @RequestMapping(value="/api/dishes/suggestion", method=RequestMethod.GET)
     public @ResponseBody List<IdName> getDishSuggestion(HttpServletRequest request) {
