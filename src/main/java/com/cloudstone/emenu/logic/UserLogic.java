@@ -66,6 +66,7 @@ public class UserLogic extends BaseLogic {
     }
     
     public User update(EmenuContext context, User user) {
+    	//TODO BUG?
         User oldUser = userDb.getByName(context, user.getName());
         if (oldUser!=null && oldUser.getId()!=user.getId() && !oldUser.isDeleted()) {
             throw new DataConflictException("用户名已存在");
@@ -91,6 +92,7 @@ public class UserLogic extends BaseLogic {
     }
     
     public void delete(EmenuContext context, int userId) {
+    	//TODO BUG?
         userDb.delete(context, userId);
     }
     
