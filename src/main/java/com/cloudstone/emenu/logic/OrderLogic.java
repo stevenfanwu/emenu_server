@@ -27,6 +27,8 @@ import com.cloudstone.emenu.data.OrderDish;
 import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.Vip;
+import com.cloudstone.emenu.data.VipHistory;
 import com.cloudstone.emenu.data.misc.PollingManager;
 import com.cloudstone.emenu.data.misc.PollingManager.PollingMessage;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
@@ -76,6 +78,9 @@ public class OrderLogic extends BaseLogic {
     private RecordLogic recordLogic;
     @Autowired
     private UserLogic userLogic;
+    
+    @Autowired
+    private VipLogic vipLogic;
     
     @Autowired
     protected OrderWraper orderWraper;
@@ -175,7 +180,7 @@ public class OrderLogic extends BaseLogic {
         return datas;
     }
 
-    public Bill payBill(EmenuContext context, Bill bill, User user) {
+    public Bill payBill(EmenuContext context, Bill bill, User user, int vipid) {
 
         if (getBillByOrderId(context, bill.getOrderId()) != null) {
             throw new DataConflictException("请勿重复提交订单");
@@ -188,6 +193,16 @@ public class OrderLogic extends BaseLogic {
         if (table == null || table.getStatus() != TableStatus.OCCUPIED) {
             throw new BadRequestError();
         }
+        Vip vip = null;
+        if(vipid != -1) {
+        	vip = vipLogic.get(context, vipid);
+        	if(vip == null || vip.isDeleted())
+        		throw new BadRequestError();
+        	if(vip.getMoney() < bill.getCost()) {
+        		throw new BadRequestError();
+        	}
+        }
+
         order.setStatus(Const.OrderStatus.PAYED);
         order.setPrice(bill.getCost());
         OrderVO orderVO = orderWraper.wrap(context, order);
@@ -204,7 +219,9 @@ public class OrderLogic extends BaseLogic {
             table.setOrderId(0);
             tableLogic.update(context, table);
             tableLogic.setCustomerNumber(context, table.getId(), 0);
-
+            if(vip != null) {
+            	vipLogic.recharge(context, vipid, -bill.getCost());
+            }
             try {
                 printerLogic.printBill(context, bill, user);
             } catch (Exception e) {

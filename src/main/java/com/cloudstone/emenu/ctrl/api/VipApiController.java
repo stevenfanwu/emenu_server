@@ -112,11 +112,11 @@ public class VipApiController extends BaseApiController {
         return vipLogic.getAllHistory(context);
     }
     
-    @RequestMapping(value="/api/viphistory/{id:[\\d]+}", method=RequestMethod.GET)
-    public @ResponseBody List<VipHistory> getHistoryByVipId(@PathVariable(value="id") int id,
-            HttpServletRequest req,
-            HttpServletResponse response) {
-        EmenuContext context = newContext(req);
-        return vipLogic.getHistoryByVipId(context, id);
-    }
+//    @RequestMapping(value="/api/viphistory/{id:[\\d]+}", method=RequestMethod.GET)
+//    public @ResponseBody List<VipHistory> getHistoryByVipId(@PathVariable(value="id") int id,
+//            HttpServletRequest req,
+//            HttpServletResponse response) {
+//        EmenuContext context = newContext(req);
+//        return vipLogic.getHistoryByVipId(context, id);
+//    }
 }

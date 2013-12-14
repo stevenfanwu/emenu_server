@@ -79,8 +79,15 @@ public class VipLogic extends BaseLogic {
 		if (vip == null || vip.isDeleted()) {
 			throw new DataConflictException("不存在该用户");
 		}
-		double newMoney = vip.getMoney() + recharge;
-		return vipDb.recharge(context, id, newMoney);
+		double leftMoney = vip.getMoney() + recharge;
+		leftMoney = vipDb.recharge(context, id, leftMoney);
+		VipHistory vipHistory = new VipHistory();
+    	vipHistory.setVipid(id);
+    	vipHistory.setRecharge(recharge);
+    	vipHistory.setLeft(leftMoney);
+    	vipHistory.setOpTime(System.currentTimeMillis());
+    	addVipHistory(context, vipHistory);
+    	return leftMoney;
 	}
 
 	public List<String> listVipNames(EmenuContext context) {
