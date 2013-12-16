@@ -143,14 +143,18 @@ public class Const {
                     "#end\n" +
                 "#end\n" +
             "#end\n" +
-            "【退菜】\n" +
+            "#if($cancelrecord.size() != 0)\n" +   
+                "【退菜】\n" +
+            "#end\n" +
             "#foreach($rec in $cancelrecord)\n" +
                 "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
                 "$rec.price" + PrinterUtils.absoluteHorizontalPosition(0, 75) + 
                 "$rec.count$rec.unitLabel" + PrinterUtils.absoluteHorizontalPosition(0, 75) + 
                 "    $rec.total\n" + 
             "#end\n" +
-            "【加菜】\n" +
+            "#if($addrecord.size() != 0)\n" +   
+                "【加菜】\n" +
+            "#end\n" +
             "#foreach($rec in $addrecord)\n" +
                 "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
                 "$rec.price" + PrinterUtils.absoluteHorizontalPosition(0, 75) + 
