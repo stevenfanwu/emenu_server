@@ -37,7 +37,8 @@ public class PrinterUtils {
     private static final String g = String.valueOf((char)103); //15cpi pitch
     private static final String l = String.valueOf((char)108);
     private static final String Q = String.valueOf((char)81);
-    
+    private static final String Segment  = String.valueOf((char)45);
+
     public static final String INIT = ESC + "@";
     public static final String CUT = GS + "V" + (char)1;
     public static final String FORM_FIELD = CR + FF;
@@ -125,7 +126,15 @@ public class PrinterUtils {
 //        
 //        return ESC + $ + String.valueOf((char)units_low) + String.valueOf((char)units_high);
 //    }
+
+    public static String setWordLine() {
+        return ESC + Segment + String.valueOf((char)1);
+    }
     
+    public static String cancelWordLine() {
+        return ESC + Segment + String.valueOf((char)0);
+    }
+        
     public static String absoluteHorizontalPosition(int hight, int low) {
         return ESC + $ + String.valueOf((char)low) + String.valueOf((char)hight);
     }

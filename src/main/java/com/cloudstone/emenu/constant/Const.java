@@ -126,40 +126,43 @@ public class Const {
 
     public static final String DISH_TEMPLATE = "\n" +
             "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "单价" 
-    		    + PrinterUtils.absoluteHorizontalPosition(1, 50) + "数量"
-                + PrinterUtils.absoluteHorizontalPosition(1, 150) + "    金额\n" +
+    		    + PrinterUtils.absoluteHorizontalPosition(1, 200) + "   数量"
+                + PrinterUtils.absoluteHorizontalPosition(1, 244) + "            金额\n" +
             "#foreach($group in $dishGroups)\n" +
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
-                    "$dish.price" +PrinterUtils.absoluteHorizontalPosition(1, 50) + 
-                    "$dish.number$dish.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 150) + 
-                    "    $dish.totalCost\n" + 
+                    "$dish.price" +PrinterUtils.absoluteHorizontalPosition(1, 200) + 
+                    "   $dish.number$dish.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 400) + 
+                    "            $dish.totalCost\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
                         "  做法: " +
+                        PrinterUtils.setWordLine() +
                         "#foreach($remark in $dish.remarks)\n" +
                             "$remark" + " " +
                         "#end\n" + "\n" +
+                        PrinterUtils.cancelWordLine() +
                     "#end\n" +
                 "#end\n" +
             "#end\n" +
-            "#if($cancelrecord.size() != 0)\n" +   
+            "\n---------------------------------------\n" +
+            "#if($cancelrecord.size() != 0)\n" +
                 "【退菜】\n" +
             "#end\n" +
             "#foreach($rec in $cancelrecord)\n" +
                 "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
-                "$rec.price" + PrinterUtils.absoluteHorizontalPosition(1, 50) + 
-                "$rec.count$rec.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 150) + 
-                "    $rec.total\n" + 
+                "$rec.price" + PrinterUtils.absoluteHorizontalPosition(1, 200) + 
+                "   $rec.count$rec.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 400) + 
+                "            $rec.total\n" + 
             "#end\n" +
             "#if($addrecord.size() != 0)\n" +   
                 "【加菜】\n" +
             "#end\n" +
             "#foreach($rec in $addrecord)\n" +
                 "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
-                "$rec.price" + PrinterUtils.absoluteHorizontalPosition(1, 50) + 
-                "$rec.count$rec.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 150) + 
-                "    $rec.total\n" + 
+                "$rec.price" + PrinterUtils.absoluteHorizontalPosition(1, 200) + 
+                "   $rec.count$rec.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 400) + 
+                "            $rec.total\n" + 
             "#end\n" +
             "\n";
 
