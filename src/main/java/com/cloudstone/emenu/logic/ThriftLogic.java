@@ -200,13 +200,6 @@ public class ThriftLogic extends BaseLogic {
             g.setPrice(dish.getPrice());
             dishes.add(dish);
 
-            // Add To DB
-            DishRecord record = new DishRecord();
-            record.setTime(System.currentTimeMillis());
-            record.setDishId(dish.getId());
-            record.setCount((int) g.getNumber());
-            record.setOrderId(g.getOrderid());
-            recordLogic.addAddDishRecord(context, record);
         }
         
         double price = 0;
@@ -246,6 +239,16 @@ public class ThriftLogic extends BaseLogic {
             oldOrder.setOriginPrice(orderValue.getOriginPrice() + oldOrder.getOriginPrice());
             oldOrder.setPrice(orderValue.getPrice() + oldOrder.getPrice());
             oldOrder.setUserId(userId);
+            for (int i=0; i<dishes.size(); i++) {
+                DishRecord record = new DishRecord();
+                Dish dish = dishes.get(i);
+                GoodsOrder g = order.getGoods().get(i);
+                record.setTime(System.currentTimeMillis());
+                record.setDishId(dish.getId());
+                record.setCount((int) g.getNumber());
+                record.setOrderId(oldOrder.getId());
+                recordLogic.addAddDishRecord(context, record);    
+            }
         }
         orderValue.setUserId(userId);
         
@@ -297,6 +300,8 @@ public class ThriftLogic extends BaseLogic {
         try {
             if (oldOrder != null) {
                 oldOrder.setCustomerNumber(customerNumber);
+                orderValue.setCustomerNumber(customerNumber);
+                orderValue.setId(oldOrder.getId());
                 orderLogic.updateOrder(context, oldOrder);
                 for (OrderDish r:needUpdate) {
                     orderLogic.updateOrderDish(context, r);

@@ -146,7 +146,7 @@ public class Const {
                 "#end\n" +
             "#end\n" +
             "\n---------------------------------------\n" +
-            "#if($cancelrecord.size() != 0)\n" +
+            "#if($cancelrecord && $cancelrecord.size() != 0)\n" +
                 "【退菜】\n" +
             "#end\n" +
             "#foreach($rec in $cancelrecord)\n" +
@@ -155,7 +155,7 @@ public class Const {
                 "   $rec.count$rec.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 400) + 
                 "            $rec.total\n" + 
             "#end\n" +
-            "#if($addrecord.size() != 0)\n" +   
+            "#if($addrecord && $addrecord.size() != 0)\n" +   
                 "【加菜】\n" +
             "#end\n" +
             "#foreach($rec in $addrecord)\n" +
