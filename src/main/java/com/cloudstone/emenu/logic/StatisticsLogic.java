@@ -242,6 +242,7 @@ public class StatisticsLogic extends BaseLogic {
     
             List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
             double income = 0;
+            double coupons = 0;
             int customers = 0;
             int invoices = 0;
             double invoiceAmount = 0;
@@ -261,6 +262,7 @@ public class StatisticsLogic extends BaseLogic {
                 }
                 income += bill.getCost();
                 tips += bill.getTip();
+                coupons += bill.getCoupons();
             }
     
             // COUNT
@@ -277,7 +279,9 @@ public class StatisticsLogic extends BaseLogic {
             genStat.setTips(tips);
             // Discount
             genStat.setDiscount(discount);
-    
+            // Coupons
+            genStat.setCoupons(coupons);
+            
             // TABLERATE
             int tableCount = tableLogic.tableCount(context);
             double rate = 0;

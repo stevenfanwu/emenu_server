@@ -77,7 +77,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
     private static enum Column {
         ID("id"), ORDER_ID("orderId"), COST("cost"), DISCOUNT("discount"),
         TIP("tip"), INVOICE("invoice"), INVOICE_PRICE("invoicePrice"), DISCOUNT_DISH_IDS("discountDishIds"),
-        PAY_TYPE("payType"), REMARKS("remarks"), ORDER("`order`"),
+        PAY_TYPE("payType"), REMARKS("remarks"), ORDER("`order`"), COUPONS("coupons"),
         CREATED_TIME("createdTime"), UPDATE_TIME("update_time"), DELETED("deleted");
         
         private final String str;
@@ -102,11 +102,12 @@ public class BillDb extends SQLiteDb implements IBillDb {
         .append(Column.PAY_TYPE, DataType.INTEGER, "NOT NULL")
         .append(Column.REMARKS, DataType.TEXT, "NOT NULL")
         .append(Column.ORDER, DataType.TEXT, "NOT NULL")
+        .append(Column.COUPONS, DataType.REAL, "NOT NULL")
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 14).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 15).build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     
     private static class BillBinder implements StatementBinder {
@@ -134,9 +135,10 @@ public class BillDb extends SQLiteDb implements IBillDb {
             stmt.bind(9, bill.getPayType());
             stmt.bind(10, bill.getRemarks());
             stmt.bind(11, archive);
-            stmt.bind(12, bill.getCreatedTime());
-            stmt.bind(13, bill.getUpdateTime());
-            stmt.bind(14, bill.isDeleted() ? 1 : 0);
+            stmt.bind(12, bill.getCoupons());
+            stmt.bind(13, bill.getCreatedTime());
+            stmt.bind(14, bill.getUpdateTime());
+            stmt.bind(15, bill.isDeleted() ? 1 : 0);
         }
     }
     
@@ -160,9 +162,10 @@ public class BillDb extends SQLiteDb implements IBillDb {
                 OrderVO order = JsonUtils.fromJson(archive, OrderVO.class);
                 bill.setOrder(order);
             }
-            bill.setCreatedTime(stmt.columnLong(11));
-            bill.setUpdateTime(stmt.columnLong(12));
-            bill.setDeleted(stmt.columnInt(13) == 1);
+            bill.setCoupons(stmt.columnDouble(11));
+            bill.setCreatedTime(stmt.columnLong(12));
+            bill.setUpdateTime(stmt.columnLong(13));
+            bill.setDeleted(stmt.columnInt(14) == 1);
             
             return bill;
         }

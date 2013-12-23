@@ -49,7 +49,7 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
     private static enum Column {
         ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
         AVE_PERSON("avePerson"), AVE_ORDER("aveOrder"),
-        CUSTOMER_COUNT("customerCount"), TABLE_RATE("tableRate"), 
+        CUSTOMER_COUNT("customerCount"), TABLE_RATE("tableRate"), COUPONS("coupons"),
         INVOICE_COUNT("invoiceCount"), INVOICE_AMOUNT("invoiceAmount"), TIPS("tips"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
 
@@ -78,11 +78,12 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
             .append(Column.INVOICE_COUNT, DataType.INTEGER, "NOT NULL")
             .append(Column.INVOICE_AMOUNT, DataType.REAL, "NOT NULL")
             .append(Column.TIPS, DataType.REAL, "NOT NULL")
+            .append(Column.COUPONS, DataType.REAL, "NOT NULL")
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.DELETED, DataType.INTEGER, "NOT NULL").build();
 
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 15).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 16).build();
 
     private static class StatBinder implements StatementBinder {
         private final GeneralStat stat;
@@ -106,9 +107,10 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
             stmt.bind(10, stat.getInvoiceCount());
             stmt.bind(11, stat.getInvoiceAmount());
             stmt.bind(12, stat.getTips());
-            stmt.bind(13, stat.getCreatedTime());
-            stmt.bind(14, stat.getUpdateTime());
-            stmt.bind(15, stat.isDeleted() ? 1 : 0);
+            stmt.bind(13, stat.getCoupons());
+            stmt.bind(14, stat.getCreatedTime());
+            stmt.bind(15, stat.getUpdateTime());
+            stmt.bind(16, stat.isDeleted() ? 1 : 0);
         }
     }
 
@@ -132,9 +134,10 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
             stat.setInvoiceCount(stmt.columnInt(9));
             stat.setInvoiceAmount(stmt.columnDouble(10));
             stat.setTips(stmt.columnDouble(11));
-            stat.setCreatedTime(stmt.columnLong(12));
-            stat.setUpdateTime(stmt.columnLong(13));
-            stat.setDeleted(stmt.columnInt(14) == 1);
+            stat.setCoupons(stmt.columnDouble(12));
+            stat.setCreatedTime(stmt.columnLong(13));
+            stat.setUpdateTime(stmt.columnLong(14));
+            stat.setDeleted(stmt.columnInt(15) == 1);
             return stat;
         }
     };

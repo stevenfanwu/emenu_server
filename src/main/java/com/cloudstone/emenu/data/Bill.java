@@ -23,7 +23,14 @@ public class Bill extends IEntity {
     private int payType;
     private String remarks;
     private OrderVO order;
+    private double coupons;
     
+    public double getCoupons() {
+    	return coupons;
+    }
+    public void setCoupons(double coupons) {
+    	this.coupons = coupons;
+    }
     public int getOrderId() {
         return orderId;
     }

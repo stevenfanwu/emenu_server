@@ -24,6 +24,9 @@ public class GeneralStat extends AveStat {
     // 服务费总额
     private double tips;
 
+    // 代金券总额
+    private double coupons;
+    
     private int count;
     
     public GeneralStat() {
@@ -76,5 +79,13 @@ public class GeneralStat extends AveStat {
 
     public void setTips(double tips) {
         this.tips = tips;
+    }
+
+    public double getCoupons() {
+        return coupons;
+    }
+
+    public void setCoupons(double coupons) {
+        this.coupons = coupons;
     }
 }

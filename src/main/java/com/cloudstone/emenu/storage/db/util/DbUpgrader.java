@@ -20,7 +20,9 @@ import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.constant.ServerConfig;
 import com.cloudstone.emenu.logic.ConfigLogic;
 import com.cloudstone.emenu.logic.MenuLogic;
+import com.cloudstone.emenu.storage.db.GenStatDb;
 import com.cloudstone.emenu.storage.db.IDishStatDb;
+import com.cloudstone.emenu.storage.db.IGenStatDb;
 import com.cloudstone.emenu.storage.db.IMenuStatDb;
 import com.cloudstone.emenu.storage.db.IUserDb;
 
@@ -52,6 +54,8 @@ public class DbUpgrader {
     private IDishStatDb dishStatDb;
     @Autowired
     private IMenuStatDb menuStatDb;
+    @Autowired
+    private IGenStatDb genStatDb;
     
     public void checkUpgrade(final EmenuContext context) {
         if (upgrading) {
@@ -122,6 +126,16 @@ public class DbUpgrader {
             menuStatDb.init();
             
             menuLogic.fixChapterOrdinal(context);
+        } else if (oldVersion==3 && newVersion==4) {
+        	SQLiteConnection conn = dataSource.open();
+            conn.exec("ALTER TABLE bill ADD COLUMN coupons REAL DEFAULT 0");
+            conn.exec("DROP TABLE genstat");
+            conn.dispose();
+            
+            /**
+             * re-create tables
+             */
+            genStatDb.init();
         }
     }
 }

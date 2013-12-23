@@ -220,7 +220,7 @@ public class OrderLogic extends BaseLogic {
             tableLogic.update(context, table);
             tableLogic.setCustomerNumber(context, table.getId(), 0);
             if(vip != null) {
-            	vipLogic.recharge(context, vipid, -bill.getCost());
+            	vipLogic.recharge(context, vipid, -(bill.getCost()-bill.getCoupons()));
             }
             try {
                 printerLogic.printBill(context, bill, user);
