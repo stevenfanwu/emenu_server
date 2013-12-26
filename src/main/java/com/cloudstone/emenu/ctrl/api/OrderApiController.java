@@ -84,12 +84,11 @@ public class OrderApiController extends BaseApiController {
     
     @RequestMapping(value="/api/bills", method=RequestMethod.POST)
     public @ResponseBody Bill payBill(@RequestBody String body,
-    		@RequestParam(value="vipid", defaultValue="-1") int vipid,
             HttpServletRequest req,
             HttpServletResponse response) {
         EmenuContext context = newContext(req);
         Bill bill = JsonUtils.fromJson(body, Bill.class);
-        return orderLogic.payBill(context, bill, getLoginUser(req), vipid);
+        return orderLogic.payBill(context, bill, getLoginUser(req));
     }
     
     @RequestMapping(value="/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/cancel", method=RequestMethod.PUT)

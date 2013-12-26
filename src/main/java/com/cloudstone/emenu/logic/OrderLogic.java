@@ -180,7 +180,7 @@ public class OrderLogic extends BaseLogic {
         return datas;
     }
 
-    public Bill payBill(EmenuContext context, Bill bill, User user, int vipid) {
+    public Bill payBill(EmenuContext context, Bill bill, User user) {
 
         if (getBillByOrderId(context, bill.getOrderId()) != null) {
             throw new DataConflictException("请勿重复提交订单");
@@ -194,8 +194,8 @@ public class OrderLogic extends BaseLogic {
             throw new BadRequestError();
         }
         Vip vip = null;
-        if(vipid != -1) {
-        	vip = vipLogic.get(context, vipid);
+        if(bill.getVipId() != -1) {
+        	vip = vipLogic.get(context, bill.getVipId());
         	if(vip == null || vip.isDeleted())
         		throw new BadRequestError();
         	if(vip.getMoney() < bill.getCost()) {
@@ -213,15 +213,20 @@ public class OrderLogic extends BaseLogic {
         // Start transaction
         context.beginTransaction(dataSource);
         try {
-            orderDb.update(context, order);
+        	if(vip != null) {
+            	//Set real earn to 0
+            	vipLogic.recharge(context, bill.getVipId(), -bill.getCost());
+            	bill.setVipCost(bill.getCost());
+            	bill.setCost(0);
+            	order.setPrice(0);
+            }
+        	orderDb.update(context, order);
             billDb.add(context, bill);
             table.setStatus(TableStatus.EMPTY);
             table.setOrderId(0);
             tableLogic.update(context, table);
             tableLogic.setCustomerNumber(context, table.getId(), 0);
-            if(vip != null) {
-            	vipLogic.recharge(context, vipid, -(bill.getCost()-bill.getCoupons()));
-            }
+            
             try {
                 printerLogic.printBill(context, bill, user);
             } catch (Exception e) {

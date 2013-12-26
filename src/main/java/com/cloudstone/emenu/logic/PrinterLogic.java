@@ -23,6 +23,7 @@ import com.cloudstone.emenu.data.PrintComponent;
 import com.cloudstone.emenu.data.PrintTemplate;
 import com.cloudstone.emenu.data.PrinterConfig;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.Vip;
 import com.cloudstone.emenu.data.vo.DishGroup;
 import com.cloudstone.emenu.data.vo.OrderDishVO;
 import com.cloudstone.emenu.data.vo.OrderVO;
@@ -58,6 +59,9 @@ public class PrinterLogic extends BaseLogic {
     @Autowired
     private RecordLogic recordLogic;
 
+    @Autowired
+    private VipLogic vipLogic;
+    
     @Autowired
     private VelocityRender velocityRender;
 
@@ -98,6 +102,7 @@ public class PrinterLogic extends BaseLogic {
                     .listAddDishRecords(context, bill.getOrderId());
             List<RecordVO> cancelRecordVOs = recordWraper.wrapRecord(context, cancelRecords);
             List<RecordVO> addRecordVOs = recordWraper.wrapRecord(context, addRecords);
+        	Vip vip = vipLogic.get(context, bill.getVipId());
 
             if (template.getCutType() == Const.CutType.PER_DISH
                     && bill.getOrder().getDishes().size() > 0) {
@@ -107,7 +112,7 @@ public class PrinterLogic extends BaseLogic {
                     List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, dishes,
                             template.getChapterIds(), true);
                     if (!CollectionUtils.isEmpty(dishGroups)) {
-                        String content = velocityRender.renderBill(bill, user, dishGroups,
+                        String content = velocityRender.renderBill(bill, vip, user, dishGroups,
                                 cancelRecordVOs, addRecordVOs, templateString);
                         PrinterUtils.print(printer, content, template.getFontSize());
                     }
@@ -116,7 +121,7 @@ public class PrinterLogic extends BaseLogic {
                 List<DishGroup> dishGroups = dishWraper.wrapDishGroup(context, bill.getOrder()
                         .getDishes(), template.getChapterIds(), true);
                 if (!CollectionUtils.isEmpty(dishGroups)) {
-                    String content = velocityRender.renderBill(bill, user, dishGroups,
+                    String content = velocityRender.renderBill(bill, vip, user, dishGroups,
                             cancelRecordVOs, addRecordVOs, templateString);
                     PrinterUtils.print(printer, content, template.getFontSize());
                 }

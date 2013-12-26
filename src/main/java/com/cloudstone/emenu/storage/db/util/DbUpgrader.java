@@ -27,7 +27,7 @@ import com.cloudstone.emenu.storage.db.IMenuStatDb;
 import com.cloudstone.emenu.storage.db.IUserDb;
 
 /**
- * @author xuhongfeng
+ * @author carelife
  *
  */
 @Component
@@ -129,6 +129,8 @@ public class DbUpgrader {
         } else if (oldVersion==3 && newVersion==4) {
         	SQLiteConnection conn = dataSource.open();
             conn.exec("ALTER TABLE bill ADD COLUMN coupons REAL DEFAULT 0");
+            conn.exec("ALTER TABLE bill ADD COLUMN vipId INTEGER DEFAULT 0");
+            conn.exec("ALTER TABLE bill ADD COLUMN vipCost REAL DEFAULT 0");
             conn.exec("DROP TABLE genstat");
             conn.dispose();
             

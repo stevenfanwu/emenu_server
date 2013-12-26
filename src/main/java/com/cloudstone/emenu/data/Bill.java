@@ -24,12 +24,26 @@ public class Bill extends IEntity {
     private String remarks;
     private OrderVO order;
     private double coupons;
+    private int vipId;
+    private double vipCost;
     
+    public double getVipCost() {
+    	return vipCost;
+    }
+    public void setVipCost(double vipCost) {
+    	this.vipCost = vipCost;
+    }
     public double getCoupons() {
     	return coupons;
     }
     public void setCoupons(double coupons) {
     	this.coupons = coupons;
+    }
+    public int getVipId() {
+        return vipId;
+    }
+    public void setVipId(int vipId) {
+        this.vipId = vipId;
     }
     public int getOrderId() {
         return orderId;

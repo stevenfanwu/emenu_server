@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.cloudstone.emenu.data.Bill;
 import com.cloudstone.emenu.data.User;
+import com.cloudstone.emenu.data.Vip;
 import com.cloudstone.emenu.data.vo.DishGroup;
 import com.cloudstone.emenu.data.vo.OrderVO;
 import com.cloudstone.emenu.data.vo.RecordVO;
@@ -34,7 +35,7 @@ public class VelocityRender {
     @Autowired
     private Utils utils;
     
-    public String renderBill(Bill bill, User user, List<DishGroup> dishGroups, List<RecordVO> cancelRecord, List<RecordVO> addRecord, String template) {
+    public String renderBill(Bill bill, Vip vip, User user, List<DishGroup> dishGroups, List<RecordVO> cancelRecord, List<RecordVO> addRecord, String template) {
         
         VelocityContext context = new VelocityContext();
         context.put("bill", bill);
@@ -44,6 +45,10 @@ public class VelocityRender {
         context.put("cancelrecord", cancelRecord);
         context.put("addrecord", addRecord);
         context.put("time", utils.formatDate(bill.getCreatedTime()));
+        context.put("coupons", bill.getCoupons());
+        context.put("vipusage", 0);
+        context.put("vipid",vip.getId());
+        context.put("vipleft", vip.getMoney());
         String userName = user.getRealName();
         if (userName == null) {
             userName = "";
