@@ -10,5 +10,5 @@ package com.cloudstone.emenu.constant;
  */
 public class ServerConfig {
     public static final int VERSION = 1;
-    public static final int DB_VERSION = 4;
+    public static final int DB_VERSION = 5;
 }
