@@ -12,6 +12,8 @@ import com.cloudstone.emenu.data.VipHistory;
 import com.cloudstone.emenu.exception.DataConflictException;
 import com.cloudstone.emenu.storage.db.VipDb;
 import com.cloudstone.emenu.storage.db.VipHistoryDb;
+import com.cloudstone.emenu.util.DataUtils;
+import com.cloudstone.emenu.util.MathUtil;
 
 /**
  * 
@@ -26,7 +28,9 @@ public class VipLogic extends BaseLogic {
 	private VipHistoryDb vipHistoryDb;
 
 	public List<Vip> getAll(EmenuContext context) {
-		return vipDb.getAll(context);
+		List<Vip> vips = vipDb.getAll(context);
+		DataUtils.filterDeleted(vips);
+		return vips;
 	}
 
 	public Vip get(EmenuContext context, int id) {
@@ -79,15 +83,16 @@ public class VipLogic extends BaseLogic {
 		if (vip == null || vip.isDeleted()) {
 			throw new DataConflictException("不存在该用户");
 		}
-		double leftMoney = vip.getMoney() + recharge;
+		double leftMoney = MathUtil.round(
+				MathUtil.add(vip.getMoney(), recharge), 2);
 		leftMoney = vipDb.recharge(context, id, leftMoney);
 		VipHistory vipHistory = new VipHistory();
-    	vipHistory.setVipid(id);
-    	vipHistory.setRecharge(recharge);
-    	vipHistory.setLeft(leftMoney);
-    	vipHistory.setOpTime(System.currentTimeMillis());
-    	addVipHistory(context, vipHistory);
-    	return leftMoney;
+		vipHistory.setVipid(id);
+		vipHistory.setRecharge(recharge);
+		vipHistory.setLeft(leftMoney);
+		vipHistory.setOpTime(System.currentTimeMillis());
+		addVipHistory(context, vipHistory);
+		return leftMoney;
 	}
 
 	public List<String> listVipNames(EmenuContext context) {
@@ -105,10 +110,14 @@ public class VipLogic extends BaseLogic {
 	}
 
 	public List<VipHistory> getHistoryByVipId(EmenuContext context, int vipid) {
-		return vipHistoryDb.get(context, vipid);
+		List<VipHistory> vipHistoryList = vipHistoryDb.get(context, vipid);
+		DataUtils.filterDeleted(vipHistoryList);
+		return vipHistoryList;
 	}
 
 	public List<VipHistory> getAllHistory(EmenuContext context) {
-		return vipHistoryDb.getAll(context);
+		List<VipHistory> vipHistoryList = vipHistoryDb.getAll(context);
+		DataUtils.filterDeleted(vipHistoryList);
+		return vipHistoryList;
 	}
 }
