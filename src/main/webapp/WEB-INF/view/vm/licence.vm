@@ -1,0 +1,55 @@
+#set( $layout="layout/empty.vm")
+#set($pageName="Lisence")
+
+#if (! $licence)
+<div class="alert">
+    <span>$result.message</span>
+</div>
+
+<form class="form-upload-lisence well" action="licence", method="POST"  enctype="multipart/form-data">
+    <div class="control-group input-lisence">
+        <div class="controls">
+            <label class="control-label">证书:</label>
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+                <span class="btn btn-file">
+                    <span class="fileupload-new">选择证书</span>
+                    <span class="fileupload-exists">重新选择</span>
+                    <input type="file" />
+                </span>
+                    <span class="fileupload-preview"></span>
+                    <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">提交</button>
+</form>
+
+<ul>
+    <li> 硬件随机码: <span class="alert alert-info">$serial</span> (用于生成证书)</li>
+    <li> 软件版本: $serverVersion </li>
+    <li> 数据库版本: $dbVersion </li>
+</ul>
+
+#else
+    #if (! $result.success)
+        <div class="alert">
+            <span>$result.message</span>
+        </div>
+    #end
+<div class="well container">
+    <div class="row">
+        <span class="badge badge-info offset1">证书类型</span>
+        <span>
+        #if ($licence.type == 1)
+            正式版
+        #else
+            测试版
+        #end
+        </span>
+    </div>
+    <div class="row">
+        <span class="badge badge-info offset1">平板个数限制</span>
+        <span>$licence.padCount</span>
+    </div>
+</div>
+#end

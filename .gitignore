@@ -1,0 +1,7 @@
+.settings/
+/target/
+emenu.log*
+/test-output/
+*.swp
+*.swo
+*.DS_Store

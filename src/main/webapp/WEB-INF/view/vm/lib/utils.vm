@@ -1,0 +1,7 @@
+#macro(pageData, $id, $value)
+#if($value)
+    <script type="application/json" id="${id}Data" >
+        $value
+    </script>
+#end
+#end
