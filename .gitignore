@@ -5,3 +5,7 @@ emenu.log*
 *.swp
 *.swo
 *.DS_Store
+
+# eclipse project config
+.classpath
+.project
