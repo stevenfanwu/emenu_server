@@ -27,11 +27,8 @@ public class MyContextListener implements ServletContextListener {
         System.setProperty(Const.PARAM_WEB_HOME_DIR, homeDir.getAbsolutePath());
         File tomcatHome = homeDir.getParentFile().getParentFile();
         System.setProperty(Const.PARAM_TOMCAT_HOME, tomcatHome.getAbsolutePath());
-        File dataDir = new File(tomcatHome, "cloudstone-data");
+        File dataDir = new File("/var/lib/sqlite");
         System.setProperty(Const.PARAM_CLOUDSTONE_DATA_DIR, dataDir.getAbsolutePath());
-        if (!dataDir.exists()) {
-            dataDir.mkdir();
-        }
         File dbFile = new File(dataDir, "cloudstone.db");
         System.setProperty(Const.PARAM_DB_FILE, dbFile.getAbsolutePath());
     }

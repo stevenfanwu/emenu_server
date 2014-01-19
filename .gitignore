@@ -9,3 +9,4 @@ emenu.log*
 # eclipse project config
 .classpath
 .project
+.pydevproject
