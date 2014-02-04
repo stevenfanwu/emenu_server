@@ -1,0 +1,117 @@
+/*************************************************
+**************************************************
+
+Website Name: Hummingbird System
+Website URL: hummingbirdsystem.com
+Website Author: Aaron Cheng
+Author URL: chengfolio.com
+Copyright 2014. All Rights Reserved.
+
+Color Guide
+***************
+303338 - Dark Grey
+
+*************************************************/
+
+/************************************************
+*************************************************
+
+1. Navgationbar Styles -------------------- component/top_nav.vm
+2. Footer Styles	   -------------------- default.vm
+
+*************************************************
+************************************************/
+
+/*----------------------------------------------
+------------------------------------------------
+1. Navgationbar Styles
+------------------------------------------------
+----------------------------------------------*/
+.nav_bar{
+	background-color:#303338;
+	width:100%;
+	height:40px;
+	margin-bottom:20px;
+}
+
+.navbar-inner {
+  min-height: 40px;
+  padding-right: 20px;
+  padding-left: 20px;
+  background-color: transparent;
+  background-image: none;
+  background-repeat: repeat-x;
+  border: 0px solid #d4d4d4;
+  -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff2f2f2', GradientType=0);
+  *zoom: 1;
+  -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.065);
+     -moz-box-shadow: 0 0px 0px rgba(0, 0, 0, 0.065);
+          box-shadow: 0 0px 0px rgba(0, 0, 0, 0.065);
+}
+
+.navbar .brand {
+  color: #fff;
+  text-shadow: 0 0px 0 #ffffff;
+}
+
+.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus {
+  color: #000;
+  -webkit-box-shadow: inset 0 0px 0px rgba(0, 0, 0, 0.125);
+     -moz-box-shadow: inset 0 0px 0px rgba(0, 0, 0, 0.125);
+          box-shadow: inset 0 0px 0px rgba(0, 0, 0, 0.125);
+}
+
+.navbar .nav > li > a {
+  color: #fff;
+  text-shadow: 0 0px 0 #ffffff;
+}
+
+.pull-right.wrap-logout{
+	color:#fff;
+}
+
+.navbar .nav > li > a:focus,
+.navbar .nav > li > a:hover {
+  color: #808a97;
+}
+
+.pull-right.wrap-logout p{
+	color:#fff;
+}
+
+.pull-right.wrap-logout a{
+	color:#fff;
+	background-color:#0088cc;
+	height:30px;
+	line-height:30px;
+	margin-left:20px;
+	width:80px;
+	position:relative;
+	top:-5px;
+}
+
+.pull-right.wrap-logout a:hover{
+  background-color:#0097E3;
+  text-decoration:none;
+}
+
+/*----------------------------------------------
+------------------------------------------------
+2. Footer Styles
+------------------------------------------------
+----------------------------------------------*/
+.footer_bar{
+	background-color:#303338;
+	color:#808a97;
+	line-height:40px;
+	width:100%;
+	height:40px;
+	margin-bottom:20px;
+	position:fixed;
+	bottom:-20px;
+}
