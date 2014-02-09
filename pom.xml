@@ -9,7 +9,7 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<jdk.version>1.6</jdk.version>
+		<jdk.version>1.7</jdk.version>
 		<spring.version>3.2.3.RELEASE</spring.version>
 		<sqlite4java.version>0.282</sqlite4java.version>
 		<sqlite4java.platform>libsqlite4java-osx</sqlite4java.platform>
