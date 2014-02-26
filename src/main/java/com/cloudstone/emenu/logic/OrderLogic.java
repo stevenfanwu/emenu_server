@@ -28,7 +28,6 @@ import com.cloudstone.emenu.data.PayType;
 import com.cloudstone.emenu.data.Table;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.data.Vip;
-import com.cloudstone.emenu.data.VipHistory;
 import com.cloudstone.emenu.data.misc.PollingManager;
 import com.cloudstone.emenu.data.misc.PollingManager.PollingMessage;
 import com.cloudstone.emenu.data.vo.OrderDishVO;

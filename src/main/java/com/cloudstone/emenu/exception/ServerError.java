@@ -18,4 +18,5 @@ public class ServerError extends HttpStatusError {
     public ServerError(String msg) {
         super(500, msg, null);
     }
+
 }

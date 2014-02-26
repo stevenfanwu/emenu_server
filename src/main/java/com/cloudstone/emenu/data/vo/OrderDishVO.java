@@ -4,9 +4,6 @@
  */
 package com.cloudstone.emenu.data.vo;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.Dish;
 import com.cloudstone.emenu.data.OrderDish;
@@ -17,7 +14,7 @@ import com.cloudstone.emenu.util.DataUtils;
  *
  */
 public class OrderDishVO extends Dish {
-//    private static final Logger LOG = LoggerFactory.getLogger(OrderDishVO.class);
+	// private static final Logger LOG = LoggerFactory.getLogger(OrderDishVO.class);
     
     private double number;
     private String[] remarks;

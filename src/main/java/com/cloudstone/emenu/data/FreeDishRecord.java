@@ -1,5 +1,5 @@
 /**
- * @(#)CancelDishRecord.java, Aug 26, 2013. 
+ * @(#)FreeDishRecord.java, Aug 26, 2013. 
  * 
  */
 package com.cloudstone.emenu.data;

@@ -10,25 +10,25 @@ package com.cloudstone.emenu.exception;
  * restrictions, like creating a existing user
  * 
  * @author xuhongfeng
- *
+ * 
  */
 public class BaseLogicalException extends Exception {
 
-    private static final long serialVersionUID = -3522567106607510995L;
+	private static final long serialVersionUID = -3522567106607510995L;
 
-    public BaseLogicalException() {
-        super();
-    }
+	public BaseLogicalException() {
+		super();
+	}
 
-    public BaseLogicalException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public BaseLogicalException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public BaseLogicalException(String message) {
-        super(message);
-    }
+	public BaseLogicalException(String message) {
+		super(message);
+	}
 
-    public BaseLogicalException(Throwable cause) {
-        super(cause);
-    }
+	public BaseLogicalException(Throwable cause) {
+		super(cause);
+	}
 }

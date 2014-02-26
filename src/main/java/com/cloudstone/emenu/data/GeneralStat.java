@@ -1,5 +1,5 @@
 /**
- * @(#)DailyStat.java, Aug 6, 2013. 
+ * @(#)GeneralStat.java, Aug 6, 2013. 
  * 
  */
 

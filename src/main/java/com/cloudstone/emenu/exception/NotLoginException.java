@@ -15,5 +15,4 @@ public class NotLoginException extends HttpStatusError {
         super(401, msg);
     }
 
-    
 }
