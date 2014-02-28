@@ -74,7 +74,7 @@ public class MenuLogic extends BaseLogic {
     public Menu addMenu(EmenuContext context, Menu menu) {
         Menu old = menuDb.getByName(context, menu.getName());
         if (old!=null && !old.isDeleted()) {
-            throw new DataConflictException("该菜单已存在");
+            throw new DataConflictException("Dish exists.");
         }
         
         long now = System.currentTimeMillis();
@@ -93,10 +93,10 @@ public class MenuLogic extends BaseLogic {
     public void bindDish(EmenuContext context, int menuPageId, int dishId, int pos) {
         MenuPage page = getMenuPage(context, menuPageId);
         if (page == null) {
-            throw new PreconditionFailedException("该菜单页不存在");
+            throw new PreconditionFailedException("Requested menu doesn't exist.");
         }
         if (isDishInChapter(context, dishId, page.getChapterId())) {
-            throw new PreconditionFailedException("当前菜单分类已经添加过该菜品");
+            throw new PreconditionFailedException("Dish has already been added to this category.");
         }
         dishPageDb.add(context, menuPageId, dishId, pos);
         checkDishInMenu(context, dishId);
@@ -131,7 +131,7 @@ public class MenuLogic extends BaseLogic {
     public Menu updateMenu(EmenuContext context, Menu menu) {
         Menu old = menuDb.getByName(context, menu.getName());
         if (old!=null && old.getId()!=menu.getId() && !old.isDeleted()) {
-            throw new DataConflictException("该菜单已存在");
+            throw new DataConflictException("Dish exists.");
         }
         menu.setUpdateTime(System.currentTimeMillis());
         menuDb.updateMenu(context, menu);
@@ -147,7 +147,7 @@ public class MenuLogic extends BaseLogic {
     public Dish addDish(EmenuContext context, Dish dish) {
         Dish old = dishDb.getByName(context, dish.getName());
         if (old!=null && !old.isDeleted()) {
-            throw new DataConflictException("该菜品已存在");
+            throw new DataConflictException("Dish exists.");
         }
         long now = System.currentTimeMillis();
         dish.setUpdateTime(now);
@@ -175,7 +175,7 @@ public class MenuLogic extends BaseLogic {
     public Dish updateDish(EmenuContext context, Dish dish) {
         Dish old = dishDb.getByName(context, dish.getName());
         if (old!=null && old.getId()!=dish.getId() && !old.isDeleted()) {
-            throw new DataConflictException("该菜品已存在");
+            throw new DataConflictException("Dish exists");
         }
         dish.setUpdateTime(System.currentTimeMillis());
         //save image
@@ -249,7 +249,7 @@ public class MenuLogic extends BaseLogic {
     public Dish updateDishSoldout(EmenuContext context, int id, boolean soldout) {
         Dish dish = dishDb.get(context, id);
         if (dish == null || dish.isDeleted()) {
-            throw new DbNotFoundException("没有这个菜或者这个菜已经被删除了");
+            throw new DbNotFoundException("Dish doesn't exit or has been deleted.");
         }
         dish.setSoldout(soldout);
         dishDb.update(context, dish);
@@ -273,7 +273,7 @@ public class MenuLogic extends BaseLogic {
     public Chapter addChapter(EmenuContext context, Chapter chapter) {
         Chapter old = chapterDb.getChapterByName(context, chapter.getName());
         if (old!= null && old.getMenuId()==chapter.getMenuId() && !old.isDeleted()) {
-            throw new DataConflictException("该分类已存在");
+            throw new DataConflictException("Category exists.");
         }
         
         List<Chapter> chapters = listChapterByMenuId(context, chapter.getMenuId());
@@ -350,7 +350,7 @@ public class MenuLogic extends BaseLogic {
         Chapter old = chapterDb.getChapterByName(context, chapter.getName());
         if (old!=null && old.getId()!=chapter.getId() && chapter.getMenuId()==old.getMenuId()
                 && !old.isDeleted()) {
-            throw new DataConflictException("该分类已存在");
+            throw new DataConflictException("Category exists.");
         }
         
         old = chapterDb.getChapter(context, chapter.getId());
@@ -386,7 +386,7 @@ public class MenuLogic extends BaseLogic {
     public void move(EmenuContext context, int chapterId, boolean up) {
         Chapter chapter = getChapter(context, chapterId);
         if (chapter == null || chapter.isDeleted()) {
-            throw new NotFoundException("菜品分类不存在, id=" + chapterId);
+            throw new NotFoundException("Category not found, id=" + chapterId);
         }
         if (up && chapter.getOrdinal() == 1) {
             throw new BadRequestError();
@@ -561,7 +561,7 @@ public class MenuLogic extends BaseLogic {
     public DishTag addDishTag(EmenuContext context, DishTag tag) {
         DishTag old = dishTagDb.getDishTagByName(context, tag.getName());
         if (old!= null && !old.isDeleted()) {
-            throw new DataConflictException("该标签已存在");
+            throw new DataConflictException("Tag exists.");
         }
         long now = System.currentTimeMillis();
         tag.setUpdateTime(now);
@@ -598,7 +598,7 @@ public class MenuLogic extends BaseLogic {
     public DishNote addDishNote(EmenuContext context, DishNote note) {
         DishNote old = dishNoteDb.getDishNoteByName(context, note.getName());
         if (old!= null && !old.isDeleted()) {
-            throw new DataConflictException("该菜品备注已存在");
+            throw new DataConflictException("Dish exists.");
         }
         long now = System.currentTimeMillis();
         note.setUpdateTime(now);
@@ -615,7 +615,7 @@ public class MenuLogic extends BaseLogic {
     public DishNote updateDishNote(EmenuContext context, DishNote note) {
         DishNote old = dishNoteDb.getDishNoteByName(context, note.getName());
         if (old!= null && old.getId()!=note.getId() && !old.isDeleted()) {
-            throw new DataConflictException("该菜品备注已存在");
+            throw new DataConflictException("Dish exists.");
         }
         note.setUpdateTime(System.currentTimeMillis());
         dishNoteDb.updateDishNote(context, note);

@@ -46,18 +46,18 @@ define(function (require, exports, module) {
             if (type === 1) {
                 var order = data;
                 window.noty({
-                    text: '有新的订单',
+                    text: 'New Order',
                     type: 'success',
                     buttons: [{
                         addClass: 'btn btn-primary btn-small',
-                        text: '查看',
+                        text: 'Check',
                         onClick: function ($noty) {
                             window.location = '/bill?tableId=' + order.tableId;
                             $noty.close();
                         }
                     }, {
                         addClass: 'btn btn-danger btn-small',
-                        text: '关闭',
+                        text: 'Close',
                         onClick: function ($noty) {
                             $noty.close();
                         }

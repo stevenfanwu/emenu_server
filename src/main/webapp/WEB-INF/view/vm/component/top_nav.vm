@@ -6,12 +6,12 @@
 		<div class="navbar-inner">
 			<a class="brand" href="/home">CloudMenu</a>
 			<ul class="nav">
-				#@mode_tab("operate")运营模式#end
-				#@mode_tab("admin")管理模式#end
+				#@mode_tab("operate")Operation#end
+				#@mode_tab("admin")Management#end
 			</ul>
 			<span class="pull-right wrap-logout">
-				<p class="pull-left">欢迎你 $loginUser.name,</p>
-				<a href="/logout" class="text-center pull-left">退出</a>
+				<p class="pull-left">Welcome $loginUser.name,</p>
+				<a href="/logout" class="text-center pull-left">Logout</a>
 			</span>
 		</div>
 	</div>

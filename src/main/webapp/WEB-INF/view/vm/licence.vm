@@ -9,11 +9,11 @@
 <form class="form-upload-lisence well" action="licence", method="POST"  enctype="multipart/form-data">
     <div class="control-group input-lisence">
         <div class="controls">
-            <label class="control-label">证书:</label>
+            <label class="control-label">License:</label>
             <div class="fileupload fileupload-new" data-provides="fileupload">
                 <span class="btn btn-file">
-                    <span class="fileupload-new">选择证书</span>
-                    <span class="fileupload-exists">重新选择</span>
+                    <span class="fileupload-new">Select license</span>
+                    <span class="fileupload-exists">Select license again</span>
                     <input type="file" />
                 </span>
                     <span class="fileupload-preview"></span>
@@ -21,13 +21,13 @@
             </div>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">提交</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
 <ul>
-    <li> 硬件随机码: <span class="alert alert-info">$serial</span> (用于生成证书)</li>
-    <li> 软件版本: $serverVersion </li>
-    <li> 数据库版本: $dbVersion </li>
+    <li> Device seed: <span class="alert alert-info">$serial</span> (Used to generate license)</li>
+    <li> Software version: $serverVersion </li>
+    <li> Database version: $dbVersion </li>
 </ul>
 
 #else
@@ -38,17 +38,17 @@
     #end
 <div class="well container">
     <div class="row">
-        <span class="badge badge-info offset1">证书类型</span>
+        <span class="badge badge-info offset1">License type</span>
         <span>
         #if ($licence.type == 1)
-            正式版
+           Official 
         #else
-            测试版
+           Beta 
         #end
         </span>
     </div>
     <div class="row">
-        <span class="badge badge-info offset1">平板个数限制</span>
+        <span class="badge badge-info offset1">Device limit</span>
         <span>$licence.padCount</span>
     </div>
 </div>

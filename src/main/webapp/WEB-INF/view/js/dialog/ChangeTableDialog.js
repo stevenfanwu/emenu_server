@@ -32,7 +32,7 @@ define(function (require, exports, module) {
     var ChangeTableDialog = Dialog.extend({
         ContentType: Content,
 
-        header: '选择餐桌',
+        header: 'Choose table',
 
         confirmLabel: null
 

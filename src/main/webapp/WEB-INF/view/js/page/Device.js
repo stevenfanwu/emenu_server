@@ -19,7 +19,7 @@ define(function (require, exports, module) {
                 this.list = new PadList();
                 this.list.render();
                 this.$('.device-wrap').html(this.list.el);
-                var tab = this.appendPullRight('添加平板');
+                var tab = this.appendPullRight('Add device');
                 tab.on('click', function () {
                     this.list.trigger('createPad');
                 }, this);

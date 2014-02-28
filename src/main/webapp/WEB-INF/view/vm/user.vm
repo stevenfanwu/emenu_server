@@ -7,12 +7,12 @@
   </li>
 #end
 <ul class="nav nav-tabs">
-    #@user_nav_item("all")所有角色#end
-    #@user_nav_item("admin")管理员#end
-    #@user_nav_item("user")服务员#end
+    #@user_nav_item("all")All#end
+    #@user_nav_item("admin")Admin#end
+    #@user_nav_item("user")Waiter/Waitress#end
     #if($loginUser.type>$UserType.USER)
         <li class="pull-right">
-            <a href="" class="btn-create-user">新建用户</a>
+            <a href="" class="btn-create-user">New User</a>
         </li>
     #end
 </ul>

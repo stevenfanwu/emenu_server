@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     });
 
     var EditDishTagDialog = EditDialog.extend({
-        headerSuffix: '菜品做法',
+        headerSuffix: 'Cooking method',
 
         ContentType: Content,
 

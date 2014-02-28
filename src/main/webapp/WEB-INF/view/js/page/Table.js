@@ -59,7 +59,7 @@ define(function (require, exports, module) {
         },
 
         onDeleteTable: function (model) {
-            if (window.confirm('确定删除餐桌' + model.get('name') + '?')) {
+            if (window.confirm('Delete table' + model.get('name') + '?')) {
                 model.destroy({
                     success: function () {
                         this.list.refresh();

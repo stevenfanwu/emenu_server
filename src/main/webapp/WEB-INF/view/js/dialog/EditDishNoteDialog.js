@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     });
 
     var EditDishNoteDialog = EditDialog.extend({
-        headerSuffix: '菜品备注',
+        headerSuffix: 'Dish note',
 
         ContentType: Content,
 

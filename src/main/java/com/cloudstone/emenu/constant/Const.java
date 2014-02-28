@@ -125,9 +125,9 @@ public class Const {
     public static final String DIVIDER = "\n---------------------------------------\n";
 
     public static final String DISH_TEMPLATE = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "单价" 
-    		    + PrinterUtils.absoluteHorizontalPosition(1, 200) + "   数量"
-                + PrinterUtils.absoluteHorizontalPosition(1, 244) + "            金额\n" +
+            "Dish" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "price" 
+    		    + PrinterUtils.absoluteHorizontalPosition(1, 200) + "   quantity"
+                + PrinterUtils.absoluteHorizontalPosition(1, 244) + "            Total price\n" +
             "#foreach($group in $dishGroups)\n" +
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
@@ -136,7 +136,7 @@ public class Const {
                     "   $dish.number$dish.unitLabel" + PrinterUtils.absoluteHorizontalPosition(1, 400) + 
                     "            $dish.totalCost\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
-                        "  做法: " +
+                        "  Cooking: " +
                         PrinterUtils.setWordLine() +
                         "#foreach($remark in $dish.remarks)\n" +
                             "$remark" + " " +
@@ -147,7 +147,7 @@ public class Const {
             "#end\n" +
             "\n---------------------------------------\n" +
             "#if($cancelrecord && $cancelrecord.size() != 0)\n" +
-                "【退菜】\n" +
+                "【Return】\n" +
             "#end\n" +
             "#foreach($rec in $cancelrecord)\n" +
                 "$rec.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) +
@@ -167,14 +167,14 @@ public class Const {
             "\n";
 
     public static final String DISH_TEMPLATE_ORDER = "\n" +
-            "菜品" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "      数量" + "\n" +
+            "Dish" + PrinterUtils.absoluteHorizontalPosition(1, 0) + "      quantity" + "\n" +
             "#foreach($group in $dishGroups)\n" +
                 "【$group.category】\n" +
                 "#foreach($dish in $group.dishes)\n" +
                     "$dish.name" + PrinterUtils.absoluteHorizontalPosition(1, 0) + 
                     "      $dish.number$dish.unitLabel" + "\n" + 
                     "#if($dish.remarks && $dish.remarks.size() != 0)\n" +
-                        "  做法: " +
+                        "  Cooking: " +
                         "#foreach($remark in $dish.remarks)\n" +
                             "$remark" + " " +
                         "#end\n" + "\n" +

@@ -45,7 +45,7 @@ define(function (require, exports, module) {
         /* -------------------- Event Listener ----------------------- */
 
         onDeleteMenu: function (menuModel) {
-            if (window.confirm('确定删除菜单"' + menuModel.get('name') + '"?')) {
+            if (window.confirm('Delete menu "' + menuModel.get('name') + '"?')) {
                 menuModel.destroy({
                     success: function () {
                         this.list.refresh();

@@ -19,7 +19,7 @@ define(function (require, exports, module) {
                 data.countOptions.push(i);
                 i = i + 1;
             }
-            data.mode = this.dialog.mode === 'cancel' ? '退菜' : '赠菜';
+            data.mode = this.dialog.mode === 'cancel' ? 'Cancel' : 'Add';
 
             return data;
         }
@@ -44,7 +44,7 @@ define(function (require, exports, module) {
         },
 
         getHeader: function () {
-            return this.mode === 'cancel' ? '退菜' : '赠菜';
+            return this.mode === 'cancel' ? 'Cancel' : 'Add';
         }
         
         

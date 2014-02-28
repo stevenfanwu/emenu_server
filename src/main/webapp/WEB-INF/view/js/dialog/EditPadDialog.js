@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     });
 
     var EditPadDialog = EditDialog.extend({
-        headerSuffix: '平板',
+        headerSuffix: 'Device',
 
         ContentType: Content,
 

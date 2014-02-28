@@ -2,5 +2,5 @@
 #set($pageName="Upgrading")
 
 <div class="alert">
-    数据库升级中, 请稍后刷新页面。
+    Database upgrading, please refresh later.
 </div>

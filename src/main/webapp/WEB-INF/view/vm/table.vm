@@ -7,12 +7,12 @@
   </li>
 #end
 <ul class="nav nav-tabs">
-    #@table_nav_item("all")所有类别#end
-    #@table_nav_item("room")包间#end
-    #@table_nav_item("hall")散台#end
-    #@table_nav_item("booth")卡座#end
+    #@table_nav_item("all")All#end
+    #@table_nav_item("room")Room#end
+    #@table_nav_item("hall")Hall#end
+    #@table_nav_item("booth")Booth#end
     <li class="pull-right">
-        <a href="" class="btn-create-table">添加餐桌</a>
+        <a href="" class="btn-create-table">Add table</a>
     </li>
 </ul>
 <div class="wrap-list">

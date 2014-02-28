@@ -92,7 +92,7 @@ define(function (require, exports, module) {
     });
     
     var EditPrintComponentDialog = EditDialog.extend({
-        headerSuffix: '页眉页脚',
+        headerSuffix: 'Footer/Header',
 
         ContentType: Content,
 

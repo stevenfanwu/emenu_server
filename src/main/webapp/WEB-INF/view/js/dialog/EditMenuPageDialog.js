@@ -24,7 +24,7 @@ define(function (require, exports, module) {
     });
     
     var EditMenuPageDialog = EditDialog.extend({
-        headerSuffix: '菜单页',
+        headerSuffix: 'Menu',
 
         ContentType: Content,
 

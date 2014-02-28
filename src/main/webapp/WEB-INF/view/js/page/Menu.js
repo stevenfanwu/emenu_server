@@ -32,7 +32,7 @@ define(function (require, exports, module) {
                 menuView.render();
                 this.$('.bottom-content').empty();
                 this.$('.bottom-content').append(menuView.el);
-                var tab = this.appendPullRight('添加菜单');
+                var tab = this.appendPullRight('Add menu');
                 tab.on('click', function () {
                     menuView.trigger('createMenu');
                 }, this);
@@ -50,7 +50,7 @@ define(function (require, exports, module) {
                 list.render();
                 this.$('.bottom-content').empty();
                 this.$('.bottom-content').append(list.el);
-                var tab = this.appendPullRight('添加菜品备注');
+                var tab = this.appendPullRight('Add dish note');
                 tab.on('click', function () {
                     list.trigger('createDishNote');
                 }, this);

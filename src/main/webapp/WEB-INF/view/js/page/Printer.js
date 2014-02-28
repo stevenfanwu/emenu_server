@@ -22,7 +22,7 @@ define(function (require, exports, module) {
                 list.render();
                 this.$('.bottom-content').empty();
                 this.$('.bottom-content').append(list.el);
-                var tab = this.appendPullRight('添加页眉页脚');
+                var tab = this.appendPullRight('Add footer/header');
                 tab.on('click', function () {
                     list.trigger('createComponent');
                 }, this);
@@ -36,7 +36,7 @@ define(function (require, exports, module) {
                 list.render();
                 this.$('.bottom-content').empty();
                 this.$('.bottom-content').append(list.el);
-                var tab = this.appendPullRight('添加模板');
+                var tab = this.appendPullRight('Add template');
                 tab.on('click', function () {
                     list.trigger('createTemplate');
                 }, this);

@@ -1,10 +1,10 @@
 #macro(layout_common)
     <!DOCTYPE HTML>
-    <html lang="zh-CN">
+    <html lang="en">
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             #parse("layout/component/style.vm")
-            <title>CloudMenu电子菜单</title>
+            <title>CloudMenu</title>
         </head>
         <body>
             $!bodyContent

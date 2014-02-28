@@ -8,10 +8,10 @@
   </li>
 #end
 <ul class="nav nav-tabs">
-    #@history_nav_item("order")今日订单#end
-    #@history_nav_item("stat")综合统计#end
-    #@history_nav_item("dish-stat")菜品统计#end
-    #@history_nav_item("menu-stat")菜品分类统计#end
+    #@history_nav_item("order")Order#end
+    #@history_nav_item("stat")Stats#end
+    #@history_nav_item("dish-stat")Dish stats#end
+    #@history_nav_item("menu-stat")Menu stats#end
 </ul>
 <div class="bottom-content">
 </div>

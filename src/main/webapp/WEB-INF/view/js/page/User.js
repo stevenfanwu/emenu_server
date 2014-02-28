@@ -57,10 +57,10 @@ define(function (require, exports, module) {
 
         onDeleteUser: function (model) {
             if (model.get('id') === this.getCurrentUser().id) {
-                window.alert('不能删除自己');
+                window.alert("Can't delte yourself");
                 return;
             }
-            if (window.confirm('确定删除用户' + model.get('name') + '?')) {
+            if (window.confirm('Delete user' + model.get('name') + '?')) {
                 model.destroy({
                     success: function () {
                         this.list.refresh();
@@ -87,7 +87,7 @@ define(function (require, exports, module) {
             });
             dialog.model.on('saved', function () {
                 //TODO message
-                window.alert('修改成功');
+                window.alert('Change saved');
             }, this);
             dialog.show();
         }

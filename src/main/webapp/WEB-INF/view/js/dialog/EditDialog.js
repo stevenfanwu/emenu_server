@@ -11,7 +11,7 @@ define(function (require, exports, module) {
 
         getHeader: function () {
             if (this.headerSuffix) {
-                return (this.isEditing() ? '编辑' : '新建') + this.headerSuffix;
+                return (this.isEditing() ? 'Edit' : 'New') + this.headerSuffix;
             }
         },
 

@@ -7,20 +7,20 @@
 #end
 <ul class="nav nav-pills nav-stacked">
     #if($mode=="operate")
-        #@nav_item("Status")餐桌状态#end
-        #@nav_item("Soldout")菜品沽清#end
-        #@nav_item("Monitor")设备监控#end
-        #@nav_item("History")今日统计#end ##TODO
+        #@nav_item("Status")Status#end
+        #@nav_item("Soldout")Soldout#end
+        #@nav_item("Monitor")Monitor#end
+        #@nav_item("History")History#end ##TODO
     #elseif($mode=="admin")
-        #@nav_item("User")用户管理#end
+        #@nav_item("User")Users#end
 
         #if($loginUser.type > 0)
-        #@nav_item("Table")餐桌管理#end
-        #@nav_item("Menu")菜单管理#end
-        ## #@nav_item("Member")会员管理#end
-        #@nav_item("Printer")打印管理#end
-        #@nav_item("Device")设备管理#end ##TODO
-        #@nav_item("Stat")统计报表#end
+        #@nav_item("Table")Table#end
+        #@nav_item("Menu")Menu#end
+        ## #@nav_item("Member")Member#end
+        #@nav_item("Printer")Printer#end
+        #@nav_item("Device")Device#end ##TODO
+        #@nav_item("Stat")Stats#end
         #end
     #end
 </ul>

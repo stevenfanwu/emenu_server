@@ -8,9 +8,9 @@
 #end
 
 <ul class="nav nav-tabs">
-    #@menu_nav_item("dish")菜品#end
-    #@menu_nav_item("menu")菜单#end
-    #@menu_nav_item("dishNote")菜品备注#end
+    #@menu_nav_item("dish")Dish#end
+    #@menu_nav_item("menu")Menu#end
+    #@menu_nav_item("dishNote")Dish Note#end
     <li class="pull-right li-right">
     </li>
 </ul>

@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     });
 
     var EditChapterDialog = EditDialog.extend({
-        headerSuffix: '分类',
+        headerSuffix: 'Category',
 
         ContentType: Content,
 

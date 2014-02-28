@@ -41,7 +41,7 @@ define(function (require, exports, module) {
         /* -------------------- Event Listener ----------------------- */
 
         onDeleteDish: function (model) {
-            if (window.confirm('确定删除菜品' + model.get('name') + '?')) {
+            if (window.confirm('Delete dish ' + model.get('name') + '?')) {
                 model.destroy({
                     success: function () {
                         this.list.refresh();

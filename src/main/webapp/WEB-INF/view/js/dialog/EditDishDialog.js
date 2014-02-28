@@ -14,7 +14,7 @@ define(function (require, exports, module) {
     });
 
     var EditDishDialog = EditDialog.extend({
-        headerSuffix: '菜品',
+        headerSuffix: 'Dish',
 
         ContentType: Content,
 

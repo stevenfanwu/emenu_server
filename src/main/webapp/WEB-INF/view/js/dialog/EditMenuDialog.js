@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     });
 
     var EditMenuDialog = EditDialog.extend({
-        headerSuffix: '菜单',
+        headerSuffix: 'Menu',
 
         ContentType: Content,
 
