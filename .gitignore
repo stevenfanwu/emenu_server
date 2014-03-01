@@ -6,7 +6,9 @@ emenu.log*
 *.swo
 *.DS_Store
 
-# eclipse project config
+# IDE config
 .classpath
 .project
 .pydevproject
+.idea
+server.iml
