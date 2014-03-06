@@ -13,6 +13,7 @@ import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cloudstone.emenu.logic.*;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.User;
-import com.cloudstone.emenu.logic.DeviceLogic;
-import com.cloudstone.emenu.logic.MenuLogic;
-import com.cloudstone.emenu.logic.OrderLogic;
-import com.cloudstone.emenu.logic.PrinterLogic;
-import com.cloudstone.emenu.logic.RecordLogic;
-import com.cloudstone.emenu.logic.TableLogic;
-import com.cloudstone.emenu.logic.UserLogic;
 import com.cloudstone.emenu.util.AuthHelper;
 import com.cloudstone.emenu.wrap.OrderWraper;
 import com.cloudstone.emenu.wrap.RecordWraper;
@@ -55,6 +49,8 @@ public class BaseController {
     protected PrinterLogic printerLogic;
     @Autowired
     protected RecordLogic recordLogic;
+    @Autowired
+    protected RestaurantLogic restaurantLogic;
     
     @Autowired
     protected OrderWraper orderWraper;
