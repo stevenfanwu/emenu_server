@@ -14,18 +14,18 @@
     {{#if payed}}
         {{income}}
     {{else}}
-        未结账
+       Unchecked 
     {{/if}}
 </td>
 <td>
     {{#if payed}}
         {{billTime}}
     {{else}}
-        未结账
+       Unchecked 
     {{/if}}
 </td>
 <td>
-    <a href="/order?orderId={{id}}" class="btn-check">查看</a>
+    <a href="/order?orderId={{id}}" class="btn-check">Detail</a>
     |
-    <a href="#" class="btn-print">打印</a>
+    <a href="#" class="btn-print">Print</a>
 </td>

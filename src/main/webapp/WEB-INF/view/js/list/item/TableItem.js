@@ -18,10 +18,10 @@ define(function (require, exports, module) {
         getRenderData: function () {
             var data = Tr.prototype.getRenderData.apply(this, arguments);
             data.typeLabel = Const.TableType.getLabel(data.type);
-            data.minChargeLabel = data.minCharge === 0 ? '无' : data.minCharge;
+            data.minChargeLabel = data.minCharge === 0 ? 'N/A' : data.minCharge;
             data.tipModeLabel = Const.TipMode.getLabel(data.tipMode);
             if (data.tipMode === Const.TipMode.NONE.value) {
-                data.tipLabel = '无';
+                data.tipLabel = 'N/A';
             } else if (data.tipMode === Const.TipMode.PERCENTAGE.value) {
                 data.tipLabel = data.tip + '%';
             } else {

@@ -7,7 +7,7 @@
   </li>
 #end
 <ul class="nav nav-tabs">
-    #@status_nav_item("pad")平板#end
+    #@status_nav_item("pad")Tablet#end
     <li class="pull-right li-right">
     </li>
 </ul>

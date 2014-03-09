@@ -3,10 +3,10 @@
     <div class="progress">
         <div class="bar bar-{{batteryStatus}}" style="width: {{batteryLevel}}%;"></div>
     </div>
-    <div class="text-left text-smaller">电量:{{batteryLevel}}%</div>
-    <div class="text-left text-smaller">用户:
+    <div class="text-left text-smaller">Battery:{{batteryLevel}}%</div>
+    <div class="text-left text-smaller">User:
         {{#if session}}
-            {{#if session.user}}{{session.user.name}}{{else}}无{{/if}}
+            {{#if session.user}}{{session.user.name}}{{else}}N/A{{/if}}
         {{else}}
             无
         {{/if}}

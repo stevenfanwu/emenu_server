@@ -16,8 +16,8 @@ define(function (require, exports, module) {
     };
 
     var TableList = BaseTable.extend({
-        heads: ['桌名', '类型', '最多人数', '最低消费', '服务费收取模式', '服务费',
-            '操作'],
+        heads: ['Category', 'Type', 'Maximum capacity', 'Minimum charge', 'Tip type', 'Tip',
+            'Operation'],
 
         mode: Mode.ALL,
 

@@ -87,9 +87,9 @@ public class Const {
         public static String getLabel(int type) {
             switch(type) {
                 case 0: return "";
-                case 1: return "退";
-                case 2: return "加";
-                case 3: return "赠";
+                case 1: return "Cancel";
+                case 2: return "Order";
+                case 3: return "Gift";
             }
             throw new RuntimeException("Unknow type");
         }
