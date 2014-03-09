@@ -25,6 +25,9 @@ public class User extends IdName {
     /* 备注 */
     private String comment = "";
 
+    // Id of the restaurant the user belongs to
+    private int restaurantId;
+
     /* ---------- static ---------- */
     public static User newSuperUser() {
         return newUser(UserType.SUPER_USER);
@@ -76,5 +79,13 @@ public class User extends IdName {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }

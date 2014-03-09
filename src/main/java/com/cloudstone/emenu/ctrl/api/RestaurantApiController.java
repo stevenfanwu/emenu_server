@@ -2,12 +2,10 @@ package com.cloudstone.emenu.ctrl.api;
 
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Restaurant;
+import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.util.JsonUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +31,15 @@ public class RestaurantApiController extends BaseApiController {
    List<Restaurant> get(HttpServletRequest request) {
       EmenuContext context = newContext(request);
       return restaurantLogic.getAll(context);
+   }
+
+   @RequestMapping(value="/api/restaurants/{id:[\\d]+}/users", method=RequestMethod.GET)
+   public @ResponseBody
+   List<User> getUsers(HttpServletRequest request,
+                       @PathVariable(value="id") int restaurantId) {
+      EmenuContext context = newContext(request);
+      context.setRestaurantId(restaurantId);
+      return userLogic.getAll(context);
    }
 
 }

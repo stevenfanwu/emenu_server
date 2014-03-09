@@ -120,6 +120,7 @@ public class BaseController {
         User user = getLoginUser(request);
         if (user != null) {
             context.setLoginUserId(user.getId());
+            context.setRestaurantId(user.getRestaurantId());
         }
         return context;
     }
