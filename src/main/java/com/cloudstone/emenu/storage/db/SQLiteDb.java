@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import com.cloudstone.emenu.storage.db.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,6 @@ import com.cloudstone.emenu.data.BaseData;
 import com.cloudstone.emenu.data.IdName;
 import com.cloudstone.emenu.exception.ServerError;
 import com.cloudstone.emenu.storage.BaseStorage;
-import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
-import com.cloudstone.emenu.storage.db.util.IntRowMapper;
-import com.cloudstone.emenu.storage.db.util.NameStatementBinder;
-import com.cloudstone.emenu.storage.db.util.RowMapper;
-import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
-import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.util.CollectionUtils;
 import com.cloudstone.emenu.util.IdGenerator;
 
@@ -83,8 +77,8 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     
     protected <T extends BaseData> T getByName(EmenuContext context,
             String name, RowMapper<T> rowMapper) {
-        String sql = new SelectSqlBuilder(getTableName()).appendWhereName().build();
-        List<T> list = query(context, sql, new NameStatementBinder(name), rowMapper);
+        String sql = new SelectSqlBuilder(getTableName()).appendWhereName().appendWhereRestaurantId().build();
+        List<T> list = query(context, sql, new NameStatementBinder(name, context.getRestaurantId()), rowMapper);
         T r = null;
         for (int i=0; i<list.size(); i++) {
             r = list.get(i);
@@ -93,6 +87,12 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
             }
         }
         return r;
+    }
+
+    public <T> List<T> getAllInRestaurant(EmenuContext context, RowMapper<T> rowMapper) {
+        return query(context,
+           new SelectSqlBuilder(this.getTableName()).appendWhereRestaurantId().build(),
+           new RestaurantIdBinder(context.getRestaurantId()), rowMapper);
     }
     
     protected List<IdName> getIdNames(EmenuContext context) {

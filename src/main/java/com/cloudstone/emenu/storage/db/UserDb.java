@@ -27,7 +27,7 @@ import com.cloudstone.emenu.util.RsaUtils;
  *
  */
 @Repository
-public class UserDb extends RestaurantOwnedDb implements IUserDb {
+public class UserDb extends SQLiteDb implements IUserDb {
     
     @Override
     public String getTableName() {
@@ -69,7 +69,6 @@ public class UserDb extends RestaurantOwnedDb implements IUserDb {
             .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
             .build();
     
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ID.toString()).build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 10).build();
@@ -129,7 +128,7 @@ public class UserDb extends RestaurantOwnedDb implements IUserDb {
     
     @Override
     public List<User> getAll(EmenuContext context) {
-        return super.getAll(context, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
 
     @Override

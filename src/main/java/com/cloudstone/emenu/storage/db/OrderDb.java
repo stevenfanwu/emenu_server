@@ -47,7 +47,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
 
     @Override
     public List<Order> getOrdersByTime(EmenuContext context, long startTime, long endTime) {
-        TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
+        TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime, context.getRestaurantId());
         return query(context, SQL_SELECT_BY_TIME, binder, rowMapper);
     }
     

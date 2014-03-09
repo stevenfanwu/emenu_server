@@ -39,6 +39,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
     @Override
     public void add(EmenuContext context, Bill bill) {
         bill.setId(genId(context));
+        bill.setRestaurantId(context.getRestaurantId());
         long now = System.currentTimeMillis();
         bill.setCreatedTime(now);
         bill.setUpdateTime(now);
@@ -47,7 +48,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
 
     @Override
     public List<Bill> listBills(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
     
     @Override
@@ -58,7 +59,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
 
     @Override
     public List<Bill> getBillsByTime(EmenuContext context, long startTime, long endTime)  {
-        TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime);
+        TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime, context.getRestaurantId());
         return query(context, SQL_SELECT_BY_TIME, binder, rowMapper);
     }
 
@@ -79,7 +80,8 @@ public class BillDb extends SQLiteDb implements IBillDb {
         TIP("tip"), INVOICE("invoice"), INVOICE_PRICE("invoicePrice"), DISCOUNT_DISH_IDS("discountDishIds"),
         PAY_TYPE("payType"), REMARKS("remarks"), ORDER("`order`"), COUPONS("coupons"), 
         VIPID("vipId"), VIPCOST("vipCost"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("update_time"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("update_time"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -109,10 +111,10 @@ public class BillDb extends SQLiteDb implements IBillDb {
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 17).build();
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
-    
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 18).build();
+
     private static class BillBinder implements StatementBinder {
         private final Bill bill;
 
@@ -144,6 +146,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
             stmt.bind(15, bill.getCreatedTime());
             stmt.bind(16, bill.getUpdateTime());
             stmt.bind(17, bill.isDeleted() ? 1 : 0);
+            stmt.bind(18, bill.getRestaurantId());
         }
     }
     
@@ -182,7 +185,9 @@ public class BillDb extends SQLiteDb implements IBillDb {
     private static final String SQL_SELECT_BY_ORDER_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ORDER_ID).build();
     private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
-        .append(" WHERE createdTime>? ").append(" AND createdTime<?").build();
+        .append(" WHERE createdTime>? ")
+        .append(" AND createdTime<?")
+        .appendWhereRestaurantId().build();
 
     public static class OrderIdBinder implements StatementBinder {
         private final int orderId;
