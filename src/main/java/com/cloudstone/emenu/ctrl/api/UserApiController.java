@@ -51,7 +51,7 @@ public class UserApiController extends BaseApiController {
 
     @RequestMapping(value="/api/users", method=RequestMethod.GET)
     public @ResponseBody List<User> getAll(HttpServletRequest request,
-                                           @RequestParam(value="restaurantId") Integer restaurantId) {
+                                           @RequestParam(value="restaurantId", required = false) Integer restaurantId) {
         EmenuContext context = newContext(request);
         if (restaurantId != null) {
             context.setRestaurantId(restaurantId);

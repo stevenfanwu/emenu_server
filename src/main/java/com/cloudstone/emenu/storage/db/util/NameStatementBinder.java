@@ -25,7 +25,9 @@ public class NameStatementBinder implements StatementBinder {
     @Override
     public void onBind(SQLiteStatement stmt) throws SQLiteException {
         stmt.bind(1, name);
-        stmt.bind(2, restaurantId);
+        if (restaurantId > 0) {
+            stmt.bind(2, restaurantId);
+        }
     }
 
 }

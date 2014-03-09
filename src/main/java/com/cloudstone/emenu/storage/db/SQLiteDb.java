@@ -79,14 +79,25 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
             String name, RowMapper<T> rowMapper) {
         String sql = new SelectSqlBuilder(getTableName()).appendWhereName().appendWhereRestaurantId().build();
         List<T> list = query(context, sql, new NameStatementBinder(name, context.getRestaurantId()), rowMapper);
-        T r = null;
-        for (int i=0; i<list.size(); i++) {
-            r = list.get(i);
-            if (!r.isDeleted()) {
-                break;
-            }
-        }
-        return r;
+        return getFirstUndeleted(list);
+    }
+
+    protected <T extends BaseData> T getByNameAccrossRestaurants(EmenuContext context,
+                                              String name, RowMapper<T> rowMapper) {
+      String sql = new SelectSqlBuilder(getTableName()).appendWhereName().build();
+      List<T> list = query(context, sql, new NameStatementBinder(name, 0), rowMapper);
+      return getFirstUndeleted(list);
+    }
+
+    private <T extends BaseData> T getFirstUndeleted(List<T> list) {
+       T r = null;
+       for (int i=0; i<list.size(); i++) {
+          r = list.get(i);
+          if (!r.isDeleted()) {
+             break;
+          }
+       }
+       return r;
     }
 
     public <T> List<T> getAllInRestaurant(EmenuContext context, RowMapper<T> rowMapper) {

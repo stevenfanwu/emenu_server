@@ -89,7 +89,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     
     @Override
     public User getByName(EmenuContext context, String userName) {
-        User user = super.getByName(context, userName, rowMapper);
+        User user = getByNameAccrossRestaurants(context, userName, rowMapper);
         if (user==null && userName.equals("admin")
                 && getAll(context).size()==0) {
             //create a default admin user
