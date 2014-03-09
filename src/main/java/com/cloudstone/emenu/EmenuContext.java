@@ -14,6 +14,9 @@ import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
  */
 public class EmenuContext {
     private int loginUserId;
+    // id of the restaurant the logged in user is associated with
+
+    private int restaurantId;
     private DbTransaction transaction;
     
     public int getLoginUserId() {
@@ -21,6 +24,13 @@ public class EmenuContext {
     }
     public void setLoginUserId(int loginUserId) {
         this.loginUserId = loginUserId;
+    }
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
     }
     public DbTransaction getTransaction() {
         return transaction;

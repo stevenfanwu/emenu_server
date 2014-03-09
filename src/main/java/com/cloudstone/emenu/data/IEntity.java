@@ -10,6 +10,9 @@ package com.cloudstone.emenu.data;
  */
 public class IEntity extends BaseData {
     private int id;
+
+    // Id of the restaurant the user belongs to
+    private int restaurantId;
     
     public IEntity() {
     }
@@ -26,4 +29,12 @@ public class IEntity extends BaseData {
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getRestaurantId() {
+      return restaurantId;
+   }
+
+    public void setRestaurantId(int restaurantId) {
+      this.restaurantId = restaurantId;
+   }
 }

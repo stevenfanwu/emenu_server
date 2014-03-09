@@ -27,7 +27,7 @@ public class User extends IdName {
 
     /* ---------- static ---------- */
     public static User newSuperUser() {
-        return newUser(UserType.SUPER_USER);
+        return newUser();
     }
     
     public static User newAdminUser() {

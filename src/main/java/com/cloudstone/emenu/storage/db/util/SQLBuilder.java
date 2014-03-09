@@ -65,6 +65,10 @@ public class SQLBuilder {
     public SQLBuilder appendWhereId() {
         return this.appendWhere("id");
     }
+
+    public SQLBuilder appendWhereRestaurantId() {
+        return this.appendWhere("restaurantId");
+    }
     
     public SQLBuilder appendWhereIdIn(Object idName, int[] ids) {
         if (firstWhere) {

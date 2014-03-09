@@ -7,6 +7,7 @@ package com.cloudstone.emenu.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cloudstone.emenu.constant.Const.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -60,6 +61,14 @@ public class UserLogic extends BaseLogic {
             modifyPassword(context, user.getId(), user.getPassword());
         } else {
             user.setCreatedTime(now);
+
+            // When the logged in user is not the super user, which means it's not through the admin tool,
+            // set the newly added user's restaurant to match the logged in user's.
+            User loggedInUser = userDb.get(context, context.getLoginUserId());
+            if (loggedInUser.getType() != UserType.SUPER_USER) {
+               user.setRestaurantId(context.getRestaurantId());
+            }
+
             userDb.add(context, user);
         }
         return userDb.get(context, user.getId());

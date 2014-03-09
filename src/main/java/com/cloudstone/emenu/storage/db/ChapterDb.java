@@ -6,19 +6,13 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.storage.db.util.*;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Chapter;
-import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
-import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.RowMapper;
-import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.StatementBinder;
-import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * @author xuhongfeng
@@ -48,8 +42,8 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     
     @Override
     public int[] getAllChapterIds(EmenuContext context) {
-        String sql = "SELECT id FROM " + TABLE_NAME + " WHERE deleted=0";
-        return queryIntArray(context, sql, StatementBinder.NULL);
+        String sql = "SELECT id FROM " + TABLE_NAME + " WHERE deleted=0 AND restaurantId=?";
+        return queryIntArray(context, sql, new RestaurantIdBinder(context.getRestaurantId()));
     }
     
     @Override
@@ -72,6 +66,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     @Override
     public void addChapter(EmenuContext context, Chapter chapter) {
         chapter.setId(genId(context));
+        chapter.setRestaurantId(context.getRestaurantId());
         executeSQL(context, SQL_INSERT, new ChapterBinder(chapter));
     }
 
@@ -87,7 +82,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
 
     @Override
     public List<Chapter> getAllChapter(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
 
     @Override
@@ -136,7 +131,6 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         .appendWhereId().build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_SELECT_BY_MENU_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.MENU_ID).appendOrderBy(Column.ORDINAL, false).build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 7).build();

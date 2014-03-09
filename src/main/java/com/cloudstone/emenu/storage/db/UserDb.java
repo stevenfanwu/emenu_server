@@ -42,7 +42,8 @@ public class UserDb extends SQLiteDb implements IUserDb {
     private static enum Column {
         ID("id"), NAME("name"), PASSWORD("password"),
         TYPE("type"), REAL_NAME("realName"), COMMENT("comment"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -65,17 +66,17 @@ public class UserDb extends SQLiteDb implements IUserDb {
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
             .build();
     
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ID.toString()).build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 10).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME).appendSetValue(Column.TYPE)
         .appendSetValue(Column.REAL_NAME).appendSetValue(Column.COMMENT)
         .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
-        .appendSetValue(Column.DELETED)
+        .appendSetValue(Column.DELETED).appendSetValue(Column.RESTAURANT_ID)
         .appendWhereId()
         .build();
     private static final String SQL_MODIFY_PASSWORD = new UpdateSqlBuilder(TABLE_NAME)
@@ -97,6 +98,8 @@ public class UserDb extends SQLiteDb implements IUserDb {
             user.setComment("默认密码admin,请及时修改");
             user.setPassword(RsaUtils.encrypt(DEFAULT_ADMIN_PASSWORD));
             user.setRealName("超级用户");
+            // admin doesn't belong to a restaurant
+            user.setRestaurantId(0);
             user = add(context, user);
         }
         return user;
@@ -125,7 +128,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
     
     @Override
     public List<User> getAll(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
 
     @Override
@@ -150,6 +153,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
             user.setCreatedTime(stmt.columnLong(6));
             user.setUpdateTime(stmt.columnLong(7));
             user.setDeleted(stmt.columnInt(8) == 1);
+            user.setRestaurantId(stmt.columnInt(9));
             return user;
         }
     };
@@ -173,6 +177,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(7, user.getCreatedTime());
             stmt.bind(8, user.getUpdateTime());
             stmt.bind(9, user.isDeleted() ? 1 : 0);
+            stmt.bind(10, user.getRestaurantId());
         }
     }
     
@@ -211,6 +216,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(6, user.getUpdateTime());
             stmt.bind(7, user.isDeleted() ? 1 : 0);
             stmt.bind(8, user.getId());
+            stmt.bind(9, user.getRestaurantId());
         }
     }
 }
