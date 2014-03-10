@@ -107,8 +107,9 @@ public abstract class SQLiteDb extends BaseStorage implements IDb {
     }
     
     protected List<IdName> getIdNames(EmenuContext context) {
-        String sql = "SELECT id, name, createdTime, updateTime, deleted FROM " + getTableName();
-        return query(context, sql, StatementBinder.NULL, ID_NAME_ROW_MAPPER);
+        String sql = "SELECT id, name, createdTime, updateTime, deleted FROM " + getTableName() +
+                     " WHERE restaurantId=?";
+        return query(context, sql, new RestaurantIdBinder(context.getRestaurantId()), ID_NAME_ROW_MAPPER);
     }
     
     private volatile boolean inited = false;

@@ -12,6 +12,8 @@ public class BaseData {
     private long createdTime;
     private long updateTime;
     private boolean deleted;
+    // Id of the restaurant the user belongs to
+    private int restaurantId;
     
     public BaseData() {
         super();
@@ -47,4 +49,12 @@ public class BaseData {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
+
+   public int getRestaurantId() {
+      return restaurantId;
+   }
+
+   public void setRestaurantId(int restaurantId) {
+      this.restaurantId = restaurantId;
+   }
 }

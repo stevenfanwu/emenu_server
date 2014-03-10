@@ -35,12 +35,13 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
     
     @Override
     public List<PrintComponent> listAll(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
 
     @Override
     public void add(EmenuContext context, PrintComponent data) {
         data.setId(genId(context));
+        data.setRestaurantId(context.getRestaurantId());
         executeSQL(context, SQL_INSERT, new PrintComponentBinder(data));
     }
 
@@ -63,7 +64,7 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
     private static enum Column {
         ID("id"), NAME("name"), CONTENT("content"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"),
-        DELETED("deleted");
+        DELETED("deleted"), RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -82,12 +83,12 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 6).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 7).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
-    
+
     private static class PrintComponentBinder implements StatementBinder {
         private final PrintComponent data;
 
@@ -104,6 +105,7 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
             stmt.bind(4, data.getCreatedTime());
             stmt.bind(5, data.getUpdateTime());
             stmt.bind(6, data.isDeleted() ? 1 : 0);
+            stmt.bind(7, data.getRestaurantId());
         }
     }
     

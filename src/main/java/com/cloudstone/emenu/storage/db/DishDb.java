@@ -45,6 +45,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     @Override
     public void add(EmenuContext context, Dish dish) {
         dish.setId(genId(context));
+        dish.setRestaurantId(context.getRestaurantId());
         DishBinder binder = new DishBinder(dish);
         executeSQL(context, SQL_INSERT, binder);
     }
@@ -63,7 +64,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
     
     @Override
     public List<Dish> getAll(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
     
     @Override
@@ -129,6 +130,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(14, dish.getUpdateTime());
             stmt.bind(15, dish.isDeleted() ? 1 : 0);
             stmt.bind(16, dish.isSoldout() ? 1 : 0);
+            stmt.bind(17, dish.getRestaurantId());
         }
     }
     
@@ -170,7 +172,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         SPECIAL_PRICE("specialPrice"), NON_INT("nonInt"), DESC("desc"),
         IMAGE_ID("imageId"), STATUS("status"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"), DELETED("deleted"),
-        SOLDOUT("soldout");
+        SOLDOUT("soldout"), RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -200,11 +202,11 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .append(Column.SOLDOUT, DataType.INTEGER, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 16).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 17).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME)
         .appendSetValue(Column.PINYIN)

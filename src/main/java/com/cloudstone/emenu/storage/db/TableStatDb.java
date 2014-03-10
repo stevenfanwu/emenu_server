@@ -20,13 +20,14 @@ public class TableStatDb extends SQLiteDb implements ITableStatDb {
 
     @Override
     public TableStat get(EmenuContext context, long day) {
-        DayBinder binder = new DayBinder(day);
+        DayBinder binder = new DayBinder(day, context.getRestaurantId());
         return queryOne(context, SQL_SELECT_BY_DAY, binder, rowMapper);
     }
 
     @Override
     public void add(EmenuContext context, TableStat stat) {
         stat.setId(genId(context));
+        stat.setRestaurantId(context.getRestaurantId());
         StatBinder binder = new StatBinder(stat);
         executeSQL(context, SQL_INSERT, binder);
     }
@@ -46,7 +47,8 @@ public class TableStatDb extends SQLiteDb implements ITableStatDb {
         ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
         AVE_PERSON("avePerson"), AVE_ORDER("aveOrder"),
         CUSTOMER_COUNT("customerCount"), TABLE_NAME("tableName"), TIPS("tips"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
 
         private final String str;
 
@@ -73,9 +75,10 @@ public class TableStatDb extends SQLiteDb implements ITableStatDb {
             .append(Column.TIPS, DataType.REAL, "NOT NULL")
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-            .append(Column.DELETED, DataType.INTEGER, "NOT NULL").build();
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL").build();
 
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 13).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 14).build();
 
     private static class StatBinder implements StatementBinder {
         private final TableStat stat;
@@ -100,11 +103,13 @@ public class TableStatDb extends SQLiteDb implements ITableStatDb {
             stmt.bind(11, stat.getCreatedTime());
             stmt.bind(12, stat.getUpdateTime());
             stmt.bind(13, stat.isDeleted() ? 1 : 0);
+            stmt.bind(14, stat.getRestaurantId());
         }
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.DAY).build();
+        .appendWhere(Column.DAY)
+        .appendWhereRestaurantId().build();
 
     private static final RowMapper<TableStat> rowMapper = new RowMapper<TableStat>() {
 
@@ -130,15 +135,18 @@ public class TableStatDb extends SQLiteDb implements ITableStatDb {
 
     private static final class DayBinder implements StatementBinder {
         private final long day;
+        private final int restaurantId;
 
-        public DayBinder(long day) {
+        public DayBinder(long day, int restaurantId) {
             super();
             this.day = day;
+            this.restaurantId = restaurantId;
         }
 
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, day);
+            stmt.bind(2, restaurantId);
         }
     }
 }

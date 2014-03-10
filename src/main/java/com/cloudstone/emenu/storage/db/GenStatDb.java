@@ -24,13 +24,14 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
 
     @Override
     public GeneralStat get(EmenuContext context, long day) {
-        DayBinder binder = new DayBinder(day);
+        DayBinder binder = new DayBinder(day, context.getRestaurantId());
         return queryOne(context, SQL_SELECT_BY_DAY, binder, rowMapper);
     }
 
     @Override
     public void add(EmenuContext context, GeneralStat stat) {
         stat.setId(genId(context));
+        stat.setRestaurantId(context.getRestaurantId());
         StatBinder binder = new StatBinder(stat);
         executeSQL(context, SQL_INSERT, binder);
     }
@@ -51,7 +52,8 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
         AVE_PERSON("avePerson"), AVE_ORDER("aveOrder"),
         CUSTOMER_COUNT("customerCount"), TABLE_RATE("tableRate"), COUPONS("coupons"),
         INVOICE_COUNT("invoiceCount"), INVOICE_AMOUNT("invoiceAmount"), TIPS("tips"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
 
         private final String str;
 
@@ -81,9 +83,10 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
             .append(Column.COUPONS, DataType.REAL, "NOT NULL")
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-            .append(Column.DELETED, DataType.INTEGER, "NOT NULL").build();
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL").build();
 
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 16).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 17).build();
 
     private static class StatBinder implements StatementBinder {
         private final GeneralStat stat;
@@ -111,11 +114,13 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
             stmt.bind(14, stat.getCreatedTime());
             stmt.bind(15, stat.getUpdateTime());
             stmt.bind(16, stat.isDeleted() ? 1 : 0);
+            stmt.bind(17, stat.getRestaurantId());
         }
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.DAY).build();
+        .appendWhere(Column.DAY)
+        .appendWhereRestaurantId().build();
 
     private static final RowMapper<GeneralStat> rowMapper = new RowMapper<GeneralStat>() {
 
@@ -144,15 +149,18 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
 
     private static final class DayBinder implements StatementBinder {
         private final long day;
+        private final int restaurantId;
 
-        public DayBinder(long day) {
+        public DayBinder(long day, int restaurantId) {
             super();
             this.day = day;
+            this.restaurantId = restaurantId;
         }
 
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, day);
+            stmt.bind(2, restaurantId);
         }
     }
 }

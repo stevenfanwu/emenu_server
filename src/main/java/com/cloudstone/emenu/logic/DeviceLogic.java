@@ -56,12 +56,6 @@ public class DeviceLogic extends BaseLogic {
                     throw new DataConflictException("已存在相同IMEI的平板");
                 }
             }
-            if (!p.isDeleted()) {
-                count++;
-                if (count == configLogic.getPadNumber()) {
-                    throw new DataConflictException("当前授权的平板数目最多为" + configLogic.getPadNumber() + "台");
-                }
-            }
         }
         Pad old = sameImei!=null ? sameImei : sameName;
         long now = System.currentTimeMillis();

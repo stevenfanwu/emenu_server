@@ -31,7 +31,8 @@ public class VipHistoryDb extends SQLiteDb implements IVipHistoryDb {
     
     private static enum Column {
 		ID("id"), VIPID("vipid"), RECHARGE("recharge"), LEFT("left"), OPTIME("opTime"),
-		CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+		CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+      RESTAURANT_ID("restaurantId");
 
         private final String str;
         private Column(String str) {
@@ -53,12 +54,12 @@ public class VipHistoryDb extends SQLiteDb implements IVipHistoryDb {
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
             .build();
     
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_SELECT_BY_VIPID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.VIPID.toString()).build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
     
     @Override
     protected void onCheckCreateTable(EmenuContext context) {
@@ -74,12 +75,13 @@ public class VipHistoryDb extends SQLiteDb implements IVipHistoryDb {
     
     @Override
     public List<VipHistory> getAll(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
 
     @Override
     public void add(EmenuContext context, VipHistory viphistory) {
         viphistory.setId(genId(context));
+        viphistory.setRestaurantId(context.getRestaurantId());
         VipHistoryBinder binder = new VipHistoryBinder(viphistory);
         executeSQL(context, SQL_INSERT, binder);
     }
@@ -119,6 +121,7 @@ public class VipHistoryDb extends SQLiteDb implements IVipHistoryDb {
             stmt.bind(6, vip.getCreatedTime());
             stmt.bind(7, vip.getUpdateTime());
             stmt.bind(8, vip.isDeleted() ? 1 : 0);
+            stmt.bind(9, vip.getRestaurantId());
         }
     }
     

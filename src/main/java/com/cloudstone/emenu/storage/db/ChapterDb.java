@@ -102,7 +102,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     private static enum Column {
         ID("id"), NAME("name"), MENU_ID("menuId"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
-        ORDINAL("ordinal");
+        ORDINAL("ordinal"), RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -123,6 +123,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
         .append(Column.ORDINAL, DataType.INTEGER, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME).appendSetValue(Column.MENU_ID).appendSetValue(Column.ORDINAL)
@@ -133,7 +134,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
         .appendWhereId().build();
     private static final String SQL_SELECT_BY_MENU_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.MENU_ID).appendOrderBy(Column.ORDINAL, false).build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 7).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
     
     private static final RowMapper<Chapter> rowMapper = new RowMapper<Chapter>() {
 
@@ -167,6 +168,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             stmt.bind(5, chapter.getUpdateTime());
             stmt.bind(6, chapter.isDeleted() ? 1 : 0);
             stmt.bind(7, chapter.getOrdinal());
+            stmt.bind(8, chapter.getRestaurantId());
         }
     }
     private static class UpdateBinder implements StatementBinder {

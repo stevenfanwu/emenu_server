@@ -187,7 +187,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
     private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
         .append(" WHERE createdTime>? ")
         .append(" AND createdTime<?")
-        .appendWhereRestaurantId().build();
+        .append(" AND restaurantId=?").build();
 
     public static class OrderIdBinder implements StatementBinder {
         private final int orderId;

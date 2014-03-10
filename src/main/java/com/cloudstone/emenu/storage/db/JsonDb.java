@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.cloudstone.emenu.storage.db.util.RestaurantIdBinder;
 import org.apache.commons.lang.StringUtils;
 
 import com.almworks.sqlite4java.SQLiteException;
@@ -36,10 +37,10 @@ public class JsonDb extends SQLiteDb {
     public JsonDb(String tableName) {
         super();
         TABLE_NAME = tableName;
-        SQL_REPLACE = "REPLACE INTO " + TABLE_NAME + " VALUES(?, ?)";
-        SQL_SELECT = "SELECT value FROM " + TABLE_NAME + " WHERE key=?";
-        SQL_DELETE = "DELETE FROM " + TABLE_NAME + " WHERE key=?";
-        SQL_SELECT_ALL = "SELECT value FROM " + TABLE_NAME;
+        SQL_REPLACE = "REPLACE INTO " + TABLE_NAME + " VALUES(?, ?, ?)";
+        SQL_SELECT = "SELECT value FROM " + TABLE_NAME + " WHERE key=? AND restaurantId=?";
+        SQL_DELETE = "DELETE FROM " + TABLE_NAME + " WHERE key=? AND restaurantId=?";
+        SQL_SELECT_ALL = "SELECT value FROM " + TABLE_NAME + " WHERE restaurantId=?";
     }
     
     public <T> T get(EmenuContext context, String key, Class<T> clazz) {
@@ -58,14 +59,14 @@ public class JsonDb extends SQLiteDb {
     }
     
     public List<String> getAll(EmenuContext context) {
-        return query(context, SQL_SELECT_ALL, StatementBinder.NULL, rowMapper);
+        return query(context, SQL_SELECT_ALL, new RestaurantIdBinder(context.getRestaurantId()), rowMapper);
     }
     
     public void remove(EmenuContext context, String key) {
         if (StringUtils.isBlank(key)) {
             return;
         }
-        executeSQL(context, SQL_DELETE, new KeyBinder(key));
+        executeSQL(context, SQL_DELETE, new KeyBinder(key, context.getRestaurantId()));
         cache.remove(key);
     }
     
@@ -75,7 +76,7 @@ public class JsonDb extends SQLiteDb {
         }
         String value = cache.get(key);
         if (value == null) {
-            value = queryString(context, SQL_SELECT, new KeyBinder(key));
+            value = queryString(context, SQL_SELECT, new KeyBinder(key, context.getRestaurantId()));
             if (value != null) {
                 cache.put(key, value);
             }
@@ -92,7 +93,7 @@ public class JsonDb extends SQLiteDb {
     }
     
     private void innerSet(EmenuContext context, String key, String value) throws SQLiteException {
-        executeSQL(context, SQL_REPLACE, new ReplaceBinder(key, value));
+        executeSQL(context, SQL_REPLACE, new ReplaceBinder(key, value, context.getRestaurantId()));
         cache.put(key, value);
     }
 
@@ -109,40 +110,47 @@ public class JsonDb extends SQLiteDb {
     private class ReplaceBinder implements StatementBinder {
         private final String key;
         private final String value;
+        private final int restaurantId;
         
-        public ReplaceBinder(String key, String value) {
+        public ReplaceBinder(String key, String value, int restaurantId) {
             super();
             this.key = key;
             this.value = value;
+            this.restaurantId = restaurantId;
         }
         
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, key);
             stmt.bind(2, value);
+            stmt.bind(3, restaurantId);
         }
     }
     private class KeyBinder implements StatementBinder {
         private final String key;
+        private final int restaurantId;
 
-        public KeyBinder(String key) {
+        public KeyBinder(String key, int restaurantId) {
             super();
             this.key = key;
+            this.restaurantId = restaurantId;
         }
         
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, key);
+            stmt.bind(2, restaurantId);
         }
     }
     
     private static final String COL_DEF = new ColumnDefBuilder()
         .append(Column.KEY, DataType.TEXT, "NOT NULL PRIMARY KEY")
         .append(Column.VALUE, DataType.TEXT, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
 
     private static enum Column {
-        KEY("key"), VALUE("value");
+        KEY("key"), VALUE("value"), RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {

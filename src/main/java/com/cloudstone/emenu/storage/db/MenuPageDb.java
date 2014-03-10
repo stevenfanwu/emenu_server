@@ -6,19 +6,13 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.storage.db.util.*;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.MenuPage;
-import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
-import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.RowMapper;
-import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.StatementBinder;
-import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * @author xuhongfeng
@@ -35,6 +29,7 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     @Override
     public void addMenuPage(EmenuContext context, MenuPage page) {
         page.setId(genId(context));
+        page.setRestaurantId((context.getRestaurantId()));
         executeSQL(context, SQL_INSERT, new MenuPageBinder(page));
     }
 
@@ -50,7 +45,7 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
 
     @Override
     public List<MenuPage> getAllMenuPage(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return query(context, SQL_SELECT, new RestaurantIdBinder(context.getRestaurantId()), rowMapper);
     }
 
     @Override
@@ -82,7 +77,8 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     private static enum Column {
         ID("id"), CHAPTER_ID("chapterId"), DISH_COUNT("dishCount"),
         ORDINAL("ordinal"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -94,7 +90,7 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
             return str;
         }
     }
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 7).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
     
     private static final RowMapper<MenuPage> rowMapper = new RowMapper<MenuPage>() {
 
@@ -128,6 +124,7 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
             stmt.bind(5, page.getCreatedTime());
             stmt.bind(6, page.getUpdateTime());
             stmt.bind(7, page.isDeleted() ? 1 : 0);
+            stmt.bind(8, page.getRestaurantId());
         }
     }
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
@@ -158,6 +155,7 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
     }
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME)
         .appendOrderBy(Column.ORDINAL, false)
+        .appendWhereRestaurantId()
         .build();
     private static class GetByChapterIdBinder implements StatementBinder {
         private final int chapterId;
@@ -187,5 +185,6 @@ public class MenuPageDb extends SQLiteDb implements IMenuPageDb {
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
 }

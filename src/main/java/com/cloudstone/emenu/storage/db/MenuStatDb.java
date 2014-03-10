@@ -20,13 +20,14 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
 
     @Override
     public MenuStat get(EmenuContext context, String name, long day) {
-        DayBinder binder = new DayBinder(name, day);
+        DayBinder binder = new DayBinder(name, day, context.getRestaurantId());
         return queryOne(context, SQL_SELECT_BY_DAY, binder, rowMapper);
     }
 
     @Override
     public void add(EmenuContext context, MenuStat stat) {
         stat.setId(genId(context));
+        stat.setRestaurantId(context.getRestaurantId());
         StatBinder binder = new StatBinder(stat);
         executeSQL(context, SQL_INSERT, binder);
     }
@@ -45,7 +46,8 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
     private static enum Column {
         ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
         CHAPTER_NAME("chapterName"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
 
         private final String str;
 
@@ -68,9 +70,10 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
             .append(Column.CHAPTER_NAME, DataType.TEXT, "NOT NULL")
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-            .append(Column.DELETED, DataType.INTEGER, "NOT NULL").build();
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL").build();
 
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 10).build();
 
     private static class StatBinder implements StatementBinder {
         private final MenuStat stat;
@@ -91,12 +94,14 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
             stmt.bind(7, stat.getCreatedTime());
             stmt.bind(8, stat.getUpdateTime());
             stmt.bind(9, stat.isDeleted() ? 1 : 0);
+            stmt.bind(10, stat.getRestaurantId());
         }
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.CHAPTER_NAME)
-        .appendWhere(Column.DAY).build();
+        .appendWhere(Column.DAY)
+        .appendWhereRestaurantId().build();
 
     private static final RowMapper<MenuStat> rowMapper = new RowMapper<MenuStat>() {
 
@@ -119,17 +124,20 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
     private static final class DayBinder implements StatementBinder {
         private final long day;
         private final String name;
+        private final int restaurantId;
         
-        public DayBinder(String name, long day) {
+        public DayBinder(String name, long day, int restaurantId) {
             super();
             this.name = name;
             this.day = day;
+            this.restaurantId = restaurantId;
         }
 
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, name);
             stmt.bind(2, day);
+            stmt.bind(3, restaurantId);
         }
     }
 }

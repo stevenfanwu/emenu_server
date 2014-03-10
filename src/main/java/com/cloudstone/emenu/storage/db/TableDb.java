@@ -41,7 +41,8 @@ public class TableDb extends SQLiteDb implements ITableDb {
         ID("id"), NAME("name"), TYPE("type"),
         CAPACITY("capacity"), MIN_CHARGE("minCharge"), TIP_MODE("tipMode"),
         TIP("tip"), STATUS("status"), ORDER_ID("orderId"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -67,11 +68,11 @@ public class TableDb extends SQLiteDb implements ITableDb {
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
             .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 12).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 13).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ID.toString()).build();
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME.toString()).appendSetValue(Column.TYPE.toString())
         .appendSetValue(Column.CAPACITY.toString()).appendSetValue(Column.MIN_CHARGE.toString())
@@ -85,6 +86,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
     @Override
     public Table add(EmenuContext context, Table table) {
         table.setId(genId(context));
+        table.setRestaurantId(context.getRestaurantId());
         TableBinder binder = new TableBinder(table);
         executeSQL(context, SQL_INSERT, binder);
         return get(context, table.getId());
@@ -109,7 +111,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
     
     @Override
     public List<Table> getAll(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
     
     @Override
@@ -141,6 +143,7 @@ public class TableDb extends SQLiteDb implements ITableDb {
             stmt.bind(10, table.getCreatedTime());
             stmt.bind(11, table.getUpdateTime());
             stmt.bind(12, table.isDeleted() ? 1 : 0);
+            stmt.bind(13, table.getRestaurantId());
         }
     }
     

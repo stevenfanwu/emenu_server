@@ -6,20 +6,13 @@ package com.cloudstone.emenu.storage.db;
 
 import java.util.List;
 
+import com.cloudstone.emenu.storage.db.util.*;
 import org.springframework.stereotype.Repository;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.cloudstone.emenu.EmenuContext;
 import com.cloudstone.emenu.data.Order;
-import com.cloudstone.emenu.storage.db.util.ColumnDefBuilder;
-import com.cloudstone.emenu.storage.db.util.IdStatementBinder;
-import com.cloudstone.emenu.storage.db.util.InsertSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.RowMapper;
-import com.cloudstone.emenu.storage.db.util.SelectSqlBuilder;
-import com.cloudstone.emenu.storage.db.util.StatementBinder;
-import com.cloudstone.emenu.storage.db.util.TimeStatementBinder;
-import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * @author xuhongfeng
@@ -30,6 +23,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     @Override
     public void add(EmenuContext context, Order order) {
         order.setId(genId(context));
+        order.setRestaurantId(context.getRestaurantId());
         OrderBinder binder = new OrderBinder(order);
         executeSQL(context, SQL_INSERT, binder);
     }
@@ -53,7 +47,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     
     @Override
     public Order getOldestOrder(EmenuContext context) {
-        return queryOne(context, SQL_SELECT_OLDEST, StatementBinder.NULL, rowMapper);
+        return queryOne(context, SQL_SELECT_OLDEST, new RestaurantIdBinder(context.getRestaurantId()), rowMapper);
     }
 
     /* ---------- Override ---------- */
@@ -73,7 +67,8 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
     private static enum Column {
         ID("id"), ORIGIN_PRICE("originPrice"), PRICE("price"), TABLE_ID("tableId"),
         USER_ID("userId"), CUSTOMER_NUMBER("customerNumber"), STATUS("status"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -96,8 +91,9 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 10).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 11).build();
     
     private static class OrderBinder implements StatementBinder {
         private final Order order;
@@ -119,6 +115,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             stmt.bind(8, order.getCreatedTime());
             stmt.bind(9, order.getUpdateTime());
             stmt.bind(10, order.isDeleted() ? 1 : 0);
+            stmt.bind(11, order.getRestaurantId());
         }
     }
     
@@ -180,8 +177,11 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
 
     private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
         .append(" WHERE createdTime>? ")
-        .append(" AND createdTime<?").build();
+        .append(" AND createdTime<?")
+        .append(" AND restaurantId=?").build();
     
     private static final String SQL_SELECT_OLDEST = new SelectSqlBuilder(TABLE_NAME)
-        .append(" ORDER BY createdTime ASC LIMIT 1").build();
+        .appendWhereRestaurantId()
+        .append(" ORDER BY createdTime ASC LIMIT 1")
+        .build();
 }

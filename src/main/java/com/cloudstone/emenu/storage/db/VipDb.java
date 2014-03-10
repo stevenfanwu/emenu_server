@@ -34,7 +34,8 @@ public class VipDb extends SQLiteDb implements IVipDb {
     private static enum Column {
 		ID("id"), NAME("name"), SEX("sex"), IDCARD("idCard"), PHONE("phone"), 
 		EMAIL("email"), ADDRESS("address"), COMPANY("company"), MONEY("money"), TAG("tag"),
-		CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+		CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+      RESTAURANT_ID("restaurantId");
 
         private final String str;
         private Column(String str) {
@@ -61,12 +62,12 @@ public class VipDb extends SQLiteDb implements IVipDb {
             .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
             .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
             .build();
     
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhere(Column.ID.toString()).build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 13).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 14).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME)
         .appendSetValue(Column.SEX)
@@ -117,12 +118,13 @@ public class VipDb extends SQLiteDb implements IVipDb {
     
     @Override
     public List<Vip> getAll(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
 
     @Override
     public Vip add(EmenuContext context, Vip vip) {
         vip.setId(genId(context));
+        vip.setRestaurantId(context.getRestaurantId());
         VipBinder binder = new VipBinder(vip);
         executeSQL(context, SQL_INSERT, binder);
         return get(context, vip.getId());
@@ -173,6 +175,7 @@ public class VipDb extends SQLiteDb implements IVipDb {
             stmt.bind(11, vip.getCreatedTime());
             stmt.bind(12, vip.getUpdateTime());
             stmt.bind(13, vip.isDeleted() ? 1 : 0);
+            stmt.bind(14, vip.getRestaurantId());
         }
     }
     

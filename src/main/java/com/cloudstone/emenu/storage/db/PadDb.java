@@ -40,12 +40,13 @@ public class PadDb extends SQLiteDb implements IPadDb {
 
     @Override
     public List<Pad> listAll(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
 
     @Override
     public void add(EmenuContext context, Pad pad) {
         pad.setId(genId(context));
+        pad.setRestaurantId(context.getRestaurantId());
         executeSQL(context, SQL_INSERT, new PadBinder(pad));
     }
 
@@ -61,7 +62,8 @@ public class PadDb extends SQLiteDb implements IPadDb {
     
     private static enum Column {
         ID("id"), NAME("name"), IMEI("imei"), DESC("desc"), BATTERY_LEVEL("batteryLevel"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -83,11 +85,11 @@ public class PadDb extends SQLiteDb implements IPadDb {
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
-    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
+    private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 9).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
         .appendWhereId().build();
-    private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
         .appendSetValue(Column.NAME)
         .appendSetValue(Column.IMEI)
@@ -154,6 +156,7 @@ public class PadDb extends SQLiteDb implements IPadDb {
             stmt.bind(6, pad.getCreatedTime());
             stmt.bind(7, pad.getUpdateTime());
             stmt.bind(8, pad.isDeleted() ? 1 : 0);
+            stmt.bind(9, pad.getRestaurantId());
         }
     }
 

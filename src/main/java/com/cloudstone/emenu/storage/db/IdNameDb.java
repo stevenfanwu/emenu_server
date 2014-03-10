@@ -31,6 +31,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
     
     protected void add(EmenuContext context, T data) {
         data.setId(genId(context));
+        data.setRestaurantId(context.getRestaurantId());
         executeSQL(context, SQL_INSERT, new IdNameBinder(data));
     }
     
@@ -39,7 +40,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
     }
     
     protected List<T> getAll(EmenuContext context) {
-        return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
+        return getAllInRestaurant(context, rowMapper);
     }
     
     protected T get(EmenuContext context, int id) {
@@ -58,7 +59,8 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
     /* ---------- SQL ---------- */
     private static enum Column {
         ID("id"), NAME("name"),
-        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted");
+        CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
+        RESTAURANT_ID("restaurantId");
         
         private final String str;
         private Column(String str) {
@@ -77,6 +79,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
         .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
         .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
         .build();
     private final String SQL_UPDATE = new UpdateSqlBuilder(getTableName())
         .appendSetValue(Column.NAME)
@@ -86,8 +89,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
         .appendWhereId().build();
     private final String SQL_SELECT_BY_ID = new SelectSqlBuilder(getTableName())
         .appendWhereId().build();
-    private final String SQL_SELECT = new SelectSqlBuilder(getTableName()).build();
-    private final String SQL_INSERT = new InsertSqlBuilder(getTableName(), 5).build();
+    private final String SQL_INSERT = new InsertSqlBuilder(getTableName(), 6).build();
     
     public static class IdNameBinder implements StatementBinder {
         private final IdName data;
@@ -103,6 +105,7 @@ public abstract class IdNameDb<T extends IdName> extends SQLiteDb {
             stmt.bind(3, data.getCreatedTime());
             stmt.bind(4, data.getUpdateTime());
             stmt.bind(5, data.isDeleted() ? 1 : 0);
+            stmt.bind(6, data.getRestaurantId());
         }
     }
     private static class UpdateBinder implements StatementBinder {
