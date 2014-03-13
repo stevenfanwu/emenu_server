@@ -19,7 +19,7 @@ define(function (require, exports, module) {
             el: '.input-name',
             validators: [{
                 type: Required,
-                errorMessage: '用户名不能为空'
+                errorMessage: "Username can't be empty."
             }]
         }, {
             name: 'password',
@@ -27,7 +27,7 @@ define(function (require, exports, module) {
             el: '.input-password',
             validators: [{
                 type: Required,
-                errorMessage: '密码不能为空'
+                errorMessage: "Password can't be emtpy."
             }]
         }, {
             name: 'passwordConfirm',
@@ -36,7 +36,7 @@ define(function (require, exports, module) {
             validators: [{
                 type: IsSame,
                 otherItem: 'password',
-                errorMessage: '两次密码输入不一致'
+                errorMessage: 'Passwords are different.'
             }]
         }, {
             name: 'realName',
@@ -44,12 +44,16 @@ define(function (require, exports, module) {
             el: '.input-realName',
             validators: [{
                 type: Required,
-                errorMessage: '姓名不能为空'
+                errorMessage: "Real name can't be empty"
             }]
         }, {
             name: 'type',
             type: Radio,
             el: '.input-type'
+        }, {
+            name: 'restaurantId',
+            type: Text,
+            el: '.input-restaurantId'
         }, {
             name: 'comment',
             type: Text,

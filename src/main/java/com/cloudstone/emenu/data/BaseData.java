@@ -12,6 +12,7 @@ public class BaseData {
     private long createdTime;
     private long updateTime;
     private boolean deleted;
+    
     // Id of the restaurant the user belongs to
     private int restaurantId;
     

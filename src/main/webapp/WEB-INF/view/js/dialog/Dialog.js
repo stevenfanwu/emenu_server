@@ -20,9 +20,9 @@ define(function (require, exports, module) {
 
         contentView: null,
 
-        cancelLael: '取消',
+        cancelLael: 'Cancel',
 
-        confirmLabel: '确定',
+        confirmLabel: 'OK',
 
         events: {
             'click .btn-close-dialog': 'onClose',

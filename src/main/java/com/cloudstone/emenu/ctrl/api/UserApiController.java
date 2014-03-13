@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.com.cloudstone.menu.server.thrift.api.UserType;
+
 import com.cloudstone.emenu.EmenuContext;
+import com.cloudstone.emenu.constant.Const;
 import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.util.JsonUtils;
 
@@ -100,6 +103,19 @@ public class UserApiController extends BaseApiController {
         User user = JsonUtils.fromJson(body, User.class);
         //password is ignored by json mapper
         user.setPassword(JsonUtils.getString(body, "password"));
+        User loginUser = (User) request.getSession().getAttribute("loginUser");
+        if (loginUser.getType() == Const.UserType.SUPER_USER) {
+        	if (user.getRestaurantId() == 0) {
+        		sendError(response, HttpServletResponse.SC_BAD_REQUEST);
+        		return null;
+        	}
+        } else {
+        	if (user.getRestaurantId() != 0) {
+        		sendError(response, HttpServletResponse.SC_BAD_REQUEST);
+        		return null;
+        	}
+        	user.setRestaurantId(loginUser.getRestaurantId());
+        }
         
         user = userLogic.add(context, user);
         sendSuccess(response, HttpServletResponse.SC_CREATED);

@@ -22,7 +22,7 @@ define(function (require, exports, module) {
     });
 
     var EditUserDialog = EditDialog.extend({
-        headerSuffix: '用户',
+        headerSuffix: ' User',
 
         ContentType: Content,
 

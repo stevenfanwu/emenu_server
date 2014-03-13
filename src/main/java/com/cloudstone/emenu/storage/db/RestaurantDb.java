@@ -101,6 +101,7 @@ public class RestaurantDb extends SQLiteDb implements IRestaurantDb {
       public Restaurant map(SQLiteStatement stmt) throws SQLiteException {
          Restaurant restaurant = new Restaurant();
          restaurant.setId(stmt.columnInt(0));
+         restaurant.setRestaurantId(restaurant.getId());
          restaurant.setName(stmt.columnString(1));
          restaurant.setCreatedTime(stmt.columnLong(2));
          restaurant.setUpdateTime(stmt.columnLong(3));

@@ -1,26 +1,26 @@
 <form class="form-create-user form-horizontal">
     <div class="control-group input-name">
-        <label class="control-label">帐号:</label>
+        <label class="control-label">Username:</label>
         <div class="controls">
             <input type="text" name="userName"/>
             <span class="help-inline error"></span>
         </div>
     </div>
     <div class="control-group input-type">
-        <label class="control-label">类型:</label>
+        <label class="control-label">User Type:</label>
         <div class="controls">
             <label class="radio inline">
                 <input type="radio" name="type" value="0" checked="true"/>
-                服务员
+               Waiter/Waitress 
             </label>
             <label class="radio inline">
                 <input type="radio" name="type" value="1"/>
-                管理员
+                 Admin 
             </label>
             {{#if loginUser.isSuperUser}}
                 <label class="radio inline">
                     <input type="radio" name="type" value="2"/>
-                    超级管理员
+                    Super Admin 
                 </label>
             {{/if}}
             <span class="help-inline error"></span>
@@ -28,14 +28,14 @@
     </div>
     {{#unless editing}}
     <div class="control-group input-password">
-        <label class="control-label">密码:</label>
+        <label class="control-label">Password:</label>
         <div class="controls">
             <input type="password" name="password"/>
             <span class="help-inline error"></span>
         </div>
     </div>
     <div class="control-group input-password-confirm">
-        <label class="control-label">确认密码:</label>
+        <label class="control-label">Confirm password:</label>
         <div class="controls">
             <input type="password" name="password-confirm"/>
             <span class="help-inline error"></span>
@@ -43,14 +43,24 @@
     </div>
     {{/unless}}
     <div class="control-group input-realName">
-        <label class="control-label">姓名:</label>
+        <label class="control-label">Real Name:</label>
         <div class="controls">
             <input type="text" name="realName"/>
             <span class="help-inline error"></span>
         </div>
     </div>
+    {{#if loginUser.isSuperUser}}
+      <div class="control-group input-restaurantId">
+          <label class="control-label">restaurantId:</label>
+          <div class="controls">
+              <input type="text" name="restaurantId"/>
+              <span class="help-inline error"></span>
+          </div>
+      </div>
+    {{/if}}
+
     <div class="control-group input-comment">
-        <label class="control-label">备注:</label>
+        <label class="control-label">Comment:</label>
         <div class="controls">
             <input type="text" name="comment"/>
             <span class="help-inline error"></span>
