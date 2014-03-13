@@ -1,0 +1,9 @@
+#set( $layout = "layout/empty.vm")
+#set($pageName="SuperAdmin")
+
+<div class="pull-right">
+<a href="" class="btn-create-restaurant">New Restaurant</a>
+<a href="" class="btn-create-user">New User</a>
+</div>
+<div class="wrap-list">
+</div>

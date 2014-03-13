@@ -1,0 +1,277 @@
+#set( $layout = "layout/static.vm")
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Management Software For Restaurant</title>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+	<meta name="description" content="Hummingbird revolutionizes the dining experience with interactive tablet Menu."/>
+	<meta name="keywords" content="hummingbird, menu, tablet, restaurant, dinning, food, drinks, menu, app, restaurant, technology, application, digital menu, customer service, dinning experience, interactive, menu ordering software"/>
+	<meta name="generator" content="2.3.50.166"/>
+	<link rel="shortcut icon" href="static/favicon.ico"/>
+	<!-- bootstrap -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- open sans font -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+    <!-- Bootstrap css-->
+    <link href="static/bootstrap.min.css" rel="stylesheet">
+	<!-- Hummingbird css-->
+	<link href="static/global.css" rel="stylesheet">
+	
+	<!-- Google Analytics -->
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-47909335-1', 'hummingbirdsystem.com');
+	  ga('send', 'pageview');
+	</script>
+	<!-- Google Analytics end-->
+  </head>
+  
+  <body>
+	<!--navigation bar-->
+	<!--navigation bar tablet,desktop-->
+	<nav class="navbar hidden-xs">
+		<div class="container">
+			<ul class="row">
+				<li class="col-sm-2 logo col-md-3">
+					<a href="index">
+						<p class="pull-left hidden-sm">Hummingbird</p>
+						<img class="pull-left center-block" src="static/global/ic-nav.png" alt="Hummingbird Logo">
+					</a>
+				</li>
+				
+				<li class="col-sm-6 col-md-5">		
+					<div class="row">
+					<a class="col-md-6 pull-right" href="management">HummingManager</a>
+					<a class="col-md-6 pull-right" href="tablet">HummingMenu</a>
+					</div>
+				</li>
+				
+				<li class="col-sm-2 col-md-2 col-lg-1 col-lg-offset-2">		
+					<a class="btn-secondary-2" href="/login" target="_top">LOGIN</a>
+				</li>
+				
+				<li class="col-sm-2 col-md-2 col-lg-1">		
+					<a class="btn-primary" href="signup" target="_top">SIGNUP</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<!--navigation bar mobile-->
+	<nav class="visible-xs">
+		<div class="container">
+			<div class="navbar row">
+				<div class="col-xs-9 logo">
+					<a href="index">
+						<img class="pull-left center-block" src="static/global/ic-nav.png" alt="Hummingbird Logo">
+						<p class="pull-left">Hummingbird</p>
+					</a>
+				</div>
+				<div class="btn-menu col-xs-3">
+					<img class="pull-right center-block" src="static/global/ic-menu.png" alt="Menu Button">
+				</div>
+			</div>
+			
+			<div class="row menu-nav">	
+				<div class="col-xs-6">		
+					<a class="btn-secondary-2" href="#" target="_top">LOGIN</a>
+				</div>
+				<div class="col-xs-6">		
+					<a class="btn-primary" href="signup" target="_top">SIGNUP</a>
+				</div>
+				
+				<ul class="col-xs-12">
+					<li>Products</li>
+					
+					<li><a href="tablet">HummingMenu</a></li>
+					<li><a href="management">HummingManager</a></li>
+				</ul>
+				
+				<ul class="col-sm-3">
+					<li>Features</li>
+					
+					<li><a href="index#easy-dinning-experience">Seamless Dinning Experience</a></li>
+					<li><a href="index#managing-tool">Powerful Managing Tools</a></li>
+					<li><a href="index#affordable-price">Affordable Price</a></li>
+				</ul>
+				
+				<ul class="col-sm-3">
+					<li>Hummingbird</li>
+					
+					<li><a href="about">About</a></li>
+					<li><a href="about#contact">Contact</a></li>
+				</ul>
+
+				<ul class="col-sm-3">
+					<li>Follow Us</li>
+					
+					<li><a href="https://www.facebook.com/hummingbirdsystem">
+						<img src="static/global/ic-facebook.png" class="pull-left img-responsive" alt="Facebook Icon"> Facebook
+					</a></li>	
+					<li><a href="https://twitter.com/hummingbird_sys">
+						<img src="static/global/ic-twitter.png" class="pull-left img-responsive" alt="Twitter Icon">Twitter</a></li>
+					<li><a href="https://plus.google.com/u/3/b/108598796815813356478/108598796815813356478">
+						<img src="static/global/ic-googleplus.png" class="pull-left img-responsive" alt="Google+ Icon">Google+
+					</a></li>
+					<li><a href="http://www.linkedin.com/company/hummingbird-system">
+						<img src="static/global/ic-linkedin.png" class="pull-left img-responsive" alt="Linkedin Icon">Linkedin
+					</a></li>
+				</ul>
+				
+				<div class="col-sm-12 divider"></div>
+				
+				<div class="col-sm-12 btn-menu"><div class="center-block arrow-up"></div></div>
+			</div>
+		</div>
+	</nav>
+	<!--navigation bar end-->
+	
+	<div class="wrapper-hero-tablet">
+		<div class="container">
+			<div class="row">
+				<div class="slogan-mobile text-center visible-xs">
+					<h1>Restaurant Management Software</br></h1>
+					<p>Manage your restaurant on the web</br> anytime and anywhere using a PC, Mac or iPad</p>
+				</div>
+				<div class="col-xs-12 col-sm-7">
+					<img src="static/home/managing-tool.png" class="img-responsive" alt="HummingManager">
+				</div>
+				<div class="slogan col-xs-12 col-sm-5 text-center hidden-xs">
+					<h1>Restaurant Management Software</br></h1>
+					<p>Manage your menu, tables, devices and staffs</br> all from one place.</p>
+				</div>
+			</div>
+			
+			<div class="row text-center">
+				<div class="col-xs-3"><img src="static/products/management/ic-edit-menu.png" class="center-block img-responsive" alt="Edit Menu">Edit Menu</div>
+				<div class="col-xs-3"><img src="static/products/management/ic-manage-tables.png" class="center-block img-responsive" alt="Manage Tables">Manage Tables</div>
+				<div class="col-xs-3"><img src="static/products/management/ic-manage-devices.png" class="center-block img-responsive" alt="Manage Devices">Manage Devices</div>
+				<div class="col-xs-3"><img src="static/products/management/ic-manage-users.png" class="center-block img-responsive" alt="Manage Users">Manage Users</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="wrapper-content">
+		<div class="container">
+			<div class="row">
+				<h2 class="col-xs-12 text-center ">
+					Make Changes On The Menu Anytime Anywhere
+				</h2>
+				
+				<p class="col-xs-12 col-sm-10 col-sm-offset-1 text-center txt-content">Manage your restaurant on the web anytime and anywhere using a PC, Mac or iPad. </br>Log into your account and make a change, it will sync with all the tablets at your restaurant over the cloud.</p>
+				
+				<div class="col-xs-12 col-sm-12 img-content pull-left">
+					<img src="static/products/management/edit-menu.png" class="center-block img-responsive" alt="Edit Menu">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="container">
+		<div class="row">
+			<h2 class="col-xs-12 text-center title-content">
+				Overwatch Each Table Without Being There
+			</h2>
+			
+			<p class="col-xs-12 col-sm-10 col-sm-offset-1 text-center txt-content">Check the status of each table at a glance and make a switch with a simple click. </br> HummingManager will make sure you're always running at full capacity.</p>
+			
+			<div class="col-xs-12 col-sm-8 col-sm-offset-2 img-content pull-left">
+					<img src="static/products/management/manage-tables.png" class="center-block img-responsive" alt="Manage Tables">
+			</div>
+		</div>
+	</div>
+	
+	<div class="wrapper-content">
+		<div class="container">
+			<div class="row">
+				<h2 class="col-xs-12 text-center ">
+					Have Full Control Of All The Devices 
+				</h2>
+				
+				<p class="col-xs-12 col-sm-10 col-sm-offset-1 text-center txt-content">See which tablet is low in power or doesn't function normally from the web. </br>Ensure your customer the best dinning experience.</p>
+				
+				<div class="col-xs-12 col-sm-12 img-content pull-left">
+					<img src="static/products/management/manage-devices.png" class="center-block img-responsive" alt="Manage Devices">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container">
+		<div class="row">
+			<h2 class="col-xs-12 text-center title-content">
+				User Management Has Never Been Easier
+			</h2>
+			
+			<p class="col-xs-12 col-sm-10 col-sm-offset-1 text-center txt-content">Giving employees different level of access to your restaurant management.</br>Multiple users can access the same system helping you run your restaurant more effectively.  </p>
+			
+			<div class="col-xs-12 col-sm-8 col-sm-offset-2 img-content pull-left">
+					<img src="static/products/management/manage-users.png" class="center-block img-responsive" alt="Manage Users">
+			</div>
+		</div>
+	</div>
+	
+	<footer>
+	  <div class="container">
+			<div class="row">
+				<ul class="col-sm-3">
+					<li>Products</li>
+					
+					<li><a href="tablet">HummingMenu</a></li>
+					<li><a href="management">HummingManager</a></li>
+				</ul>
+				
+				<ul class="col-sm-3">
+					<li>Features</li>
+					
+					<li class="easy-dinning-experience"><a href="index#easy-dinning-experience">Seamless Dinning Experience</a></li>
+					<li class="managing-tool"><a href="index#managing-tool">Powerful Managing Tools</a></li>
+					<li class="affordable-price"><a href="index#affordable-price">Affordable Price</a></li>
+				</ul>
+				
+				<ul class="col-sm-3">
+					<li>Hummingbird</li>
+					
+					<li><a href="about">About</a></li>
+					<li><a href="about#contact">Contact</a></li>
+				</ul>
+
+				<ul class="col-sm-3">
+					<li>Follow Us</li>
+					
+					<li><a href="https://www.facebook.com/hummingbirdsystem">
+						<img src="static/global/ic-facebook.png" class="pull-left img-responsive" alt="Facebook Icon"> Facebook
+					</a></li>	
+					<li><a href="https://twitter.com/hummingbird_sys">
+						<img src="static/global/ic-twitter.png" class="pull-left img-responsive" alt="Twitter Icon">Twitter</a></li>
+					<li><a href="https://plus.google.com/u/3/b/108598796815813356478/108598796815813356478">
+						<img src="static/global/ic-googleplus.png" class="pull-left img-responsive" alt="Google+ Icon">Google+
+					</a></li>
+					<li><a href="http://www.linkedin.com/company/hummingbird-system">
+						<img src="static/global/ic-linkedin.png" class="pull-left img-responsive" alt="Linkedin Icon">Linkedin
+					</a></li>
+				</ul>
+			</div>
+			<div class="col-sm-12 divider"></div>
+			<div class="col-sm-12 text-center">
+				Copyright &#169 2014, Hummingbird System Inc., All Rights Reserved.
+			</div>
+		</div>
+	</footer>
+	
+
+
+	<!-- javascripts -->
+	<script src="static/jquery-1.8.2.min.js" type="text/javascript"></script> 
+	<script src="static/jquery.tap.min.js"></script>
+	<script src="static/bootstrap.min.js"></script>
+	<script src="static/javascript.js"></script>
+	<script>	
+		$("a[href='management']").css("color","#fff");
+	</script>
+  </body>
+</html>

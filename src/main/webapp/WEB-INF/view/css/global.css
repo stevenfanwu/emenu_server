@@ -1,0 +1,479 @@
+/*************************************************
+**************************************************
+
+Website Name: Hummingbird System
+Website URL: hummingbirdsystem.com
+Website Author: Aaron Cheng
+Author URL: chengfolio.com
+Copyright 2014. All Rights Reserved.
+
+Color Guide
+***************
+E6195E - Pink
+F6F6F6 - Light Gray
+808a97 - Blue Gray(For text)
+303338 - Dark Gray
+*************************************************/
+
+/************************************************
+*************************************************
+0. CSS Reset -------------------- All Files
+1. Header Styles -------------------- All Files
+2. Body Styles ---------------------- All Files
+3. Footer Styles ------------------- All Files
+4. Home Page Styles ------------------- index.html
+5. Tablet/Management Page Styles ------------------- tablet.html
+6. About US Page Styles ------------------- tablet.html
+x. 404 Styles ----------------------- 404.shtml
+*************************************************
+************************************************/
+
+/*----------------------------------------------
+------------------------------------------------
+0. CSS Reset
+------------------------------------------------
+----------------------------------------------*/
+body  {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.428571429;
+  color: #808a97;
+}
+
+ul,ol,li{
+list-style-type:none;
+padding:0;
+}
+
+h1, h2, h3, h4, h5, h6{
+font-family: "Open Sans", Helvetica, Arial, sans-serif;
+font-weight:300;
+}
+
+a{
+color: #808a97;
+}
+
+a:hover, a:focus{
+color: #808a97;
+text-decoration: none;
+}
+
+/*----------------------------------------------
+------------------------------------------------
+1. Header Styles
+------------------------------------------------
+----------------------------------------------*/
+.navbar{
+	height: 60px;
+	right: 0;
+	left: 0;
+	background-color:#303338;
+	line-height: 60px;
+	z-index:99;
+}
+
+.navbar p{
+	font-size:18px;
+}
+
+.navbar.visible-xs{
+	height:45px;
+	line-height: 45px;
+}
+
+.navbar .logo img{
+	margin-top:5px;
+}
+
+.navbar .logo a{
+	color:#fff;
+	font-size:18px;
+	font-weight:300;
+}
+
+.btn-menu img{
+	width:15px;
+	margin-top:16px;
+}
+
+.visible-xs .navbar .logo a p{
+	font-size:14px;
+	font-weight:400;
+	line-height:45px;
+	margin-bottom:0;
+}
+
+.visible-xs .navbar .logo a img{
+	width:40px;
+	margin:12px 5px auto auto;
+}
+
+.visible-xs .navbar{
+	height:45px;
+}
+
+.menu-nav{
+	display:none;
+	background-color:#303338;
+	z-index:1000;
+	padding:20px 0 20px 0;
+}
+
+.menu-nav  .col-xs-6{
+	margin:0px auto 20px auto;
+	z-index:2;
+}
+
+.menu-nav  .col-xs-12{
+	margin:0px auto 20px auto;
+	z-index:1;
+}
+
+.menu-nav ul li{
+	line-height:30px;
+}
+
+.menu-nav  ul li:first-child{
+	color:#fff;
+	margin-bottom:20px;
+}
+
+.menu-nav .divider{
+	margin:20px auto 20px auto;
+}
+
+.menu-nav li img{
+	margin: 5px 10px auto auto;
+}
+
+/*----------------------------------------------
+------------------------------------------------
+2. Body Styles
+------------------------------------------------
+----------------------------------------------*/
+
+.btn-primary {
+	background-color: #E6195E;
+	border-width: 0;
+	color: #fff;
+	display:block;
+	font-weight:400;
+	height: 30px;
+	line-height: 30px;
+	margin-top:15px;
+	text-align:center;
+	width: 100%;
+}
+
+.btn-secondary{
+	background-color: #303338;
+	border-width: 0;
+	color: #fff;
+	display: block;
+	font-weight: 400;
+	height: 40px;
+	line-height: 40px;
+	margin: 20px auto 0 auto;
+	text-align: center;
+	width: 100%;
+}
+
+.btn-secondary-2{
+	border: 1px solid #fff;
+	color: #fff;
+	display: block;
+	font-weight: 400;
+	height: 30px;
+	line-height: 30px;
+	margin: 15px auto 0 auto;
+	text-align: center;
+	width: 100%;
+}
+
+.divider{
+	border-bottom: 1px solid #808a97;
+	border-left: 26px transparent solid;
+	border-right: 26px transparent solid;
+	border-top-width: 0 
+}
+
+.wrapper-content{
+	padding:60px 0 80px 0;
+	background-color:#F6F6F6;
+	right: 0;
+	left: 0;
+}
+
+body>.container{
+	padding:60px 15px 80px 15px;
+}
+
+body>.container{
+	background-color:transparent;
+}
+
+.txt-content{
+	margin-top:20px;
+}
+
+.img-content{
+	margin-top:20px;
+}
+
+.btn-primary:hover, .btn-secondary:hover, .btn-secondary-2:hover{
+	color: #fff;
+	opacity:0.9;
+}
+
+.arrow-up {
+	width: 0;
+	height: 0;
+	border-bottom: 10px solid #fff;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	position: relative;
+	top: 0;
+}
+/*----------------------------------------------
+------------------------------------------------
+3. Footer Styles
+------------------------------------------------
+----------------------------------------------*/
+footer{
+	background-color: #303338;
+	padding: 40px 0 40px 0;
+}
+
+footer ul li{
+	line-height:30px;
+}
+
+footer ul li:first-child{
+	color:#fff;
+	margin-bottom:20px;
+}
+
+footer .divider{
+	margin:20px auto 20px auto;
+}
+
+footer li img{
+	margin: 5px 10px auto auto;
+}
+/*----------------------------------------------
+------------------------------------------------
+4. Home Page Styles
+------------------------------------------------
+----------------------------------------------*/
+
+.background-hero, .background-hero-mobile{
+	background: url(../static/home/home_background.jpg);
+	background-repeat: no-repeat;
+	position: absolute;
+}
+
+.background-hero {
+	width: 100%;
+	height: 480px;
+}
+
+.background-hero .background-txt{
+	position:absolute;
+	bottom:0;
+	width:100%;
+	height:60px;
+	line-height:60px;
+	background-color:#000;
+	opacity:0.5;
+}
+
+.background-hero .txt-band{
+	position:absolute;
+	bottom:0;
+	width:100%;
+	color:#fff;
+	height:60px;
+	line-height:60px;
+	font-size:18px;
+}
+
+.background-hero .txt-band .visible-sm{
+	font-size:15px;
+}
+
+.background-hero-mobile{
+	top: -20px;
+	width: 100%;
+	height: 600px;
+	background-size:600% auto;
+}
+
+.wrapper-hero{
+	margin-top:20px;
+	position:relative;
+	z-index:0;
+}
+
+.wrapper-hero h1 {
+	color:#fff;
+	font-size:30px;
+}
+
+.wrapper-hero .btn-primary {
+	font-size:24px;
+	height: 50px;
+	line-height: 50px;
+}
+
+.wrapper-hero .slogan {
+	margin-top:220px;
+}
+
+.wrapper-hero .slogan-tablet {
+	margin-top:80px;
+}
+
+.wrapper-hero .slogan-mobile .btn-primary{
+	font-size:14px;
+	height: 40px;
+	line-height: 40px;
+	margin:0 auto 30px auto;
+}
+
+.wrapper-hero .slogan-tablet .btn-primary{
+	font-size:18px;
+	height: 40px;
+	line-height: 40px;
+	margin:0 auto 0 auto;
+}
+
+.wrapper-hero .slogan-mobile  h1{
+	font-size:18px;
+}
+
+.wrapper-hero .slogan-tablet  h1{
+	font-size:24px;
+}
+
+.btn-wrapper-pricing{
+	position:absolute;
+	padding-right:30px;
+	bottom:0;
+	width:100%;
+}
+
+.btn-wrapper-pricing .btn-primary{
+	font-size:18px;
+	height:60px;
+	line-height:60px;
+	width:100%;
+}
+
+.pricing{
+	padding-bottom:60px;
+}
+
+.pricing .btn-primary{
+	height:40px;
+	line-height:40px;
+	margin-top:50px;
+}
+/*----------------------------------------------
+------------------------------------------------
+5. Tablet/Management Page Styles
+------------------------------------------------
+----------------------------------------------*/
+.wrapper-hero-tablet{
+	padding:60px 0 60px 0;
+}
+
+.wrapper-hero-tablet h1 {
+	color:#000;
+	font-size:36px;
+}
+
+.wrapper-hero-tablet .slogan {
+	margin-top:220px;
+}
+
+.wrapper-hero-tablet .slogan-mobile {
+	position:relative;
+	top:-30px;
+}
+
+.wrapper-hero-tablet .slogan-mobile h1 {
+	font-size:24px;
+}
+/*----------------------------------------------
+------------------------------------------------
+6. About US Page Styles
+------------------------------------------------
+----------------------------------------------*/
+.about-us h2{
+	margin:60px auto 60px 0;
+}
+
+.about-us p{
+	line-height:30px;
+	margin:60px auto 200px 0;
+}
+/*----------------------------------------------
+------------------------------------------------
+6. Signup Page Styles
+------------------------------------------------
+----------------------------------------------*/
+.wrapper-hero-signup{
+	margin:30px auto 30px 0;
+}
+
+.wrapper-hero-signup h1{
+	color:#000;
+	margin:80px auto 60px 0;
+}
+
+.wrapper-hero-signup .btn-primary{
+	font-size:18px;
+	height:50px;
+	line-height:50px;
+	margin:80px auto 60px 0;
+}
+/*----------------------------------------------
+------------------------------------------------
+x. 404 Styles
+------------------------------------------------
+----------------------------------------------*/
+.error{
+	margin-bottom:100px;
+}
+
+.error h1{
+	margin-top:60px;
+	font-size:72px;
+	color:#000;
+}
+
+.error h2{
+	font-size:18px;
+	color:#000;
+}
+
+.error a{
+	font-size:18px;
+	color:#fff;
+	position:relative;
+	top:5px;
+}
+
+.error a:hover{
+	color:#808a97;
+}
+
+.error .btn{
+	background-color:#000;
+	font-size:18px;
+	line-height:36px;
+	margin-top:100px;
+}
+
