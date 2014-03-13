@@ -11,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.data.User;
+
 /**
  * @author xuhongfeng
  *
@@ -27,6 +30,12 @@ public class TableController extends BaseWebController {
     @RequestMapping(value={"/", "/home", "operate", "/status"})
     public String tableStatus(HttpServletRequest req, HttpServletResponse resp,
             ModelMap model) {
-        return sendView("status", req, resp, model);
+    	User loginUser = (User) req.getSession().getAttribute("loginUser");
+    	if (loginUser.getType() == Const.UserType.SUPER_USER) {
+    		sendRedirect("/superadmin", resp);
+    		return null;
+    	} else {
+    		return sendView("status", req, resp, model);
+    	}
     }
 }

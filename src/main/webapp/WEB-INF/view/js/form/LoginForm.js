@@ -17,7 +17,7 @@ define(function (require, exports, module) {
             el: '.input-name',
             validators: [{
                 type: Required,
-                errorMessage: '用户名不能为空'
+                errorMessage: "User name can't be emtpty"
             }]
         }, {
             name: 'password',
@@ -25,7 +25,7 @@ define(function (require, exports, module) {
             el: '.input-password',
             validators: [{
                 type: Required,
-                errorMessage: '密码不能为空'
+                errorMessage: "Password can't be empty"
             }]
         }],
 
@@ -35,7 +35,7 @@ define(function (require, exports, module) {
                 statusCode: {
                     401: function () {
                         this.resetItems();
-                        this.findItemByName('password').showError('用户名或密码错误');
+                        this.findItemByName('password').showError('Username or password is incorrect');
                     }.bind(this)
                 }
             });

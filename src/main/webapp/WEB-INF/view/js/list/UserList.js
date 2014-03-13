@@ -17,7 +17,7 @@ define(function (require, exports, module) {
     };
 
     var UserList = BaseTable.extend({
-        heads: ['帐号', '真实姓名', '备注', '类型', '操作'],
+        heads: ['User Name', 'Real Name', 'Note', 'Type', 'Operation'],
 
         mode: Mode.ALL,
 

@@ -95,9 +95,9 @@ public class UserDb extends SQLiteDb implements IUserDb {
             //create a default admin user
             user = User.newSuperUser();
             user.setName("admin");
-            user.setComment("默认密码admin,请及时修改");
+            user.setComment("Defaut password, please update!");
             user.setPassword(RsaUtils.encrypt(DEFAULT_ADMIN_PASSWORD));
-            user.setRealName("超级用户");
+            user.setRealName("Admin user");
             // admin doesn't belong to a restaurant
             user.setRestaurantId(0);
             user = add(context, user);

@@ -7,12 +7,15 @@ package com.cloudstone.emenu.ctrl.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cloudstone.emenu.constant.Const;
+import com.cloudstone.emenu.data.User;
 import com.cloudstone.emenu.util.AuthHelper;
 
 /**
@@ -21,6 +24,8 @@ import com.cloudstone.emenu.util.AuthHelper;
  */
 @Controller
 public class UserController extends BaseWebController {
+	
+	Logger logger = LoggerFactory.getLogger(UserController.class);
     
     @Autowired
     private AuthHelper authHelper;
@@ -37,7 +42,13 @@ public class UserController extends BaseWebController {
     public String login(HttpServletRequest req, HttpServletResponse resp,
             ModelMap model) {
         if (authHelper.isLogin(req, resp)) {
-            sendRedirect("/home", resp);
+        	User loginUser = (User) req.getSession().getAttribute("loginUser");
+        	logger.info("/login user type is " + loginUser.getType());
+        	if (loginUser.getType() == Const.UserType.SUPER_USER) {
+        		sendRedirect("/superadmin", resp);
+        	} else {
+        		sendRedirect("/home", resp);
+        	}
             return null;
         }
         return sendView("login", req, resp, model);

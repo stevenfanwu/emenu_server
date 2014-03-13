@@ -19,8 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MemberController extends BaseWebController {
     
     @RequestMapping("/member")
-    public String get(HttpServletRequest req, HttpServletResponse resp,
+    public String member(HttpServletRequest req, HttpServletResponse resp,
             ModelMap model) {
         return sendView("member", req, resp, model);
+    }
+
+    @RequestMapping("/superadmin")
+    public String superAdmin(HttpServletRequest req, HttpServletResponse resp, ModelMap model) {
+    	return sendView("superadmin", req, resp, model);
     }
 }
