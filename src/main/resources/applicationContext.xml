@@ -72,6 +72,13 @@
         <property name="escapePatterns">
             <list>
                 <value>/test</value>
+                <value>/404</value>
+                <value>/about</value>
+                <value>/index</value>
+                <value>/</value>
+                <value>/management</value>
+                <value>/signup</value>
+                <value>/tablet</value>
                 <value>/api/test</value>
                 <value>/upgrading</value>
                 <value>/licence</value>

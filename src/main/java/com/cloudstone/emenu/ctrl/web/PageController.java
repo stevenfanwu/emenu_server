@@ -81,4 +81,40 @@ public class PageController extends BaseWebController {
         }
         sendRedirect("licence", response);
     }
+
+    @RequestMapping(value="/404", method=RequestMethod.GET)
+    public String notFound(HttpServletRequest req, HttpServletResponse resp
+            , ModelMap model) {
+        return sendView("404", req, resp, model);
+    }
+
+    @RequestMapping(value="/management", method=RequestMethod.GET)
+    public String management(HttpServletRequest req, HttpServletResponse resp
+            , ModelMap model) {
+        return sendView("management", req, resp, model);
+    }
+    
+    @RequestMapping(value="/about", method=RequestMethod.GET)
+    public String about(HttpServletRequest req, HttpServletResponse resp
+            , ModelMap model) {
+        return sendView("about", req, resp, model);
+    }
+    
+    @RequestMapping(value="/tablet", method=RequestMethod.GET)
+    public String tablet(HttpServletRequest req, HttpServletResponse resp
+            , ModelMap model) {
+        return sendView("tablet", req, resp, model);
+    }
+    
+    @RequestMapping(value="/signup", method=RequestMethod.GET)
+    public String signup(HttpServletRequest req, HttpServletResponse resp
+            , ModelMap model) {
+        return sendView("signup", req, resp, model);
+    }
+    
+    @RequestMapping(value={"/", "index"}, method=RequestMethod.GET)
+    public String index(HttpServletRequest req, HttpServletResponse resp
+            , ModelMap model) {
+        return sendView("index", req, resp, model);
+    }
 }

@@ -31,7 +31,7 @@ public class StaticController extends BaseWebController {
     private static Logger LOG = LoggerFactory.getLogger(StaticController.class);
     
     private static final String[] IMG_EXTENSION = new String[] {
-        "png", "img", "gif"
+        "png", "img", "gif", "jpg"
     };
     
     @RequestMapping("/static/**")

@@ -27,7 +27,7 @@ public class TableController extends BaseWebController {
         return sendView("table", req, resp, model);
     }
 
-    @RequestMapping(value={"/", "/home", "operate", "/status"})
+    @RequestMapping(value={"/home", "operate", "/status"})
     public String tableStatus(HttpServletRequest req, HttpServletResponse resp,
             ModelMap model) {
     	User loginUser = (User) req.getSession().getAttribute("loginUser");
