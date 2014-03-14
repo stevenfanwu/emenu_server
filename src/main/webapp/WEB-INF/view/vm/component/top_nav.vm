@@ -4,7 +4,7 @@
 
 	<div class="navbar top-nav">
 		<div class="navbar-inner">
-			<a class="brand" href="/home">CloudMenu</a>
+			<a class="brand" href="/home">HummingManager</a>
 			<ul class="nav">
 				#@mode_tab("operate")Operation#end
 				#@mode_tab("admin")Management#end
