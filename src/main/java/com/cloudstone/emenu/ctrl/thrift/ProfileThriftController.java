@@ -60,10 +60,12 @@ public class ProfileThriftController extends BaseThriftController {
             LOG.info("login, imei = " + imei);
             EmenuContext context = new EmenuContext();
             User user = userLogic.login(context, username, pwd);
+            
             if (user == null) {
                 throw new WrongUsernameOrPasswordException();
             }
             context.setLoginUserId(user.getId());
+            context.setRestaurantId(user.getRestaurantId());
             if (!thriftLogic.isValidImei(context, imei)) {
                 throw new IMEINotAllowedException();
             }
