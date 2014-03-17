@@ -1,0 +1,17 @@
+	<script src="static/jquery-1.8.2.min.js" type="text/javascript"></script> 
+	<script src="static/jquery.tap.min.js"></script>
+	<script src="static/bootstrap.min.js"></script>
+	<script src="static/javascript.js"></script>
+	
+	<script>	
+	//scroll animate
+	$(".easy-dinning-experience").click(function(){
+	$('html,body').animate({scrollTop: $("#easy-dinning-experience").offset().top},'slow');
+	});
+	$(".managing-tool").click(function(){
+	$('html,body').animate({scrollTop: $("#managing-tool").offset().top},'slow');
+	});
+	$(".affordable-price").click(function(){
+	$('html,body').animate({scrollTop: $("#affordable-price").offset().top},'slow');
+	});
+	</script>

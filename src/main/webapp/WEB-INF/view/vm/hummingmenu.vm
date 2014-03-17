@@ -1,0 +1,91 @@
+#set( $layout = "layout/static.vm")
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tablet For Customers</title>
+#parse("component/static_head.vm")
+  </head>
+  
+  <body>
+	<!--navigation bar-->
+#parse("component/static_nav.vm")
+	
+	<div class="wrapper-hero-tablet">
+		<div class="container">
+			<div class="row">
+				<div class="slogan-mobile text-center visible-xs">
+					<h1>Tablet For Customers</br></h1>
+					<p>Customers browse the menu and order themselves.</br>Fast table turn means more sales.</br>Better dining experience means more return customers</p>
+				</div>
+				<div class="col-xs-12 col-sm-5 col-sm-offset-1">
+					<img src="static/home/cover.png" class="img-responsive" alt="Hummingbird Tablet">
+				</div>
+				<div class="slogan col-xs-12 col-sm-5 col-sm-offset-1 text-center hidden-xs">
+					<h1>Tablet For Customers</br></h1>
+					<p>Customers browse the menu and order themselves.</br>Fast table turn means more sales.</br>Better dining experience means more return customers</p>
+				</div>
+			</div>
+			
+			<div class="row text-center">
+				<div class="col-xs-3"><img src="static/products/hummingmenu/ic-view-menu.png" class="center-block img-responsive" alt="View Menu">View Menu</div>
+				<div class="col-xs-3"><img src="static/products/hummingmenu/ic-place-order.png" class="center-block img-responsive" alt="Place Order">Place Order</div>
+				<!--<div class="col-xs-3"><img src="static/products/hummingmenu/ic-pay-bill.png" class="center-block img-responsive" alt="Pay Bill">Pay Bill</div>-->
+				<div class="col-xs-3"><img src="static/products/hummingmenu/ic-call-waitress.png" class="center-block img-responsive" alt="Call Waitress">Call Waitress</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="wrapper-content">
+		<div class="container">
+			<div class="row">
+				<h2 class="col-xs-12 text-center ">
+					Browse Menu With Elegant User Interface
+				</h2>
+				
+				<p class="col-xs-12 col-sm-10 col-sm-offset-1 text-center txt-content">Hummingbird brings your menus to life like never before with vivid, colorful tablet displays and high-resolution images of every food item.</br>Better understanding, less frustration for your customers.</p>
+				
+				<div class="col-xs-12 col-sm-12 img-content pull-left">
+					<img src="static/products/hummingmenu/view-menu.png" class="center-block img-responsive" alt="View Menu">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="container">
+		<div class="row">
+			<h2 class="col-xs-12 text-center title-content">
+				View, Edit and Place Orders In One Place
+			</h2>
+			
+			<p class="col-xs-12 col-sm-10 col-sm-offset-1 text-center txt-content">Empower customers to craft their dining experience at their own pace.</br>Let customers place orders at their tables whenever they're ready.</p>
+			
+			<div class="col-xs-12 col-sm-8 col-sm-offset-2 img-content pull-left">
+					<img src="static/products/hummingmenu/place-order.jpg" class="center-block img-responsive" alt="Place Order">
+			</div>
+		</div>
+	</div>
+	
+	<div class="wrapper-content">
+		<div class="container">
+			<div class="row">
+				<h2 class="col-xs-12 text-center ">
+					Call For Service With One Click
+				</h2>
+				
+				<p class="col-xs-12 col-sm-10 col-sm-offset-1 text-center txt-content"> With HummingMenu, customers are able to order directly from the tablet, request a server's attention with the click of a button, send special instructions to the chef without the hassle of trying to flag down a server.</p>
+				
+				<div class="col-xs-12 col-sm-12 img-content pull-left">
+					<img src="static/products/hummingmenu/call-waitress.png" class="pull-right img-responsive" alt="Call Waitress">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+#parse("component/static_footer.vm")	
+
+	<!-- javascripts -->
+#parse("component/static_script.vm")	
+
+  </body>
+</html>
