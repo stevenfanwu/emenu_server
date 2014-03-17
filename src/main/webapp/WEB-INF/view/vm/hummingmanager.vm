@@ -3,12 +3,12 @@
 <html>
   <head>
     <title>Management Software For Restaurant</title>
-#parse("layout/component/static_head.vm")
+#parse("component/static_head.vm")
   </head>
   
   <body>
 	<!--navigation bar-->
-#parse("layout/component/static_nav.vm")
+#parse("component/static_nav.vm")
 
 	<div class="wrapper-hero-tablet">
 		<div class="container">
@@ -96,10 +96,10 @@
 		</div>
 	</div>
 	
-#parse("layout/component/static_footer.vm")	
+#parse("component/static_footer.vm")	
 
 	<!-- javascripts -->
-#parse("layout/component/static_script.vm")
+#parse("component/static_script.vm")
 
   </body>
 </html>
