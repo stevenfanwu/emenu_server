@@ -100,6 +100,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             dish.setUpdateTime(stmt.columnLong(13));
             dish.setDeleted(stmt.columnInt(14) == 1);
             dish.setSoldout(stmt.columnInt(15) == 1);
+            dish.setRestaurantId(stmt.columnInt(16));
             return dish;
         }
     };
@@ -160,6 +161,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(14, dish.isDeleted() ? 1 : 0);
             stmt.bind(15, dish.isSoldout() ? 1 : 0);
             stmt.bind(16, dish.getId());
+            stmt.bind(17, dish.getRestaurantId());
         }
     }
     
@@ -223,6 +225,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
         .appendSetValue(Column.UPDATE_TIME)
         .appendSetValue(Column.DELETED)
         .appendSetValue(Column.SOLDOUT)
+        .appendSetValue(Column.RESTAURANT_ID)
         .appendWhereId()
         .build();
 }

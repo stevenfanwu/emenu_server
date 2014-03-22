@@ -46,6 +46,7 @@ public class PadThriftController extends BaseThriftController {
         @Override
         public boolean submitPadInfo(PadInfo info) throws TException {
             EmenuContext context = new EmenuContext();
+            context.setRestaurantId(info.getRestaurentId());
             thriftLogic.submitPadInfo(context, info);
             return true;
         }

@@ -60,6 +60,7 @@ public abstract class BaseThriftController extends BaseController {
         session.setActivateTime(now);
         thriftSessionDb.put(context, sessionId, session);
         context.setLoginUserId(session.getUser().getId());
+        context.setRestaurantId(session.getUser().getRestaurantId());
         return session;
     }
     

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.2
+Created-By: 1.6.0_29-b11-402-11M3527 (Apple Inc.)
+Implementation-Version: 0.8.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.apache.thrift
+Bundle-Name: Apache Thrift
+Bundle-Version: 0.8.0
+Bundle-Description: Apache Thrift library
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ActivationPolicy: lazy
+Export-Package: org.apache.thrift;version=0.8.0
+

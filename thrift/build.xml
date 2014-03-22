@@ -34,14 +34,12 @@
 	</target>
 	
 	<target name="compile" depends="generate, init">
-		<echo>Compiling</echo>
-		
-		<copy todir="${build.dir}" overwrite="true">
-           <fileset dir="${gen.dir}">
+              <echo>Compiling</echo>
+              <copy todir="${build.dir}" overwrite="true">
+               <fileset dir="${gen.dir}">
 				<include name="/" />
-           </fileset>
-        </copy>
-		
+               </fileset>
+              </copy>
 		<javac srcdir="${gen.dir}" destdir="${build.dir}" classpathref="libs.classpath" />
 	</target>
 	

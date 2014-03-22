@@ -5,17 +5,16 @@ include "Base.thrift"
 namespace java cn.com.cloudstone.menu.server.thrift.api
 
 struct PadInfo{
-	// 登陆session，指明登陆用户
+	// session id. 
 	1: string sessionId,
-	// 设备唯一标示
+	// device id.
 	2: string IMEI,
-	// 电量
+	// battery. 
 	3: i32 batteryLevel,
+        // The restaurent id.
+        4: i32 restaurentId,
 }
 
 service IPadInfoService{
-	/**
-	 * 提交Pad信息
-	 */
 	bool submitPadInfo(1:PadInfo info),
 }

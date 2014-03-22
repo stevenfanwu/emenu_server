@@ -51,12 +51,17 @@ public class MenuThriftController extends BaseThriftController {
         public Menu getCurrentMenu() throws TException {
             LOG.info("getCurrentMenu");
             EmenuContext context = new EmenuContext();
-            return thriftLogic.getCurrentMenu(context);
+            context.setRestaurantId(2);
+           
+            Menu menu = thriftLogic.getCurrentMenu(context);
+            LOG.info("menu name " + menu.getPagesIterator().next().goodsList.get(0).name);
+            return menu;
         }
 
         @Override
         public List<String> getAllNotes() throws TException {
             EmenuContext context = new EmenuContext();
+            context.setRestaurantId(2);
             return thriftLogic.getAllNotes(context);
         }
     }
