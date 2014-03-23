@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import cn.com.cloudstone.menu.server.thrift.api.IMenuService;
 import cn.com.cloudstone.menu.server.thrift.api.IMenuService.Processor;
 import cn.com.cloudstone.menu.server.thrift.api.Menu;
+import cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException;
 
 import com.cloudstone.emenu.EmenuContext;
 
@@ -47,22 +48,26 @@ public class MenuThriftController extends BaseThriftController {
     
     private class Service implements IMenuService.Iface {
 
-        @Override
-        public Menu getCurrentMenu() throws TException {
-            LOG.info("getCurrentMenu");
+		@Override
+		public List<String> getAllNotes(String sessionId)
+				throws UserNotLoginException, TException {
+			EmenuContext context = new EmenuContext();
+			authorize(context, sessionId);
+            context.setRestaurantId(context.getRestaurantId());
+            return thriftLogic.getAllNotes(context);
+        }
+
+		@Override
+		public Menu getCurrentMenu(String sessionId)
+				throws UserNotLoginException, TException {
+			LOG.info("getCurrentMenu");
             EmenuContext context = new EmenuContext();
-            context.setRestaurantId(2);
-           
+            authorize(context, sessionId);
+            
+            context.setRestaurantId(context.getRestaurantId());
             Menu menu = thriftLogic.getCurrentMenu(context);
             LOG.info("menu name " + menu.getPagesIterator().next().goodsList.get(0).name);
             return menu;
-        }
-
-        @Override
-        public List<String> getAllNotes() throws TException {
-            EmenuContext context = new EmenuContext();
-            context.setRestaurantId(2);
-            return thriftLogic.getAllNotes(context);
         }
     }
 }

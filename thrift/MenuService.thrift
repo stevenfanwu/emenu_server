@@ -90,11 +90,13 @@ service IMenuService{
 	/**
 	 * 获取当前菜单
 	 */
-	Menu getCurrentMenu(),
+	Menu getCurrentMenu(1:string sessionId)
+        throws (1: Base.UserNotLoginException ue), 
 	
 	/**
 	 * 获取所有备注，顾客点菜时有可能会为各个菜添加备注。
 	 * 例如：微辣、不放辣、清淡、少糖、不放葱、不放蒜
 	 */ 
-	list<string> getAllNotes(), 
+	list<string> getAllNotes(1:string sessionId)
+        throws (1: Base.UserNotLoginException ue), 
 }

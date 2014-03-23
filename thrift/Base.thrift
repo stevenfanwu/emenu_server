@@ -1,12 +1,12 @@
 /**
- * 基础服务
+ * Base service. 
  */
 namespace java cn.com.cloudstone.menu.server.thrift.api
 
-// 用户未登录
+//  User not login.
 exception UserNotLoginException {}
 
-// 自定义错误，前端会直接显示这个错误信息
+// Error, client will show this error directly. 
 exception AException{
 	1: i32 code,
 	2: string msg,

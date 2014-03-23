@@ -38,22 +38,26 @@ public class IMenuService {
 
     /**
      * 获取当前菜单
+     * 
+     * @param sessionId
      */
-    public Menu getCurrentMenu() throws org.apache.thrift.TException;
+    public Menu getCurrentMenu(String sessionId) throws cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException, org.apache.thrift.TException;
 
     /**
      * 获取所有备注，顾客点菜时有可能会为各个菜添加备注。
      * 例如：微辣、不放辣、清淡、少糖、不放葱、不放蒜
+     * 
+     * @param sessionId
      */
-    public List<String> getAllNotes() throws org.apache.thrift.TException;
+    public List<String> getAllNotes(String sessionId) throws cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException, org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void getCurrentMenu(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getCurrentMenu(String sessionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getAllNotes(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getAllNotes(String sessionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -77,46 +81,54 @@ public class IMenuService {
       super(iprot, oprot);
     }
 
-    public Menu getCurrentMenu() throws org.apache.thrift.TException
+    public Menu getCurrentMenu(String sessionId) throws cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException, org.apache.thrift.TException
     {
-      send_getCurrentMenu();
+      send_getCurrentMenu(sessionId);
       return recv_getCurrentMenu();
     }
 
-    public void send_getCurrentMenu() throws org.apache.thrift.TException
+    public void send_getCurrentMenu(String sessionId) throws org.apache.thrift.TException
     {
       getCurrentMenu_args args = new getCurrentMenu_args();
+      args.setSessionId(sessionId);
       sendBase("getCurrentMenu", args);
     }
 
-    public Menu recv_getCurrentMenu() throws org.apache.thrift.TException
+    public Menu recv_getCurrentMenu() throws cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException, org.apache.thrift.TException
     {
       getCurrentMenu_result result = new getCurrentMenu_result();
       receiveBase(result, "getCurrentMenu");
       if (result.isSetSuccess()) {
         return result.success;
       }
+      if (result.ue != null) {
+        throw result.ue;
+      }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getCurrentMenu failed: unknown result");
     }
 
-    public List<String> getAllNotes() throws org.apache.thrift.TException
+    public List<String> getAllNotes(String sessionId) throws cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException, org.apache.thrift.TException
     {
-      send_getAllNotes();
+      send_getAllNotes(sessionId);
       return recv_getAllNotes();
     }
 
-    public void send_getAllNotes() throws org.apache.thrift.TException
+    public void send_getAllNotes(String sessionId) throws org.apache.thrift.TException
     {
       getAllNotes_args args = new getAllNotes_args();
+      args.setSessionId(sessionId);
       sendBase("getAllNotes", args);
     }
 
-    public List<String> recv_getAllNotes() throws org.apache.thrift.TException
+    public List<String> recv_getAllNotes() throws cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException, org.apache.thrift.TException
     {
       getAllNotes_result result = new getAllNotes_result();
       receiveBase(result, "getAllNotes");
       if (result.isSetSuccess()) {
         return result.success;
+      }
+      if (result.ue != null) {
+        throw result.ue;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getAllNotes failed: unknown result");
     }
@@ -139,26 +151,29 @@ public class IMenuService {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getCurrentMenu(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getCurrentMenu(String sessionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getCurrentMenu_call method_call = new getCurrentMenu_call(resultHandler, this, ___protocolFactory, ___transport);
+      getCurrentMenu_call method_call = new getCurrentMenu_call(sessionId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class getCurrentMenu_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public getCurrentMenu_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String sessionId;
+      public getCurrentMenu_call(String sessionId, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.sessionId = sessionId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getCurrentMenu", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getCurrentMenu_args args = new getCurrentMenu_args();
+        args.setSessionId(sessionId);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public Menu getResult() throws org.apache.thrift.TException {
+      public Menu getResult() throws cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -168,26 +183,29 @@ public class IMenuService {
       }
     }
 
-    public void getAllNotes(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getAllNotes(String sessionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getAllNotes_call method_call = new getAllNotes_call(resultHandler, this, ___protocolFactory, ___transport);
+      getAllNotes_call method_call = new getAllNotes_call(sessionId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class getAllNotes_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public getAllNotes_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String sessionId;
+      public getAllNotes_call(String sessionId, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.sessionId = sessionId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getAllNotes", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getAllNotes_args args = new getAllNotes_args();
+        args.setSessionId(sessionId);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public List<String> getResult() throws org.apache.thrift.TException {
+      public List<String> getResult() throws cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -230,7 +248,11 @@ public class IMenuService {
 
       public getCurrentMenu_result getResult(I iface, getCurrentMenu_args args) throws org.apache.thrift.TException {
         getCurrentMenu_result result = new getCurrentMenu_result();
-        result.success = iface.getCurrentMenu();
+        try {
+          result.success = iface.getCurrentMenu(args.sessionId);
+        } catch (cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException ue) {
+          result.ue = ue;
+        }
         return result;
       }
     }
@@ -250,7 +272,11 @@ public class IMenuService {
 
       public getAllNotes_result getResult(I iface, getAllNotes_args args) throws org.apache.thrift.TException {
         getAllNotes_result result = new getAllNotes_result();
-        result.success = iface.getAllNotes();
+        try {
+          result.success = iface.getAllNotes(args.sessionId);
+        } catch (cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException ue) {
+          result.ue = ue;
+        }
         return result;
       }
     }
@@ -300,6 +326,12 @@ public class IMenuService {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
             getCurrentMenu_result result = new getCurrentMenu_result();
+            if (e instanceof cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException) {
+                        result.ue = (cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException) e;
+                        result.setUeIsSet(true);
+                        msg = result;
+            }
+             else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -320,7 +352,7 @@ public class IMenuService {
       }
 
       public void start(I iface, getCurrentMenu_args args, org.apache.thrift.async.AsyncMethodCallback<Menu> resultHandler) throws TException {
-        iface.getCurrentMenu(resultHandler);
+        iface.getCurrentMenu(args.sessionId,resultHandler);
       }
     }
 
@@ -351,6 +383,12 @@ public class IMenuService {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
             getAllNotes_result result = new getAllNotes_result();
+            if (e instanceof cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException) {
+                        result.ue = (cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException) e;
+                        result.setUeIsSet(true);
+                        msg = result;
+            }
+             else 
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -371,7 +409,7 @@ public class IMenuService {
       }
 
       public void start(I iface, getAllNotes_args args, org.apache.thrift.async.AsyncMethodCallback<List<String>> resultHandler) throws TException {
-        iface.getAllNotes(resultHandler);
+        iface.getAllNotes(args.sessionId,resultHandler);
       }
     }
 
@@ -380,6 +418,7 @@ public class IMenuService {
   public static class getCurrentMenu_args implements org.apache.thrift.TBase<getCurrentMenu_args, getCurrentMenu_args._Fields>, java.io.Serializable, Cloneable, Comparable<getCurrentMenu_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCurrentMenu_args");
 
+    private static final org.apache.thrift.protocol.TField SESSION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sessionId", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -387,10 +426,11 @@ public class IMenuService {
       schemes.put(TupleScheme.class, new getCurrentMenu_argsTupleSchemeFactory());
     }
 
+    public String sessionId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      SESSION_ID((short)1, "sessionId");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -405,6 +445,8 @@ public class IMenuService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 1: // SESSION_ID
+            return SESSION_ID;
           default:
             return null;
         }
@@ -443,9 +485,13 @@ public class IMenuService {
         return _fieldName;
       }
     }
+
+    // isset id assignments
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SESSION_ID, new org.apache.thrift.meta_data.FieldMetaData("sessionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCurrentMenu_args.class, metaDataMap);
     }
@@ -453,10 +499,20 @@ public class IMenuService {
     public getCurrentMenu_args() {
     }
 
+    public getCurrentMenu_args(
+      String sessionId)
+    {
+      this();
+      this.sessionId = sessionId;
+    }
+
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public getCurrentMenu_args(getCurrentMenu_args other) {
+      if (other.isSetSessionId()) {
+        this.sessionId = other.sessionId;
+      }
     }
 
     public getCurrentMenu_args deepCopy() {
@@ -465,15 +521,51 @@ public class IMenuService {
 
     @Override
     public void clear() {
+      this.sessionId = null;
+    }
+
+    public String getSessionId() {
+      return this.sessionId;
+    }
+
+    public getCurrentMenu_args setSessionId(String sessionId) {
+      this.sessionId = sessionId;
+      return this;
+    }
+
+    public void unsetSessionId() {
+      this.sessionId = null;
+    }
+
+    /** Returns true if field sessionId is set (has been assigned a value) and false otherwise */
+    public boolean isSetSessionId() {
+      return this.sessionId != null;
+    }
+
+    public void setSessionIdIsSet(boolean value) {
+      if (!value) {
+        this.sessionId = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case SESSION_ID:
+        if (value == null) {
+          unsetSessionId();
+        } else {
+          setSessionId((String)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case SESSION_ID:
+        return getSessionId();
+
       }
       throw new IllegalStateException();
     }
@@ -485,6 +577,8 @@ public class IMenuService {
       }
 
       switch (field) {
+      case SESSION_ID:
+        return isSetSessionId();
       }
       throw new IllegalStateException();
     }
@@ -502,6 +596,15 @@ public class IMenuService {
       if (that == null)
         return false;
 
+      boolean this_present_sessionId = true && this.isSetSessionId();
+      boolean that_present_sessionId = true && that.isSetSessionId();
+      if (this_present_sessionId || that_present_sessionId) {
+        if (!(this_present_sessionId && that_present_sessionId))
+          return false;
+        if (!this.sessionId.equals(that.sessionId))
+          return false;
+      }
+
       return true;
     }
 
@@ -518,6 +621,16 @@ public class IMenuService {
 
       int lastComparison = 0;
 
+      lastComparison = Boolean.valueOf(isSetSessionId()).compareTo(other.isSetSessionId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSessionId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sessionId, other.sessionId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -538,6 +651,13 @@ public class IMenuService {
       StringBuilder sb = new StringBuilder("getCurrentMenu_args(");
       boolean first = true;
 
+      sb.append("sessionId:");
+      if (this.sessionId == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sessionId);
+      }
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -581,6 +701,14 @@ public class IMenuService {
             break;
           }
           switch (schemeField.id) {
+            case 1: // SESSION_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.sessionId = iprot.readString();
+                struct.setSessionIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -596,6 +724,11 @@ public class IMenuService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.sessionId != null) {
+          oprot.writeFieldBegin(SESSION_ID_FIELD_DESC);
+          oprot.writeString(struct.sessionId);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -613,11 +746,24 @@ public class IMenuService {
       @Override
       public void write(org.apache.thrift.protocol.TProtocol prot, getCurrentMenu_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSessionId()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSessionId()) {
+          oprot.writeString(struct.sessionId);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getCurrentMenu_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.sessionId = iprot.readString();
+          struct.setSessionIdIsSet(true);
+        }
       }
     }
 
@@ -627,6 +773,7 @@ public class IMenuService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getCurrentMenu_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField UE_FIELD_DESC = new org.apache.thrift.protocol.TField("ue", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -635,10 +782,12 @@ public class IMenuService {
     }
 
     public Menu success; // required
+    public cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException ue; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      UE((short)1, "ue");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -655,6 +804,8 @@ public class IMenuService {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // UE
+            return UE;
           default:
             return null;
         }
@@ -700,6 +851,8 @@ public class IMenuService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Menu.class)));
+      tmpMap.put(_Fields.UE, new org.apache.thrift.meta_data.FieldMetaData("ue", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getCurrentMenu_result.class, metaDataMap);
     }
@@ -708,10 +861,12 @@ public class IMenuService {
     }
 
     public getCurrentMenu_result(
-      Menu success)
+      Menu success,
+      cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException ue)
     {
       this();
       this.success = success;
+      this.ue = ue;
     }
 
     /**
@@ -720,6 +875,9 @@ public class IMenuService {
     public getCurrentMenu_result(getCurrentMenu_result other) {
       if (other.isSetSuccess()) {
         this.success = new Menu(other.success);
+      }
+      if (other.isSetUe()) {
+        this.ue = new cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException(other.ue);
       }
     }
 
@@ -730,6 +888,7 @@ public class IMenuService {
     @Override
     public void clear() {
       this.success = null;
+      this.ue = null;
     }
 
     public Menu getSuccess() {
@@ -756,6 +915,30 @@ public class IMenuService {
       }
     }
 
+    public cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException getUe() {
+      return this.ue;
+    }
+
+    public getCurrentMenu_result setUe(cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException ue) {
+      this.ue = ue;
+      return this;
+    }
+
+    public void unsetUe() {
+      this.ue = null;
+    }
+
+    /** Returns true if field ue is set (has been assigned a value) and false otherwise */
+    public boolean isSetUe() {
+      return this.ue != null;
+    }
+
+    public void setUeIsSet(boolean value) {
+      if (!value) {
+        this.ue = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
@@ -766,6 +949,14 @@ public class IMenuService {
         }
         break;
 
+      case UE:
+        if (value == null) {
+          unsetUe();
+        } else {
+          setUe((cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException)value);
+        }
+        break;
+
       }
     }
 
@@ -773,6 +964,9 @@ public class IMenuService {
       switch (field) {
       case SUCCESS:
         return getSuccess();
+
+      case UE:
+        return getUe();
 
       }
       throw new IllegalStateException();
@@ -787,6 +981,8 @@ public class IMenuService {
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case UE:
+        return isSetUe();
       }
       throw new IllegalStateException();
     }
@@ -810,6 +1006,15 @@ public class IMenuService {
         if (!(this_present_success && that_present_success))
           return false;
         if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_ue = true && this.isSetUe();
+      boolean that_present_ue = true && that.isSetUe();
+      if (this_present_ue || that_present_ue) {
+        if (!(this_present_ue && that_present_ue))
+          return false;
+        if (!this.ue.equals(that.ue))
           return false;
       }
 
@@ -839,6 +1044,16 @@ public class IMenuService {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetUe()).compareTo(other.isSetUe());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUe()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ue, other.ue);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -864,6 +1079,14 @@ public class IMenuService {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("ue:");
+      if (this.ue == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ue);
       }
       first = false;
       sb.append(")");
@@ -921,6 +1144,15 @@ public class IMenuService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // UE
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.ue = new cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException();
+                struct.ue.read(iprot);
+                struct.setUeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -939,6 +1171,11 @@ public class IMenuService {
         if (struct.success != null) {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.ue != null) {
+          oprot.writeFieldBegin(UE_FIELD_DESC);
+          struct.ue.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -962,20 +1199,31 @@ public class IMenuService {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetUe()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           struct.success.write(oprot);
+        }
+        if (struct.isSetUe()) {
+          struct.ue.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getCurrentMenu_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.success = new Menu();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.ue = new cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException();
+          struct.ue.read(iprot);
+          struct.setUeIsSet(true);
         }
       }
     }
@@ -985,6 +1233,7 @@ public class IMenuService {
   public static class getAllNotes_args implements org.apache.thrift.TBase<getAllNotes_args, getAllNotes_args._Fields>, java.io.Serializable, Cloneable, Comparable<getAllNotes_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getAllNotes_args");
 
+    private static final org.apache.thrift.protocol.TField SESSION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sessionId", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -992,10 +1241,11 @@ public class IMenuService {
       schemes.put(TupleScheme.class, new getAllNotes_argsTupleSchemeFactory());
     }
 
+    public String sessionId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-;
+      SESSION_ID((short)1, "sessionId");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1010,6 +1260,8 @@ public class IMenuService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 1: // SESSION_ID
+            return SESSION_ID;
           default:
             return null;
         }
@@ -1048,9 +1300,13 @@ public class IMenuService {
         return _fieldName;
       }
     }
+
+    // isset id assignments
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SESSION_ID, new org.apache.thrift.meta_data.FieldMetaData("sessionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getAllNotes_args.class, metaDataMap);
     }
@@ -1058,10 +1314,20 @@ public class IMenuService {
     public getAllNotes_args() {
     }
 
+    public getAllNotes_args(
+      String sessionId)
+    {
+      this();
+      this.sessionId = sessionId;
+    }
+
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public getAllNotes_args(getAllNotes_args other) {
+      if (other.isSetSessionId()) {
+        this.sessionId = other.sessionId;
+      }
     }
 
     public getAllNotes_args deepCopy() {
@@ -1070,15 +1336,51 @@ public class IMenuService {
 
     @Override
     public void clear() {
+      this.sessionId = null;
+    }
+
+    public String getSessionId() {
+      return this.sessionId;
+    }
+
+    public getAllNotes_args setSessionId(String sessionId) {
+      this.sessionId = sessionId;
+      return this;
+    }
+
+    public void unsetSessionId() {
+      this.sessionId = null;
+    }
+
+    /** Returns true if field sessionId is set (has been assigned a value) and false otherwise */
+    public boolean isSetSessionId() {
+      return this.sessionId != null;
+    }
+
+    public void setSessionIdIsSet(boolean value) {
+      if (!value) {
+        this.sessionId = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case SESSION_ID:
+        if (value == null) {
+          unsetSessionId();
+        } else {
+          setSessionId((String)value);
+        }
+        break;
+
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case SESSION_ID:
+        return getSessionId();
+
       }
       throw new IllegalStateException();
     }
@@ -1090,6 +1392,8 @@ public class IMenuService {
       }
 
       switch (field) {
+      case SESSION_ID:
+        return isSetSessionId();
       }
       throw new IllegalStateException();
     }
@@ -1107,6 +1411,15 @@ public class IMenuService {
       if (that == null)
         return false;
 
+      boolean this_present_sessionId = true && this.isSetSessionId();
+      boolean that_present_sessionId = true && that.isSetSessionId();
+      if (this_present_sessionId || that_present_sessionId) {
+        if (!(this_present_sessionId && that_present_sessionId))
+          return false;
+        if (!this.sessionId.equals(that.sessionId))
+          return false;
+      }
+
       return true;
     }
 
@@ -1123,6 +1436,16 @@ public class IMenuService {
 
       int lastComparison = 0;
 
+      lastComparison = Boolean.valueOf(isSetSessionId()).compareTo(other.isSetSessionId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSessionId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sessionId, other.sessionId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -1143,6 +1466,13 @@ public class IMenuService {
       StringBuilder sb = new StringBuilder("getAllNotes_args(");
       boolean first = true;
 
+      sb.append("sessionId:");
+      if (this.sessionId == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sessionId);
+      }
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -1186,6 +1516,14 @@ public class IMenuService {
             break;
           }
           switch (schemeField.id) {
+            case 1: // SESSION_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.sessionId = iprot.readString();
+                struct.setSessionIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -1201,6 +1539,11 @@ public class IMenuService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.sessionId != null) {
+          oprot.writeFieldBegin(SESSION_ID_FIELD_DESC);
+          oprot.writeString(struct.sessionId);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -1218,11 +1561,24 @@ public class IMenuService {
       @Override
       public void write(org.apache.thrift.protocol.TProtocol prot, getAllNotes_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSessionId()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSessionId()) {
+          oprot.writeString(struct.sessionId);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getAllNotes_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.sessionId = iprot.readString();
+          struct.setSessionIdIsSet(true);
+        }
       }
     }
 
@@ -1232,6 +1588,7 @@ public class IMenuService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getAllNotes_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
+    private static final org.apache.thrift.protocol.TField UE_FIELD_DESC = new org.apache.thrift.protocol.TField("ue", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -1240,10 +1597,12 @@ public class IMenuService {
     }
 
     public List<String> success; // required
+    public cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException ue; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      SUCCESS((short)0, "success"),
+      UE((short)1, "ue");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1260,6 +1619,8 @@ public class IMenuService {
         switch(fieldId) {
           case 0: // SUCCESS
             return SUCCESS;
+          case 1: // UE
+            return UE;
           default:
             return null;
         }
@@ -1306,6 +1667,8 @@ public class IMenuService {
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
+      tmpMap.put(_Fields.UE, new org.apache.thrift.meta_data.FieldMetaData("ue", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getAllNotes_result.class, metaDataMap);
     }
@@ -1314,10 +1677,12 @@ public class IMenuService {
     }
 
     public getAllNotes_result(
-      List<String> success)
+      List<String> success,
+      cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException ue)
     {
       this();
       this.success = success;
+      this.ue = ue;
     }
 
     /**
@@ -1328,6 +1693,9 @@ public class IMenuService {
         List<String> __this__success = new ArrayList<String>(other.success);
         this.success = __this__success;
       }
+      if (other.isSetUe()) {
+        this.ue = new cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException(other.ue);
+      }
     }
 
     public getAllNotes_result deepCopy() {
@@ -1337,6 +1705,7 @@ public class IMenuService {
     @Override
     public void clear() {
       this.success = null;
+      this.ue = null;
     }
 
     public int getSuccessSize() {
@@ -1378,6 +1747,30 @@ public class IMenuService {
       }
     }
 
+    public cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException getUe() {
+      return this.ue;
+    }
+
+    public getAllNotes_result setUe(cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException ue) {
+      this.ue = ue;
+      return this;
+    }
+
+    public void unsetUe() {
+      this.ue = null;
+    }
+
+    /** Returns true if field ue is set (has been assigned a value) and false otherwise */
+    public boolean isSetUe() {
+      return this.ue != null;
+    }
+
+    public void setUeIsSet(boolean value) {
+      if (!value) {
+        this.ue = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
@@ -1388,6 +1781,14 @@ public class IMenuService {
         }
         break;
 
+      case UE:
+        if (value == null) {
+          unsetUe();
+        } else {
+          setUe((cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException)value);
+        }
+        break;
+
       }
     }
 
@@ -1395,6 +1796,9 @@ public class IMenuService {
       switch (field) {
       case SUCCESS:
         return getSuccess();
+
+      case UE:
+        return getUe();
 
       }
       throw new IllegalStateException();
@@ -1409,6 +1813,8 @@ public class IMenuService {
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
+      case UE:
+        return isSetUe();
       }
       throw new IllegalStateException();
     }
@@ -1432,6 +1838,15 @@ public class IMenuService {
         if (!(this_present_success && that_present_success))
           return false;
         if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_ue = true && this.isSetUe();
+      boolean that_present_ue = true && that.isSetUe();
+      if (this_present_ue || that_present_ue) {
+        if (!(this_present_ue && that_present_ue))
+          return false;
+        if (!this.ue.equals(that.ue))
           return false;
       }
 
@@ -1461,6 +1876,16 @@ public class IMenuService {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetUe()).compareTo(other.isSetUe());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUe()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.ue, other.ue);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -1486,6 +1911,14 @@ public class IMenuService {
         sb.append("null");
       } else {
         sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("ue:");
+      if (this.ue == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.ue);
       }
       first = false;
       sb.append(")");
@@ -1549,6 +1982,15 @@ public class IMenuService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 1: // UE
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.ue = new cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException();
+                struct.ue.read(iprot);
+                struct.setUeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -1576,6 +2018,11 @@ public class IMenuService {
           }
           oprot.writeFieldEnd();
         }
+        if (struct.ue != null) {
+          oprot.writeFieldBegin(UE_FIELD_DESC);
+          struct.ue.write(oprot);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -1597,7 +2044,10 @@ public class IMenuService {
         if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetUe()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
@@ -1607,12 +2057,15 @@ public class IMenuService {
             }
           }
         }
+        if (struct.isSetUe()) {
+          struct.ue.write(oprot);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getAllNotes_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list45 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
@@ -1625,6 +2078,11 @@ public class IMenuService {
             }
           }
           struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.ue = new cn.com.cloudstone.menu.server.thrift.api.UserNotLoginException();
+          struct.ue.read(iprot);
+          struct.setUeIsSet(true);
         }
       }
     }
