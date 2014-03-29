@@ -3,7 +3,7 @@
         <ul>
             <li class="{{#unless hasLast}}active{{/unless}}">
                 <a href="#" class="page-item" value="{{lastIndex}}">
-                    上一页
+                   Previous Page 
                 </a>
             </li>
             {{#each pagers}}
@@ -24,12 +24,12 @@
             {{/if}}
             {{/each}}
             <li class="{{#unless hasNext}}active{{/unless}}">
-                <a href="#" class="page-item" value="{{nextIndex}}">下一页</a>
+                <a href="#" class="page-item" value="{{nextIndex}}">Next Page</a>
             </li>
         </ul>
     </div>
     <div class="pull-right pager-go">
-        第<input type="text" class="input-page" value="{{currentIndex}}"></input>页<span class="btn-link btn-go">GO</span>
+        Go to page <input type="text" class="input-page" value="{{currentIndex}}"></input><span class="btn-link btn-go"></span>
     </div>
 </div>
 

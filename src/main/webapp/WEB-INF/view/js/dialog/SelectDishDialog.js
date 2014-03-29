@@ -14,7 +14,7 @@ define(function (require, exports, module) {
     });
 
     var SelectDishDialog = Dialog.extend({
-        header: '选择菜品',
+        header: 'Chose Dish',
 
         confirmLabel: null,
 
