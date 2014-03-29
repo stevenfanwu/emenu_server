@@ -1,38 +1,38 @@
 <form class="form-create-table form-horizontal">
     <div class="control-group input-name">
-        <label class="control-label">桌名:</label>
+        <label class="control-label">Table Name:</label>
         <div class="controls">
             <input type="text" name="name"/>
             <span class="help-inline error"></span>
         </div>
     </div>
     <div class="control-group input-type">
-        <label class="control-label">类型:</label>
+        <label class="control-label">Location:</label>
         <div class="controls">
             <label class="radio inline">
                 <input type="radio" name="type" value="0" checked="true"/>
-                包间
+               Room 
             </label>
             <label class="radio inline">
                 <input type="radio" name="type" value="1"/>
-                散台
+               Hall 
             </label>
             <label class="radio inline">
                 <input type="radio" name="type" value="2"/>
-                卡座
+               Booth 
             </label>
             <span class="help-inline error"></span>
         </div>
     </div>
     <div class="control-group input-capacity">
-        <label class="control-label">最多人数:</label>
+        <label class="control-label">Max Capacity:</label>
         <div class="controls">
             <input type="text" name="capacity"/>
             <span class="help-inline error"></span>
         </div>
     </div>
     <div class="control-group input-minCharge">
-        <label class="control-label">最低消费:</label>
+        <label class="control-label">Minimum Spending:</label>
         <div class="controls">
             <input type="text" name="minCharge"/>
             <span class="help-inline error"></span>
@@ -40,19 +40,19 @@
     </div>
     <div class="input-tip">
         <div class="control-group wrap-tip-mode">
-            <label class="control-label">服务费模式:</label>
+            <label class="control-label">Service Fee Type:</label>
             <div class="controls">
                 <label class="radio inline">
                     <input type="radio" name="tipMode" value="0" checked="true"/>
-                    无
+                   None 
                 </label>
                 <label class="radio inline">
                     <input type="radio" name="tipMode" value="1"/>
-                    固定金额
+                   Flat rate 
                 </label>
                 <label class="radio inline">
                     <input type="radio" name="tipMode" value="2"/>
-                    按比例收费
+                   Percentage 
                 </label>
             </div>
         </div>

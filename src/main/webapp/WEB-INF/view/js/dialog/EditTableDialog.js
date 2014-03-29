@@ -12,7 +12,7 @@ define(function (require, exports, module) {
     });
 
     var EditTableDialog = EditDialog.extend({
-        headerSuffix: '餐桌',
+        headerSuffix: ' Table',
 
         ContentType: Content,
 

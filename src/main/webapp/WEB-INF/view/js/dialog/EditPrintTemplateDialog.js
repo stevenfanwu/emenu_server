@@ -12,7 +12,7 @@ define(function (require, exports, module) {
     });
     
     var EditPrintTemplateDialog = EditDialog.extend({
-        headerSuffix: '模板',
+        headerSuffix: ' Template',
 
         ContentType: Content,
 

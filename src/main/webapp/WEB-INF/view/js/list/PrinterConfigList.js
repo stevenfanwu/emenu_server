@@ -8,7 +8,7 @@ define(function (require, exports, module) {
     var Dialog = require('../dialog/EditPrinterConfigDialog');
 
     var PrinterConfigList = BaseTable.extend({
-        heads: ['名称', '操作'],
+        heads: ['Name', 'Acton'],
         
         ItemType: require('./item/PrinterConfigItem'),
 

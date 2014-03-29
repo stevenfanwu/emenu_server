@@ -8,8 +8,8 @@ define(function (require, exports, module) {
     var StatModel = require('../model/StatModel');
     
     var StatList = BaseTable.extend({
-        heads: ['时间', '总单数', '翻桌率', '客流量', '订单均价', '人均消费', '开发票数',
-            '发票总额', '优惠数额', '服务费总额', '总收入'],
+        heads: ['Date', 'Transtractions', 'Table Turnover Rate', 'Guests Served', 'Averate Spending Per Order', 'Average Spending Per Person', 'Invoice Issued',
+            'Total Invoice Amount', 'Discounts', 'Total Serivice Fee', 'Total Sales'],
         
         ItemType: require('./item/StatItem'),
 

@@ -30,20 +30,19 @@ define(function (require, exports, module) {
                 if (data.time < 5) {
                     data.timeStatus = "success";
                     if (data.time < 1) {
-                        data.timeText =  "刚刚连接";
+                        data.timeText =  "Just connected";
                     } else {
-                        data.timeText = data.time + "分钟前连接";
-                    }
+                        data.timeText = "Connected " + data.time + " minutes ago"; }
                 } else if (data.time >= 60) {
                     data.timeStatus = "error";
-                    data.timeText = "超过一个小时未连接";
+                    data.timeText = "Last connected > 1 hour ago";
                 } else {
                     data.timeStatus = "warning";
-                    data.timeText = data.time + "分钟未连接";
+                    data.timeText = "Lost connection for " + data.time + " minutes";
                 }
             } else {
                 data.timeStatus = "error";
-                data.timeText = "超过一个小时未连接";
+                data.timeText = "Last connected > 1 hour ago";
             }
 
             return data;

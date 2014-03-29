@@ -8,7 +8,7 @@ define(function (require, exports, module) {
     var DishTagModel = require('../model/DishTagModel');
 
     var DishTagList = BaseTable.extend({
-        heads: ['菜品做法', '操作'],
+        heads: ['Cooking Method', 'Action'],
 
         CollectionType: require('../collection/DishTagCollection'),
         
@@ -20,7 +20,7 @@ define(function (require, exports, module) {
             this.on('createDishTag', this.onCreateDishTag, this);
             this.collection.on('edit', this.onEditDishTag, this);
             this.collection.on('delete', function (tagModel) {
-                if (window.confirm('确定删除"' + tagModel.get('name') + '"?')) {
+                if (window.confirm('Delete "' + tagModel.get('name') + '"?')) {
                     tagModel.destroy({
                         success: function () {
                             this.refresh();

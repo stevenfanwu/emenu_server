@@ -13,7 +13,7 @@ define(function (require, exports, module) {
     
     
     var EditPrinterConfigDialog = EditDialog.extend({
-        headerSuffix: '打印配置',
+        headerSuffix: 'Print Config',
 
         ContentType: Content,
 

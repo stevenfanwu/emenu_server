@@ -9,7 +9,7 @@ define(function (require, exports, module) {
     var DishStatSum = require('../component/DishStatSum');
     
     var DishStatList = BaseTable.extend({
-        heads: ['菜品名称', '菜品分类', '总份数', '单价', '退菜数量', '优惠数额', '总收入'],
+        heads: ['Dish Name', 'Category', 'Qty', 'Price', 'Order canceled', 'Discount', 'Total Sales'],
         
         ItemType: require('./item/DishStatItem'),
 

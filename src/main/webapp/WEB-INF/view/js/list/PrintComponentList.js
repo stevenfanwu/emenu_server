@@ -9,7 +9,7 @@ define(function (require, exports, module) {
     var Model = require('../model/PrintComponentModel');
     
     var PrintComponentList = BaseTable.extend({
-        heads: ['名称', '操作'],
+        heads: ['Name', 'Action'],
 
         ItemType: require('./item/PrintComponentItem'),
 
@@ -31,7 +31,7 @@ define(function (require, exports, module) {
             }, this);
 
             item.on('delete', function () {
-                if (window.confirm('确定删除"' + model.get('name') + '"?')) {
+                if (window.confirm('Delete "' + model.get('name') + '"?')) {
                     model.destroy({
                         success: function () {
                             this.refresh();

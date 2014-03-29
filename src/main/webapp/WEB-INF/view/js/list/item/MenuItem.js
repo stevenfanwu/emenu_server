@@ -82,7 +82,7 @@ define(function (require, exports, module) {
         },
 
         onDeleteChapter: function (chapterModel) {
-            if (window.confirm('确定删除分类"' + chapterModel.get('name') + '"?')) {
+            if (window.confirm('Delete category "' + chapterModel.get('name') + '"?')) {
                 chapterModel.destroy({
                     success: function () {
                         this.list.refresh();

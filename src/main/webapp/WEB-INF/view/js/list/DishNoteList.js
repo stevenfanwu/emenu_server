@@ -8,7 +8,7 @@ define(function (require, exports, module) {
     var DishNoteModel = require('../model/DishNoteModel');
 
     var DishNoteList = BaseTable.extend({
-        heads: ['菜品备注', '操作'],
+        heads: ['Dish Note', 'Action'],
 
         CollectionType: require('../collection/DishNoteCollection'),
         
@@ -20,7 +20,7 @@ define(function (require, exports, module) {
             this.on('createDishNote', this.onCreateDishNote, this);
             this.collection.on('edit', this.onEditDishNote, this);
             this.collection.on('delete', function (noteModel) {
-                if (window.confirm('确定删除"' + noteModel.get('name') + '"?')) {
+                if (window.confirm('Delete "' + noteModel.get('name') + '"?')) {
                     noteModel.destroy({
                         success: function () {
                             this.refresh();

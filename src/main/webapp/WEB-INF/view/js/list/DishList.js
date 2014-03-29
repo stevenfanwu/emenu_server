@@ -11,7 +11,7 @@ define(function (require, exports, module) {
     var DishList = BaseTable.extend({
         query: null,
 
-        heads: ['名称', '价格', '会员价', '单位', '辣度', '允许小数份', '特价菜', '菜品描述', '已加入菜单', '操作'],
+        heads: ['Dish Name', 'Price', 'Discount Price', 'Unit', 'Spicy', 'Small Size', 'Special', 'Description', 'On Menu', 'Action'],
 
         ItemType: require('./item/DishItem'),
 

@@ -9,7 +9,7 @@ define(function (require, exports, module) {
     var MenuStatSum = require('../component/MenuStatSum');
     
     var MenuStatList = BaseTable.extend({
-        heads: ['菜品分类', '总份数', '优惠数额', '总收入'],
+        heads: ['Category', 'Qty', 'Discount', 'Total Sales'],
         
         ItemType: require('./item/MenuStatItem'),
 

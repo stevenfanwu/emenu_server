@@ -8,7 +8,7 @@ define(function (require, exports, module) {
     var PadModel = require('../model/PadModel');
 
     var PadList = BaseTable.extend({
-        heads: ['名称', 'IMEI码', '备注', '操作'],
+        heads: ['Name', 'IMEI', 'Note', 'Action'],
 
         CollectionType: require('../collection/PadCollection'),
         
