@@ -46,7 +46,7 @@ public class UserStatDb extends SQLiteDb implements IUserStatDb {
     private static enum Column {
         ID("id"), DAY("day"), INCOME("income"), COUNT("count"), DISCOUNT("discount"),
         AVE_PERSON("avePerson"), AVE_ORDER("aveOrder"),
-        CUSTOMER_COUNT("customerCount"), USER_NAME("userName"), 
+        CUSTOMER_COUNT("customerCount"), USER_NAME("userName"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
         RESTAURANT_ID("restaurantId");
 
@@ -106,8 +106,8 @@ public class UserStatDb extends SQLiteDb implements IUserStatDb {
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.DAY)
-        .appendWhereRestaurantId().build();
+            .appendWhere(Column.DAY)
+            .appendWhereRestaurantId().build();
 
     private static final RowMapper<UserStat> rowMapper = new RowMapper<UserStat>() {
 

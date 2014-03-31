@@ -1,6 +1,6 @@
 /**
  * @(#)IgnorableJsonMapper.java, 2013-7-1. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
@@ -10,7 +10,6 @@ import org.codehaus.jackson.map.SerializationConfig;
 
 /**
  * @author xuhongfeng
- *
  */
 public class IgnorableObjectMapper extends ObjectMapper {
 

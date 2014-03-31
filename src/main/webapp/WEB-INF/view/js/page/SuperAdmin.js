@@ -9,15 +9,32 @@ define(function (require, exports, module) {
     var UserModel = require('../model/UserModel');
     var RestaurantList = require('../list/RestaurantList');
     var SuperAdmin = BasePage.extend({
+
         events: {
             'click .btn-create-user': 'onCreateUser',
             'click .btn-create-restaurant': 'onCreateRestaurant',
       
         },
+
+        initialize: function () {
+          var restaurantList = new RestaurantList({
+                el: this.$('.wrap-list')
+          });
+          this.list = restaurantList;
+          this.list.render();
+          BasePage.prototype.initialize.apply(this, arguments);
+          console.log('init called in SuperAdmin');
+        },
+
+        render: function() {
+            console.log('render called in SuperAdmin');
+            this.list.render();
+        },
+
         initEvents: function () {
             BasePage.prototype.initEvents.apply(this, arguments);
         
-            this.list.collection.on('edit', this.onRestaurant, this);
+            this.list.collection.on('edit', this.onEditRestaurant, this);
             this.list.collection.on('delete', this.onDeleteRestaurant, this);
         },
 
@@ -46,17 +63,25 @@ define(function (require, exports, module) {
         },
 
         onEditRestaurant: function(model) {
-            console.log('onEditRestaurant');
+            // TODO(Nicholas): add update 
+            var Dialog = require('../dialog/EditRestaurantDialog');
+            var dialog = new Dialog({
+                model: model 
+            });
+            dialog.model.on('saved', function () {
+                this.list.refresh();
+            }, this);
+            dialog.show();
         },
 
- 
-        initialize: function () {
-          console.log('from super user.');
-          var restaurantList = new RestaurantList({
-                el: this.$('.wrap-list')
-          });
-          restaurantList.render();
-          this.list = restaurantList;
+        onDeleteRestaurant: function(model) {
+            if (window.confirm('Delete restaurant ' + model.get('name') + '?')) {
+                model.destroy({
+                    success: function () {
+                        this.list.refresh();
+                    }.bind(this)
+                });
+            }
         }
     });
     return SuperAdmin;

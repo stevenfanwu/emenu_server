@@ -1,25 +1,24 @@
 /**
  * @(#)Licence.java, Oct 5, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.data;
 
 /**
  * @author xuhongfeng
- *
  */
 public class Licence {
     public static final int TYPE_FOR_EVER = 1;
     public static final int TYPE_TEST = 2;
     public static final int TYPE_LIMIT = 3;
-    
+
     private String uuid;
     private int padCount;
-    
+
     private int type;
     private boolean paid;
     private long licenceTime;
-    
+
     private long createdTime;
 
     public String getUuid() {
@@ -70,5 +69,5 @@ public class Licence {
         this.createdTime = createdTime;
     }
 
-    
+
 }

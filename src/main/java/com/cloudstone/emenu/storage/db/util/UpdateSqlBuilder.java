@@ -1,12 +1,11 @@
 /**
  * @(#)UpdateSqlBuilder.java, 2013-7-2. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db.util;
 
 /**
  * @author xuhongfeng
- *
  */
 public class UpdateSqlBuilder extends SQLBuilder {
     private final String TABLE_NAME;
@@ -14,10 +13,11 @@ public class UpdateSqlBuilder extends SQLBuilder {
     public UpdateSqlBuilder(String tableName) {
         super();
         TABLE_NAME = tableName;
-        append("UPDATE " + TABLE_NAME +" SET ");
+        append("UPDATE " + TABLE_NAME + " SET ");
     }
 
     private boolean firstValue = true;
+
     public UpdateSqlBuilder appendSetValue(Object column) {
         if (!firstValue) {
             append(",");

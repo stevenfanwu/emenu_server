@@ -1,6 +1,6 @@
 /**
  * @(#)PrinterController.java, 2013-6-25. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.web;
 
@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class PrinterController extends BaseWebController {
-    
+
     @RequestMapping("/printer")
     public String get(HttpServletRequest req, HttpServletResponse resp,
-            ModelMap model) {
+                      ModelMap model) {
         return sendView("printer", req, resp, model);
     }
 

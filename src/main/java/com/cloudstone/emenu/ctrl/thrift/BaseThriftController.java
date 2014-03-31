@@ -1,6 +1,6 @@
 /**
  * @(#)BaseThriftController.java, Jul 25, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.thrift;
 
@@ -32,20 +32,19 @@ import com.cloudstone.emenu.storage.db.ThriftSessionDb;
 
 /**
  * @author xuhongfeng
- *
  */
 public abstract class BaseThriftController extends BaseController {
     private static final Logger LOG = LoggerFactory.getLogger(BaseThriftController.class);
-        
-    protected static final TProtocolFactory inProtocolFactory = new TBinaryProtocol.Factory();  
-    protected static final TProtocolFactory outProtocolFactory = new TBinaryProtocol.Factory();  
-    
+
+    protected static final TProtocolFactory inProtocolFactory = new TBinaryProtocol.Factory();
+    protected static final TProtocolFactory outProtocolFactory = new TBinaryProtocol.Factory();
+
     @Autowired
     protected ThriftLogic thriftLogic;
-    
+
     @Autowired
     protected ThriftSessionDb thriftSessionDb;
-    
+
     protected ThriftSession authorize(EmenuContext context, String sessionId) throws UserNotLoginException {
         ThriftSession session = thriftSessionDb.get(context, sessionId);
         long now = System.currentTimeMillis();
@@ -63,7 +62,7 @@ public abstract class BaseThriftController extends BaseController {
         context.setRestaurantId(session.getUser().getRestaurantId());
         return session;
     }
-    
+
     protected void process(HttpServletRequest request, HttpServletResponse response)
             throws IOException, TException {
         response.setContentType("application/x-thrift");
@@ -80,6 +79,6 @@ public abstract class BaseThriftController extends BaseController {
 
         out.flush();
     }
-    
+
     protected abstract TProcessor getProcessor();
 }

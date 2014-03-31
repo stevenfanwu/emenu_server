@@ -1,6 +1,6 @@
 /**
  * @(#)UserThriftController.java, Jun 1, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.thrift;
 
@@ -24,23 +24,22 @@ import com.cloudstone.emenu.EmenuContext;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class PadThriftController extends BaseThriftController {
     private static final Logger LOG = LoggerFactory.getLogger(PadThriftController.class);
-    
+
     @Override
     protected TProcessor getProcessor() {
         return processor;
     }
 
-    @RequestMapping(value="/padinfoservice.thrift", method=RequestMethod.POST)
+    @RequestMapping(value = "/padinfoservice.thrift", method = RequestMethod.POST)
     public void thrift(HttpServletRequest request,
-            HttpServletResponse response) throws IOException, TException {
+                       HttpServletResponse response) throws IOException, TException {
         process(request, response);
     }
-    
+
     private class Service implements IPadInfoService.Iface {
 
         @Override
@@ -51,6 +50,7 @@ public class PadThriftController extends BaseThriftController {
             return true;
         }
     }
+
     private IPadInfoService.Processor<Service> processor =
             new IPadInfoService.Processor<PadThriftController.Service>(new Service());
 }

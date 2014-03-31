@@ -1,6 +1,6 @@
 /**
  * @(#)CancelDishVO.java, Sep 15, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.data.vo;
 
@@ -9,7 +9,6 @@ import com.cloudstone.emenu.data.Dish;
 
 /**
  * @author xuhongfeng
- *
  */
 public class CancelDishVO extends Dish {
     private long time;
@@ -23,7 +22,7 @@ public class CancelDishVO extends Dish {
     public CancelDishVO(CancelDishVO dish) {
         super(dish);
     }
-    
+
     public CancelDishVO(Dish dish, DishRecord record) {
         this(dish, record.getOrderId(), record.getTime(), record.getCount());
     }

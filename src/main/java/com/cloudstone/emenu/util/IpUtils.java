@@ -1,15 +1,14 @@
 /**
  * @(#)IPUtils.java, Jun 16, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
 /**
  * @author xuhongfeng
- *
  */
 public class IpUtils {
-    
+
     public static int toInt(String ip) {
         ip = ip.trim();
         String[] parts = ip.split("\\.");

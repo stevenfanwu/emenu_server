@@ -55,7 +55,7 @@ public class DbTransaction {
             throw new ServerError(e);
         }
     }
-    
+
     public void close() {
         conn.dispose();
     }
@@ -76,7 +76,7 @@ public class DbTransaction {
             conn.dispose();
         }
     }
-    
+
     public boolean isBegin() {
         return isBegin;
     }

@@ -1,6 +1,6 @@
 /**
  * @(#)AuthFilter.java, Jun 14, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.web.filter;
 
@@ -24,14 +24,13 @@ import com.cloudstone.emenu.util.AuthHelper;
 
 /**
  * @author xuhongfeng
- *
  */
 public class AuthFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(AuthFilter.class);
-    
+
     private String loginUrl;
     private AuthPattern[] escapePatterns;
-    
+
     @Autowired
     private AuthHelper authHelper;
 
@@ -42,13 +41,13 @@ public class AuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
+                         FilterChain chain) throws IOException, ServletException {
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
 
         String url = req.getRequestURI().toLowerCase();
         String method = req.getMethod().toLowerCase();
-        
+
         //thrift
         if (url.endsWith(".thrift")) {
             chain.doFilter(request, response);
@@ -62,21 +61,21 @@ public class AuthFilter implements Filter {
                 return;
             }
         }
-        
+
         if (authHelper.isLogin(req, resp)) {
             chain.doFilter(request, response);
             return;
         }
-        
+
         LOG.info("auth failed: url=" + url);
-        
+
         if (url.startsWith("/api")) {
             resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         } else {
             resp.sendRedirect(loginUrl);
         }
     }
-    
+
 
     public void setLoginUrl(String loginUrl) {
         this.loginUrl = loginUrl;
@@ -91,7 +90,7 @@ public class AuthFilter implements Filter {
             this.escapePatterns[i] = new AuthPattern(escapePatterns[i].toLowerCase());
         }
     }
-    
+
     /* ---------- Inner Class --------- */
     private class AuthPattern {
 
@@ -107,6 +106,7 @@ public class AuthFilter implements Filter {
 
         /**
          * line is like "/api/users/::post"
+         *
          * @param line
          */
         AuthPattern(String line) {
@@ -114,7 +114,7 @@ public class AuthFilter implements Filter {
             String url, method;
             if (idx > 0) {
                 url = line.substring(0, idx);
-                method = line.substring(idx+2);
+                method = line.substring(idx + 2);
             } else {
                 url = line;
                 method = "*";

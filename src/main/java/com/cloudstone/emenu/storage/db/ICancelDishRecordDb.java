@@ -1,6 +1,6 @@
 /**
  * @(#)ICancelDishRecordDb.java, Aug 26, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -11,11 +11,12 @@ import com.cloudstone.emenu.data.DishRecord;
 
 /**
  * @author xuhongfeng
- *
  */
 public interface ICancelDishRecordDb {
     public void add(EmenuContext context, DishRecord record);
+
     public int getCount(EmenuContext context, int dishId, long startTime,
-            long endTime);
+                        long endTime);
+
     public List<DishRecord> listByOrderId(EmenuContext context, int orderId);
 }

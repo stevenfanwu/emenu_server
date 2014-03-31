@@ -1,6 +1,6 @@
 /**
  * @(#)TestController.java, Aug 4, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.ctrl.api;
@@ -29,7 +29,7 @@ import com.cloudstone.emenu.util.PrinterUtils;
 
 /**
  * just for test
- * 
+ *
  * @author xuhongfeng
  */
 @Controller
@@ -44,7 +44,9 @@ public class TestController extends BaseApiController {
     private SqliteDataSource dataSource;
 
     @RequestMapping(value = "/api/test", method = RequestMethod.GET)
-    public @ResponseBody String test(HttpServletRequest req) {
+    public
+    @ResponseBody
+    String test(HttpServletRequest req) {
         EmenuContext context = newContext(req);
         User user = userLogic.getUser(context, 1);
         return JsonUtils.toJson(user);
@@ -58,7 +60,9 @@ public class TestController extends BaseApiController {
     }
 
     @RequestMapping(value = "/api/testdish", method = RequestMethod.GET)
-    public @ResponseBody Dish testDish(HttpServletRequest req) {
+    public
+    @ResponseBody
+    Dish testDish(HttpServletRequest req) {
         EmenuContext context = newContext(req);
         Dish dish = new Dish();
         dish.setCreatedTime(199999);
@@ -77,7 +81,9 @@ public class TestController extends BaseApiController {
     }
 
     @RequestMapping(value = "/api/testorder", method = RequestMethod.GET)
-    public @ResponseBody OrderVO testOrder(HttpServletRequest req) {
+    public
+    @ResponseBody
+    OrderVO testOrder(HttpServletRequest req) {
         EmenuContext context = newContext(req);
         Order order = new Order();
         order.setCreatedTime(System.currentTimeMillis());
@@ -88,7 +94,7 @@ public class TestController extends BaseApiController {
         order.setDeleted(false);
         order.setTableId(1);
         orderLogic.addOrder(context, order);
-        
+
         Table table = new Table();
         table.setCapacity(2);
         table.setId(1);
@@ -98,13 +104,15 @@ public class TestController extends BaseApiController {
         table.setStatus(0);
         table.setTip(10.0d);
         tableLogic.add(context, table);
-        
+
         return orderWraper.wrap(context, orderLogic.getOrder(context, 1));
     }
-    
-    
+
+
     @RequestMapping(value = "/api/testtrans", method = RequestMethod.GET)
-    public @ResponseBody Bill testTrans(HttpServletRequest req) {
+    public
+    @ResponseBody
+    Bill testTrans(HttpServletRequest req) {
         EmenuContext context = newContext(req);
         Bill bill = new Bill();
         bill.setCost(152.2d);
@@ -113,7 +121,7 @@ public class TestController extends BaseApiController {
         bill.setUpdateTime(now);
         bill.setId(2);
         bill.setOrderId(1);
-        bill.setDiscountDishIds(new int[] {
+        bill.setDiscountDishIds(new int[]{
                 1, 2
         });
         bill.setDiscount(2);

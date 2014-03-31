@@ -1,13 +1,12 @@
 /**
  * @(#)ThriftSession.java, Jul 26, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.data;
 
 
 /**
  * @author xuhongfeng
- *
  */
 public class ThriftSession {
     private String sessionId;
@@ -15,7 +14,7 @@ public class ThriftSession {
     private User user;
     private long activateTime;
     private String imei;
-    
+
     public String getSessionId() {
         return sessionId;
     }

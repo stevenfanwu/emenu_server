@@ -31,7 +31,7 @@ import com.cloudstone.emenu.util.UnitUtils;
 @Component
 public class StatisticsLogic extends BaseLogic {
     private static final Logger LOG = LoggerFactory.getLogger(StatisticsLogic.class);
-    
+
     private static final int PAGE_COUNT = 15;
 
     @Autowired
@@ -59,7 +59,7 @@ public class StatisticsLogic extends BaseLogic {
     }
 
     public List<DishStat> listDishStat(EmenuContext context, long time, int page) {
-        long endTime = UnitUtils.getDayStart(time - page*PAGE_COUNT*UnitUtils.DAY);
+        long endTime = UnitUtils.getDayStart(time - page * PAGE_COUNT * UnitUtils.DAY);
         long startTime = endTime - PAGE_COUNT * UnitUtils.DAY;
         return listDishStat(context, startTime, endTime);
     }
@@ -67,11 +67,11 @@ public class StatisticsLogic extends BaseLogic {
     public List<DishStat> listDishStat(EmenuContext context, long startTime, long endTime) {
         List<Dish> dishes = menuLogic.getAllDish(context);
         List<DishStat> ret = new LinkedList<DishStat>();
-        for (Dish dish:dishes) {
+        for (Dish dish : dishes) {
             List<DishStat> dishStats = new DishStatGetter(context, dish)
-                .list(startTime, endTime);
+                    .list(startTime, endTime);
             DishStat stat = null;
-            for (DishStat s:dishStats) {
+            for (DishStat s : dishStats) {
                 if (stat == null) {
                     stat = s;
                 } else {
@@ -90,10 +90,10 @@ public class StatisticsLogic extends BaseLogic {
             stat.setDishClass(menuLogic.getCategory(context, dish.getId()));
             ret.add(stat);
         }
-        for (int i=0; i<ret.size(); i++) {
+        for (int i = 0; i < ret.size(); i++) {
             DishStat s = ret.get(i);
             if (s.getId() == 0) {
-                s.setId(0-i);
+                s.setId(0 - i);
             }
         }
         return ret;
@@ -107,12 +107,12 @@ public class StatisticsLogic extends BaseLogic {
 
     public List<MenuStat> listMenuStat(EmenuContext context, long startTime, long endTime) {
         List<Dish> dishes = menuLogic.getAllDish(context);
-        Map<String, Map<Integer, Dish>> cateToDishes = new HashMap<String, Map<Integer,Dish>>();
+        Map<String, Map<Integer, Dish>> cateToDishes = new HashMap<String, Map<Integer, Dish>>();
         List<MenuStat> ret = new LinkedList<MenuStat>();
         for (Dish dish : dishes) {
             String name = menuLogic.getCategory(context, dish.getId());
             if (cateToDishes.containsKey(name)) {
-                cateToDishes.get(name).put(dish.getId(),dish);
+                cateToDishes.get(name).put(dish.getId(), dish);
             } else {
                 Map<Integer, Dish> tmpDishMap = new HashMap<Integer, Dish>();
                 tmpDishMap.put(dish.getId(), dish);
@@ -148,22 +148,22 @@ public class StatisticsLogic extends BaseLogic {
 
     private abstract class StatGetter<T extends BaseStat> {
         protected final EmenuContext context;
-        
+
         public StatGetter(EmenuContext context) {
             super();
             this.context = context;
         }
 
         public List<T> list(long time, int page) {
-            long endTime = UnitUtils.getDayStart(time - page*PAGE_COUNT*UnitUtils.DAY);
+            long endTime = UnitUtils.getDayStart(time - page * PAGE_COUNT * UnitUtils.DAY);
             long startTime = endTime - PAGE_COUNT * UnitUtils.DAY;
             return list(startTime, endTime);
         }
-        
+
         public List<T> list(long startTime, long endTime) {
             List<T> ret = new LinkedList<T>();
             long p = startTime;
-            if ((p-8*UnitUtils.HOUR) % UnitUtils.DAY != 0) {
+            if ((p - 8 * UnitUtils.HOUR) % UnitUtils.DAY != 0) {
                 p = UnitUtils.getDayStart(p + UnitUtils.DAY);
             }
             if (p != startTime) {
@@ -177,7 +177,7 @@ public class StatisticsLogic extends BaseLogic {
                 ret.add(getOne(p, end));
                 p += UnitUtils.DAY;
             }
-            for (int i=0; i<ret.size(); i++) {
+            for (int i = 0; i < ret.size(); i++) {
                 T stat = ret.get(i);
                 if (stat.getId() == 0) {
                     //mock id
@@ -190,8 +190,8 @@ public class StatisticsLogic extends BaseLogic {
         private T getOne(long startTime, long endTime) {
             T stat = null;
             long today = UnitUtils.getDayStart(System.currentTimeMillis());
-            if (endTime - startTime == UnitUtils.DAY && endTime<=today) {
-                long day = UnitUtils.getDayByMillis((startTime+endTime)/2);
+            if (endTime - startTime == UnitUtils.DAY && endTime <= today) {
+                long day = UnitUtils.getDayByMillis((startTime + endTime) / 2);
                 stat = getFromDb(day);
                 if (stat == null) {
                     stat = compute(context, startTime);
@@ -211,12 +211,14 @@ public class StatisticsLogic extends BaseLogic {
             long endTime = startTime + UnitUtils.DAY;
             return compute(startTime, endTime);
         }
-        
+
         protected abstract T getFromDb(long day);
+
         protected abstract void addToDb(T stat);
+
         protected abstract T compute(long startTime, long endTime);
     }
-    
+
     private class GenStatGetter extends StatGetter<GeneralStat> {
 
         public GenStatGetter(EmenuContext context) {
@@ -236,10 +238,10 @@ public class StatisticsLogic extends BaseLogic {
         @Override
         protected GeneralStat compute(long startTime, long endTime) {
             GeneralStat genStat = new GeneralStat();
-    
+
             // TIME
-            genStat.setDay(UnitUtils.getDayByMillis((startTime+endTime)/2));
-    
+            genStat.setDay(UnitUtils.getDayByMillis((startTime + endTime) / 2));
+
             List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
             double income = 0;
             double coupons = 0;
@@ -258,13 +260,13 @@ public class StatisticsLogic extends BaseLogic {
                 }
                 double originCost = bill.getOrder().getOriginPrice() + bill.getTip();
                 if (bill.getCost() < originCost) {
-                    discount += (originCost-bill.getCost());
+                    discount += (originCost - bill.getCost());
                 }
                 income += bill.getCost();
                 tips += bill.getTip();
                 coupons += bill.getCoupons();
             }
-    
+
             // COUNT
             genStat.setCount(bills.size());
             // INCOME
@@ -281,7 +283,7 @@ public class StatisticsLogic extends BaseLogic {
             genStat.setDiscount(discount);
             // Coupons
             genStat.setCoupons(coupons);
-            
+
             // TABLERATE
             int tableCount = tableLogic.tableCount(context);
             double rate = 0;
@@ -289,14 +291,14 @@ public class StatisticsLogic extends BaseLogic {
                 rate = 100.0 * bills.size() / tableCount;
             }
             genStat.setTableRate(rate);
-    
+
             // AVE_PERSON_PRICE
             if (customers == 0) {
                 genStat.setAvePerson(0);
             } else {
                 genStat.setAvePerson(income / customers);
             }
-    
+
             // AVE_ORDER_PRICE
             if (bills.size() == 0) {
                 genStat.setAveOrder(0);
@@ -306,7 +308,7 @@ public class StatisticsLogic extends BaseLogic {
             return genStat;
         }
     }
-    
+
     private class DishStatGetter extends StatGetter<DishStat> {
         private final Dish dish;
 
@@ -328,25 +330,25 @@ public class StatisticsLogic extends BaseLogic {
         @Override
         protected DishStat compute(long startTime, long endTime) {
             DishStat stat = new DishStat();
-    
+
             // TIME
-            stat.setDay(UnitUtils.getDayByMillis((startTime+endTime)/2));
-    
+            stat.setDay(UnitUtils.getDayByMillis((startTime + endTime) / 2));
+
             List<Bill> bills = orderLogic.getBills(context, startTime, endTime);
-            
+
             double income = 0;
             double discount = 0;
             int count = 0;
-            for (Bill bill:bills) {
+            for (Bill bill : bills) {
                 OrderVO order = bill.getOrder();
-                for (OrderDishVO d:order.getDishes()) {
+                for (OrderDishVO d : order.getDishes()) {
                     if (d.getId() == this.dish.getId()) {
                         income += d.getPrice() * d.getNumber();
                         count += d.getNumber();
                         if (bill.getDiscountDishIds() != null
                                 && ArrayUtils.contains(bill.getDiscountDishIds(), d.getId())
-                                && bill.getDiscount()>0) {
-                            discount += (d.getPrice()*d.getNumber()*(10 - bill.getDiscount())/ 10);
+                                && bill.getDiscount() > 0) {
+                            discount += (d.getPrice() * d.getNumber() * (10 - bill.getDiscount()) / 10);
                         }
                     }
                 }
@@ -357,15 +359,15 @@ public class StatisticsLogic extends BaseLogic {
             int backCount = recordLogic.getCancelDishCount(context,
                     dish.getId(), startTime, endTime);
             String category = menuLogic.getCategory(context, dish.getId());
-            
-            stat.setIncome(income-discount);
+
+            stat.setIncome(income - discount);
             stat.setCount(count);
             stat.setBackCount(backCount);
             stat.setDishName(dish.getName());
             stat.setDishClass(category);
             stat.setPrice(dish.getPrice());
             stat.setDiscount(discount);
-            
+
             return stat;
         }
     }

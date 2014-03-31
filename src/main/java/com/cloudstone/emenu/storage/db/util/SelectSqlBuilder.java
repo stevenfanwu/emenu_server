@@ -1,12 +1,11 @@
 /**
  * @(#)ColumnDefBuilder.java, 2013-6-23. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db.util;
 
 /**
  * @author xuhongfeng
- *
  */
 public class SelectSqlBuilder extends SQLBuilder {
 
@@ -14,14 +13,14 @@ public class SelectSqlBuilder extends SQLBuilder {
         super();
         append("SELECT * from " + tableName);
     }
-    
+
     public SelectSqlBuilder appendOrderBy(Object col, boolean desc) {
         append(" ORDER BY ");
         append(col);
         append(desc ? " DESC" : " ASC");
         return this;
     }
-    
+
     @Override
     public SelectSqlBuilder appendWhere(Object whereColumn) {
         super.appendWhere(whereColumn);

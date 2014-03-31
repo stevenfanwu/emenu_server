@@ -1,6 +1,6 @@
 /**
  * @(#)DishDb.java, 2013-7-7. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -26,22 +26,21 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class DishDb extends SQLiteDb implements IDishDb {
     private static final Logger LOG = LoggerFactory.getLogger(DishDb.class);
-    
+
     @Override
     public String getTableName() {
         return TABLE_NAME;
     }
-    
+
     @Override
     public List<IdName> getDishSuggestion(EmenuContext context) {
         return getIdNames(context);
     }
-    
+
     @Override
     public void add(EmenuContext context, Dish dish) {
         dish.setId(genId(context));
@@ -49,41 +48,41 @@ public class DishDb extends SQLiteDb implements IDishDb {
         DishBinder binder = new DishBinder(dish);
         executeSQL(context, SQL_INSERT, binder);
     }
-    
+
     @Override
     public Dish getByName(EmenuContext context, String name) {
         return super.getByName(context, name, rowMapper);
     }
-    
+
     @Override
     public Dish get(EmenuContext context, int dishId) {
         IdStatementBinder binder = new IdStatementBinder(dishId);
         Dish dish = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return dish;
     }
-    
+
     @Override
     public List<Dish> getAll(EmenuContext context) {
         return getAllInRestaurant(context, rowMapper);
     }
-    
+
     @Override
     public void update(EmenuContext context, Dish dish) {
         executeSQL(context, SQL_UPDATE, new UpdateBinder(dish));
     }
-    
+
     @Override
     protected void onCheckCreateTable(EmenuContext context) {
         checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
-    
+
     /* ---------- inner class ---------- */
     private static final RowMapper<Dish> rowMapper = new RowMapper<Dish>() {
-        
+
         @Override
         public Dish map(SQLiteStatement stmt) throws SQLiteException {
             Dish dish = new Dish();
-            
+
             dish.setId(stmt.columnInt(0));
             dish.setName(stmt.columnString(1));
             dish.setPinyin(stmt.columnString(2));
@@ -104,7 +103,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             return dish;
         }
     };
-    
+
     private static class DishBinder implements StatementBinder {
         private final Dish dish;
 
@@ -134,7 +133,7 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(17, dish.getRestaurantId());
         }
     }
-    
+
     private static class UpdateBinder implements StatementBinder {
         private final Dish dish;
 
@@ -164,10 +163,10 @@ public class DishDb extends SQLiteDb implements IDishDb {
             stmt.bind(17, dish.getRestaurantId());
         }
     }
-    
+
     /* ---------- SQL ---------- */
     private static final String TABLE_NAME = "dish";
-    
+
     private static enum Column {
         ID("id"), NAME("name"), PINYIN("pinyin"),
         PRICE("price"), MEMBER_PRICE("memberPrice"), UNIT("unit"), SPICY("spicy"),
@@ -175,12 +174,13 @@ public class DishDb extends SQLiteDb implements IDishDb {
         IMAGE_ID("imageId"), STATUS("status"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"), DELETED("deleted"),
         SOLDOUT("soldout"), RESTAURANT_ID("restaurantId");
-        
+
         private final String str;
+
         private Column(String str) {
             this.str = str;
         }
-        
+
         @Override
         public String toString() {
             return str;
@@ -188,44 +188,44 @@ public class DishDb extends SQLiteDb implements IDishDb {
     }
 
     private static final String COL_DEF = new ColumnDefBuilder()
-        .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
-        .append(Column.NAME, DataType.TEXT, "NOT NULL")
-        .append(Column.PINYIN, DataType.TEXT, "NOT NULL")
-        .append(Column.PRICE, DataType.REAL, "NOT NULL")
-        .append(Column.MEMBER_PRICE, DataType.REAL, "NOT NULL")
-        .append(Column.UNIT, DataType.INTEGER, "NOT NULL")
-        .append(Column.SPICY, DataType.INTEGER, "NOT NULL")
-        .append(Column.SPECIAL_PRICE, DataType.INTEGER, "NOT NULL")
-        .append(Column.NON_INT, DataType.INTEGER, "NOT NULL")
-        .append(Column.DESC, DataType.TEXT, "NOT NULL")
-        .append(Column.IMAGE_ID, DataType.TEXT, "DEFAULT ''")
-        .append(Column.STATUS, DataType.INTEGER, "DEFAULT ''")
-        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
-        .append(Column.SOLDOUT, DataType.INTEGER, "NOT NULL")
-        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
-        .build();
+            .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
+            .append(Column.NAME, DataType.TEXT, "NOT NULL")
+            .append(Column.PINYIN, DataType.TEXT, "NOT NULL")
+            .append(Column.PRICE, DataType.REAL, "NOT NULL")
+            .append(Column.MEMBER_PRICE, DataType.REAL, "NOT NULL")
+            .append(Column.UNIT, DataType.INTEGER, "NOT NULL")
+            .append(Column.SPICY, DataType.INTEGER, "NOT NULL")
+            .append(Column.SPECIAL_PRICE, DataType.INTEGER, "NOT NULL")
+            .append(Column.NON_INT, DataType.INTEGER, "NOT NULL")
+            .append(Column.DESC, DataType.TEXT, "NOT NULL")
+            .append(Column.IMAGE_ID, DataType.TEXT, "DEFAULT ''")
+            .append(Column.STATUS, DataType.INTEGER, "DEFAULT ''")
+            .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.SOLDOUT, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
+            .build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 17).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
+            .appendWhereId().build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME)
-        .appendSetValue(Column.PINYIN)
-        .appendSetValue(Column.PRICE)
-        .appendSetValue(Column.MEMBER_PRICE)
-        .appendSetValue(Column.UNIT)
-        .appendSetValue(Column.SPICY)
-        .appendSetValue(Column.SPECIAL_PRICE)
-        .appendSetValue(Column.NON_INT)
-        .appendSetValue(Column.DESC)
-        .appendSetValue(Column.IMAGE_ID)
-        .appendSetValue(Column.STATUS)
-        .appendSetValue(Column.CREATED_TIME)
-        .appendSetValue(Column.UPDATE_TIME)
-        .appendSetValue(Column.DELETED)
-        .appendSetValue(Column.SOLDOUT)
-        .appendSetValue(Column.RESTAURANT_ID)
-        .appendWhereId()
-        .build();
+            .appendSetValue(Column.NAME)
+            .appendSetValue(Column.PINYIN)
+            .appendSetValue(Column.PRICE)
+            .appendSetValue(Column.MEMBER_PRICE)
+            .appendSetValue(Column.UNIT)
+            .appendSetValue(Column.SPICY)
+            .appendSetValue(Column.SPECIAL_PRICE)
+            .appendSetValue(Column.NON_INT)
+            .appendSetValue(Column.DESC)
+            .appendSetValue(Column.IMAGE_ID)
+            .appendSetValue(Column.STATUS)
+            .appendSetValue(Column.CREATED_TIME)
+            .appendSetValue(Column.UPDATE_TIME)
+            .appendSetValue(Column.DELETED)
+            .appendSetValue(Column.SOLDOUT)
+            .appendSetValue(Column.RESTAURANT_ID)
+            .appendWhereId()
+            .build();
 }

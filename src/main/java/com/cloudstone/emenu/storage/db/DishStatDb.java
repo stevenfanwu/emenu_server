@@ -105,9 +105,9 @@ public class DishStatDb extends SQLiteDb implements IDishStatDb {
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.DISH_NAME)
-        .appendWhere(Column.DAY)
-        .appendWhereRestaurantId().build();
+            .appendWhere(Column.DISH_NAME)
+            .appendWhere(Column.DAY)
+            .appendWhereRestaurantId().build();
 
     private static final RowMapper<DishStat> rowMapper = new RowMapper<DishStat>() {
 

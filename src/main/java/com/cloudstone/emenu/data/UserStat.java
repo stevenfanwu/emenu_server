@@ -1,6 +1,6 @@
 /**
  * @(#)DailyStat.java, Aug 6, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.data;
@@ -16,7 +16,7 @@ public class UserStat extends AveStat {
     private int customerCount;
 
     private int count;
-    
+
     public UserStat() {
         super();
     }

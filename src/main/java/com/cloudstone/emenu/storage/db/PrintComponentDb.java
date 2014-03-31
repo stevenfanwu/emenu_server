@@ -1,6 +1,6 @@
 /**
  * @(#)PrintComponentDb.java, Aug 13, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -22,7 +22,6 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
@@ -32,7 +31,7 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
     public String getTableName() {
         return TABLE_NAME;
     }
-    
+
     @Override
     public List<PrintComponent> listAll(EmenuContext context) {
         return getAllInRestaurant(context, rowMapper);
@@ -65,29 +64,31 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
         ID("id"), NAME("name"), CONTENT("content"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"),
         DELETED("deleted"), RESTAURANT_ID("restaurantId");
-        
+
         private final String str;
+
         private Column(String str) {
             this.str = str;
         }
-        
+
         @Override
         public String toString() {
             return str;
         }
     }
+
     private static final String COL_DEF = new ColumnDefBuilder()
-        .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
-        .append(Column.NAME, DataType.TEXT, "NOT NULL")
-        .append(Column.CONTENT, DataType.TEXT, "NOT NULL")
-        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
-        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
-        .build();
+            .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
+            .append(Column.NAME, DataType.TEXT, "NOT NULL")
+            .append(Column.CONTENT, DataType.TEXT, "NOT NULL")
+            .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
+            .build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 7).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
+            .appendWhereId().build();
 
     private static class PrintComponentBinder implements StatementBinder {
         private final PrintComponent data;
@@ -108,7 +109,7 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
             stmt.bind(7, data.getRestaurantId());
         }
     }
-    
+
     private RowMapper<PrintComponent> rowMapper = new RowMapper<PrintComponent>() {
         @Override
         public PrintComponent map(SQLiteStatement stmt) throws SQLiteException {
@@ -122,16 +123,16 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
             return data;
         }
     };
-    
+
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME)
-        .appendSetValue(Column.CONTENT)
-        .appendSetValue(Column.CREATED_TIME)
-        .appendSetValue(Column.UPDATE_TIME)
-        .appendSetValue(Column.DELETED)
-        .appendWhereId()
-        .build();
-    
+            .appendSetValue(Column.NAME)
+            .appendSetValue(Column.CONTENT)
+            .appendSetValue(Column.CREATED_TIME)
+            .appendSetValue(Column.UPDATE_TIME)
+            .appendSetValue(Column.DELETED)
+            .appendWhereId()
+            .build();
+
     private static class UpdateBinder implements StatementBinder {
         private final PrintComponent data;
 
@@ -149,6 +150,6 @@ public class PrintComponentDb extends SQLiteDb implements IPrintComponentDb {
             stmt.bind(5, data.isDeleted() ? 1 : 0);
             stmt.bind(6, data.getId());
         }
-        
+
     }
 }

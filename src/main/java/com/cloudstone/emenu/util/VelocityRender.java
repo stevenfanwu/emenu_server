@@ -1,6 +1,6 @@
 /**
  * @(#)VelocityRender.java, Aug 9, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
@@ -28,15 +28,14 @@ import com.cloudstone.emenu.web.velocitytool.Utils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Component
 public class VelocityRender {
     @Autowired
     private Utils utils;
-    
+
     public String renderBill(Bill bill, Vip vip, User user, List<DishGroup> dishGroups, List<RecordVO> cancelRecord, List<RecordVO> addRecord, String template) {
-        
+
         VelocityContext context = new VelocityContext();
         context.put("bill", bill);
         context.put("dishGroups", dishGroups);
@@ -47,7 +46,7 @@ public class VelocityRender {
         context.put("time", utils.formatDate(bill.getCreatedTime()));
         context.put("coupons", bill.getCoupons());
         context.put("vipusage", 0);
-        context.put("vipid",vip.getId());
+        context.put("vipid", vip.getId());
         context.put("vipleft", vip.getMoney());
         String userName = user.getRealName();
         if (userName == null) {
@@ -73,10 +72,10 @@ public class VelocityRender {
                 payTypeString = "现金";
                 break;
         }
-        context.put("paytype",payTypeString);
+        context.put("paytype", payTypeString);
         return render(context, template);
     }
-    
+
     public String renderOrder(OrderVO order, User user, List<DishGroup> dishGroups, String template) {
         VelocityContext context = new VelocityContext();
         context.put("dishGroups", dishGroups);
@@ -90,9 +89,9 @@ public class VelocityRender {
         context.put("userName", userName);
         return render(context, template);
     }
-    
+
     private String render(VelocityContext context, String template) {
-        RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();            
+        RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
         StringReader reader = new StringReader(template);
         SimpleNode node;
         try {

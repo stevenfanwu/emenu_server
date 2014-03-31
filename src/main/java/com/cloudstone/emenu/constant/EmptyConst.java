@@ -1,6 +1,6 @@
 /**
  * @(#)EmptyConst.java, Jun 15, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.constant;
 
@@ -8,7 +8,6 @@ import com.cloudstone.emenu.data.PrintTemplate;
 
 /**
  * @author xuhongfeng
- *
  */
 public class EmptyConst {
     public static final String EMPTY_STRING = "";

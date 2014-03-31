@@ -1,6 +1,6 @@
 /**
  * @(#)IdStatementBinder.java, 2013-6-23. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db.util;
 
@@ -9,7 +9,6 @@ import com.almworks.sqlite4java.SQLiteStatement;
 
 /**
  * @author xuhongfeng
- *
  */
 public class IdStatementBinder implements StatementBinder {
     private final int id;

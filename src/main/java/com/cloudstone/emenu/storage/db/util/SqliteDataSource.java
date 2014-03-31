@@ -1,6 +1,6 @@
 /**
  * @(#)SqliteDataSource.java, Aug 2, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.storage.db.util;
@@ -60,8 +60,9 @@ public class SqliteDataSource {
         conn.open();
         return conn;
     }
-    
+
     private boolean inTransaction = false;
+
     public synchronized void waitForTransaction() {
         if (inTransaction) {
             try {
@@ -71,7 +72,7 @@ public class SqliteDataSource {
             }
         }
     }
-    
+
     public synchronized void notifyTransactionDone() {
         inTransaction = false;
         this.notifyAll();

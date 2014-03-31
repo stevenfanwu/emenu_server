@@ -119,8 +119,8 @@ public class GenStatDb extends SQLiteDb implements IGenStatDb {
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.DAY)
-        .appendWhereRestaurantId().build();
+            .appendWhere(Column.DAY)
+            .appendWhereRestaurantId().build();
 
     private static final RowMapper<GeneralStat> rowMapper = new RowMapper<GeneralStat>() {
 

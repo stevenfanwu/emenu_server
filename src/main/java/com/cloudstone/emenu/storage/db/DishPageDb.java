@@ -1,6 +1,6 @@
 /**
  * @(#)DishPageDb.java, Jul 19, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -18,23 +18,21 @@ import com.cloudstone.emenu.storage.db.util.StatementBinder;
 import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
- * 
  * id1 = menuPageId
- * id2 = dishId 
- * 
- * @author xuhongfeng
+ * id2 = dishId
  *
+ * @author xuhongfeng
  */
 @Repository
 public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     private static final Logger LOG = LoggerFactory.getLogger(DishPageDb.class);
     private static final String TABLE_NAME = "dishPage";
-    
+
     @Override
     public String getTableName() {
         return TABLE_NAME;
     }
-    
+
     //dish position in the MenuPage
     private static final RelationDbColumn COL_POS =
             new RelationDbColumn("pos", DataType.INTEGER, true);
@@ -48,7 +46,7 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     /* ---------- protected ---------- */
     @Override
     protected RelationDbConfig onCreateConfig() {
-        RelationDbColumn[] columns = new RelationDbColumn[] {
+        RelationDbColumn[] columns = new RelationDbColumn[]{
                 COL_POS, COL_CREATED_TIME, COL_UPDATE_TIME, COL_DELETED
         };
         return new RelationDbConfig(TABLE_NAME, columns);
@@ -86,14 +84,12 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     }
 
     @Override
-    public List<DishPage> getByMenuPageId(EmenuContext context, int menuPageId)
-            {
+    public List<DishPage> getByMenuPageId(EmenuContext context, int menuPageId) {
         return listById1(context, menuPageId);
     }
 
     @Override
-    public List<DishPage> getByDishId(EmenuContext context, int dishId)
-            {
+    public List<DishPage> getByDishId(EmenuContext context, int dishId) {
         return listById2(context, dishId);
     }
 
@@ -101,30 +97,30 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
     public int countByDishId(EmenuContext context, int dishId) {
         return countId2(context, dishId);
     }
-    
+
     @Override
     public void delete(EmenuContext context, final int menuPageId, final int pos) {
         String sql = new UpdateSqlBuilder(TABLE_NAME)
-            .appendSetValue(COL_DELETED)
-            .appendWhere(ID1).appendWhere(COL_POS).build();
+                .appendSetValue(COL_DELETED)
+                .appendWhere(ID1).appendWhere(COL_POS).build();
         executeSQL(context, sql, new StatementBinder() {
             @Override
             public void onBind(SQLiteStatement stmt) throws SQLiteException {
                 stmt.bind(1, 1);
                 stmt.bind(2, menuPageId);
                 stmt.bind(3, pos);
-                
+
             }
         });
     }
-    
+
     /* ---------- Inner Class ---------- */
     private static RelationRowMapper<DishPage> rowMapper = new RelationRowMapper<IDishPageDb.DishPage>() {
         @Override
         protected DishPage newRelation() {
             return new DishPage();
         }
-        
+
         @Override
         public DishPage map(SQLiteStatement stmt) throws SQLiteException {
             DishPage page = super.map(stmt);
@@ -133,6 +129,8 @@ public class DishPageDb extends RelationDb<DishPage> implements IDishPageDb {
             page.setUpdateTime(stmt.columnLong(4));
             page.setDeleted(stmt.columnInt(5) == 1);
             return page;
-        };
+        }
+
+        ;
     };
- }
+}

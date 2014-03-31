@@ -1,6 +1,6 @@
 /**
  * @(#)TableLogic.java, 2013-7-6. 
- * 
+ *
  */
 package com.cloudstone.emenu.logic;
 
@@ -27,21 +27,20 @@ import com.cloudstone.emenu.util.DataUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Component
 public class TableLogic extends BaseLogic {
-    
+
     @Autowired
     private ITableDb tableDb;
     @Autowired
     private MiscStorage miscStorage;
-    
+
     @Autowired
     private OrderLogic orderLogic;
     @Autowired
     private PollingManager pollingManager;
-    
+
     public void changeTable(EmenuContext context, int fromId, int toId) {
         Table from = get(context, fromId);
         if (from == null || from.isDeleted()) {
@@ -51,7 +50,7 @@ public class TableLogic extends BaseLogic {
             throw new PreconditionFailedException("桌子未开台, tableId=" + fromId);
         }
         Table to = get(context, toId);
-        if (to==null || to.isDeleted()) {
+        if (to == null || to.isDeleted()) {
             throw new NotFoundException("桌子不存在, tableId=" + toId);
         }
         if (to.getStatus() != TableStatus.EMPTY) {
@@ -71,13 +70,13 @@ public class TableLogic extends BaseLogic {
             to.setOrderId(from.getOrderId());
             from.setStatus(TableStatus.EMPTY);
             from.setOrderId(0);
-    
+
             long now = System.currentTimeMillis();
             from.setUpdateTime(now);
             tableDb.update(context, from);
             to.setUpdateTime(now);
             tableDb.update(context, to);
-            
+
             if (order != null) {
                 order.setTableId(to.getId());
                 orderLogic.updateOrder(context, order);
@@ -87,7 +86,7 @@ public class TableLogic extends BaseLogic {
             context.closeTransaction(dataSource);
         }
     }
-    
+
     public Table add(EmenuContext context, Table table) {
         Table oldTable = getByName(context, table.getName());
         if (oldTable != null && !oldTable.isDeleted()) {
@@ -104,17 +103,17 @@ public class TableLogic extends BaseLogic {
         }
         return tableDb.get(context, table.getId());
     }
-    
+
     public List<Table> getAll(EmenuContext context) {
         List<Table> tables = tableDb.getAll(context);
         DataUtils.filterDeleted(tables);
         return tables;
     }
-    
+
     public int tableCount(EmenuContext context) {
         return tableDb.count(context);
     }
-    
+
     public List<Table> getOccupied(EmenuContext context) {
         List<Table> tables = getAll(context);
         CollectionUtils.filter(tables, new Tester<Table>() {
@@ -128,7 +127,7 @@ public class TableLogic extends BaseLogic {
 
     public Table occupy(EmenuContext context, int tableId, int customNum) {
         Table table = get(context, tableId);
-        if (table==null || table.isDeleted()) {
+        if (table == null || table.isDeleted()) {
             throw new NotFoundException("桌子不存在");
         }
         if (table.getStatus() != Const.TableStatus.EMPTY) {
@@ -139,7 +138,7 @@ public class TableLogic extends BaseLogic {
 
     public Table occupy(EmenuContext context, Table table, int customNum) {
         table.setStatus(Const.TableStatus.OCCUPIED);
-        
+
         context.beginTransaction(dataSource);
         try {
             table = update(context, table);
@@ -151,7 +150,7 @@ public class TableLogic extends BaseLogic {
         pollingManager.putMessage(PollingMessage.TYPE_OCCUPY_TABLE, table);
         return table;
     }
-    
+
     public Table clearTable(EmenuContext context, int tableId) {
         Table table = get(context, tableId);
         if (table == null) {
@@ -159,7 +158,7 @@ public class TableLogic extends BaseLogic {
         }
         return clearTable(context, table);
     }
-    
+
     public Table clearTable(EmenuContext context, Table table) {
         int orderId = table.getOrderId();
         if (orderId != 0) {
@@ -169,38 +168,38 @@ public class TableLogic extends BaseLogic {
         table.setStatus(Const.TableStatus.EMPTY);
         update(context, table);
         setCustomerNumber(context, table.getId(), 0);
-        
+
         pollingManager.putMessage(PollingMessage.TYPE_CLEAR_TABLE, table);
         return table;
     }
-    
+
     public Table update(EmenuContext context, Table table) {
         Table other = tableDb.getByTableName(context, table.getName());
-        if (other!=null && other.getId()!=table.getId() && !other.isDeleted()) {
+        if (other != null && other.getId() != table.getId() && !other.isDeleted()) {
             throw new DataConflictException("该餐桌已存在");
         }
         table.setUpdateTime(System.currentTimeMillis());
         tableDb.update(context, table);
         return tableDb.get(context, table.getId());
     }
-    
+
     public void setCustomerNumber(EmenuContext context,
-            int tableId, int num) {
+                                  int tableId, int num) {
         miscStorage.setCustomerNumber(context, tableId, num);
     }
-    
+
     public int getCustomerNumber(EmenuContext context, int tableId) {
         return miscStorage.getCustomerNumber(context, tableId);
     }
-    
+
     public void delete(EmenuContext context, int tableId) {
         tableDb.delete(context, tableId);
     }
-    
+
     public Table get(EmenuContext context, int tableId) {
         return tableDb.get(context, tableId);
     }
-    
+
     public Table getByName(EmenuContext context, String name) {
         return tableDb.getByTableName(context, name);
     }

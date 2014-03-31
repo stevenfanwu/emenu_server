@@ -1,6 +1,6 @@
 /**
  * @(#)OrderThriftController.java, Jul 26, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.thrift;
 
@@ -31,15 +31,14 @@ import com.cloudstone.emenu.EmenuContext;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class OrderThriftController extends BaseThriftController {
     private static final Logger LOG = LoggerFactory.getLogger(OrderThriftController.class);
 
-    @RequestMapping(value="/orderservice.thrift", method=RequestMethod.POST)
+    @RequestMapping(value = "/orderservice.thrift", method = RequestMethod.POST)
     public void thrift(HttpServletRequest request,
-            HttpServletResponse response) throws IOException, TException {
+                       HttpServletResponse response) throws IOException, TException {
         process(request, response);
     }
 
@@ -49,6 +48,7 @@ public class OrderThriftController extends BaseThriftController {
     }
 
     private IOrderService.Processor<Service> processor = new IOrderService.Processor<Service>(new Service());
+
     private class Service implements IOrderService.Iface {
 
         @Override
@@ -67,14 +67,14 @@ public class OrderThriftController extends BaseThriftController {
             LOG.info("queryOrder, tableName = " + tableName);
             EmenuContext context = new EmenuContext();
             authorize(context, sessionId);
-            
+
             List<Order> ret = new ArrayList<Order>();
-            
+
             Order order = thriftLogic.getOrderByTable(context, tableName);
             if (order != null) {
                 ret.add(order);
             }
-            
+
             LOG.info("query Order success!");
             return ret;
         }

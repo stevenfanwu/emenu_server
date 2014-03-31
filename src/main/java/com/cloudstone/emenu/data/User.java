@@ -1,6 +1,6 @@
 /**
  * @(#)User.java, Jun 15, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.data;
 
@@ -10,18 +10,17 @@ import com.cloudstone.emenu.constant.Const.UserType;
 
 /**
  * @author xuhongfeng
- *
  */
 public class User extends IdName {
-    
+
     /* encrypted */
     @JsonIgnore
     private String password;
-    
+
     private int type;
-    
+
     private String realName;
-    
+
     /* 备注 */
     private String comment = "";
 
@@ -29,15 +28,15 @@ public class User extends IdName {
     public static User newSuperUser() {
         return newUser(UserType.SUPER_USER);
     }
-    
+
     public static User newAdminUser() {
         return newUser(UserType.ADMIN);
     }
-    
+
     public static User newUser() {
         return newUser(UserType.USER);
     }
-    
+
     public static User newUser(int type) {
         User user = new User();
         user.setType(type);

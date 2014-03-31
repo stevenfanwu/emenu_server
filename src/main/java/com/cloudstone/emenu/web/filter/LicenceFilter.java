@@ -1,6 +1,6 @@
 /**
  * @(#)LicenceFilter.java, Oct 5, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.web.filter;
 
@@ -23,7 +23,6 @@ import com.cloudstone.emenu.util.LicenceHelper;
 
 /**
  * @author xuhongfeng
- *
  */
 public class LicenceFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(LicenceFilter.class);
@@ -33,7 +32,7 @@ public class LicenceFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
+                         FilterChain chain) throws IOException, ServletException {
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
 
@@ -43,7 +42,7 @@ public class LicenceFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        
+
         if (licenceHelper.checkLicence().isSuccess()) {
             chain.doFilter(req, resp);
             return;

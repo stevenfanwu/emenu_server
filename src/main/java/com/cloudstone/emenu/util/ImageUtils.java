@@ -1,6 +1,6 @@
 /**
  * @(#)ImageUtils.java, 2013-7-7. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
@@ -18,11 +18,10 @@ import org.imgscalr.Scalr;
 
 /**
  * @author xuhongfeng
- *
  */
 public class ImageUtils {
     private static final String FORMAT_URI_DATA = "data:image/%s;base64,%s";
-    
+
     public static String getContentType(String imageId) {
         String extension = FilenameUtils.getExtension(imageId);
         if (extension.equals("jpg") || extension.equals("jpeg")) {
@@ -36,9 +35,9 @@ public class ImageUtils {
         }
         return "image/jpeg";
     }
-    
+
     public static byte[] resize(byte[] origin, int width, int height, String extension) throws IOException {
-        if (width==0 && height==0) {
+        if (width == 0 && height == 0) {
             return origin;
         }
         InputStream input = new ByteArrayInputStream(origin);
@@ -49,7 +48,7 @@ public class ImageUtils {
         output.flush();
         return output.toByteArray();
     }
-    
+
     public static byte[] resize(byte[] origin, int width, String extension) throws IOException {
         if (width == 0) {
             return origin;
@@ -65,7 +64,7 @@ public class ImageUtils {
         output.flush();
         return output.toByteArray();
     }
-    
+
     public static String toUriData(byte[] bytes, String imageId) {
         String base64 = Base64.encodeBase64String(bytes);
         String extension = FilenameUtils.getExtension(imageId);

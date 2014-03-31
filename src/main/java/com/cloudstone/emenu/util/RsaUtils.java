@@ -1,6 +1,6 @@
 /**
  * @(#)RsaUtils.java, 2013-6-23. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
@@ -11,7 +11,6 @@ import javax.crypto.Cipher;
 
 /**
  * @author xuhongfeng
- *
  */
 public class RsaUtils {
 
@@ -19,11 +18,11 @@ public class RsaUtils {
         //TODO
         return password;
     }
-    
+
     public static byte[] decrypt(byte[] encrypted, PublicKey key) throws Exception {
         return blockCipher(encrypted, Cipher.DECRYPT_MODE, key);
     }
-    
+
     public static byte[] encrypt(byte[] plain, PublicKey key) throws Exception {
         return blockCipher(plain, Cipher.ENCRYPT_MODE, key);
     }

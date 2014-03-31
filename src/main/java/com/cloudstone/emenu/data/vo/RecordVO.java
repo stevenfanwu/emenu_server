@@ -6,11 +6,11 @@ public class RecordVO {
     private String name;
 
     private int count;
-    
+
     private double price;
-    
+
     private double total;
-    
+
     private String unitLabel;
 
     public void setName(String name) {

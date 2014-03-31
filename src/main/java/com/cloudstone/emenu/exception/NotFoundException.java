@@ -1,12 +1,11 @@
 /**
  * @(#)NotFoundException.java, Aug 2, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.exception;
 
 /**
  * @author xuhongfeng
- *
  */
 public class NotFoundException extends HttpStatusError {
 

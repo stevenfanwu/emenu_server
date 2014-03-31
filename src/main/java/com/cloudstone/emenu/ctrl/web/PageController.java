@@ -1,6 +1,6 @@
 /**
  * @(#)PageController.java, Aug 3, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.web;
 
@@ -28,17 +28,16 @@ import com.cloudstone.emenu.util.LicenceHelper.CheckResult;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class PageController extends BaseWebController {
     private static final Logger LOG = LoggerFactory.getLogger(PageController.class);
- 
+
     @Autowired
     private ConfigLogic configLogic;
     @Autowired
     private LicenceHelper licenceHelper;
-    
+
     @RequestMapping("/upgrading")
     public String upgrading(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
@@ -54,9 +53,9 @@ public class PageController extends BaseWebController {
     public String licence(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
         CheckResult r = licenceHelper.checkLicence();
-        
+
         Licence licence = r.getLicence();
-        
+
         model.put("result", r);
         model.put("licence", licence);
         try {
@@ -69,7 +68,7 @@ public class PageController extends BaseWebController {
         return sendView("licence", req, resp, model);
     }
 
-    @RequestMapping(value="/licence", method=RequestMethod.POST)
+    @RequestMapping(value = "/licence", method = RequestMethod.POST)
     public void uploadLisence(HttpServletRequest request, HttpServletResponse response
             , @RequestParam("lisence") MultipartFile lisenceFile) {
         //TODO check file extension, file size
@@ -82,37 +81,37 @@ public class PageController extends BaseWebController {
         sendRedirect("licence", response);
     }
 
-    @RequestMapping(value="/404", method=RequestMethod.GET)
+    @RequestMapping(value = "/404", method = RequestMethod.GET)
     public String notFound(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
         return sendView("404", req, resp, model);
     }
 
-    @RequestMapping(value="/hummingmanager", method=RequestMethod.GET)
+    @RequestMapping(value = "/hummingmanager", method = RequestMethod.GET)
     public String management(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
         return sendView("hummingmanager", req, resp, model);
     }
-    
-    @RequestMapping(value="/about", method=RequestMethod.GET)
+
+    @RequestMapping(value = "/about", method = RequestMethod.GET)
     public String about(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
         return sendView("about", req, resp, model);
     }
-    
-    @RequestMapping(value="/hummingmenu", method=RequestMethod.GET)
+
+    @RequestMapping(value = "/hummingmenu", method = RequestMethod.GET)
     public String tablet(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
         return sendView("hummingmenu", req, resp, model);
     }
-    
-    @RequestMapping(value="/signup", method=RequestMethod.GET)
+
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signup(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
         return sendView("signup", req, resp, model);
     }
-    
-    @RequestMapping(value={"/", "index"}, method=RequestMethod.GET)
+
+    @RequestMapping(value = {"/", "index"}, method = RequestMethod.GET)
     public String index(HttpServletRequest req, HttpServletResponse resp
             , ModelMap model) {
         return sendView("index", req, resp, model);

@@ -1,6 +1,6 @@
 /**
  * @(#)BaseWraper.java, Jul 30, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.wrap;
 
@@ -14,7 +14,6 @@ import com.cloudstone.emenu.logic.UserLogic;
 
 /**
  * @author xuhongfeng
- *
  */
 public class BaseWraper {
     @Autowired

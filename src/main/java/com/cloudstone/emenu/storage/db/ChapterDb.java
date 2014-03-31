@@ -1,6 +1,6 @@
 /**
  * @(#)ChapterDb.java, 2013-7-10. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -16,7 +16,6 @@ import com.cloudstone.emenu.data.Chapter;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class ChapterDb extends SQLiteDb implements IChapterDb {
@@ -24,10 +23,10 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     public String getTableName() {
         return TABLE_NAME;
     }
-    
+
     @Override
     public List<Chapter> listChapters(EmenuContext context, final int menuId,
-            final int dishId) {
+                                      final int dishId) {
         String sql = "SELECT c.* FROM chapter c JOIN menuPage m ON c.id=m.chapterId" +
                 " AND m.deleted=0 and c.deleted=0 JOIN dishPage dp ON m.id=dp.id1 AND dp.deleted=0" +
                 " AND dp.id2=? WHERE c.menuId=?";
@@ -39,24 +38,24 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             }
         }, rowMapper);
     }
-    
+
     @Override
     public int[] getAllChapterIds(EmenuContext context) {
         String sql = "SELECT id FROM " + TABLE_NAME + " WHERE deleted=0 AND restaurantId=?";
         return queryIntArray(context, sql, new RestaurantIdBinder(context.getRestaurantId()));
     }
-    
+
     @Override
     public Chapter getChapterByName(EmenuContext context, String name) {
         return getByName(context, name, rowMapper);
     }
-    
+
     @Override
     public List<Chapter> listChapters(EmenuContext context, int menuId) {
         GetByMenuIdBinder binder = new GetByMenuIdBinder(menuId);
         return query(context, SQL_SELECT_BY_MENU_ID, binder, rowMapper);
     }
-    
+
     @Override
     public List<Chapter> listChapters(EmenuContext context, int[] ids) {
         String sql = new SelectSqlBuilder(TABLE_NAME).appendWhereIdIn(ids).build();
@@ -96,19 +95,21 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     protected void onCheckCreateTable(EmenuContext context) {
         checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
-    
+
     /* ---------- SQL ---------- */
     private static final String TABLE_NAME = "chapter";
+
     private static enum Column {
         ID("id"), NAME("name"), MENU_ID("menuId"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
         ORDINAL("ordinal"), RESTAURANT_ID("restaurantId");
-        
+
         private final String str;
+
         private Column(String str) {
             this.str = str;
         }
-        
+
         @Override
         public String toString() {
             return str;
@@ -116,26 +117,26 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
     }
 
     private static final String COL_DEF = new ColumnDefBuilder()
-        .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
-        .append(Column.NAME, DataType.TEXT, "NOT NULL")
-        .append(Column.MENU_ID, DataType.INTEGER, "NOT NULL")
-        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
-        .append(Column.ORDINAL, DataType.INTEGER, "NOT NULL")
-        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
-        .build();
+            .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
+            .append(Column.NAME, DataType.TEXT, "NOT NULL")
+            .append(Column.MENU_ID, DataType.INTEGER, "NOT NULL")
+            .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.ORDINAL, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
+            .build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME).appendSetValue(Column.MENU_ID).appendSetValue(Column.ORDINAL)
-        .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
-        .appendSetValue(Column.DELETED)
-        .appendWhereId().build();
+            .appendSetValue(Column.NAME).appendSetValue(Column.MENU_ID).appendSetValue(Column.ORDINAL)
+            .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
+            .appendSetValue(Column.DELETED)
+            .appendWhereId().build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
+            .appendWhereId().build();
     private static final String SQL_SELECT_BY_MENU_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.MENU_ID).appendOrderBy(Column.ORDINAL, false).build();
+            .appendWhere(Column.MENU_ID).appendOrderBy(Column.ORDINAL, false).build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 8).build();
-    
+
     private static final RowMapper<Chapter> rowMapper = new RowMapper<Chapter>() {
 
         @Override
@@ -151,7 +152,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             return chapter;
         }
     };
-    
+
     private static class ChapterBinder implements StatementBinder {
         private final Chapter chapter;
 
@@ -159,7 +160,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             super();
             this.chapter = chapter;
         }
-        
+
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, chapter.getId());
             stmt.bind(2, chapter.getName());
@@ -171,6 +172,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             stmt.bind(8, chapter.getRestaurantId());
         }
     }
+
     private static class UpdateBinder implements StatementBinder {
         private final Chapter chapter;
 
@@ -178,7 +180,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             super();
             this.chapter = chapter;
         }
-        
+
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, chapter.getName());
@@ -190,7 +192,7 @@ public class ChapterDb extends SQLiteDb implements IChapterDb {
             stmt.bind(7, chapter.getId());
         }
     }
-    
+
     private static class GetByMenuIdBinder implements StatementBinder {
         private final int menuId;
 

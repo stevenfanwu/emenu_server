@@ -1,6 +1,6 @@
 /**
  * @(#)DeviceLogic.java, Aug 4, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.logic;
 
@@ -17,7 +17,6 @@ import com.cloudstone.emenu.util.DataUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Component
 public class DeviceLogic extends BaseLogic {
@@ -31,19 +30,19 @@ public class DeviceLogic extends BaseLogic {
     public Pad getPad(EmenuContext context, int id) {
         return padDb.get(context, id);
     }
-    
+
     public List<Pad> listAllPad(EmenuContext context) {
         List<Pad> pads = padDb.listAll(context);
         DataUtils.filterDeleted(pads);
         return pads;
     }
-    
+
     public Pad addPad(EmenuContext context, Pad pad) {
         List<Pad> pads = padDb.listAll(context);
         Pad sameImei = null;
         Pad sameName = null;
         int count = 0;
-        for (Pad p:pads) {
+        for (Pad p : pads) {
             if (p.getName().equals(pad.getName())) {
                 sameName = p;
                 if (!p.isDeleted()) {
@@ -57,7 +56,7 @@ public class DeviceLogic extends BaseLogic {
                 }
             }
         }
-        Pad old = sameImei!=null ? sameImei : sameName;
+        Pad old = sameImei != null ? sameImei : sameName;
         long now = System.currentTimeMillis();
         pad.setUpdateTime(now);
         if (old != null) {
@@ -70,16 +69,16 @@ public class DeviceLogic extends BaseLogic {
         thriftLogic.onPadChanged();
         return getPad(context, pad.getId());
     }
-    
+
     public Pad updatePad(EmenuContext context, Pad pad) {
         List<Pad> pads = padDb.listAll(context);
-        for (Pad p:pads) {
+        for (Pad p : pads) {
             if (p.getName().equals(pad.getName())) {
-                if (!p.isDeleted() && p.getId()!=pad.getId()) {
+                if (!p.isDeleted() && p.getId() != pad.getId()) {
                     throw new DataConflictException("已存在相同名字的平板");
                 }
             }
-            if (p.getImei().equals(pad.getImei()) && p.getId()!=pad.getId()) {
+            if (p.getImei().equals(pad.getImei()) && p.getId() != pad.getId()) {
                 if (!p.isDeleted()) {
                     throw new DataConflictException("已存在相同IMEI的平板");
                 }
@@ -91,15 +90,15 @@ public class DeviceLogic extends BaseLogic {
         thriftLogic.onPadChanged();
         return getPad(context, pad.getId());
     }
-    
+
     public void deletePad(EmenuContext context, int id) {
         padDb.delete(context, id);
         thriftLogic.onPadChanged();
     }
-    
+
     public Pad getPad(EmenuContext context, String imei) {
         List<Pad> pads = listAllPad(context);
-        for (Pad pad:pads) {
+        for (Pad pad : pads) {
             if (pad.getImei().equals(imei)) {
                 return pad;
             }

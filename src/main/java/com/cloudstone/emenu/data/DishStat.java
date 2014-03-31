@@ -1,6 +1,6 @@
 /**
  * @(#)DailyStat.java, Aug 6, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.data;
@@ -17,10 +17,10 @@ public class DishStat extends BaseStat {
 
     // 退菜数量
     private double backCount;
-    
+
     // 份数
     private double count;
-    
+
     // 单价
     private double price;
 
@@ -43,7 +43,7 @@ public class DishStat extends BaseStat {
     public void setDishClass(String dishClass) {
         this.dishClass = dishClass;
     }
-    
+
     public double getBackCount() {
         return backCount;
     }

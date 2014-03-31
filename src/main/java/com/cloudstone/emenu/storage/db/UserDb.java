@@ -1,6 +1,6 @@
 /**
  * @(#)UserDb.java, 2013-6-20. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -24,38 +24,38 @@ import com.cloudstone.emenu.util.RsaUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class UserDb extends SQLiteDb implements IUserDb {
-    
+
     @Override
     public String getTableName() {
         return TABLE_NAME;
     }
-    
+
     @Value("${admin.password.default}")
     private String DEFAULT_ADMIN_PASSWORD;
-    
+
     private static final String TABLE_NAME = "user";
-    
+
     private static enum Column {
         ID("id"), NAME("name"), PASSWORD("password"),
         TYPE("type"), REAL_NAME("realName"), COMMENT("comment"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
         RESTAURANT_ID("restaurantId");
-        
+
         private final String str;
+
         private Column(String str) {
             this.str = str;
         }
-        
+
         @Override
         public String toString() {
             return str;
         }
     }
-    
+
     private static final String COL_DEF = new ColumnDefBuilder()
             .append(Column.ID.toString(), DataType.INTEGER, "NOT NULL PRIMARY KEY")
             .append(Column.NAME.toString(), DataType.TEXT, "NOT NULL")
@@ -68,30 +68,30 @@ public class UserDb extends SQLiteDb implements IUserDb {
             .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
             .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
             .build();
-    
+
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.ID.toString()).build();
+            .appendWhere(Column.ID.toString()).build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 10).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME).appendSetValue(Column.TYPE)
-        .appendSetValue(Column.REAL_NAME).appendSetValue(Column.COMMENT)
-        .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
-        .appendSetValue(Column.DELETED).appendSetValue(Column.RESTAURANT_ID)
-        .appendWhereId()
-        .build();
+            .appendSetValue(Column.NAME).appendSetValue(Column.TYPE)
+            .appendSetValue(Column.REAL_NAME).appendSetValue(Column.COMMENT)
+            .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
+            .appendSetValue(Column.DELETED).appendSetValue(Column.RESTAURANT_ID)
+            .appendWhereId()
+            .build();
     private static final String SQL_MODIFY_PASSWORD = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.PASSWORD.toString()).appendWhereId().build();
-    
+            .appendSetValue(Column.PASSWORD.toString()).appendWhereId().build();
+
     @Override
     protected void onCheckCreateTable(EmenuContext context) {
         checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
-    
+
     @Override
     public User getByName(EmenuContext context, String userName) {
         User user = getByNameAccrossRestaurants(context, userName, rowMapper);
-        if (user==null && userName.equals("admin")
-                && getAll(context).size()==0) {
+        if (user == null && userName.equals("admin")
+                && getAll(context).size() == 0) {
             //create a default admin user
             user = User.newSuperUser();
             user.setName("admin");
@@ -104,28 +104,27 @@ public class UserDb extends SQLiteDb implements IUserDb {
         }
         return user;
     }
-    
+
     @Override
     public User update(EmenuContext context, User user) {
         String sql = SQL_UPDATE;
         executeSQL(context, sql, new UpdateBinder(user));
         return get(context, user.getId());
     }
-    
+
     @Override
-    public boolean modifyPassword(EmenuContext context, int userId, String password)
-            {
+    public boolean modifyPassword(EmenuContext context, int userId, String password) {
         executeSQL(context, SQL_MODIFY_PASSWORD, new ModifyPasswordBinder(userId, password));
         return true;
     }
-    
+
     @Override
     public User get(EmenuContext context, int userId) {
         IdStatementBinder binder = new IdStatementBinder(userId);
         User user = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return user;
     }
-    
+
     @Override
     public List<User> getAll(EmenuContext context) {
         return getAllInRestaurant(context, rowMapper);
@@ -138,9 +137,9 @@ public class UserDb extends SQLiteDb implements IUserDb {
         executeSQL(context, SQL_INSERT, binder);
         return get(context, user.getId());
     }
-    
+
     private RowMapper<User> rowMapper = new RowMapper<User>() {
-        
+
         @Override
         public User map(SQLiteStatement stmt) throws SQLiteException {
             User user = new User();
@@ -157,8 +156,8 @@ public class UserDb extends SQLiteDb implements IUserDb {
             return user;
         }
     };
-    
-    private class UserBinder implements StatementBinder{
+
+    private class UserBinder implements StatementBinder {
         private final User user;
 
         public UserBinder(User user) {
@@ -180,7 +179,7 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(10, user.getRestaurantId());
         }
     }
-    
+
     private class ModifyPasswordBinder implements StatementBinder {
         private final int userId;
         private final String password;
@@ -197,8 +196,8 @@ public class UserDb extends SQLiteDb implements IUserDb {
             stmt.bind(2, userId);
         }
     }
-    
-    private class UpdateBinder implements StatementBinder{
+
+    private class UpdateBinder implements StatementBinder {
         private final User user;
 
         public UpdateBinder(User user) {

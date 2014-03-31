@@ -38,9 +38,9 @@ public class LicenceHelper {
         if (licence == null) {
             return buildFailed("授权证书不存在或已过期");
         }
-        
+
         boolean checkMac = false;
-        for (String mac:getMacList()) {
+        for (String mac : getMacList()) {
             LOG.info("Mac :  " + mac);
             if (mac.equalsIgnoreCase(licence.getUuid())) {
                 LOG.info("check mac success");
@@ -52,7 +52,7 @@ public class LicenceHelper {
             LOG.error("check mac failed, licence.mac:" + licence.getUuid());
             return buildFailed("授权证书与机器硬件信息不匹配");
         }
-        
+
         if (licence.getType() == Licence.TYPE_FOR_EVER) {
             return buildSuccess();
         }
@@ -63,14 +63,14 @@ public class LicenceHelper {
         }
         return buildSuccess();
     }
-    
+
     private CheckResult buildSuccess() {
         CheckResult r = new CheckResult();
         r.licence = getLicence();
         r.success = true;
         return r;
     }
-    
+
     private CheckResult buildFailed(String error) {
         CheckResult r = new CheckResult();
         r.licence = getLicence();
@@ -78,38 +78,44 @@ public class LicenceHelper {
         r.message = error;
         return r;
     }
-    
+
     public static class CheckResult {
         private boolean success;
         private String message;
         private Licence licence;
-        
+
         public boolean isSuccess() {
             return success;
         }
+
         public void setSuccess(boolean success) {
             this.success = success;
         }
+
         public String getMessage() {
             return message;
         }
+
         public void setMessage(String message) {
             this.message = message;
         }
+
         public Licence getLicence() {
             return licence;
         }
+
         public void setLicence(Licence licence) {
             this.licence = licence;
         }
     }
-    
+
     private Licence licence;
+
     public Licence getLicence() {
         if (licence != null) {
             return licence;
         }
-        
+
         File licenceFile = lisenceFile();
 
         if (!licenceFile.exists()) {
@@ -127,38 +133,38 @@ public class LicenceHelper {
             return null;
         }
     }
-    
+
     private File lisenceFile() {
         String dirPath = System.getProperty(Const.PARAM_CLOUDSTONE_DATA_DIR);
         File dir = new File(dirPath);
         File licenceFile = new File(dir, "emenu.licence");
-        
+
         return licenceFile;
     }
-    
+
     public void saveLisence(InputStream in) throws IOException {
         byte[] buf = new byte[4096];
         int read = -1;
         File file = lisenceFile();
         FileOutputStream out = new FileOutputStream(file);
-        while ( (read = in.read(buf)) != -1) {
+        while ((read = in.read(buf)) != -1) {
             out.write(buf, 0, read);
         }
         out.close();
-        
+
         this.licence = null;
     }
-    
+
     private byte[] decrypt(byte[] encrypted) throws Exception {
         PublicKey publicKey = getPublicKey();
         return RsaUtils.decrypt(encrypted, publicKey);
     }
-    
+
     private byte[] encrypt(byte[] plain) throws Exception {
         PublicKey publicKey = getPublicKey();
         return RsaUtils.encrypt(plain, publicKey);
     }
-    
+
     private PublicKey getPublicKey() throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream("emenu.pub");
         byte[] bytes = new byte[is.available()];
@@ -192,7 +198,7 @@ public class LicenceHelper {
         }
         return list;
     }
-    
+
     public String getSerial() throws Exception {
         List<String> list = getMacList();
         if (list.size() == 0) {

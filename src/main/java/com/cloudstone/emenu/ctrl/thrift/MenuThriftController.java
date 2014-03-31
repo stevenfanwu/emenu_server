@@ -1,6 +1,6 @@
 /**
  * @(#)MenuThriftController.java, Jul 26, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.thrift;
 
@@ -27,15 +27,14 @@ import com.cloudstone.emenu.EmenuContext;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class MenuThriftController extends BaseThriftController {
     private static final Logger LOG = LoggerFactory.getLogger(MenuThriftController.class);
 
-    @RequestMapping(value="/menuservice.thrift", method=RequestMethod.POST)
+    @RequestMapping(value = "/menuservice.thrift", method = RequestMethod.POST)
     public void thrift(HttpServletRequest request,
-            HttpServletResponse response) throws IOException, TException {
+                       HttpServletResponse response) throws IOException, TException {
         process(request, response);
     }
 
@@ -43,27 +42,27 @@ public class MenuThriftController extends BaseThriftController {
     protected TProcessor getProcessor() {
         return processor;
     }
-    
+
     private Processor<Service> processor = new Processor<MenuThriftController.Service>(new Service());
-    
+
     private class Service implements IMenuService.Iface {
 
-		@Override
-		public List<String> getAllNotes(String sessionId)
-				throws UserNotLoginException, TException {
-			EmenuContext context = new EmenuContext();
-			authorize(context, sessionId);
+        @Override
+        public List<String> getAllNotes(String sessionId)
+                throws UserNotLoginException, TException {
+            EmenuContext context = new EmenuContext();
+            authorize(context, sessionId);
             context.setRestaurantId(context.getRestaurantId());
             return thriftLogic.getAllNotes(context);
         }
 
-		@Override
-		public Menu getCurrentMenu(String sessionId)
-				throws UserNotLoginException, TException {
-			LOG.info("getCurrentMenu");
+        @Override
+        public Menu getCurrentMenu(String sessionId)
+                throws UserNotLoginException, TException {
+            LOG.info("getCurrentMenu");
             EmenuContext context = new EmenuContext();
             authorize(context, sessionId);
-            
+
             context.setRestaurantId(context.getRestaurantId());
             Menu menu = thriftLogic.getCurrentMenu(context);
             LOG.info("menu name " + menu.getPagesIterator().next().goodsList.get(0).name);

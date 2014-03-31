@@ -1,6 +1,6 @@
 /**
  * @(#)OrderApiController.java, Jul 30, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.api;
 
@@ -27,24 +27,25 @@ import com.cloudstone.emenu.util.JsonUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class OrderApiController extends BaseApiController {
-    
-    @RequestMapping(value="/api/orders/{id:[\\d]+}", method=RequestMethod.DELETE)
+
+    @RequestMapping(value = "/api/orders/{id:[\\d]+}", method = RequestMethod.DELETE)
     public void deleteOrder(@PathVariable("id") int orderId,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+                            HttpServletRequest request,
+                            HttpServletResponse response) {
         EmenuContext context = newContext(request);
         orderLogic.deleteOrder(context, orderId);
         return;
     }
 
-    @RequestMapping(value="/api/orders/{id:[\\d]+}", method=RequestMethod.GET)
-    public @ResponseBody OrderVO getOrder(@PathVariable(value="id") int orderId,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+    @RequestMapping(value = "/api/orders/{id:[\\d]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    OrderVO getOrder(@PathVariable(value = "id") int orderId,
+                     HttpServletRequest request,
+                     HttpServletResponse response) {
         EmenuContext context = newContext(request);
         Order order = orderLogic.getOrder(context, orderId);
         if (order == null) {
@@ -52,12 +53,14 @@ public class OrderApiController extends BaseApiController {
         }
         return orderWraper.wrap(context, order);
     }
-    
-    @RequestMapping(value="/api/orders", method=RequestMethod.GET)
-    public @ResponseBody List<OrderVO> getDailyOrders(
-            @RequestParam(value="time", defaultValue="0") long time,
-            @RequestParam(value="start", defaultValue="0") long startTime,
-            @RequestParam(value="end", defaultValue="0") long endTime,
+
+    @RequestMapping(value = "/api/orders", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<OrderVO> getDailyOrders(
+            @RequestParam(value = "time", defaultValue = "0") long time,
+            @RequestParam(value = "start", defaultValue = "0") long startTime,
+            @RequestParam(value = "end", defaultValue = "0") long endTime,
             HttpServletRequest request,
             HttpServletResponse response) {
         EmenuContext context = newContext(request);
@@ -76,54 +79,66 @@ public class OrderApiController extends BaseApiController {
         return orderWraper.wrap(context, orders);
     }
 
-    @RequestMapping(value="/api/pay-types", method=RequestMethod.GET)
-    public @ResponseBody List<PayType> listPayTypes(HttpServletRequest request) {
+    @RequestMapping(value = "/api/pay-types", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<PayType> listPayTypes(HttpServletRequest request) {
         EmenuContext context = newContext(request);
         return orderLogic.listPayTypes(context);
     }
-    
-    @RequestMapping(value="/api/bills", method=RequestMethod.POST)
-    public @ResponseBody Bill payBill(@RequestBody String body,
-            HttpServletRequest req,
-            HttpServletResponse response) {
+
+    @RequestMapping(value = "/api/bills", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Bill payBill(@RequestBody String body,
+                 HttpServletRequest req,
+                 HttpServletResponse response) {
         EmenuContext context = newContext(req);
         Bill bill = JsonUtils.fromJson(body, Bill.class);
         return orderLogic.payBill(context, bill, getLoginUser(req));
     }
-    
-    @RequestMapping(value="/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/cancel", method=RequestMethod.PUT)
-    public @ResponseBody OrderVO cancelDish(@PathVariable("id") int orderId,
-            @PathVariable("dishId") int dishId,
-            @RequestParam("count") int count,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+
+    @RequestMapping(value = "/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/cancel", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    OrderVO cancelDish(@PathVariable("id") int orderId,
+                       @PathVariable("dishId") int dishId,
+                       @RequestParam("count") int count,
+                       HttpServletRequest request,
+                       HttpServletResponse response) {
         EmenuContext context = newContext(request);
         Order order = orderLogic.cancelDish(context, orderId, dishId, count);
         return orderWraper.wrap(context, order);
     }
-    
-    @RequestMapping(value="/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/free", method=RequestMethod.PUT)
-    public @ResponseBody OrderVO freeDish(@PathVariable("id") int orderId,
-            @PathVariable("dishId") int dishId,
-            @RequestParam("count") int count,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+
+    @RequestMapping(value = "/api/orders/{id:[\\d]+}/dishes/{dishId:[\\d]+}/free", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    OrderVO freeDish(@PathVariable("id") int orderId,
+                     @PathVariable("dishId") int dishId,
+                     @RequestParam("count") int count,
+                     HttpServletRequest request,
+                     HttpServletResponse response) {
         EmenuContext context = newContext(request);
         Order order = orderLogic.freeDish(context, orderId, dishId, count);
         return orderWraper.wrap(context, order);
     }
-    
-    @RequestMapping(value="/api/orders", method=RequestMethod.POST)
-    public @ResponseBody OrderVO submit(HttpServletRequest request
+
+    @RequestMapping(value = "/api/orders", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    OrderVO submit(HttpServletRequest request
             , HttpServletResponse response
             , @RequestBody String body) {
         OrderVO order = JsonUtils.fromJson(body, OrderVO.class);
         EmenuContext context = newContext(request);
         return orderLogic.submit(context, order, order.getDishes());
     }
-    
-    @RequestMapping(value="/api/orders/{id:[\\d]+}", method=RequestMethod.PUT)
-    public @ResponseBody OrderVO update(HttpServletRequest request
+
+    @RequestMapping(value = "/api/orders/{id:[\\d]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    OrderVO update(HttpServletRequest request
             , HttpServletResponse response
             , @PathVariable("id") int orderId
             , @RequestBody String body) {
@@ -131,5 +146,5 @@ public class OrderApiController extends BaseApiController {
         OrderVO order = JsonUtils.fromJson(body, OrderVO.class);
         return orderLogic.incrUpdate(context, orderId, order.getDishes());
     }
-    
+
 }

@@ -1,6 +1,6 @@
 /**
  * @(#)OrderLogic.java, Jul 29, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.logic;
@@ -77,13 +77,13 @@ public class OrderLogic extends BaseLogic {
     private RecordLogic recordLogic;
     @Autowired
     private UserLogic userLogic;
-    
+
     @Autowired
     private VipLogic vipLogic;
-    
+
     @Autowired
     protected OrderWraper orderWraper;
-    
+
     @Autowired
     private PollingManager pollingManager;
 
@@ -93,8 +93,8 @@ public class OrderLogic extends BaseLogic {
         orderDish.setUpdateTime(now);
         orderDishDb.add(context, orderDish);
     }
-    
-    
+
+
     public OrderDish getOrderDish(EmenuContext context, int orderId, int dishId) {
         return orderDishDb.getOrderDish(context, orderId, dishId);
     }
@@ -193,13 +193,13 @@ public class OrderLogic extends BaseLogic {
             throw new BadRequestError();
         }
         Vip vip = null;
-        if(bill.getVipId() != -1) {
-        	vip = vipLogic.get(context, bill.getVipId());
-        	if(vip == null || vip.isDeleted())
-        		throw new BadRequestError();
-        	if(vip.getMoney() < bill.getCost()) {
-        		throw new BadRequestError();
-        	}
+        if (bill.getVipId() != -1) {
+            vip = vipLogic.get(context, bill.getVipId());
+            if (vip == null || vip.isDeleted())
+                throw new BadRequestError();
+            if (vip.getMoney() < bill.getCost()) {
+                throw new BadRequestError();
+            }
         }
 
         order.setStatus(Const.OrderStatus.PAYED);
@@ -212,20 +212,20 @@ public class OrderLogic extends BaseLogic {
         // Start transaction
         context.beginTransaction(dataSource);
         try {
-        	if(vip != null) {
-            	//Set real earn to 0
-            	vipLogic.recharge(context, bill.getVipId(), -bill.getCost());
-            	bill.setVipCost(bill.getCost());
-            	bill.setCost(0);
-            	order.setPrice(0);
+            if (vip != null) {
+                //Set real earn to 0
+                vipLogic.recharge(context, bill.getVipId(), -bill.getCost());
+                bill.setVipCost(bill.getCost());
+                bill.setCost(0);
+                order.setPrice(0);
             }
-        	orderDb.update(context, order);
+            orderDb.update(context, order);
             billDb.add(context, bill);
             table.setStatus(TableStatus.EMPTY);
             table.setOrderId(0);
             tableLogic.update(context, table);
             tableLogic.setCustomerNumber(context, table.getId(), 0);
-            
+
             try {
                 printerLogic.printBill(context, bill, user);
             } catch (Exception e) {
@@ -281,24 +281,24 @@ public class OrderLogic extends BaseLogic {
         }
 
     };
-    
+
     public Order cancelDish(EmenuContext context, int orderId, int dishId, int count) {
         Order order = getOrder(context, orderId);
-        if (order==null || order.isDeleted()) {
+        if (order == null || order.isDeleted()) {
             throw new NotFoundException("该订单不存在");
         }
         List<OrderDish> dishes = listOrderDishes(context, orderId);
         OrderDish dish = null;
-        for (OrderDish d:dishes) {
+        for (OrderDish d : dishes) {
             if (d.getDishId() == dishId) {
                 dish = d;
                 break;
             }
         }
-        if (dish==null) {
+        if (dish == null) {
             throw new NotFoundException("订单中不存在该菜品");
         }
-        if (dish.getNumber()<count) {
+        if (dish.getNumber() < count) {
             throw new PreconditionFailedException("菜品数量错误");
         }
         context.beginTransaction(dataSource);
@@ -310,19 +310,19 @@ public class OrderLogic extends BaseLogic {
             } else {
                 deleteOrderDish(context, orderId, dishId);
             }
-            
+
             //update order
-            order.setPrice(order.getPrice() - count*dish.getPrice());
-            order.setOriginPrice(order.getOriginPrice() - count*dish.getPrice());
+            order.setPrice(order.getPrice() - count * dish.getPrice());
+            order.setOriginPrice(order.getOriginPrice() - count * dish.getPrice());
             updateOrder(context, order);
-            
+
             DishRecord record = new DishRecord();
             record.setTime(System.currentTimeMillis());
             record.setDishId(dishId);
             record.setCount(count);
             record.setOrderId(orderId);
             recordLogic.addCancelDishRecord(context, record);
-            
+
             context.commitTransaction();
         } finally {
             context.closeTransaction(dataSource);
@@ -347,46 +347,46 @@ public class OrderLogic extends BaseLogic {
 
         return order;
     }
-    
+
     public Order freeDish(EmenuContext context, int orderId, int dishId, int count) {
         Order order = getOrder(context, orderId);
-        if (order==null || order.isDeleted()) {
+        if (order == null || order.isDeleted()) {
             throw new NotFoundException("该订单不存在");
         }
         List<OrderDish> dishes = listOrderDishes(context, orderId);
         OrderDish dish = null;
-        for (OrderDish d:dishes) {
+        for (OrderDish d : dishes) {
             if (d.getDishId() == dishId) {
                 dish = d;
                 break;
             }
         }
-        if (dish==null) {
+        if (dish == null) {
             throw new NotFoundException("订单中不存在该菜品");
         }
-        if (dish.getNumber()<count) {
+        if (dish.getNumber() < count) {
             throw new PreconditionFailedException("菜品数量错误");
         }
         context.beginTransaction(dataSource);
         try {
             //update order
-            order.setPrice(order.getPrice() - count*dish.getPrice());
+            order.setPrice(order.getPrice() - count * dish.getPrice());
             updateOrder(context, order);
-            
+
             FreeDishRecord record = new FreeDishRecord();
             record.setTime(System.currentTimeMillis());
             record.setDishId(dishId);
             record.setCount(count);
             record.setOrderId(orderId);
             recordLogic.addFreeDishRecord(context, record);
-            
+
             context.commitTransaction();
         } finally {
             context.closeTransaction(dataSource);
         }
         return order;
     }
-    
+
     public OrderVO incrUpdate(EmenuContext context, int orderId, List<OrderDishVO> dishes) {
         Order order = getOrder(context, orderId);
         if (order == null || order.isDeleted()) {
@@ -398,7 +398,7 @@ public class OrderLogic extends BaseLogic {
         context.beginTransaction(dataSource);
         try {
             double originPrice = order.getOriginPrice();
-            for (OrderDishVO r:dishes) {
+            for (OrderDishVO r : dishes) {
                 Dish dish = menuLogic.getDish(context, r.getId());
                 if (dish == null || dish.isDeleted()) {
                     throw new NotFoundException("存在非法菜品");
@@ -406,9 +406,9 @@ public class OrderLogic extends BaseLogic {
                 originPrice += dish.getPrice() * r.getNumber();
                 r.setPrice(dish.getPrice());
             }
-            
+
             //save order dish
-            for (OrderDishVO vo:dishes) {
+            for (OrderDishVO vo : dishes) {
                 OrderDish r = vo.toOrderDish();
                 OrderDish old = getOrderDish(context, orderId, r.getDishId());
                 if (old != null) {
@@ -432,7 +432,7 @@ public class OrderLogic extends BaseLogic {
             context.closeTransaction(dataSource);
         }
         order = getOrder(context, orderId);
-        OrderVO orderVO =  orderWraper.wrap(context, order);
+        OrderVO orderVO = orderWraper.wrap(context, order);
         try {
             printerLogic.printAddOrder(context, orderVO, userLogic.getUser(context, context.getLoginUserId()));
         } catch (Exception e) {
@@ -440,10 +440,10 @@ public class OrderLogic extends BaseLogic {
         }
         return orderVO;
     }
-    
+
     public OrderVO submit(EmenuContext context, Order order, List<OrderDishVO> dishes) {
         Table table = tableLogic.get(context, order.getTableId());
-        if (table==null || table.isDeleted()) {
+        if (table == null || table.isDeleted()) {
             throw new NotFoundException("该餐桌不存在");
         }
         if (table.getStatus() != Const.TableStatus.OCCUPIED) {
@@ -459,7 +459,7 @@ public class OrderLogic extends BaseLogic {
             order.setTableId(table.getId());
             order.setCustomerNumber(customerNumber);
             double originPrice = 0;
-            for (OrderDishVO r:dishes) {
+            for (OrderDishVO r : dishes) {
                 Dish dish = menuLogic.getDish(context, r.getId());
                 if (dish == null || dish.isDeleted()) {
                     throw new NotFoundException("存在非法菜品");
@@ -470,23 +470,23 @@ public class OrderLogic extends BaseLogic {
             order.setOriginPrice(originPrice);
             order.setUserId(context.getLoginUserId());
             addOrder(context, order);
-            
+
             //save order dish
-            for (OrderDishVO r:dishes) {
+            for (OrderDishVO r : dishes) {
                 r.setOrderId(order.getId());
                 r.setStatus(Const.OrderDishStatus.ORDERED);
                 addOrderDish(context, r.toOrderDish());
             }
-            
+
             //update table
             table.setOrderId(order.getId());
             tableLogic.update(context, table);
-            
+
             context.commitTransaction();
         } finally {
             context.closeTransaction(dataSource);
         }
-        
+
         OrderVO orderVO = orderWraper.wrap(context, order);
         pollingManager.putMessage(
                 new PollingMessage(PollingMessage.TYPE_NEW_ORDER, orderVO));
@@ -496,7 +496,7 @@ public class OrderLogic extends BaseLogic {
         } catch (Exception e) {
             LOG.error("", e);
         }
-        
+
         return orderVO;
     }
 }

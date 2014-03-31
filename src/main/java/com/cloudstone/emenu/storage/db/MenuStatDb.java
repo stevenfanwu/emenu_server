@@ -99,9 +99,9 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.CHAPTER_NAME)
-        .appendWhere(Column.DAY)
-        .appendWhereRestaurantId().build();
+            .appendWhere(Column.CHAPTER_NAME)
+            .appendWhere(Column.DAY)
+            .appendWhereRestaurantId().build();
 
     private static final RowMapper<MenuStat> rowMapper = new RowMapper<MenuStat>() {
 
@@ -125,7 +125,7 @@ public class MenuStatDb extends SQLiteDb implements IMenuStatDb {
         private final long day;
         private final String name;
         private final int restaurantId;
-        
+
         public DayBinder(String name, long day, int restaurantId) {
             super();
             this.name = name;

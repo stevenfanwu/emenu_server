@@ -1,41 +1,40 @@
 /**
  * @(#)SQLBuilder.java, 2013-6-22. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db.util;
 
 /**
  * @author xuhongfeng
- *
  */
 public class SQLBuilder {
     private final StringBuilder sb = new StringBuilder();
-    
+
     private static final String COMMA = ",";
 
     public SQLBuilder() {
         super();
     }
-    
+
     public SQLBuilder append(Object s) {
         sb.append(s);
         return this;
     }
-    
+
     protected SQLBuilder appendComma() {
         return append(COMMA);
     }
-    
+
     public String build() {
         return sb.toString();
     }
-    
+
     public int size() {
         return sb.length();
     }
-    
+
     private boolean firstWhere = true;
-    
+
     public SQLBuilder appendNotDeleted() {
         if (firstWhere) {
             append(" where ");
@@ -46,7 +45,7 @@ public class SQLBuilder {
         append("deleted=0");
         return this;
     }
-    
+
     public SQLBuilder appendWhere(Object whereColumn) {
         if (firstWhere) {
             append(" where ");
@@ -57,11 +56,11 @@ public class SQLBuilder {
         append(whereColumn + "=? ");
         return this;
     }
-    
+
     public SQLBuilder appendWhereName() {
         return this.appendWhere("name");
     }
-    
+
     public SQLBuilder appendWhereId() {
         return this.appendWhere("id");
     }
@@ -69,7 +68,7 @@ public class SQLBuilder {
     public SQLBuilder appendWhereRestaurantId() {
         return this.appendWhere("restaurantId");
     }
-    
+
     public SQLBuilder appendWhereIdIn(Object idName, int[] ids) {
         if (firstWhere) {
             append(" WHERE ");
@@ -83,7 +82,7 @@ public class SQLBuilder {
         append(")");
         return this;
     }
-    
+
     public SQLBuilder appendWhereIdIn(int[] ids) {
         return appendWhereIdIn("id", ids);
     }

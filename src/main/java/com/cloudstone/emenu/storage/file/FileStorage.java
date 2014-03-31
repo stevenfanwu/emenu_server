@@ -1,6 +1,6 @@
 /**
  * @(#)FileStorage.java, Jul 27, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.file;
 
@@ -11,7 +11,6 @@ import com.cloudstone.emenu.storage.BaseStorage;
 
 /**
  * @author xuhongfeng
- *
  */
 public class FileStorage extends BaseStorage {
     public File getCloudstoneDataDir() {

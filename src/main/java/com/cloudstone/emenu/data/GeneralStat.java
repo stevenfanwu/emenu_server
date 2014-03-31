@@ -1,6 +1,6 @@
 /**
  * @(#)GeneralStat.java, Aug 6, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.data;
@@ -26,9 +26,9 @@ public class GeneralStat extends AveStat {
 
     // 代金券总额
     private double coupons;
-    
+
     private int count;
-    
+
     public GeneralStat() {
         super();
     }

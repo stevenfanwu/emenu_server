@@ -10,7 +10,7 @@ define(function (require, exports, module) {
     var $ = require('../lib/jquery');
 
     var RestaurantList = BaseTable.extend({
-      heads: ['Name', 'Restaurant Id'],
+      heads: ['Name', 'Restaurant Id', 'Actions'],
 
         CollectionType: RestaurantCollection,
 

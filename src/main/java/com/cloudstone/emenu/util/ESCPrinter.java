@@ -43,67 +43,70 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class ESCPrinter {
-    /** Creates a new instance of ESCPrinter */
-    public ESCPrinter( boolean escp24pin) {
+    /**
+     * Creates a new instance of ESCPrinter
+     */
+    public ESCPrinter(boolean escp24pin) {
         this.escp24pin = escp24pin;
     }
-    
+
     public void close() {
         //post: closes the stream, used when printjob ended
         try {
             pstream.close();
             ostream.close();
-        } 
-        catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    
+
     public boolean initialize() {
         //post: returns true iff stream to network printer successfully opened, streams for writing to esc/p printer created
         streamOpenSuccess = false;
-    
+
         //create stream objs
         ostream = new ByteArrayOutputStream();
         pstream = new PrintStream(ostream);
-        
+
         //reset default settings
         pstream.print(ESC);
         pstream.print(AT);
-        
+
         //select 10-cpi character pitch
         select10CPI();
-        
+
         //select draft quality printing
         selectDraftPrinting();
-        
+
         //set character set
         setCharacterSet(BRAZIL);
         streamOpenSuccess = true;
-        
+
         return streamOpenSuccess;
     }
-    
+
     public void select10CPI() { //10 characters per inch (condensed available)
         pstream.print(ESC);
         pstream.print(P);
     }
-    
+
     public void select15CPI() { //15 characters per inch (condensend not available)
         pstream.print(ESC);
         pstream.print(g);
     }
-    
+
     public void selectDraftPrinting() { //set draft quality printing
         pstream.print(ESC);
         pstream.print(x);
         pstream.print((char) 48);
     }
-    
+
     public void selectLQPrinting() { //set letter quality printing
         pstream.print(ESC);
         pstream.print(x);
         pstream.print((char) 49);
     }
-    
+
     public void setCharacterSet(char charset) {
         //assign character table
         pstream.print(ESC);
@@ -114,25 +117,25 @@ public class ESCPrinter {
         pstream.print(ARGUMENT_1); //selectable character table 1
         pstream.print(charset); //registered character table (arg_25 is brascii)
         pstream.print(ARGUMENT_0); //always 0
-        
+
         //select character table
         pstream.print(ESC);
         pstream.print(t);
         pstream.print(ARGUMENT_1); //selectable character table 1
     }
-    
+
     public void lineFeed() {
         //post: performs new line
         pstream.print(CR); //according to epson esc/p ref. manual always send carriage return before line feed
         pstream.print(LINE_FEED);
     }
-    
+
     public void formFeed() {
         //post: ejects single sheet
         pstream.print(CR); //according to epson esc/p ref. manual it is recommended to send carriage return before form feed
         pstream.print(FF);
     }
-    
+
     public void bold(boolean bold) {
         pstream.print(ESC);
         if (bold)
@@ -140,7 +143,7 @@ public class ESCPrinter {
         else
             pstream.print(F);
     }
-    
+
     public void proportionalMode(boolean proportional) {
         pstream.print(ESC);
         pstream.print(p);
@@ -149,61 +152,61 @@ public class ESCPrinter {
         else
             pstream.print((char) 48);
     }
-    
+
     public void advanceVertical(float centimeters) {
         //pre: centimeters >= 0 (cm)
         //post: advances vertical print position approx. y centimeters (not precise due to truncation)
         float inches = centimeters / CM_PER_INCH;
         int units = (int) (inches * (escp24pin ? MAX_ADVANCE_24PIN : MAX_ADVANCE_9PIN));
-        
+
         while (units > 0) {
             char n;
             if (units > MAX_UNITS)
                 n = (char) MAX_UNITS; //want to move more than range of parameter allows (0 - 255) so move max amount
             else
                 n = (char) units; //want to move a distance which fits in range of parameter (0 - 255)
-                        
+
             pstream.print(ESC);
             pstream.print(J);
             pstream.print(n);
-            
+
             units -= MAX_UNITS;
         }
     }
-    
+
     public void advanceHorizontal(float centimeters) {
         //pre: centimeters >= 0
         //post: advances horizontal print position approx. centimeters
         float inches = centimeters / CM_PER_INCH;
         int units_low = (int) (inches * 120) % 256;
         int units_high = (int) (inches * 120) / 256;
-        
-        pstream.print(ESC);       
+
+        pstream.print(ESC);
         pstream.print(BACKSLASH);
         pstream.print((char) units_low);
         pstream.print((char) units_high);
     }
-    
+
     public void setAbsoluteHorizontalPosition(float centimeters) {
         //pre: centimenters >= 0 (cm)
         //post: sets absolute horizontal print position to x centimeters from left margin
         float inches = centimeters / CM_PER_INCH;
         int units_low = (int) (inches * 60) % 256;
         int units_high = (int) (inches * 60) / 256;
-        
+
         pstream.print(ESC);
         pstream.print($);
         pstream.print((char) units_low);
         pstream.print((char) units_high);
     }
-    
+
     public void horizontalTab(int tabs) {
         //pre: tabs >= 0
         //post: performs horizontal tabs tabs number of times
         for (int i = 0; i < tabs; i++)
             pstream.print(TAB);
     }
-    
+
     public void setMargins(int columnsLeft, int columnsRight) {
         //pre: columnsLeft > 0 && <= 255, columnsRight > 0 && <= 255
         //post: sets left margin to columnsLeft columns and right margin to columnsRight columns
@@ -211,28 +214,28 @@ public class ESCPrinter {
         pstream.print(ESC);
         pstream.print(l);
         pstream.print((char) columnsLeft);
-        
+
         //right
         pstream.print(ESC);
         pstream.print(Q);
         pstream.print((char) columnsRight);
     }
-    
+
     public void print(String text) {
         pstream.print(text);
     }
-    
+
     public boolean isInitialized() {
         //post: returns true iff printer was successfully initialized
         return streamOpenSuccess;
     }
-    
+
     public void cutPaper() {
         pstream.print(GS);
         pstream.print("V");
-        pstream.print((char)1);
+        pstream.print((char) 1);
     }
-    
+
     public byte[] toBytes() {
         pstream.flush();
         try {
@@ -242,7 +245,7 @@ public class ESCPrinter {
         }
         return ostream.toByteArray();
     }
-    
+
     /* fields */
     private boolean escp24pin; //boolean to indicate whether the printer is a 24 pin esc/p2 epson
     private ByteArrayOutputStream ostream;
@@ -252,7 +255,7 @@ public class ESCPrinter {
     private static int MAX_ADVANCE_24PIN = 180;
     private static int MAX_UNITS = 127; //for vertical positioning range is between 0 - 255 (0 <= n <= 255) according to epson ref. but 255 gives weird errors at 1.5f, 127 as max (0 - 128) seems to be working
     private static final float CM_PER_INCH = 2.54f;
-    
+
     /* decimal ascii values for epson ESC/P commands */
     private static final char ESC = 27; //escape
     private static final char GS = 29;
@@ -283,7 +286,7 @@ public class ESCPrinter {
     private static final char ARGUMENT_6 = 6;
     private static final char ARGUMENT_7 = 7;
     private static final char ARGUMENT_25 = 25;
-    
+
     /* character sets */
     public static final char USA = ARGUMENT_1;
     public static final char BRAZIL = ARGUMENT_25;

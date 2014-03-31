@@ -1,6 +1,6 @@
 /**
  * @(#)RequestUtils.java, Jun 15, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
@@ -13,15 +13,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author xuhongfeng
- *
  */
 public class RequestUtils {
     private static final Logger LOG = LoggerFactory.getLogger(RequestUtils.class);
-    
+
     public static String getCookie(HttpServletRequest req, String name) {
         Cookie[] cookies = req.getCookies();
         if (!CollectionUtils.isEmpty(cookies)) {
-            for (Cookie c:cookies) {
+            for (Cookie c : cookies) {
                 if (c.getName().equals(name)) {
                     LOG.info("get Cookie : " + c);
                     return c.getValue();
@@ -30,9 +29,9 @@ public class RequestUtils {
         }
         return null;
     }
-    
+
     public static void addCookie(HttpServletResponse resp, String name,
-            String value) {
+                                 String value) {
         Cookie cookie = new Cookie(name, value);
         LOG.info("add Cookie : " + name + " : " + value);
         //TODO expire time
@@ -47,7 +46,7 @@ public class RequestUtils {
         cookie.setMaxAge(0);
         resp.addCookie(cookie);
     }
-    
+
     public static String getUserAgent(HttpServletRequest req) {
         return req.getHeader("User-Agent");
     }

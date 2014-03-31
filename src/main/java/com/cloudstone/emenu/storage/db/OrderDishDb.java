@@ -1,6 +1,6 @@
 /**
  * @(#)OrderDishDb.java, Jul 28, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -18,14 +18,13 @@ import com.cloudstone.emenu.util.CollectionUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
     private static final String TABLE_NAME = "orderDish";
-    
+
     private static final String SPLIT_REMARKS = "&&";
-    
+
     private static final RelationDbColumn COL_NUMBER = new RelationDbColumn("number", DataType.REAL, false);
     private static final RelationDbColumn COL_PRICE = new RelationDbColumn("price", DataType.REAL, false);
     private static final RelationDbColumn COL_REMARKS = new RelationDbColumn("remarks", DataType.TEXT, false);
@@ -36,7 +35,7 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             new RelationDbColumn("updateTime", DataType.INTEGER, false);
     private static final RelationDbColumn COL_DELETED =
             new RelationDbColumn("deleted", DataType.INTEGER, false);
-    
+
     @Override
     public void add(EmenuContext context, final OrderDish data) {
         add(context, new InsertBinder(data.getOrderId(), data.getDishId()) {
@@ -54,22 +53,22 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             }
         });
     }
-    
+
     @Override
     public void delete(EmenuContext context, int orderId, int dishId) {
         super.delete(context, orderId, dishId);
     }
-    
+
     @Override
     public OrderDish getOrderDish(EmenuContext context, int orderId, int dishId) {
         return super.get(context, orderId, dishId);
     }
-    
+
     @Override
     public void update(EmenuContext context, OrderDish data) {
         executeSQL(context, SQL_UPDATE, new UpdateBinder(data));
     }
-    
+
     @Override
     public List<OrderDish> listOrderDish(EmenuContext context, int orderId) {
         return listById1(context, orderId);
@@ -82,7 +81,7 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
 
     @Override
     protected RelationDbConfig onCreateConfig() {
-        RelationDbColumn[] columns = new RelationDbColumn[] {
+        RelationDbColumn[] columns = new RelationDbColumn[]{
                 COL_NUMBER, COL_PRICE, COL_REMARKS, COL_STATUS,
                 COL_CREATED_TIME, COL_UPDATE_TIME, COL_DELETED
         };
@@ -95,12 +94,12 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
     }
 
     private static RelationRowMapper<OrderDish> rowMapper = new RelationRowMapper<OrderDish>() {
-        
+
         @Override
         protected OrderDish newRelation() {
             return new OrderDish();
         }
-        
+
         @Override
         public OrderDish map(SQLiteStatement stmt) throws SQLiteException {
             OrderDish data = super.map(stmt);
@@ -108,7 +107,7 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             data.setPrice(stmt.columnDouble(3));
             String strRemarks = stmt.columnString(4);
             String[] remarks = strRemarks.split(SPLIT_REMARKS);
-            if(remarks == null || remarks.length == 0 || (remarks.length == 1 && remarks[0].equals(""))) {
+            if (remarks == null || remarks.length == 0 || (remarks.length == 1 && remarks[0].equals(""))) {
                 data.setRemarks(new String[0]);
             } else {
                 data.setRemarks(remarks);
@@ -120,19 +119,19 @@ public class OrderDishDb extends RelationDb<OrderDish> implements IOrderDishDb {
             return data;
         }
     };
-    
+
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(COL_NUMBER)
-        .appendSetValue(COL_PRICE)
-        .appendSetValue(COL_STATUS)
-        .appendSetValue(COL_REMARKS)
-        .appendSetValue(COL_CREATED_TIME)
-        .appendSetValue(COL_UPDATE_TIME)
-        .appendSetValue(COL_DELETED)
-        .appendWhere(ID1)
-        .appendWhere(ID2)
-        .build();
-    
+            .appendSetValue(COL_NUMBER)
+            .appendSetValue(COL_PRICE)
+            .appendSetValue(COL_STATUS)
+            .appendSetValue(COL_REMARKS)
+            .appendSetValue(COL_CREATED_TIME)
+            .appendSetValue(COL_UPDATE_TIME)
+            .appendSetValue(COL_DELETED)
+            .appendWhere(ID1)
+            .appendWhere(ID2)
+            .build();
+
     private static class UpdateBinder implements StatementBinder {
         private final OrderDish data;
 

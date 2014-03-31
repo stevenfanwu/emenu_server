@@ -1,6 +1,6 @@
 /**
  * @(#)MenuStat.java, Aug 6, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.data;
@@ -10,9 +10,9 @@ package com.cloudstone.emenu.data;
  */
 public class MenuStat extends BaseStat {
     private String chapterName;
-    
+
     private double count;
-    
+
     public MenuStat() {
         super();
     }

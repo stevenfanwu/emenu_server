@@ -1,6 +1,6 @@
 /**
  * @(#)MyContextListener.java, Aug 17, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu;
 
@@ -13,7 +13,6 @@ import com.cloudstone.emenu.constant.Const;
 
 /**
  * @author xuhongfeng
- *
  */
 public class MyContextListener implements ServletContextListener {
 

@@ -1,12 +1,11 @@
 /**
  * @(#)UnitUtils.java, Jun 16, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
 /**
  * @author xuhongfeng
- *
  */
 public class UnitUtils {
 
@@ -56,15 +55,15 @@ public class UnitUtils {
     }
 
     public static int getSeconds(long time) {
-        return Math.round(((float)time/SECOND));
+        return Math.round(((float) time / SECOND));
     }
 
     public static int getHours(long time) {
-        return Math.round(((float)time/HOUR));
+        return Math.round(((float) time / HOUR));
     }
 
     public static int getMinutes(long time) {
-        return Math.round(((float)time/MINUTE));
+        return Math.round(((float) time / MINUTE));
     }
 
     public static String getDuration(long timeMs) {
@@ -90,15 +89,14 @@ public class UnitUtils {
     }
 
     public static long getDayByMillis(long millis) {
-        return (millis + 8*HOUR) / (long) DAY;
+        return (millis + 8 * HOUR) / (long) DAY;
     }
 
     /**
-     * 
-     * @return  timestamp of 0'clock
+     * @return timestamp of 0'clock
      */
     public static long getDayStart(long time) {
         long day = getDayByMillis(time);
-        return day*DAY - 8 * HOUR;
+        return day * DAY - 8 * HOUR;
     }
 }

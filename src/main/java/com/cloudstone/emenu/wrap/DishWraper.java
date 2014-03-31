@@ -1,6 +1,6 @@
 /**
  * @(#)DishWraper.java, Aug 25, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.wrap;
 
@@ -27,25 +27,24 @@ import com.cloudstone.emenu.logic.MenuLogic;
 
 /**
  * @author xuhongfeng
- *
  */
 @Component
 public class DishWraper extends BaseWraper {
     private static final Logger LOG = Logger.getLogger(DishWraper.class);
-    
+
     @Autowired
     private MenuLogic menuLogic;
 
     public List<DishGroup> wrapDishGroup(EmenuContext context,
-            List<OrderDishVO> dishes, int[] chapterIds, boolean isBill) {
+                                         List<OrderDishVO> dishes, int[] chapterIds, boolean isBill) {
         Map<String, DishGroup> map = new HashMap<String, DishGroup>();
         List<Chapter> chapters = menuLogic.listChapters(context, chapterIds);
         Set<String> categories = new HashSet<String>();
-        for (Chapter c:chapters) {
+        for (Chapter c : chapters) {
             categories.add(c.getName());
         }
-        
-        for (OrderDishVO dish:dishes) {
+
+        for (OrderDishVO dish : dishes) {
             String category = menuLogic.getCategory(context, dish.getId());
             if (!categories.contains(category)) {
                 LOG.info("ignore category:" + category);
@@ -69,22 +68,22 @@ public class DishWraper extends BaseWraper {
             group.getDishes().add(dish);
         }
         List<DishGroup> ret = new LinkedList<DishGroup>();
-        for (DishGroup g:map.values()) {
+        for (DishGroup g : map.values()) {
             LOG.info(String.format("Group:%s  dishes.size=%d", g.getCategory(), g.getDishes().size()));
             ret.add(g);
         }
         return ret;
     }
-    
+
     public CancelDishVO wrapCancelDish(EmenuContext context, DishRecord record) {
         Dish dish = menuLogic.getDish(context, record.getDishId());
         CancelDishVO vo = new CancelDishVO(dish, record);
         return vo;
     }
-    
+
     public List<CancelDishVO> wrapCancelDish(EmenuContext context, List<DishRecord> records) {
         List<CancelDishVO> r = new ArrayList<CancelDishVO>(records.size());
-        for (DishRecord record:records) {
+        for (DishRecord record : records) {
             r.add(wrapCancelDish(context, record));
         }
         return r;

@@ -1,6 +1,6 @@
 /**
  * @(#)IdStatementBinder.java, 2013-6-23. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db.util;
 
@@ -9,13 +9,12 @@ import com.almworks.sqlite4java.SQLiteStatement;
 
 /**
  * @author xuhongfeng
- *
  */
 public class TimeStatementBinder implements StatementBinder {
     private final long startTime;
     private final long endTime;
     private final int restaurantId;
-    
+
 
     public TimeStatementBinder(long startTime, long endTime, int restaurantId) {
         super();

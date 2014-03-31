@@ -1,6 +1,6 @@
 /**
  * @(#)UpgradingFilter.java, Aug 3, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.web.filter;
 
@@ -25,25 +25,24 @@ import com.cloudstone.emenu.storage.db.util.DbUpgrader;
 
 /**
  * @author xuhongfeng
- *
  */
 public class UpgradingFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(UpgradingFilter.class);
-    
+
     @Autowired
     private ConfigLogic configLogic;
-    
+
     @Autowired
     private DbUpgrader dbUpgrader;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
+                         FilterChain chain) throws IOException, ServletException {
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
 
         String url = req.getRequestURI().toLowerCase();
-        
+
 //        LOG.info("upgrading filter : " + url);
         if (url.startsWith("/upgrading")
                 || url.startsWith("/static")) {

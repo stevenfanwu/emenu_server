@@ -1,6 +1,6 @@
 /**
  * @(#)DishTagDb.java, Jul 22, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -13,33 +13,32 @@ import com.cloudstone.emenu.data.DishTag;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
     private static final String TABLE_NAME = "dishTag";
-    
+
     private static final String[] DEFAULT_DISH_TAGS = {
-        "热菜", "凉菜", "饮料"
+            "热菜", "凉菜", "饮料"
     };
-    
+
     @Override
     protected void init(EmenuContext context) {
         super.init(context);
         if (listAll(context).size() == 0) {
-            for (String name: DEFAULT_DISH_TAGS) {
+            for (String name : DEFAULT_DISH_TAGS) {
                 DishTag tag = new DishTag();
                 tag.setName(name);
                 add(context, tag);
             }
         }
     }
-    
+
     @Override
     public DishTag getDishTagByName(EmenuContext context, String name) {
         return getByName(context, name);
     }
-    
+
     @Override
     public DishTag getDishTag(EmenuContext context, int id) {
         return get(context, id);
@@ -64,12 +63,12 @@ public class DishTagDb extends IdNameDb<DishTag> implements IDishTagDb {
     public void deleteDishTag(EmenuContext context, int id) {
         delete(context, id);
     }
-    
+
     @Override
     public String getTableName() {
         return TABLE_NAME;
     }
-    
+
     @Override
     protected DishTag newObject() {
         return new DishTag();

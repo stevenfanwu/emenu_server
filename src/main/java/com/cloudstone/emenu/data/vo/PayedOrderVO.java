@@ -1,6 +1,6 @@
 /**
  * @(#)PayedOrderVO.java, Aug 23, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.data.vo;
 
@@ -8,7 +8,6 @@ import com.cloudstone.emenu.data.Bill;
 
 /**
  * @author xuhongfeng
- *
  */
 public class PayedOrderVO extends OrderVO {
     private Bill bill;
@@ -29,5 +28,5 @@ public class PayedOrderVO extends OrderVO {
     public void setBill(Bill bill) {
         this.bill = bill;
     }
-    
+
 }

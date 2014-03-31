@@ -60,7 +60,7 @@ define(function (require, exports, module) {
                 window.alert("Can't delte yourself");
                 return;
             }
-            if (window.confirm('Delete user' + model.get('name') + '?')) {
+            if (window.confirm('Delete user ' + model.get('name') + '?')) {
                 model.destroy({
                     success: function () {
                         this.list.refresh();

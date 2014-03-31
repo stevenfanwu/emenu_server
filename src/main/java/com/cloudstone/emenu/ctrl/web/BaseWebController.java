@@ -1,6 +1,6 @@
 /**
  * @(#)BaseWebController.java, Jun 14, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.web;
 
@@ -13,12 +13,11 @@ import com.cloudstone.emenu.ctrl.BaseController;
 
 /**
  * @author xuhongfeng
- *
  */
 public class BaseWebController extends BaseController {
 
     protected String sendView(String viewName, HttpServletRequest req,
-            HttpServletResponse resp, ModelMap model) {
+                              HttpServletResponse resp, ModelMap model) {
         model.addAttribute("loginUser", req.getSession().getAttribute("loginUser"));
         return viewName;
     }

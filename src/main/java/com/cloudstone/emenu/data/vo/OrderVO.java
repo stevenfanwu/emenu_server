@@ -1,6 +1,6 @@
 /**
  * @(#)OrderVO.java, Jul 30, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.data.vo;
 
@@ -15,18 +15,17 @@ import com.cloudstone.emenu.data.User;
 
 /**
  * @author xuhongfeng
- *
  */
 public class OrderVO extends Order {
     private Table table;
     private List<OrderDishVO> dishes;
     private User user;
     private List<CancelDishVO> cancelDishes;
-    
+
     public OrderVO() {
         super();
     }
-    
+
     public OrderVO(OrderVO order) {
         super(order);
         table = order.table;
@@ -34,13 +33,13 @@ public class OrderVO extends Order {
         dishes = order.dishes;
         cancelDishes = order.cancelDishes;
     }
-    
+
     public OrderVO(Order order, Table table, List<OrderDish> relations,
-            List<Dish> dishes, User user, List<CancelDishVO> cancelDishes) {
+                   List<Dish> dishes, User user, List<CancelDishVO> cancelDishes) {
         super(order);
         setTable(table);
         List<OrderDishVO> dishVOs = new ArrayList<OrderDishVO>();
-        for (int i=0; i<relations.size(); i++) {
+        for (int i = 0; i < relations.size(); i++) {
             dishVOs.add(OrderDishVO.create(relations.get(i), dishes.get(i),
                     order.getId()));
         }

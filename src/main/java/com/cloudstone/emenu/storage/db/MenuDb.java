@@ -1,6 +1,6 @@
 /**
  * @(#)MenuDb.java, 2013-7-8. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -13,12 +13,11 @@ import com.cloudstone.emenu.data.Menu;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class MenuDb extends IdNameDb<Menu> implements IMenuDb {
     private static final String TABLE_NAME = "menu";
-    
+
     @Override
     public String getTableName() {
         return TABLE_NAME;
@@ -48,7 +47,7 @@ public class MenuDb extends IdNameDb<Menu> implements IMenuDb {
     public Menu getMenu(EmenuContext context, int id) {
         return get(context, id);
     }
-    
+
     @Override
     protected Menu newObject() {
         return new Menu();

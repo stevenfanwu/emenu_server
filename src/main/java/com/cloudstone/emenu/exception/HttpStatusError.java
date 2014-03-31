@@ -1,12 +1,11 @@
 /**
  * @(#)HttpStatusError.java, Jul 19, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.exception;
 
 /**
  * @author xuhongfeng
- *
  */
 public class HttpStatusError extends RuntimeException {
 
@@ -18,7 +17,7 @@ public class HttpStatusError extends RuntimeException {
         super(msg, throwable);
         this.statusCode = statusCode;
     }
-    
+
     public HttpStatusError(int statusCode, String msg) {
         super(msg, null);
         this.statusCode = statusCode;
@@ -27,5 +26,5 @@ public class HttpStatusError extends RuntimeException {
     public int getStatusCode() {
         return statusCode;
     }
-    
+
 }

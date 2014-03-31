@@ -1,6 +1,6 @@
 /**
  * @(#)OrderDb.java, Jul 28, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -16,7 +16,6 @@ import com.cloudstone.emenu.data.Order;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class OrderDb extends SQLiteDb implements IOrderDb {
@@ -27,13 +26,13 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         OrderBinder binder = new OrderBinder(order);
         executeSQL(context, SQL_INSERT, binder);
     }
-    
+
     @Override
     public Order get(EmenuContext context, int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
         return queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
     }
-    
+
     @Override
     public void update(EmenuContext context, Order order) {
         executeSQL(context, SQL_UPDATE, new UpdateBinder(order));
@@ -44,7 +43,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime, context.getRestaurantId());
         return query(context, SQL_SELECT_BY_TIME, binder, rowMapper);
     }
-    
+
     @Override
     public Order getOldestOrder(EmenuContext context) {
         return queryOne(context, SQL_SELECT_OLDEST, new RestaurantIdBinder(context.getRestaurantId()), rowMapper);
@@ -63,38 +62,40 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
 
     /* ---------- SQL ---------- */
     private static final String TABLE_NAME = "`order`";
-    
+
     private static enum Column {
         ID("id"), ORIGIN_PRICE("originPrice"), PRICE("price"), TABLE_ID("tableId"),
         USER_ID("userId"), CUSTOMER_NUMBER("customerNumber"), STATUS("status"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
         RESTAURANT_ID("restaurantId");
-        
+
         private final String str;
+
         private Column(String str) {
             this.str = str;
         }
-        
+
         @Override
         public String toString() {
             return str;
         }
     }
+
     private static final String COL_DEF = new ColumnDefBuilder()
-        .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
-        .append(Column.ORIGIN_PRICE, DataType.REAL, "NOT NULL")
-        .append(Column.PRICE, DataType.REAL, "NOT NULL")
-        .append(Column.TABLE_ID, DataType.INTEGER, "NOT NULL")
-        .append(Column.USER_ID, DataType.INTEGER, "NOT NULL")
-        .append(Column.CUSTOMER_NUMBER, DataType.INTEGER, "NOT NULL")
-        .append(Column.STATUS, DataType.INTEGER, "NOT NULL")
-        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
-        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
-        .build();
+            .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
+            .append(Column.ORIGIN_PRICE, DataType.REAL, "NOT NULL")
+            .append(Column.PRICE, DataType.REAL, "NOT NULL")
+            .append(Column.TABLE_ID, DataType.INTEGER, "NOT NULL")
+            .append(Column.USER_ID, DataType.INTEGER, "NOT NULL")
+            .append(Column.CUSTOMER_NUMBER, DataType.INTEGER, "NOT NULL")
+            .append(Column.STATUS, DataType.INTEGER, "NOT NULL")
+            .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
+            .build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 11).build();
-    
+
     private static class OrderBinder implements StatementBinder {
         private final Order order;
 
@@ -118,7 +119,7 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             stmt.bind(11, order.getRestaurantId());
         }
     }
-    
+
     private static class UpdateBinder implements StatementBinder {
         private final Order order;
 
@@ -141,12 +142,12 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
             stmt.bind(10, order.getId());
         }
     }
-    
+
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
-    
+            .appendWhereId().build();
+
     private static final RowMapper<Order> rowMapper = new RowMapper<Order>() {
-        
+
         @Override
         public Order map(SQLiteStatement stmt) throws SQLiteException {
             Order order = new Order();
@@ -164,24 +165,24 @@ public class OrderDb extends SQLiteDb implements IOrderDb {
         }
     };
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.ORIGIN_PRICE)
-        .appendSetValue(Column.PRICE)
-        .appendSetValue(Column.TABLE_ID)
-        .appendSetValue(Column.USER_ID)
-        .appendSetValue(Column.CUSTOMER_NUMBER)
-        .appendSetValue(Column.STATUS)
-        .appendSetValue(Column.CREATED_TIME)
-        .appendSetValue(Column.UPDATE_TIME)
-        .appendSetValue(Column.DELETED)
-        .appendWhereId().build();
+            .appendSetValue(Column.ORIGIN_PRICE)
+            .appendSetValue(Column.PRICE)
+            .appendSetValue(Column.TABLE_ID)
+            .appendSetValue(Column.USER_ID)
+            .appendSetValue(Column.CUSTOMER_NUMBER)
+            .appendSetValue(Column.STATUS)
+            .appendSetValue(Column.CREATED_TIME)
+            .appendSetValue(Column.UPDATE_TIME)
+            .appendSetValue(Column.DELETED)
+            .appendWhereId().build();
 
     private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
-        .append(" WHERE createdTime>? ")
-        .append(" AND createdTime<?")
-        .append(" AND restaurantId=?").build();
-    
+            .append(" WHERE createdTime>? ")
+            .append(" AND createdTime<?")
+            .append(" AND restaurantId=?").build();
+
     private static final String SQL_SELECT_OLDEST = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhereRestaurantId()
-        .append(" ORDER BY createdTime ASC LIMIT 1")
-        .build();
+            .appendWhereRestaurantId()
+            .append(" ORDER BY createdTime ASC LIMIT 1")
+            .build();
 }

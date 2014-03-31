@@ -24,14 +24,16 @@ public class StatisticsApiController extends BaseApiController {
     @Autowired
     private StatisticsLogic statisticsLogic;
 
-    @RequestMapping(value="/api/menu-stats", method=RequestMethod.GET)
-    public @ResponseBody List<MenuStat> getMenuStat(
-            @RequestParam(value="time", defaultValue="0") long time,
-            @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="start", defaultValue="0") long startTime,
-            @RequestParam(value="end", defaultValue="0") long endTime,
+    @RequestMapping(value = "/api/menu-stats", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<MenuStat> getMenuStat(
+            @RequestParam(value = "time", defaultValue = "0") long time,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "start", defaultValue = "0") long startTime,
+            @RequestParam(value = "end", defaultValue = "0") long endTime,
             HttpServletRequest request) {
-        if (time<0 || page < 0 || startTime <0
+        if (time < 0 || page < 0 || startTime < 0
                 || endTime < 0 || startTime > endTime) {
             throw new BadRequestError();
         }
@@ -46,14 +48,16 @@ public class StatisticsApiController extends BaseApiController {
         }
     }
 
-    @RequestMapping(value="/api/dish-stats", method=RequestMethod.GET)
-    public @ResponseBody List<DishStat> getDishStat(
-            @RequestParam(value="time", defaultValue="0") long time,
-            @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="start", defaultValue="0") long startTime,
-            @RequestParam(value="end", defaultValue="0") long endTime,
+    @RequestMapping(value = "/api/dish-stats", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<DishStat> getDishStat(
+            @RequestParam(value = "time", defaultValue = "0") long time,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "start", defaultValue = "0") long startTime,
+            @RequestParam(value = "end", defaultValue = "0") long endTime,
             HttpServletRequest request) {
-        if (time<0 || page < 0 || startTime <0
+        if (time < 0 || page < 0 || startTime < 0
                 || endTime < 0 || startTime > endTime) {
             throw new BadRequestError();
         }
@@ -68,14 +72,16 @@ public class StatisticsApiController extends BaseApiController {
         }
     }
 
-    @RequestMapping(value="/api/stats", method=RequestMethod.GET)
-    public @ResponseBody List<GeneralStat> getGenStat(
-            @RequestParam(value="time", defaultValue="0") long time,
-            @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="start", defaultValue="0") long startTime,
-            @RequestParam(value="end", defaultValue="0") long endTime,
+    @RequestMapping(value = "/api/stats", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<GeneralStat> getGenStat(
+            @RequestParam(value = "time", defaultValue = "0") long time,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "start", defaultValue = "0") long startTime,
+            @RequestParam(value = "end", defaultValue = "0") long endTime,
             HttpServletRequest request) {
-        if (time<0 || page < 0 || startTime <0
+        if (time < 0 || page < 0 || startTime < 0
                 || endTime < 0 || startTime > endTime) {
             throw new BadRequestError();
         }

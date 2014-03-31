@@ -1,6 +1,6 @@
 /**
  * @(#)StaticController.java, May 26, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.web;
 
@@ -24,16 +24,15 @@ import com.cloudstone.emenu.exception.ServerError;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class StaticController extends BaseWebController {
     private static Logger LOG = LoggerFactory.getLogger(StaticController.class);
-    
-    private static final String[] IMG_EXTENSION = new String[] {
-        "png", "img", "gif", "jpg", "ico"
+
+    private static final String[] IMG_EXTENSION = new String[]{
+            "png", "img", "gif", "jpg", "ico"
     };
-    
+
     @RequestMapping("/static/**")
     public void get(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
@@ -42,7 +41,7 @@ public class StaticController extends BaseWebController {
             sendError(response, HttpServletResponse.SC_NOT_FOUND);
         }
     }
-    
+
     private void innerGet(String path, HttpServletResponse response) throws IOException {
         path = path.replace("/static/", "");
         if (FilenameUtils.isExtension(path, "js")) {
@@ -60,7 +59,7 @@ public class StaticController extends BaseWebController {
         if (path.endsWith(".handlebars.js")) {
             //handlebars
             response.setContentType("text/javascript; charset=UTF-8");
-            path = path.substring(0, path.length()-3);
+            path = path.substring(0, path.length() - 3);
             File file = new File(getWebInf(), path);
             String content = FileUtils.readFileToString(file, "UTF-8");
             try {
@@ -73,21 +72,21 @@ public class StaticController extends BaseWebController {
             sendFile(response, path);
         }
     }
-    
+
     @RequestMapping("/img/**")
     public void getImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String uri = request.getRequestURI();
         String path = uri.toString().replace("/img", "/static");
         innerGet(path, response);
     }
-    
-        @SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
     private static class HandlebarsObj {
         private static final String FORMAT = "define(function (require, exports, module) {return %s;});";
-        private static final  ObjectMapper mapper = new ObjectMapper();
-        
+        private static final ObjectMapper mapper = new ObjectMapper();
+
         private String template;
-        
+
         public String getTemplate() {
             return template;
         }

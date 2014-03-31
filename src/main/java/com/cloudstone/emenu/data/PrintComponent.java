@@ -1,12 +1,11 @@
 /**
  * @(#)PrintComponent.java, Aug 13, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.data;
 
 /**
  * @author xuhongfeng
- *
  */
 public class PrintComponent extends IdName {
     private String content;

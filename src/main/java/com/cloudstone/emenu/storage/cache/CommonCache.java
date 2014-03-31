@@ -1,6 +1,6 @@
 /**
  * @(#)CommonCache.java, Aug 25, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.cache;
 
@@ -18,19 +18,18 @@ import com.cloudstone.emenu.logic.MenuLogic;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class CommonCache extends BaseCache {
     //TODO clear cache when current menu changed
-    
+
     private final Map<Integer, String> categoryMap = new ConcurrentHashMap<Integer, String>();
-    
+
     @Autowired
     private MenuLogic menuLogic;
-    
+
     private int currentMenuId = -1;
-    
+
     public String getCategory(EmenuContext context, int goodId) {
         String category = categoryMap.get(goodId);
         if (category == null) {
@@ -46,12 +45,12 @@ public class CommonCache extends BaseCache {
         }
         return category;
     }
-    
+
     public void onCurrentMenuChanged() {
         currentMenuId = -1;
         categoryMap.clear();
     }
-    
+
     public int getCurrentMenuId(EmenuContext context) {
         if (currentMenuId == -1) {
             Menu menu = menuLogic.getCurrentMenu(context);
@@ -61,7 +60,7 @@ public class CommonCache extends BaseCache {
         }
         return currentMenuId;
     }
-    
+
     public void resetCategoryCache(int dishId) {
         categoryMap.remove(dishId);
     }

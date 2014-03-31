@@ -1,6 +1,6 @@
 /**
  * @(#)DailyStat.java, Aug 6, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.data;
@@ -19,7 +19,7 @@ public class TableStat extends AveStat {
     private double tips;
 
     private int count;
-    
+
     public TableStat() {
         super();
     }

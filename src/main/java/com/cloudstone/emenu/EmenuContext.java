@@ -1,6 +1,6 @@
 /**
  * @(#)EmenuContext.java, Aug 17, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu;
 
@@ -10,7 +10,6 @@ import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
 
 /**
  * @author xuhongfeng
- *
  */
 public class EmenuContext {
     private int loginUserId;
@@ -18,13 +17,15 @@ public class EmenuContext {
 
     private int restaurantId;
     private DbTransaction transaction;
-    
+
     public int getLoginUserId() {
         return loginUserId;
     }
+
     public void setLoginUserId(int loginUserId) {
         this.loginUserId = loginUserId;
     }
+
     public int getRestaurantId() {
         return restaurantId;
     }
@@ -32,13 +33,15 @@ public class EmenuContext {
     public void setRestaurantId(int restaurantId) {
         this.restaurantId = restaurantId;
     }
+
     public DbTransaction getTransaction() {
         return transaction;
     }
+
     public void setTransaction(DbTransaction transaction) {
         this.transaction = transaction;
     }
-    
+
     public void beginTransaction(SqliteDataSource dataSource) {
         if (transaction != null) {
             throw new RuntimeException();
@@ -51,11 +54,11 @@ public class EmenuContext {
             throw new ServerError(e);
         }
     }
-    
+
     public void commitTransaction() {
         transaction.commit();
     }
-    
+
     public void closeTransaction(SqliteDataSource dataSource) {
         try {
             transaction.close();

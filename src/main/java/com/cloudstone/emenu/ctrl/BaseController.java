@@ -1,6 +1,6 @@
 /**
  * @(#)BaseController.java, Jun 1, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl;
 
@@ -28,11 +28,10 @@ import com.cloudstone.emenu.wrap.RecordWraper;
 
 /**
  * @author xuhongfeng
- *
  */
 public class BaseController {
     private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
-    
+
     @Autowired
     protected AuthHelper authHelper;
     @Autowired
@@ -51,7 +50,7 @@ public class BaseController {
     protected RecordLogic recordLogic;
     @Autowired
     protected RestaurantLogic restaurantLogic;
-    
+
     @Autowired
     protected OrderWraper orderWraper;
     @Autowired
@@ -64,21 +63,21 @@ public class BaseController {
             LOG.error("send error failed", e);
         }
     }
-    
+
     protected void sendSuccess(HttpServletResponse resp, int statusCode) {
         resp.setStatus(statusCode);
     }
-    
+
     /**
-     *  send a error message with status code 412
-     *  frontend may alert the message
-     *  
+     * send a error message with status code 412
+     * frontend may alert the message
+     *
      * @param resp
      * @param msg
      */
     protected void sendAlert(HttpServletResponse resp, String msg) {
     }
-    
+
     protected void sendRedirect(String url, HttpServletResponse response) {
         try {
             response.sendRedirect(url);
@@ -86,7 +85,7 @@ public class BaseController {
             LOG.warn("redirect to \"" + url + "\" failed", e);
         }
     }
-    
+
     protected File getWebInf() {
         return new File(System.getProperty(Const.PARAM_WEB_HOME_DIR), "WEB-INF");
     }
@@ -109,12 +108,12 @@ public class BaseController {
             IOUtils.closeQuietly(is);
         }
     }
-    
+
     //TODO save userId only
     protected User getLoginUser(HttpServletRequest req) {
         return (User) req.getSession().getAttribute("loginUser");
     }
-    
+
     protected EmenuContext newContext(HttpServletRequest request) {
         EmenuContext context = new EmenuContext();
         User user = getLoginUser(request);

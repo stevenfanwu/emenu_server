@@ -1,6 +1,6 @@
 /**
  * @(#)JsonDb.java, Aug 3, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class ConfigDb extends JsonDb {
@@ -17,5 +16,5 @@ public class ConfigDb extends JsonDb {
     public ConfigDb() {
         super(TABLE_NAME);
     }
-    
+
 }

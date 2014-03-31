@@ -108,8 +108,8 @@ public class TableStatDb extends SQLiteDb implements ITableStatDb {
     }
 
     private static final String SQL_SELECT_BY_DAY = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.DAY)
-        .appendWhereRestaurantId().build();
+            .appendWhere(Column.DAY)
+            .appendWhereRestaurantId().build();
 
     private static final RowMapper<TableStat> rowMapper = new RowMapper<TableStat>() {
 

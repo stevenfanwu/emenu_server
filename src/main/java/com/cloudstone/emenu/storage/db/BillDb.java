@@ -1,6 +1,6 @@
 /**
  * @(#)BillDb.java, Aug 1, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -26,11 +26,10 @@ import com.cloudstone.emenu.util.StringUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class BillDb extends SQLiteDb implements IBillDb {
-    
+
     @Override
     public Bill getByOrderId(EmenuContext context, int orderId) {
         return queryOne(context, SQL_SELECT_BY_ORDER_ID, new OrderIdBinder(orderId), rowMapper);
@@ -50,15 +49,15 @@ public class BillDb extends SQLiteDb implements IBillDb {
     public List<Bill> listBills(EmenuContext context) {
         return getAllInRestaurant(context, rowMapper);
     }
-    
+
     @Override
-    public Bill get(EmenuContext context, int id)  {
+    public Bill get(EmenuContext context, int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
         return queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
     }
 
     @Override
-    public List<Bill> getBillsByTime(EmenuContext context, long startTime, long endTime)  {
+    public List<Bill> getBillsByTime(EmenuContext context, long startTime, long endTime) {
         TimeStatementBinder binder = new TimeStatementBinder(startTime, endTime, context.getRestaurantId());
         return query(context, SQL_SELECT_BY_TIME, binder, rowMapper);
     }
@@ -69,50 +68,52 @@ public class BillDb extends SQLiteDb implements IBillDb {
     }
 
     @Override
-    protected void onCheckCreateTable(EmenuContext context)  {
+    protected void onCheckCreateTable(EmenuContext context) {
         checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
 
     private static final String TABLE_NAME = "bill";
-    
+
     private static enum Column {
         ID("id"), ORDER_ID("orderId"), COST("cost"), DISCOUNT("discount"),
         TIP("tip"), INVOICE("invoice"), INVOICE_PRICE("invoicePrice"), DISCOUNT_DISH_IDS("discountDishIds"),
-        PAY_TYPE("payType"), REMARKS("remarks"), ORDER("`order`"), COUPONS("coupons"), 
+        PAY_TYPE("payType"), REMARKS("remarks"), ORDER("`order`"), COUPONS("coupons"),
         VIPID("vipId"), VIPCOST("vipCost"),
         CREATED_TIME("createdTime"), UPDATE_TIME("update_time"), DELETED("deleted"),
         RESTAURANT_ID("restaurantId");
-        
+
         private final String str;
+
         private Column(String str) {
             this.str = str;
         }
-        
+
         @Override
         public String toString() {
             return str;
         }
     }
+
     private static final String COL_DEF = new ColumnDefBuilder()
-        .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
-        .append(Column.ORDER_ID, DataType.INTEGER, "NOT NULL")
-        .append(Column.COST, DataType.REAL, "NOT NULL")
-        .append(Column.DISCOUNT, DataType.REAL, "NOT NULL")
-        .append(Column.TIP, DataType.REAL, "NOT NULL")
-        .append(Column.INVOICE, DataType.INTEGER, "NOT NULL")
-        .append(Column.INVOICE_PRICE, DataType.REAL, "NOT NULL")
-        .append(Column.DISCOUNT_DISH_IDS, DataType.TEXT, "NOT NULL")
-        .append(Column.PAY_TYPE, DataType.INTEGER, "NOT NULL")
-        .append(Column.REMARKS, DataType.TEXT, "NOT NULL")
-        .append(Column.ORDER, DataType.TEXT, "NOT NULL")
-        .append(Column.COUPONS, DataType.REAL, "NOT NULL")
-        .append(Column.VIPID, DataType.INTEGER, "NOT NULL")
-        .append(Column.VIPCOST, DataType.REAL, "NOT NULL")
-        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
-        .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
-        .build();
+            .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
+            .append(Column.ORDER_ID, DataType.INTEGER, "NOT NULL")
+            .append(Column.COST, DataType.REAL, "NOT NULL")
+            .append(Column.DISCOUNT, DataType.REAL, "NOT NULL")
+            .append(Column.TIP, DataType.REAL, "NOT NULL")
+            .append(Column.INVOICE, DataType.INTEGER, "NOT NULL")
+            .append(Column.INVOICE_PRICE, DataType.REAL, "NOT NULL")
+            .append(Column.DISCOUNT_DISH_IDS, DataType.TEXT, "NOT NULL")
+            .append(Column.PAY_TYPE, DataType.INTEGER, "NOT NULL")
+            .append(Column.REMARKS, DataType.TEXT, "NOT NULL")
+            .append(Column.ORDER, DataType.TEXT, "NOT NULL")
+            .append(Column.COUPONS, DataType.REAL, "NOT NULL")
+            .append(Column.VIPID, DataType.INTEGER, "NOT NULL")
+            .append(Column.VIPCOST, DataType.REAL, "NOT NULL")
+            .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.RESTAURANT_ID, DataType.INTEGER, "NOT NULL")
+            .build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 18).build();
 
     private static class BillBinder implements StatementBinder {
@@ -122,7 +123,7 @@ public class BillDb extends SQLiteDb implements IBillDb {
             super();
             this.bill = bill;
         }
-        
+
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             String archive = "";
@@ -149,9 +150,9 @@ public class BillDb extends SQLiteDb implements IBillDb {
             stmt.bind(18, bill.getRestaurantId());
         }
     }
-    
+
     private static final RowMapper<Bill> rowMapper = new RowMapper<Bill>() {
-        
+
         @Override
         public Bill map(SQLiteStatement stmt) throws SQLiteException {
             Bill bill = new Bill();
@@ -181,13 +182,13 @@ public class BillDb extends SQLiteDb implements IBillDb {
         }
     };
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
+            .appendWhereId().build();
     private static final String SQL_SELECT_BY_ORDER_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.ORDER_ID).build();
+            .appendWhere(Column.ORDER_ID).build();
     private static final String SQL_SELECT_BY_TIME = new SelectSqlBuilder(TABLE_NAME)
-        .append(" WHERE createdTime>? ")
-        .append(" AND createdTime<?")
-        .append(" AND restaurantId=?").build();
+            .append(" WHERE createdTime>? ")
+            .append(" AND createdTime<?")
+            .append(" AND restaurantId=?").build();
 
     public static class OrderIdBinder implements StatementBinder {
         private final int orderId;

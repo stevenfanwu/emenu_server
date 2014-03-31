@@ -1,6 +1,6 @@
 /**
  * @(#)BaseLogic.java, 2013-6-20. 
- * 
+ *
  */
 package com.cloudstone.emenu.logic;
 
@@ -13,7 +13,6 @@ import com.cloudstone.emenu.storage.db.util.SqliteDataSource;
 
 /**
  * @author xuhongfeng
- *
  */
 public class BaseLogic {
 

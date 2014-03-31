@@ -1,6 +1,6 @@
 /**
  * @(#)ConfigLogic.java, Aug 3, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.logic;
 
@@ -17,7 +17,6 @@ import com.cloudstone.emenu.util.LicenceHelper;
 
 /**
  * @author xuhongfeng
- *
  */
 @Component
 public class ConfigLogic extends BaseLogic {
@@ -25,12 +24,12 @@ public class ConfigLogic extends BaseLogic {
     private ConfigDb configDb;
     @Autowired
     private LicenceHelper licenceHelper;
-    
+
     public int getPadNumber() {
         Licence licence = licenceHelper.getLicence();
-        return licence==null ? 0 : licence.getPadCount();
+        return licence == null ? 0 : licence.getPadCount();
     }
-    
+
     public int getDbVersion(EmenuContext context) {
         Integer v = configDb.get(context, JsonKeyConst.DB_VERSION, Integer.class);
         if (v == null) {
@@ -38,11 +37,11 @@ public class ConfigLogic extends BaseLogic {
         }
         return v;
     }
-    
+
     public void setDbVersion(EmenuContext context, int version) {
         configDb.set(context, JsonKeyConst.DB_VERSION, version);
     }
-    
+
     public boolean needUpgradeDb(EmenuContext context) {
         if (ServerConfig.DB_VERSION == getDbVersion(context)) {
             return false;

@@ -1,6 +1,6 @@
 /**
  * @(#)OrderController.java, Jul 29, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.web;
 
@@ -21,14 +21,13 @@ import com.cloudstone.emenu.exception.PreconditionFailedException;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class OrderController extends BaseWebController {
-    
+
     @RequestMapping("/bill")
     public String payBill(HttpServletRequest req, HttpServletResponse resp,
-            @RequestParam("tableId") int tableId, ModelMap model) {
+                          @RequestParam("tableId") int tableId, ModelMap model) {
         EmenuContext context = newContext(req);
         Table table = tableLogic.get(context, tableId);
         if (table == null) {
@@ -43,10 +42,10 @@ public class OrderController extends BaseWebController {
         return sendView("bill", req, resp, model);
     }
 
-    
+
     @RequestMapping("/order")
     public String order(HttpServletRequest req, HttpServletResponse resp,
-            @RequestParam("orderId") int orderId, ModelMap model) {
+                        @RequestParam("orderId") int orderId, ModelMap model) {
         EmenuContext context = newContext(req);
         Order order = orderLogic.getOrder(context, orderId);
         if (order == null || order.isDeleted()) {

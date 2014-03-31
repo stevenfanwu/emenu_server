@@ -1,19 +1,18 @@
 /**
  * @(#)StringUtils.java, Jun 15, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
 /**
  * @author xuhongfeng
- *
  */
 public class StringUtils {
-    
+
     public static boolean isEmpty(String str) {
         return str == null || str.length() == 0;
     }
-    
+
     public static boolean isBlank(String str) {
         int strLen;
         if (str == null || (strLen = str.length()) == 0) {

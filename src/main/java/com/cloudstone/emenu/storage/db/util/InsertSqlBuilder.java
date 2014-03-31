@@ -1,16 +1,14 @@
 package com.cloudstone.emenu.storage.db.util;
 
 /**
- * 
  * @author xuhongfeng
- *
  */
 public class InsertSqlBuilder extends SQLBuilder {
 
     public InsertSqlBuilder(String tableName, int columnCount) {
         this(tableName, columnCount, false);
     }
-    
+
     public InsertSqlBuilder(String tableName, int columnCount, boolean replace) {
         super();
         if (replace) {
@@ -20,7 +18,7 @@ public class InsertSqlBuilder extends SQLBuilder {
         }
         append("INTO " + tableName + " VALUES");
         append(" (");
-        for (int i=0; i<columnCount; i++) {
+        for (int i = 0; i < columnCount; i++) {
             if (i != 0) {
                 append(", ");
             }
@@ -28,5 +26,5 @@ public class InsertSqlBuilder extends SQLBuilder {
         }
         append(")");
     }
-    
+
 }

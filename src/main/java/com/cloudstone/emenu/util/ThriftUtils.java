@@ -1,6 +1,6 @@
 /**
  * @(#)ThriftUtils.java, Jul 26, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
@@ -17,7 +17,6 @@ import com.cloudstone.emenu.data.User;
 
 /**
  * @author xuhongfeng
- *
  */
 public class ThriftUtils {
     public static UserType getUserType(User user) {
@@ -27,27 +26,39 @@ public class ThriftUtils {
             return UserType.Admin;
         }
     }
-    
+
     public static TableStatus getTableStatus(Table table) {
         TableStatus status = TableStatus.Empty;
         switch (table.getStatus()) {
-            case Const.TableStatus.OCCUPIED: status=TableStatus.Occupied; break;
-            case Const.TableStatus.ORDERED: status=TableStatus.Ordered; break;
+            case Const.TableStatus.OCCUPIED:
+                status = TableStatus.Occupied;
+                break;
+            case Const.TableStatus.ORDERED:
+                status = TableStatus.Ordered;
+                break;
         }
         return status;
     }
-    
+
     public static PageLayoutType getPageLayoutType(com.cloudstone.emenu.data.MenuPage page) {
         PageLayoutType type = PageLayoutType.Triangle4;
         switch (page.getDishCount()) {
-            case 1: type=PageLayoutType.Horizontal1; break;
-            case 2: type=PageLayoutType.Horizontal2; break;
-            case 3: type=PageLayoutType.Horizontal3; break;
-            case 6: type=PageLayoutType.Grid6; break;
+            case 1:
+                type = PageLayoutType.Horizontal1;
+                break;
+            case 2:
+                type = PageLayoutType.Horizontal2;
+                break;
+            case 3:
+                type = PageLayoutType.Horizontal3;
+                break;
+            case 6:
+                type = PageLayoutType.Grid6;
+                break;
         }
         return type;
     }
-    
+
     public static int getOrderDishStatus(GoodsOrder g) {
         GoodState state = g.getGoodstate();
         if (state == GoodState.Ordered) {

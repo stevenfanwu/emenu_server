@@ -1,6 +1,6 @@
 /**
  * @(#)OrderDishVO.java, Jul 30, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.data.vo;
 
@@ -11,11 +11,10 @@ import com.cloudstone.emenu.util.DataUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 public class OrderDishVO extends Dish {
-	// private static final Logger LOG = LoggerFactory.getLogger(OrderDishVO.class);
-    
+    // private static final Logger LOG = LoggerFactory.getLogger(OrderDishVO.class);
+
     private double number;
     private String[] remarks;
     private int orderStatus;
@@ -32,19 +31,19 @@ public class OrderDishVO extends Dish {
         super(dish);
         setUnitLabel(Const.DishUnit.getLabel(dish.getUnit()));
     }
-    
+
     public static OrderDishVO create(OrderDish r, Dish dish, int orderId) {
         OrderDishVO o = new OrderDishVO(dish);
         o.setNumber(DataUtils.round(r.getNumber(), 1));
         o.setRemarks(r.getRemarks());
         o.setOrderStatus(r.getStatus());
-        o.setTotalCost(DataUtils.calMoney(o.getNumber()*o.getPrice()));
+        o.setTotalCost(DataUtils.calMoney(o.getNumber() * o.getPrice()));
         o.setOrderId(orderId);
         o.setUnitLabel(Const.DishUnit.getLabel(dish.getUnit()));
         o.setTypeLabel(Const.TypeUnit.getLabel(r.getType()));
         return o;
     }
-    
+
     public OrderDish toOrderDish() {
         OrderDish r = new OrderDish();
         r.setDishId(getId());

@@ -1,6 +1,6 @@
 /**
  * @(#)ImageStorage.java, Jul 27, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.file;
 
@@ -22,12 +22,11 @@ import com.cloudstone.emenu.util.MD5Utils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class ImageStorage extends FileStorage {
     private static final Logger LOG = LoggerFactory.getLogger(ImageStorage.class);
-    
+
     public File getImageDir() {
         File root = getCloudstoneDataDir();
         File dir = new File(root, "image");
@@ -36,8 +35,8 @@ public class ImageStorage extends FileStorage {
         }
         return dir;
     }
-    
-    
+
+
     public String saveImage(String uriData) {
         String prefix = uriData.substring(0, 25);
         if (!prefix.startsWith("data:image/")) {
@@ -49,7 +48,7 @@ public class ImageStorage extends FileStorage {
         byte[] bytes = Base64.decodeBase64(base64);
         return saveImage(bytes, extension);
     }
-    
+
     public String saveImage(byte[] bytes, String extension) {
         String imageId = MD5Utils.md5(bytes);
         imageId = imageId + "." + extension;
@@ -61,7 +60,7 @@ public class ImageStorage extends FileStorage {
         }
         return imageId;
     }
-    
+
     public String getUriData(String imageId) {
         byte[] bytes;
         try {
@@ -71,7 +70,7 @@ public class ImageStorage extends FileStorage {
         }
         return ImageUtils.toUriData(bytes, imageId);
     }
-    
+
     public byte[] getImage(String imageId) throws IOException {
         File file = new File(getImageDir(), imageId);
         if (!file.exists()) {

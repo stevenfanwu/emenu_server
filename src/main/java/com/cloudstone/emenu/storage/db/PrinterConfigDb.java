@@ -1,6 +1,6 @@
 /**
  * @(#)PrinterDb.java, Aug 15, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -17,7 +17,6 @@ import com.cloudstone.emenu.util.JsonUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class PrinterConfigDb extends JsonDb implements IPrinterConfigDb {
@@ -36,10 +35,10 @@ public class PrinterConfigDb extends JsonDb implements IPrinterConfigDb {
     public PrinterConfig getConfig(EmenuContext context, String name) {
         return get(context, name, PrinterConfig.class);
     }
-    
+
     @Override
     public void removeTemplate(EmenuContext context, int templateId) {
-        for (PrinterConfig config:listAll(context)) {
+        for (PrinterConfig config : listAll(context)) {
             boolean needUpdate = false;
             if (ArrayUtils.contains(config.getOrderedTemplateIds(), templateId)) {
                 int idx = ArrayUtils.indexOf(config.getOrderedTemplateIds(), templateId);
@@ -74,7 +73,7 @@ public class PrinterConfigDb extends JsonDb implements IPrinterConfigDb {
     private List<PrinterConfig> listAll(EmenuContext context) {
         List<String> jsonList = getAll(context);
         List<PrinterConfig> r = new LinkedList<PrinterConfig>();
-        for (String json:jsonList) {
+        for (String json : jsonList) {
             r.add(JsonUtils.fromJson(json, PrinterConfig.class));
         }
         return r;

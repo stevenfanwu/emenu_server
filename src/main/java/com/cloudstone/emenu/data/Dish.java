@@ -1,6 +1,6 @@
 /**
  * @(#)Dish.java, 2013-7-6. 
- * 
+ *
  */
 package com.cloudstone.emenu.data;
 
@@ -8,7 +8,6 @@ import com.cloudstone.emenu.constant.Const;
 
 /**
  * @author xuhongfeng
- *
  */
 public class Dish extends IdName {
     private double price;
@@ -24,7 +23,7 @@ public class Dish extends IdName {
     private boolean soldout = false;
 
     private String uriData;
-    
+
     public Dish() {
         super();
     }
@@ -47,12 +46,13 @@ public class Dish extends IdName {
 
     /**
      * id < 0 means NullDish
+     *
      * @param pos
      * @return
      */
     public static Dish getNullDish(int pos) {
         Dish dish = new Dish();
-        dish.setId(0-pos);
+        dish.setId(0 - pos);
         return dish;
     }
 

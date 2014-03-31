@@ -1,6 +1,6 @@
 /**
  * @(#)OrderWraper.java, Jul 30, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.wrap;
@@ -30,25 +30,25 @@ import com.cloudstone.emenu.data.vo.PayedOrderVO;
 @Component
 public class OrderWraper extends BaseWraper {
 //    private static final Logger LOG = LoggerFactory.getLogger(OrderWraper.class);
-    
+
     @Autowired
     private DishWraper dishWraper;
 
     public OrderVO wrap(EmenuContext context, Order order, List<OrderDish> relations) {
         //table
         Table table = tableLogic.get(context, order.getTableId());
-        
+
         //user
         User user = userLogic.getUser(context, order.getUserId());
-        
+
         //dishes
         List<Dish> dishes = orderLogic
                 .listDishes(context, order.getId(), relations);
-        
+
         //cancel dishes
         List<DishRecord> records = recordLogic.listCancelDishRecords(context, order.getId());
         List<CancelDishVO> cancelDishes = dishWraper.wrapCancelDish(context, records);
-        
+
         OrderVO o = new OrderVO(order, table, relations, dishes, user, cancelDishes);
         if (o.getStatus() == Const.OrderStatus.PAYED) {
             Bill bill = orderLogic.getBillByOrderId(context, order.getId());

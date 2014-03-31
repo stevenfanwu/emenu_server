@@ -1,6 +1,6 @@
 /**
  * @(#)TableDb.java, 2013-7-5. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -24,37 +24,37 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class TableDb extends SQLiteDb implements ITableDb {
     private static final Logger LOG = LoggerFactory.getLogger(TableDb.class);
-    
+
     @Override
     public String getTableName() {
         return TABLE_NAME;
     }
-    
+
     private static final String TABLE_NAME = "'table'";
-    
+
     private static enum Column {
         ID("id"), NAME("name"), TYPE("type"),
         CAPACITY("capacity"), MIN_CHARGE("minCharge"), TIP_MODE("tipMode"),
         TIP("tip"), STATUS("status"), ORDER_ID("orderId"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updatetime"), DELETED("deleted"),
         RESTAURANT_ID("restaurantId");
-        
+
         private final String str;
+
         private Column(String str) {
             this.str = str;
         }
-        
+
         @Override
         public String toString() {
             return str;
         }
     }
-    
+
     private static final String COL_DEF = new ColumnDefBuilder()
             .append(Column.ID.toString(), DataType.INTEGER, "NOT NULL PRIMARY KEY")
             .append(Column.NAME.toString(), DataType.TEXT, "NOT NULL")
@@ -72,16 +72,16 @@ public class TableDb extends SQLiteDb implements ITableDb {
             .build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 13).build();
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhere(Column.ID.toString()).build();
+            .appendWhere(Column.ID.toString()).build();
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME.toString()).appendSetValue(Column.TYPE.toString())
-        .appendSetValue(Column.CAPACITY.toString()).appendSetValue(Column.MIN_CHARGE.toString())
-        .appendSetValue(Column.TIP_MODE.toString()).appendSetValue(Column.TIP.toString())
-        .appendSetValue(Column.STATUS.toString()).appendSetValue(Column.ORDER_ID.toString())
-        .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
-        .appendSetValue(Column.DELETED)
-        .appendWhereId()
-        .build();
+            .appendSetValue(Column.NAME.toString()).appendSetValue(Column.TYPE.toString())
+            .appendSetValue(Column.CAPACITY.toString()).appendSetValue(Column.MIN_CHARGE.toString())
+            .appendSetValue(Column.TIP_MODE.toString()).appendSetValue(Column.TIP.toString())
+            .appendSetValue(Column.STATUS.toString()).appendSetValue(Column.ORDER_ID.toString())
+            .appendSetValue(Column.CREATED_TIME).appendSetValue(Column.UPDATE_TIME)
+            .appendSetValue(Column.DELETED)
+            .appendWhereId()
+            .build();
 
     @Override
     public Table add(EmenuContext context, Table table) {
@@ -91,14 +91,14 @@ public class TableDb extends SQLiteDb implements ITableDb {
         executeSQL(context, SQL_INSERT, binder);
         return get(context, table.getId());
     }
-    
+
     @Override
     public Table get(EmenuContext context, int id) {
         IdStatementBinder binder = new IdStatementBinder(id);
         Table table = queryOne(context, SQL_SELECT_BY_ID, binder, rowMapper);
         return table;
     }
-    
+
     @Override
     public Table getByTableName(EmenuContext context, String name) {
         return getByName(context, name, rowMapper);
@@ -108,21 +108,21 @@ public class TableDb extends SQLiteDb implements ITableDb {
     protected void onCheckCreateTable(EmenuContext context) {
         checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
-    
+
     @Override
     public List<Table> getAll(EmenuContext context) {
         return getAllInRestaurant(context, rowMapper);
     }
-    
+
     @Override
     public Table update(EmenuContext context, Table table) {
         String sql = SQL_UPDATE;
         executeSQL(context, sql, new UpdateBinder(table));
         return get(context, table.getId());
     }
-    
+
     private class TableBinder implements StatementBinder {
-        private final  Table table;
+        private final Table table;
 
         public TableBinder(Table table) {
             super();
@@ -132,9 +132,9 @@ public class TableDb extends SQLiteDb implements ITableDb {
         @Override
         public void onBind(SQLiteStatement stmt) throws SQLiteException {
             stmt.bind(1, table.getId());
-            stmt.bind(2,  table.getName());
+            stmt.bind(2, table.getName());
             stmt.bind(3, table.getType());
-            stmt.bind(4,  table.getCapacity());
+            stmt.bind(4, table.getCapacity());
             stmt.bind(5, table.getMinCharge());
             stmt.bind(6, table.getTipMode());
             stmt.bind(7, table.getTip());
@@ -146,9 +146,9 @@ public class TableDb extends SQLiteDb implements ITableDb {
             stmt.bind(13, table.getRestaurantId());
         }
     }
-    
+
     private RowMapper<Table> rowMapper = new RowMapper<Table>() {
-        
+
         @Override
         public Table map(SQLiteStatement stmt) throws SQLiteException {
             Table table = new Table();
@@ -167,10 +167,10 @@ public class TableDb extends SQLiteDb implements ITableDb {
             return table;
         }
     };
-    
-    private class UpdateBinder implements StatementBinder{
+
+    private class UpdateBinder implements StatementBinder {
         private final Table table;
-        
+
         public UpdateBinder(Table table) {
             super();
             this.table = table;

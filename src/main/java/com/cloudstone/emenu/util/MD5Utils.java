@@ -1,6 +1,6 @@
 /**
  * @(#)MD5Utils.java, Jul 28, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
@@ -11,7 +11,6 @@ import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author xuhongfeng
- *
  */
 public class MD5Utils {
 
@@ -24,7 +23,7 @@ public class MD5Utils {
             }
         }
     };
-    
+
     public static String md5(byte[] bytes) {
         MessageDigest digest = DIGEST.get();
         digest.reset();

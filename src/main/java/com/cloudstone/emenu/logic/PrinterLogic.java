@@ -1,6 +1,6 @@
 /**
  * @(#)PrinterLogic.java, Aug 13, 2013. 
- * 
+ *
  */
 
 package com.cloudstone.emenu.logic;
@@ -61,7 +61,7 @@ public class PrinterLogic extends BaseLogic {
 
     @Autowired
     private VipLogic vipLogic;
-    
+
     @Autowired
     private VelocityRender velocityRender;
 
@@ -102,7 +102,7 @@ public class PrinterLogic extends BaseLogic {
                     .listAddDishRecords(context, bill.getOrderId());
             List<RecordVO> cancelRecordVOs = recordWraper.wrapRecord(context, cancelRecords);
             List<RecordVO> addRecordVOs = recordWraper.wrapRecord(context, addRecords);
-        	Vip vip = vipLogic.get(context, bill.getVipId());
+            Vip vip = vipLogic.get(context, bill.getVipId());
 
             if (template.getCutType() == Const.CutType.PER_DISH
                     && bill.getOrder().getDishes().size() > 0) {
@@ -169,7 +169,7 @@ public class PrinterLogic extends BaseLogic {
     }
 
     public void printOrder(EmenuContext context, OrderVO order, User user, String printer,
-            int templateId) throws Exception {
+                           int templateId) throws Exception {
         PrintTemplate template = getTemplate(context, templateId);
         if (template != null) {
             String templateString = getTemplateString(context, template, 1, template.getCutType());
@@ -181,8 +181,9 @@ public class PrinterLogic extends BaseLogic {
                             template.getChapterIds(), false);
                     if (!CollectionUtils.isEmpty(dishGroups)) {
                         String content = velocityRender.renderOrder(order, user, dishWraper
-                                .wrapDishGroup(context, dishes, template.getChapterIds(), false),
-                                templateString);
+                                        .wrapDishGroup(context, dishes, template.getChapterIds(), false),
+                                templateString
+                        );
                         PrinterUtils.print(printer, content, template.getFontSize());
                     }
                 }
@@ -245,7 +246,7 @@ public class PrinterLogic extends BaseLogic {
     }
 
     private String getTemplateString(EmenuContext context, PrintTemplate template, int type,
-            int cutType) {
+                                     int cutType) {
         StringBuilder sb = new StringBuilder();
         int headerId = template.getHeaderId();
         int footerId = template.getFooterId();

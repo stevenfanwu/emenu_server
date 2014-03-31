@@ -1,12 +1,11 @@
 /**
  * @(#)NumberUtils.java, Jun 16, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.util;
 
 /**
  * @author xuhongfeng
- *
  */
 public class NumberUtils {
 

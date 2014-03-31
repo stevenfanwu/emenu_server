@@ -19,10 +19,10 @@ public class RecordWraper extends BaseWraper {
 
     @Autowired
     private MenuLogic menuLogic;
-    
+
     @Autowired
     private OrderLogic orderLogic;
-    
+
     public List<RecordVO> wrapRecord(EmenuContext context, List<DishRecord> records) {
         List<RecordVO> recordVOs = new ArrayList<RecordVO>();
         for (DishRecord cdr : records) {

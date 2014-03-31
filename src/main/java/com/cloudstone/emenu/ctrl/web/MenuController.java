@@ -1,6 +1,6 @@
 /**
  * @(#)MenuController.java, 2013-6-25. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.web;
 
@@ -13,26 +13,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class MenuController extends BaseWebController {
-    
+
     @RequestMapping("/menu")
     public String menuManage(HttpServletRequest req, HttpServletResponse resp,
-            ModelMap model) {
+                             ModelMap model) {
         return sendView("menu", req, resp, model);
     }
-    
+
     @RequestMapping("/soldout")
     public String menuSoldout(HttpServletRequest req, HttpServletResponse resp,
-            ModelMap model) {
+                              ModelMap model) {
         return sendView("soldout", req, resp, model);
     }
-    
+
     @RequestMapping("/dish/new")
     public String addDish(HttpServletRequest req, HttpServletResponse resp,
-            ModelMap model) {
+                          ModelMap model) {
         return sendView("editDish", req, resp, model);
     }
 }

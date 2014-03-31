@@ -1,6 +1,6 @@
 /**
  * @(#)WaiterThriftController.java, Jul 26, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.thrift;
 
@@ -30,15 +30,14 @@ import com.cloudstone.emenu.EmenuContext;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class WaiterThriftController extends BaseThriftController {
     private static final Logger LOG = LoggerFactory.getLogger(WaiterThriftController.class);
 
-    @RequestMapping(value="/waiterservice.thrift", method=RequestMethod.POST)
+    @RequestMapping(value = "/waiterservice.thrift", method = RequestMethod.POST)
     public void thrift(HttpServletRequest request,
-            HttpServletResponse response) throws IOException, TException {
+                       HttpServletResponse response) throws IOException, TException {
         process(request, response);
     }
 
@@ -46,14 +45,15 @@ public class WaiterThriftController extends BaseThriftController {
     protected TProcessor getProcessor() {
         return processor;
     }
-    
+
     private IWaiterService.Processor<Service> processor
-        = new IWaiterService.Processor<Service>(new Service());
+            = new IWaiterService.Processor<Service>(new Service());
+
     private class Service implements IWaiterService.Iface {
 
         @Override
         public boolean occupyTable(String sessionId, String tableId,
-                int customNumber) throws UserNotLoginException,
+                                   int customNumber) throws UserNotLoginException,
                 PermissionDenyExcpetion, TableOccupiedException, TException {
             LOG.info("occupyTable, customerNum = " + customNumber);
             EmenuContext context = new EmenuContext();
@@ -75,7 +75,7 @@ public class WaiterThriftController extends BaseThriftController {
 
         @Override
         public boolean changeTable(String sessionId, String oldTableId,
-                String newTableId) throws UserNotLoginException,
+                                   String newTableId) throws UserNotLoginException,
                 PermissionDenyExcpetion, TableOccupiedException, TException {
             LOG.info("changeTable");
             EmenuContext context = new EmenuContext();
@@ -86,7 +86,7 @@ public class WaiterThriftController extends BaseThriftController {
 
         @Override
         public boolean mergeTable(String sessionId, List<String> oldTableIds,
-                String newTableId) throws UserNotLoginException,
+                                  String newTableId) throws UserNotLoginException,
                 PermissionDenyExcpetion, TableOccupiedException, TException {
             LOG.info("mergeTable");
             //TODO
@@ -106,7 +106,7 @@ public class WaiterThriftController extends BaseThriftController {
 
         @Override
         public boolean callService(String sessionId, String tableId,
-                ServiceType type) throws UserNotLoginException,
+                                   ServiceType type) throws UserNotLoginException,
                 TableEmptyException, TException {
             LOG.info("callService");
             //TODO

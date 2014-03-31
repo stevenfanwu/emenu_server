@@ -1,6 +1,6 @@
 /**
  * @(#)ProfileThriftController.java, Jul 25, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.ctrl.thrift;
 
@@ -33,15 +33,14 @@ import com.cloudstone.emenu.util.ThriftUtils;
 
 /**
  * @author xuhongfeng
- *
  */
 @Controller
 public class ProfileThriftController extends BaseThriftController {
     private static final Logger LOG = LoggerFactory.getLogger(ProfileThriftController.class);
-    
-    @RequestMapping(value="/profileservice.thrift", method=RequestMethod.POST)
+
+    @RequestMapping(value = "/profileservice.thrift", method = RequestMethod.POST)
     public void post(HttpServletRequest request,
-            HttpServletResponse response) throws IOException, TException {
+                     HttpServletResponse response) throws IOException, TException {
         process(request, response);
     }
 
@@ -51,6 +50,7 @@ public class ProfileThriftController extends BaseThriftController {
     }
 
     private TProcessor processor = new IProfileService.Processor<Service>(new Service());
+
     private class Service implements IProfileService.Iface {
 
         @Override
@@ -60,7 +60,7 @@ public class ProfileThriftController extends BaseThriftController {
             LOG.info("login, imei = " + imei);
             EmenuContext context = new EmenuContext();
             User user = userLogic.login(context, username, pwd);
-            
+
             if (user == null) {
                 throw new WrongUsernameOrPasswordException();
             }
@@ -69,7 +69,7 @@ public class ProfileThriftController extends BaseThriftController {
             if (!thriftLogic.isValidImei(context, imei)) {
                 throw new IMEINotAllowedException();
             }
-            
+
             //build session
             long ran = new Random().nextLong();
             String sessionId = String.valueOf(ran);
@@ -79,7 +79,7 @@ public class ProfileThriftController extends BaseThriftController {
             session.setUser(user);
             session.setSessionId(sessionId);
             thriftSessionDb.put(context, sessionId, session);
-            
+
             //build Login
             UserType type = ThriftUtils.getUserType(user);
             Login login = new Login(sessionId, username, type);
@@ -95,7 +95,7 @@ public class ProfileThriftController extends BaseThriftController {
 
         @Override
         public boolean changePassword(String sessionId, String oldPwd,
-                String newPwd) throws UserNotLoginException,
+                                      String newPwd) throws UserNotLoginException,
                 WrongUsernameOrPasswordException, TException {
             throw new UnsupportedOperationException();
         }

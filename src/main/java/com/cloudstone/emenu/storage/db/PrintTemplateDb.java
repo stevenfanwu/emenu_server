@@ -1,6 +1,6 @@
 /**
  * @(#)PrintTemplateDb.java, Aug 15, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.storage.db;
 
@@ -23,11 +23,10 @@ import com.cloudstone.emenu.storage.db.util.UpdateSqlBuilder;
 
 /**
  * @author xuhongfeng
- *
  */
 @Repository
 public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
-    
+
     @Override
     public void removeComponent(EmenuContext context, int componentId) {
         String sql = "UPDATE " + TABLE_NAME
@@ -63,7 +62,7 @@ public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
     protected void onCheckCreateTable(EmenuContext context) {
         checkCreateTable(context, TABLE_NAME, COL_DEF);
     }
-    
+
     @Override
     public List<PrintTemplate> listAll(EmenuContext context) {
         return query(context, SQL_SELECT, StatementBinder.NULL, rowMapper);
@@ -71,17 +70,19 @@ public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
 
     /* ---------- SQL ---------- */
     private static final String TABLE_NAME = "printTemplate";
+
     private static enum Column {
         ID("id"), NAME("name"), HEADER_ID("headerId"),
         FOOTER_ID("footerId"), CUT_TYPE("cutType"), FONT_SIZE("fontSize"),
         CREATED_TIME("createdTime"), UPDATE_TIME("updateTime"),
         DELETED("deleted"), CHAPTER_IDS("chapterIds");
-        
+
         private final String str;
+
         private Column(String str) {
             this.str = str;
         }
-        
+
         @Override
         public String toString() {
             return str;
@@ -89,19 +90,19 @@ public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
     }
 
     private static final String COL_DEF = new ColumnDefBuilder()
-        .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
-        .append(Column.NAME, DataType.TEXT, "NOT NULL")
-        .append(Column.HEADER_ID, DataType.INTEGER, "NOT NULL")
-        .append(Column.FOOTER_ID, DataType.INTEGER, "NOT NULL")
-        .append(Column.CUT_TYPE, DataType.INTEGER, "NOT NULL")
-        .append(Column.FONT_SIZE, DataType.INTEGER, "NOT NULL")
-        .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
-        .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
-        .append(Column.CHAPTER_IDS, DataType.TEXT, "DEFAULT ''")
-        .build();
+            .append(Column.ID, DataType.INTEGER, "NOT NULL PRIMARY KEY")
+            .append(Column.NAME, DataType.TEXT, "NOT NULL")
+            .append(Column.HEADER_ID, DataType.INTEGER, "NOT NULL")
+            .append(Column.FOOTER_ID, DataType.INTEGER, "NOT NULL")
+            .append(Column.CUT_TYPE, DataType.INTEGER, "NOT NULL")
+            .append(Column.FONT_SIZE, DataType.INTEGER, "NOT NULL")
+            .append(Column.CREATED_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.UPDATE_TIME, DataType.INTEGER, "NOT NULL")
+            .append(Column.DELETED, DataType.INTEGER, "NOT NULL")
+            .append(Column.CHAPTER_IDS, DataType.TEXT, "DEFAULT ''")
+            .build();
     private static final String SQL_INSERT = new InsertSqlBuilder(TABLE_NAME, 10).build();
-    
+
     private static class PrintTemplateBinder implements StatementBinder {
         private final PrintTemplate data;
 
@@ -124,19 +125,20 @@ public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
             stmt.bind(10, SqlUtils.idsToStr(data.getChapterIds()));
         }
     }
-    
+
     private static final String SQL_UPDATE = new UpdateSqlBuilder(TABLE_NAME)
-        .appendSetValue(Column.NAME)
-        .appendSetValue(Column.HEADER_ID)
-        .appendSetValue(Column.FOOTER_ID)
-        .appendSetValue(Column.CUT_TYPE)
-        .appendSetValue(Column.FONT_SIZE)
-        .appendSetValue(Column.CREATED_TIME)
-        .appendSetValue(Column.UPDATE_TIME)
-        .appendSetValue(Column.DELETED)
-        .appendSetValue(Column.CHAPTER_IDS)
-        .appendWhereId()
-        .build();
+            .appendSetValue(Column.NAME)
+            .appendSetValue(Column.HEADER_ID)
+            .appendSetValue(Column.FOOTER_ID)
+            .appendSetValue(Column.CUT_TYPE)
+            .appendSetValue(Column.FONT_SIZE)
+            .appendSetValue(Column.CREATED_TIME)
+            .appendSetValue(Column.UPDATE_TIME)
+            .appendSetValue(Column.DELETED)
+            .appendSetValue(Column.CHAPTER_IDS)
+            .appendWhereId()
+            .build();
+
     private static class UpdateBinder implements StatementBinder {
         private final PrintTemplate data;
 
@@ -159,11 +161,12 @@ public class PrintTemplateDb extends SQLiteDb implements IPrintTemplateDb {
             stmt.bind(10, data.getId());
         }
     }
+
     private static final String SQL_SELECT_BY_ID = new SelectSqlBuilder(TABLE_NAME)
-        .appendWhereId().build();
+            .appendWhereId().build();
     private static final String SQL_SELECT = new SelectSqlBuilder(TABLE_NAME).build();
     private static final RowMapper<PrintTemplate> rowMapper = new RowMapper<PrintTemplate>() {
-        
+
         @Override
         public PrintTemplate map(SQLiteStatement stmt) throws SQLiteException {
             PrintTemplate data = new PrintTemplate();

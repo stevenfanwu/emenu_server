@@ -1,6 +1,6 @@
 /**
  * @(#)ThriftLogic.java, Jul 27, 2013. 
- * 
+ *
  */
 package com.cloudstone.emenu.logic;
 
@@ -51,12 +51,11 @@ import com.cloudstone.emenu.wrap.OrderWraper;
 
 /**
  * @author xuhongfeng
- *
  */
 @Component
 public class ThriftLogic extends BaseLogic {
     private static final Logger LOG = LoggerFactory.getLogger(ThriftLogic.class);
-    
+
     @Autowired
     private TableLogic tableLogic;
     @Autowired
@@ -92,20 +91,20 @@ public class ThriftLogic extends BaseLogic {
             customerNumber = order.getCustomerNumber();
         }
         return new TableInfo(table.getName(), customerNumber,
-                ThriftUtils.getTableStatus(table),orderId);
+                ThriftUtils.getTableStatus(table), orderId);
     }
-    
+
     public List<TableInfo> getAllTables(EmenuContext context) throws TException {
         List<Table> tables = tableLogic.getAll(context);
         List<TableInfo> infos = new ArrayList<TableInfo>(tables.size());
-        for (Table t:tables) {
+        for (Table t : tables) {
             infos.add(getTableInfo(context, t.getName()));
         }
         return infos;
     }
-    
+
     public void occupyTable(EmenuContext context, String tableName,
-            int customerNumber) throws TException, TableOccupiedException {
+                            int customerNumber) throws TException, TableOccupiedException {
         TableInfo info = getTableInfo(context, tableName);
         if (info == null) {
             throw new TException("table not found");
@@ -117,10 +116,10 @@ public class ThriftLogic extends BaseLogic {
         table.setStatus(Const.TableStatus.OCCUPIED);
         tableLogic.update(context, table);
         tableLogic.setCustomerNumber(context, table.getId(), customerNumber);
-        
+
         pollingManager.putMessage(new PollingMessage(PollingMessage.TYPE_OCCUPY_TABLE, table));
     }
-    
+
     public void emptyTable(EmenuContext context, String tableName) throws TException {
         Table table = tableLogic.getByName(context, tableName);
         if (table == null) {
@@ -128,7 +127,7 @@ public class ThriftLogic extends BaseLogic {
         }
         tableLogic.clearTable(context, table);
     }
-    
+
     public Menu getCurrentMenu(EmenuContext context) {
         com.cloudstone.emenu.data.Menu m = menuLogic.getCurrentMenu(context);
         if (m == null) {
@@ -136,20 +135,20 @@ public class ThriftLogic extends BaseLogic {
         }
         //TODO logo
         Menu menu = new Menu(m.getId(), m.getName(), listMenuPage(context, m.getId()), "logo");
-        
+
         return menu;
     }
-    
+
     public List<MenuPage> listMenuPage(EmenuContext context, int menuId) {
         List<MenuPage> ret = new ArrayList<MenuPage>();
         List<Chapter> chapters = menuLogic.listChapterByMenuId(context, menuId);
-        for (Chapter chapter:chapters) {
+        for (Chapter chapter : chapters) {
             List<com.cloudstone.emenu.data.MenuPage> pages =
                     menuLogic.listMenuPageByChapterId(context, chapter.getId());
-            for (com.cloudstone.emenu.data.MenuPage page:pages) {
+            for (com.cloudstone.emenu.data.MenuPage page : pages) {
                 List<Dish> dishes = menuLogic.getDishByMenuPageId(context, page.getId());
                 List<Goods> goodsList = new ArrayList<Goods>();
-                for (Dish dish:dishes) {
+                for (Dish dish : dishes) {
                     if (dish.getId() >= 0) {//<0 means Null Dish
                         Goods goods = new Goods();
                         goods.setId(dish.getId());
@@ -164,8 +163,8 @@ public class ThriftLogic extends BaseLogic {
                         goods.setNumberDecimalPermited(dish.isNonInt());
                         if (!StringUtils.isBlank(dish.getImageId())) {
                             List<Img> imgs = new ArrayList<Img>();
-                            Img img = new Img("images/"+dish.getImageId(),
-                                    "images/"+dish.getImageId());
+                            Img img = new Img("images/" + dish.getImageId(),
+                                    "images/" + dish.getImageId());
                             imgs.add(img);
                             goods.setImgs(imgs);
                         }
@@ -178,17 +177,17 @@ public class ThriftLogic extends BaseLogic {
         }
         return ret;
     }
-    
+
     public List<String> getAllNotes(EmenuContext context) throws TException {
         List<DishNote> notes = menuLogic.listAllDishNote(context);
         return DataUtils.pickNames(notes);
     }
-    
+
     public void submitOrder(EmenuContext context, Order order) throws TableEmptyException, HasInvalidGoodsException,
-        UnderMinChargeException, TException {
+            UnderMinChargeException, TException {
         String tableName = order.getTableId();
         boolean isAddOrder = false;
-        
+
         //check goods
         List<Dish> dishes = new ArrayList<Dish>();
         for (GoodsOrder g : order.getGoods()) {
@@ -201,15 +200,15 @@ public class ThriftLogic extends BaseLogic {
             dishes.add(dish);
 
         }
-        
+
         double price = 0;
-        for (GoodsOrder o:order.getGoods()) {
-            price += o.getPrice()*o.getNumber();
+        for (GoodsOrder o : order.getGoods()) {
+            price += o.getPrice() * o.getNumber();
         }
         price = DataUtils.calMoney(price);
         order.setOriginalPrice(price);
         order.setPrice(price);
-        
+
         //check table
         Table table = tableLogic.getByName(context, tableName);
         if (table == null) {
@@ -221,14 +220,14 @@ public class ThriftLogic extends BaseLogic {
         if (order.getOriginalPrice() < table.getMinCharge()) {
             throw new UnderMinChargeException();
         }
-        
+
         com.cloudstone.emenu.data.Order orderValue = new com.cloudstone.emenu.data.Order();
         orderValue.setOriginPrice(order.getOriginalPrice());
         orderValue.setPrice(order.getPrice());
         orderValue.setTableId(table.getId());
-        
+
         int userId = context.getLoginUserId();
-        
+
         //merge order if necessary
         com.cloudstone.emenu.data.Order oldOrder = null;
         if (table.getOrderId() != 0) {
@@ -239,7 +238,7 @@ public class ThriftLogic extends BaseLogic {
             oldOrder.setOriginPrice(orderValue.getOriginPrice() + oldOrder.getOriginPrice());
             oldOrder.setPrice(orderValue.getPrice() + oldOrder.getPrice());
             oldOrder.setUserId(userId);
-            for (int i=0; i<dishes.size(); i++) {
+            for (int i = 0; i < dishes.size(); i++) {
                 DishRecord record = new DishRecord();
                 Dish dish = dishes.get(i);
                 GoodsOrder g = order.getGoods().get(i);
@@ -247,16 +246,16 @@ public class ThriftLogic extends BaseLogic {
                 record.setDishId(dish.getId());
                 record.setCount((int) g.getNumber());
                 record.setOrderId(oldOrder.getId());
-                recordLogic.addAddDishRecord(context, record);    
+                recordLogic.addAddDishRecord(context, record);
             }
         }
         orderValue.setUserId(userId);
-        
+
         List<OrderDish> relations = new ArrayList<OrderDish>();
-        for (int i=0; i<dishes.size(); i++) {
+        for (int i = 0; i < dishes.size(); i++) {
             Dish dish = dishes.get(i);
             GoodsOrder g = order.getGoods().get(i);
-            
+
             OrderDish r = new OrderDish();
             r.setDishId(dish.getId());
             r.setNumber(g.getNumber());
@@ -266,14 +265,14 @@ public class ThriftLogic extends BaseLogic {
             }
             r.setStatus(ThriftUtils.getOrderDishStatus(g));
             relations.add(r);
-            
-            
+
+
         }
         List<OrderDish> needUpdate = new ArrayList<OrderDish>();
         List<OrderDish> needInsert = new ArrayList<OrderDish>();
         if (oldOrder != null) {
             List<OrderDish> oldRelations = orderLogic.listOrderDishes(context, oldOrder.getId());
-            for (OrderDish oldR:oldRelations) {
+            for (OrderDish oldR : oldRelations) {
                 OrderDish found = null;
                 for (OrderDish r : relations) {
                     if (r.getDishId() == oldR.getDishId()) {
@@ -283,7 +282,7 @@ public class ThriftLogic extends BaseLogic {
                 }
                 if (found != null) {
                     oldR.setNumber(oldR.getNumber() + found.getNumber());
-                    if (found.getRemarks()!=null && found.getRemarks().length>0) {
+                    if (found.getRemarks() != null && found.getRemarks().length > 0) {
                         oldR.setRemarks(found.getRemarks());
                     }
                     needUpdate.add(oldR);
@@ -291,10 +290,10 @@ public class ThriftLogic extends BaseLogic {
                 }
             }
         }
-        for (OrderDish r:relations) {
+        for (OrderDish r : relations) {
             needInsert.add(r);
         }
-        
+
         int customerNumber = tableLogic.getCustomerNumber(context, table.getId());
         context.beginTransaction(dataSource);
         try {
@@ -303,10 +302,10 @@ public class ThriftLogic extends BaseLogic {
                 orderValue.setCustomerNumber(customerNumber);
                 orderValue.setId(oldOrder.getId());
                 orderLogic.updateOrder(context, oldOrder);
-                for (OrderDish r:needUpdate) {
+                for (OrderDish r : needUpdate) {
                     orderLogic.updateOrderDish(context, r);
                 }
-                for (OrderDish r:needInsert) {
+                for (OrderDish r : needInsert) {
                     r.setOrderId(oldOrder.getId());
                     orderLogic.addOrderDish(context, r);
                 }
@@ -314,7 +313,7 @@ public class ThriftLogic extends BaseLogic {
             } else {
                 orderValue.setCustomerNumber(customerNumber);
                 orderLogic.addOrder(context, orderValue);
-                for (OrderDish r:needInsert) {
+                for (OrderDish r : needInsert) {
                     r.setOrderId(orderValue.getId());
                     orderLogic.addOrderDish(context, r);
                 }
@@ -326,17 +325,17 @@ public class ThriftLogic extends BaseLogic {
             context.closeTransaction(dataSource);
         }
         OrderVO orderVOALL = null;
-        if(oldOrder != null) {
+        if (oldOrder != null) {
             orderVOALL = orderWraper.wrap(context, oldOrder);
         } else {
             orderVOALL = orderWraper.wrap(context, orderValue);
         }
-        
+
         List<OrderDish> relationsAdd = new ArrayList<OrderDish>();
-        for (int i=0; i<dishes.size(); i++) {
+        for (int i = 0; i < dishes.size(); i++) {
             Dish dish = dishes.get(i);
             GoodsOrder g = order.getGoods().get(i);
-            
+
             OrderDish r = new OrderDish();
             r.setDishId(dish.getId());
             r.setNumber(g.getNumber());
@@ -347,7 +346,7 @@ public class ThriftLogic extends BaseLogic {
             r.setStatus(ThriftUtils.getOrderDishStatus(g));
             relationsAdd.add(r);
         }
-        for (OrderDish r:relationsAdd) {
+        for (OrderDish r : relationsAdd) {
             r.setOrderId(orderValue.getId());
         }
         orderValue.setCreatedTime(System.currentTimeMillis());
@@ -367,40 +366,40 @@ public class ThriftLogic extends BaseLogic {
             LOG.error("", e);
         }
     }
-    
+
     public Order getOrderByTable(EmenuContext context, String tableName) throws TableEmptyException, TException {
-        
+
         // check table
         Table table = tableLogic.getByName(context, tableName);
         if (table == null) {
             throw new TException("table not found, tableName = " + tableName);
         }
         if (table.getStatus() == Const.TableStatus.EMPTY) {
-            throw  new TableEmptyException();
+            throw new TableEmptyException();
         }
-        
+
         int orderId = table.getOrderId();
         com.cloudstone.emenu.data.Order orderValue = orderLogic
                 .getOrder(context, orderId);
         if (orderValue == null) {
             return null;
         }
-        
+
         Order order = new Order();
         order.setOriginalPrice(orderValue.getOriginPrice());
         order.setPrice(orderValue.getPrice());
         order.setTableId(tableName);
-        
+
         List<GoodsOrder> goods = listGoodsInOrder(context, orderId);
         order.setGoods(goods);
-        
+
         return order;
     }
-    
+
     public List<GoodsOrder> listGoodsInOrder(EmenuContext context, int orderId) {
         List<GoodsOrder> goods = new ArrayList<GoodsOrder>();
         List<OrderDish> relations = orderLogic.listOrderDishes(context, orderId);
-        for (OrderDish r:relations) {
+        for (OrderDish r : relations) {
             Dish dish = menuLogic.getDish(context, r.getDishId(), false);
             if (dish == null) {
                 continue;
@@ -421,15 +420,15 @@ public class ThriftLogic extends BaseLogic {
         }
         return goods;
     }
-    
+
     public void onPadChanged() {
         thriftCache.onPadChanged();
     }
-    
+
     public boolean isValidImei(EmenuContext context, String imei) {
         return thriftCache.isValidImei(context, imei);
     }
-    
+
     public User getLatestUser(EmenuContext context, String imei) {
         ThriftSession s = thriftSessionDb.getLatest(context, imei);
         if (s != null) {
@@ -437,11 +436,11 @@ public class ThriftLogic extends BaseLogic {
         }
         return null;
     }
-    
+
     public ThriftSession getLatestSession(EmenuContext context, String imei) {
         return thriftSessionDb.getLatest(context, imei);
     }
-    
+
     public void submitPadInfo(EmenuContext context, PadInfo info) throws TException {
         String imei = info.getIMEI();
         Pad pad = deviceLogic.getPad(context, imei);
@@ -451,15 +450,15 @@ public class ThriftLogic extends BaseLogic {
         pad.setBatteryLevel(info.getBatteryLevel());
         deviceLogic.updatePad(context, pad);
     }
-    
+
     public void changeTable(EmenuContext context, String oldTablename, String newTableName)
             throws TableOccupiedException, TException {
         Table from = tableLogic.getByName(context, oldTablename);
-        if (from==null || from.isDeleted()) {
+        if (from == null || from.isDeleted()) {
             throw new TException("桌子不存在: + " + oldTablename);
         }
         Table to = tableLogic.getByName(context, newTableName);
-        if (to==null || to.isDeleted()) {
+        if (to == null || to.isDeleted()) {
             throw new TException("桌子不存在: + " + newTableName);
         }
         if (to.getStatus() != Const.TableStatus.EMPTY) {
