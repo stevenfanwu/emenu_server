@@ -31,6 +31,7 @@ public class RestaurantLogic extends BaseLogic {
     }
 
     public void delete(EmenuContext context, int id) {
+        // TODO: Delete associated dishes&users.
         restaurantDb.delete(context, id);
     }
 
